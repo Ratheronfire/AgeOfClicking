@@ -1,0 +1,12 @@
+<h2>Workers</h2>
+
+<ul class="workers">
+  <li *ngFor="let worker of workersService.workables()"
+      (click)="hireWorker(worker.id)"
+      matTooltip="{{workersService.getTooltip(worker.id).tooltipMessage}}"
+      matTooltipPosition="right">
+    {{resourcesService.resources[worker.resourceId].name | titlecase }}
+    <mat-chip selected [color]="accent">{{worker.cost | number:'1.0-0'}} Gold</mat-chip>
+    <span class=badge>{{worker.workerCount}}</span>
+  </li>
+</ul>

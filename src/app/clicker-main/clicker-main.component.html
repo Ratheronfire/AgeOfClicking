@@ -1,0 +1,17 @@
+<h2>Resources</h2>
+
+<ul class="resources">
+  <li *ngFor="let resource of resourcesService.resources"
+      [class.harvestable]="resource.harvestable"
+      (mousedown)='startHarvesting(resource.id)'
+      (mouseup)='stopHarvesting(resource.id)'
+      (mouseleave)='stopHarvesting(resource.id)'
+      matTooltip="{{getTooltip(resource.id).tooltipMessage}}"
+      matTooltipPosition="right">
+    {{resource.name | titlecase }} <span class="badge">{{resource.value | number:'1.0-0'}}</span>
+    <mat-progress-bar
+          [class.hidden]="resourceBeingHarvested !== resource.id"
+          class="harvest-progress"
+          [value]="value"></mat-progress-bar>
+  </li>
+</ul>

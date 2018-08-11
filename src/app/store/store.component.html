@@ -1,0 +1,15 @@
+<h2>Store</h2>
+
+<ul class="store">
+  <li *ngFor="let resource of resourcesService.sellableResources()">
+    <div *ngIf="resource.sellable">
+      {{resource.name | titlecase }}
+      <span class="right">
+        <button (click)='sellResource(resource.id, 1)'>1x</button>
+        <button (click)='sellResource(resource.id, 10)'>10x</button>
+        <button (click)='sellResource(resource.id, 100)'>100x</button>
+        <button (click)='sellResource(resource.id, -1)'>All</button>
+      </span>
+    </div>
+  </li>
+</ul>
