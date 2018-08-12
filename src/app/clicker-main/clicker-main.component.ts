@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, } from '@angular/core';
 
 import { timer } from 'rxjs';
 
-import { Resource } from '../resource';
+import { Resource, ResourceType } from '../resource';
 import { ResourcesService } from '../resources.service';
 import { Worker } from '../worker';
 import { WorkersService } from '../workers.service';
@@ -27,6 +27,8 @@ export class ClickerMainComponent implements OnInit {
   
   millisecondsElapsed: number = 0;
   progressBarUpdateDelay = 100;
+
+  resourceTypes = ResourceType;
   
   constructor(private resourcesService: ResourcesService,
               private workersService: WorkersService) { }
@@ -58,17 +60,19 @@ export class ClickerMainComponent implements OnInit {
   startHarvesting(id: number) {
     const resource = this.resourcesService.resources[id];
     
-    if (!resource.harvestable)
+    if (!this.resourcesService.canHarvest(id))
       return;
     
     this.harvestTimer = timer(resource.harvestMilliseconds, resource.harvestMilliseconds);
     this.harvestSubscribe = this.harvestTimer.subscribe(_ => this.harvestResource(id));
     
     if (this.shouldAnimateProgressBar(id)) {
+      this.mode = 'determinate';
       this.progressBarTimer = timer(this.progressBarUpdateDelay, this.progressBarUpdateDelay);
       this.progressBarSubscribe = this.progressBarTimer.subscribe(_ => this.updateProgressBar(id));
     }
     else {
+      this.mode='indeterminate';
       this.value = 100;
     }
     
@@ -106,5 +110,8 @@ export class ClickerMainComponent implements OnInit {
     if (this.shouldAnimateProgressBar(id)) {
       this.value = 0;
     }
+
+    if (!this.resourcesService.canHarvest(id))
+      this.stopHarvesting(id);
   }
 }

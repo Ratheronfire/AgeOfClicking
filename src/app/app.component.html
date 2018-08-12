@@ -2,11 +2,15 @@
 
 <app-clicker-main></app-clicker-main>
 
-<nav>
-	<a routerLink="/workers">Workers</a>
-  <a routerLink="/store">Store</a>
-  <a routerLink="/upgrades">Upgrades</a>
-</nav>
-
-<router-outlet></router-outlet>
+<mat-tab-group dynamicHeight>
+  <mat-tab label="Workers">
+    <app-workers></app-workers>
+  </mat-tab>
+  <mat-tab label="Store">
+    <app-store></app-store>
+  </mat-tab>
+  <mat-tab label="Upgrades">
+    <app-upgrades></app-upgrades>
+  </mat-tab>
+</mat-tab-group>
 <app-messages></app-messages>

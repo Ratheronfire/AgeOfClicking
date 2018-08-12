@@ -15,14 +15,14 @@ export class StoreService {
   public sellResource(id: number, amount: number) {
     var resource = this.resourcesService.resources[id];
     
-    if (!resource.sellable || resource.value - amount < 0)
+    if (!resource.sellable || resource.amount - amount < 0)
       return;
     
     if (amount === -1)
-      amount = resource.value;
+      amount = resource.amount;
     
-    resource.value -= amount;
-    this.resourcesService.resources[0].value += amount * resource.sellsFor;
+    resource.amount -= amount;
+    this.resourcesService.resources[0].amount += amount * resource.sellsFor;
   }
   
   private log(message: string) {

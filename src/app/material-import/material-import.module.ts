@@ -7,6 +7,9 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatCardModule } from '@angular/material/card';
 import { MatGridListModule } from '@angular/material/grid-list';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatDividerModule } from '@angular/material/divider';
 
 @NgModule({
   imports: [
@@ -17,7 +20,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatIconModule,
     MatTooltipModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTabsModule,
+    MatExpansionModule,
+    MatDividerModule
   ],
   exports: [
     MatButtonModule,
@@ -27,7 +33,10 @@ import { MatGridListModule } from '@angular/material/grid-list';
     MatIconModule,
     MatTooltipModule,
     MatCardModule,
-    MatGridListModule
+    MatGridListModule,
+    MatTabsModule,
+    MatExpansionModule,
+    MatDividerModule
   ]
 })
 export class MaterialImportModule { }

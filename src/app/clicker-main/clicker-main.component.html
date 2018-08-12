@@ -1,17 +1,62 @@
 <h2>Resources</h2>
 
-<ul class="resources">
-  <li *ngFor="let resource of resourcesService.resources"
-      [class.harvestable]="resource.harvestable"
-      (mousedown)='startHarvesting(resource.id)'
-      (mouseup)='stopHarvesting(resource.id)'
-      (mouseleave)='stopHarvesting(resource.id)'
-      matTooltip="{{getTooltip(resource.id).tooltipMessage}}"
-      matTooltipPosition="right">
-    {{resource.name | titlecase }} <span class="badge">{{resource.value | number:'1.0-0'}}</span>
-    <mat-progress-bar
-          [class.hidden]="resourceBeingHarvested !== resource.id"
-          class="harvest-progress"
-          [value]="value"></mat-progress-bar>
-  </li>
+<ul class="resources noselect">
+  <mat-accordion multi="true">
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Currency
+        </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-card *ngFor="let resource of resourcesService.resourcesOfType(resourceTypes.Currency)" [class.harvestable]="resourcesService.canHarvest(resource.id)"
+        (mousedown)='startHarvesting(resource.id)' (mouseup)='stopHarvesting(resource.id)' (mouseleave)='stopHarvesting(resource.id)'
+        matTooltip="{{getTooltip(resource.id).tooltipMessage}}" matTooltipPosition="right">
+        <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
+        <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
+        <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [value]="value">
+        </mat-progress-bar>
+      </mat-card>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Wood
+        </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-card *ngFor="let resource of resourcesService.resourcesOfType(resourceTypes.Wood)" [class.harvestable]="resourcesService.canHarvest(resource.id)"
+        (mousedown)='startHarvesting(resource.id)' (mouseup)='stopHarvesting(resource.id)' (mouseleave)='stopHarvesting(resource.id)'
+        matTooltip="{{getTooltip(resource.id).tooltipMessage}}" matTooltipPosition="right">
+        <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
+        <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
+        <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [value]="value">
+        </mat-progress-bar>
+      </mat-card>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          Metal
+        </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <mat-card *ngFor="let resource of resourcesService.resourcesOfType(resourceTypes.Metal)" [class.harvestable]="resourcesService.canHarvest(resource.id)"
+        (mousedown)='startHarvesting(resource.id)' (mouseup)='stopHarvesting(resource.id)' (mouseleave)='stopHarvesting(resource.id)'
+        matTooltip="{{getTooltip(resource.id).tooltipMessage}}" matTooltipPosition="right">
+        <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
+        <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
+        <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [value]="value">
+        </mat-progress-bar>
+      </mat-card>
+    </mat-expansion-panel>
+  </mat-accordion>
 </ul>

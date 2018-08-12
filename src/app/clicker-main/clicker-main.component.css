@@ -3,19 +3,34 @@
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
-  width: 15em;
+  width: 25em;
 }
-.resources li {
+
+.resources mat-expansion-panel {
+  margin: 0;
+}
+
+.resources mat-expansion-panel-header {
+  height: 30px !important;
+}
+
+.resources mat-card-subtitle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.resources mat-card {
   position: relative;
   cursor: pointer;
   background-color: #EEE;
   margin: .5em;
-  padding: .3em 0;
+  padding: .4em 0;
   height: 1.6em;
   border-radius: 4px;
 }
 
-.resources li:hover {
+.resources mat-card:hover {
   color: #607D8B;
   background-color: #DDD;
   left: .1em;
@@ -87,7 +102,6 @@ button.delete {
   
   height: 35px;
   top: 0px;
-  width: 187px;
   
   position: absolute;
   opacity: 0.5;

@@ -19,7 +19,7 @@ const baseUpgrades: Upgrade[] = [
     ],
     resourceCosts: [
       { resourceId: 1, resourceCost: 10 },
-      { resourceId: 2, resourceCost: 25 }
+      { resourceId: 6, resourceCost: 25 }
     ],
     purchased: false
   },
@@ -33,7 +33,7 @@ const baseUpgrades: Upgrade[] = [
     ],
     resourceCosts: [
       { resourceId: 1, resourceCost: 15 },
-      { resourceId: 2, resourceCost: 35 }
+      { resourceId: 6, resourceCost: 35 }
     ],
     purchased: false
   },  
@@ -70,7 +70,7 @@ export class UpgradesService {
       return;
     
     for (let resourceCost of upgrade.resourceCosts) {
-      this.resourcesService.resources[resourceCost.resourceId].value -= resourceCost.resourceCost;
+      this.resourcesService.resources[resourceCost.resourceId].amount -= resourceCost.resourceCost;
     }
     
     for (let upgradeEffect of upgrade.upgradeEffects) {
@@ -111,7 +111,7 @@ export class UpgradesService {
   
   public canAffordUpgrade(id: number): boolean {
     for (let resourceCost of this.upgrades[id].resourceCosts) {
-      if (this.resourcesService.resources[resourceCost.resourceId].value < resourceCost.resourceCost)
+      if (this.resourcesService.resources[resourceCost.resourceId].amount < resourceCost.resourceCost)
         return false;
     }
     

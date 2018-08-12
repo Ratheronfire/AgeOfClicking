@@ -11,8 +11,8 @@ const baseWorkers: Worker[] = [
   { id: 1, workable: true, resourceId: 1, workerCount: 0, cost: 50 },
   { id: 2, workable: true, resourceId: 2, workerCount: 0, cost: 75 },
   { id: 3, workable: true, resourceId: 3, workerCount: 0, cost: 75 },
-  { id: 4, workable: false, resourceId: 4, workerCount: 0, cost: 100 }
-  { id: 5, workable: false, resourceId: 5, workerCount: 0, cost: 150 }
+  { id: 4, workable: false, resourceId: 4, workerCount: 0, cost: 100 },
+  { id: 5, workable: false, resourceId: 5, workerCount: 0, cost: 150 },
   { id: 6, workable: false, resourceId: 6, workerCount: 0, cost: 250 }
 ];
 
@@ -32,15 +32,15 @@ export class WorkersService {
       
       var resource = this.resourcesService.resources[worker.resourceId];
       
-      resource.value += resource.workerYield * worker.workerCount;
+      resource.amount += resource.workerYield * worker.workerCount;
     }
   }
   
   public hireWorker(id: number) {
-    if (this.resourcesService.resources[0].value < this.workers[id].cost)
+    if (this.resourcesService.resources[0].amount < this.workers[id].cost)
       return;
     
-    this.resourcesService.resources[0].value -= this.workers[id].cost;
+    this.resourcesService.resources[0].amount -= this.workers[id].cost;
     this.workers[id].cost *= 1.01;
     this.workers[id].workerCount++;
   }

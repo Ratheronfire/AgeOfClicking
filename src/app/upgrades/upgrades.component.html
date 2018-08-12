@@ -1,5 +1,3 @@
-<h2>Upgrades</h2>
-
 <mat-grid-list cols="4" rowHeight="300px">
   <mat-grid-tile
       *ngFor="let upgrade of upgradesService.upgrades"
@@ -9,7 +7,7 @@
       <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
       <mat-card-content>
         {{upgrade.description}}
-        <hr>
+        <mat-divider></mat-divider>
         <h3>Costs</h3>
           <div *ngFor="let resourceCost of upgrade.resourceCosts">
             {{resourcesService.resources[resourceCost.resourceId].name | titlecase }}: {{resourceCost.resourceCost}}
