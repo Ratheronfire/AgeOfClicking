@@ -4,7 +4,7 @@ import { timer } from 'rxjs';
 
 import { Worker } from '../worker';
 import { WorkersService } from '../workers.service';
-import { Resource } from '../resource';
+import { Resource, ResourceType } from '../resource';
 import { ResourcesService } from '../resources.service';
 
 @Component({
@@ -13,12 +13,26 @@ import { ResourcesService } from '../resources.service';
   styleUrls: ['./workers.component.css']
 })
 export class WorkersComponent implements OnInit {
+  resourceTypes = ResourceType;
+
   constructor(private workersService: WorkersService,
               private resourcesService: ResourcesService) { }
 
   ngOnInit() {
   }
   
+  workersOfType(resourceType: string, filterByWorkable: boolean): Worker[] {
+    return this.workersService.workersByType(this.resourceTypes[resourceType], filterByWorkable);
+  }
+
+  canAfford(id: number): boolean {
+    return this.workersService.canAfford(id);
+  }
+
+  getTooltip(id: number) {
+    return this.workersService.getTooltip(id);
+  }
+
   hireWorker(id: number) {
     this.workersService.hireWorker(id);
   }

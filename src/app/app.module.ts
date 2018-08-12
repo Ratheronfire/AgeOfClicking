@@ -11,6 +11,7 @@ import { WorkersComponent } from './workers/workers.component';
 import { StoreComponent } from './store/store.component';
 import { UpgradesComponent } from './upgrades/upgrades.component';
 import { MaterialImportModule } from './material-import/material-import.module';
+import { PipeModule } from 'src/app/pipe/pipe.module';
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import { MaterialImportModule } from './material-import/material-import.module';
     FormsModule,
     AppRoutingModule,
     BrowserAnimationsModule,
-    MaterialImportModule
+    MaterialImportModule,
+    PipeModule
   ],
   providers: [],
   bootstrap: [AppComponent]

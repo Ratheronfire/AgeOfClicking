@@ -18,42 +18,25 @@
   position: absolute;
   top: 10px;
   right: 10px;
+  font-weight: bold;
 }
 
-.resources mat-card {
+.resources button {
   position: relative;
   cursor: pointer;
-  background-color: #EEE;
   margin: .5em;
   padding: .4em 0;
-  height: 1.6em;
+  height: 3.6em;
+  width: 100%;
   border-radius: 4px;
 }
 
-.resources mat-card:hover {
-  color: #607D8B;
-  background-color: #DDD;
+.resources button:hover {
   left: .1em;
 }
 
-.resources a {
-  color: #888;
-  text-decoration: none;
-  position: relative;
-  display: block;
-  width: 250px;
-}
-
-.resources a:hover {
-  color:#607D8B;
-}
-
-.resources .harvestable {
-  background-color: antiquewhite;
-}
-
-.resources .harvestable:hover {
-  background-color: blanchedalmond;
+.resources button.mat-disabled {
+  cursor: default;
 }
 
 .resources .badge {
@@ -83,30 +66,14 @@ button {
   font-family: Arial;
 }
 
-button:hover {
-  background-color: #cfd8dc;
-}
-
-button.delete {
-  position: relative;
-  left: 194px;
-  top: -32px;
-  background-color: gray !important;
-  color: white;
-}
-
 .harvest-progress {
   display: flex;
   align-content: center;
   align-items: center;
   
-  height: 35px;
+  height: 100%;
   top: 0px;
   
   position: absolute;
   opacity: 0.5;
-}
-
-.hidden {
-  visibility: hidden;
 }

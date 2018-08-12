@@ -1,17 +1,17 @@
 import { Tooltip } from './tooltip';
 
 export enum UpgradeType {
-  Resource,
-  Worker
+  Resource = "RESOURCE",
+  Worker = "WORKER"
 }
 
 export enum UpgradeVariable {
-  Harvestability,
-  HarvestYield,
-  HarvestMilliseconds,
-  Workable,
-  WorkerYield,
-  WorkerCost
+  Harvestability = "HARVESTABILITY",
+  HarvestYield = "HARVEST_YIELD",
+  HarvestMilliseconds = "HARVEST_MILLISECONDS",
+  Workable = "WORKABLE",
+  WorkerYield = "WORKER_YIELD",
+  WorkerCost = "WORKER_COST"
 }
 
 export interface UpgradeEffect {

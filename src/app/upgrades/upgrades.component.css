@@ -3,42 +3,40 @@
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
-  width: 15em;
+  width: 25em;
 }
-.upgrades li {
+
+.upgrades mat-expansion-panel {
+  margin: 0;
+}
+
+.upgrades mat-expansion-panel-header {
+  height: 30px !important;
+}
+
+.upgrades mat-card-subtitle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-weight: bold;
+}
+
+.upgrades button {
   position: relative;
   cursor: pointer;
-  background-color: #EEE;
   margin: .5em;
-  padding: .3em 0;
-  height: 1.6em;
+  padding: .4em 0;
+  height: 3.6em;
+  width: 100%;
   border-radius: 4px;
 }
 
-.upgrades li:hover {
-  color: #607D8B;
-  background-color: #DDD;
+.upgrades button:hover {
   left: .1em;
 }
 
-.upgrades a {
-  color: #888;
-  text-decoration: none;
-  position: relative;
-  display: block;
-  width: 250px;
-}
-
-.upgrades a:hover {
-  color:#607D8B;
-}
-
-.upgrades .harvestable {
-  background-color: antiquewhite;
-}
-
-.upgrades .harvestable:hover {
-  background-color: blanchedalmond;
+.upgrades button.mat-disabled {
+  cursor: default;
 }
 
 .upgrades .badge {
@@ -68,31 +66,14 @@ button {
   font-family: Arial;
 }
 
-button:hover {
-  background-color: #cfd8dc;
-}
-
-button.delete {
-  position: relative;
-  left: 194px;
-  top: -32px;
-  background-color: gray !important;
-  color: white;
-}
-
 .harvest-progress {
   display: flex;
   align-content: center;
   align-items: center;
   
-  height: 35px;
+  height: 100%;
   top: 0px;
-  width: 187px;
   
   position: absolute;
   opacity: 0.5;
-}
-
-.hidden {
-  visibility: hidden;
 }

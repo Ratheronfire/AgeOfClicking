@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Resource } from '../resource';
 import { ResourcesService } from '../resources.service';
-import { Upgrade, ResourceCost } from '../upgrade';
+import { Upgrade, ResourceCost, UpgradeType } from '../upgrade';
 import { UpgradesService } from '../upgrades.service';
 
 @Component({
@@ -11,10 +11,21 @@ import { UpgradesService } from '../upgrades.service';
   styleUrls: ['./upgrades.component.css']
 })
 export class UpgradesComponent implements OnInit {
+  upgradeTypes = UpgradeType;
+  hidePurchased = false;
+  
   constructor(private resourcesService: ResourcesService,
               private upgradesService: UpgradesService) { }
 
   ngOnInit() {
+  }
+
+  canAffordUpgrade(id: number) {
+    return this.upgradesService.canAffordUpgrade(id);
+  }
+
+  upgradesOfType(upgradeType: string, includePurchased: boolean = true, includeUnpurchased: boolean = true): Upgrade[] {
+    return this.upgradesService.upgradesOfType(this.upgradeTypes[upgradeType], includePurchased, includeUnpurchased);
   }
   
   purchaseUpgrade(id: number) {

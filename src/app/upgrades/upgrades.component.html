@@ -1,7 +1,44 @@
-<mat-grid-list cols="4" rowHeight="300px">
-  <mat-grid-tile
-      *ngFor="let upgrade of upgradesService.upgrades"
-      [style.background]="getBackgroundColor(upgrade.id)">
+<mat-checkbox class="hidePurchased" checked="true" [(ngModel)]="showPurchased">Show Purchased Upgrades</mat-checkbox>
+<br />
+<br />
+
+<div class="upgrades">
+  <mat-accordion multi="true">
+    <mat-expansion-panel expanded="true" *ngFor="let upgradeType of upgradeTypes | enumToArray">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{upgradeType}}
+        </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <div *ngFor="let upgrade of upgradesOfType(upgradeType, showPurchased)">
+        <mat-divider></mat-divider>
+        <button mat-raised-button color="accent"
+          [disabled]='!canAffordUpgrade(upgrade.id)'
+          (click)='purchaseUpgrade(upgrade.id)'>
+          <mat-card-title>{{upgrade.name}}</mat-card-title>
+        </button>
+        <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
+        <mat-card-content>
+          {{upgrade.description}}
+          <br />
+          <h3>Costs</h3>
+          <div *ngFor="let resourceCost of upgrade.resourceCosts">
+            {{resourcesService.resources[resourceCost.resourceId].name | titlecase }}: {{resourceCost.resourceCost}}
+          </div>
+        </mat-card-content>
+      </div>
+      <!-- <mat-card-actions>
+          <button mat-button (click)='purchaseUpgrade(upgrade.id)'>Purchase</button>
+        </mat-card-actions> -->
+    </mat-expansion-panel>
+  </mat-accordion>
+</div>
+
+<!-- <mat-grid-list cols="4" rowHeight="300px">
+  <mat-grid-tile *ngFor="let upgrade of upgradesService.upgrades" [style.background]="getBackgroundColor(upgrade.id)">
     <mat-card>
       <mat-card-title>{{upgrade.name}}</mat-card-title>
       <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
@@ -9,13 +46,13 @@
         {{upgrade.description}}
         <mat-divider></mat-divider>
         <h3>Costs</h3>
-          <div *ngFor="let resourceCost of upgrade.resourceCosts">
-            {{resourcesService.resources[resourceCost.resourceId].name | titlecase }}: {{resourceCost.resourceCost}}
-          </div>
+        <div *ngFor="let resourceCost of upgrade.resourceCosts">
+          {{resourcesService.resources[resourceCost.resourceId].name | titlecase }}: {{resourceCost.resourceCost}}
+        </div>
       </mat-card-content>
       <mat-card-actions>
         <button mat-button (click)='purchaseUpgrade(upgrade.id)'>Purchase</button>
       </mat-card-actions>
     </mat-card>
   </mat-grid-tile>
-</mat-grid-list>
+</mat-grid-list> -->

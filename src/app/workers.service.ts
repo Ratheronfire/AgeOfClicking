@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Worker } from './worker';
-import { Resource } from './resource';
+import { Resource, ResourceType } from './resource';
 import { ResourcesService } from './resources.service';
 import { MessagesService } from './messages.service';
 import { Tooltip } from './tooltip';
@@ -37,12 +37,16 @@ export class WorkersService {
   }
   
   public hireWorker(id: number) {
-    if (this.resourcesService.resources[0].amount < this.workers[id].cost)
+    if (!this.canAfford(id))
       return;
     
     this.resourcesService.resources[0].amount -= this.workers[id].cost;
     this.workers[id].cost *= 1.01;
     this.workers[id].workerCount++;
+  }
+
+  public canAfford(id: number): boolean {
+    return (this.resourcesService.resources[0].amount >= this.workers[id].cost);
   }
   
   public getTooltip(id: number): Tooltip {
@@ -59,6 +63,14 @@ export class WorkersService {
     ];
 
     return workerTooltips[id];
+  }
+
+  public workersByType(resourceType: ResourceType, filterByWorkable: boolean): Worker[] {
+    var workers = this.workers.filter(worker => this.resourcesService.resources[worker.resourceId].resourceType === resourceType);
+    if (filterByWorkable)
+      workers = workers.filter(worker => worker.workable);
+
+    return workers;
   }
   
   public workables(): Worker[] {

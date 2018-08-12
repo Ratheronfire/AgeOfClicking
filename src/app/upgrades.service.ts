@@ -117,6 +117,17 @@ export class UpgradesService {
     
     return true;
   }
+
+  public upgradesOfType(upgradeType: UpgradeType, includePurchased: boolean = true, includeUnpurchased: boolean = true) {
+    var upgrades = this.upgrades.filter(upgrade => upgrade.upgradeType === upgradeType);
+
+    if (!includePurchased)
+      upgrades = upgrades.filter(upgrade => !upgrade.purchased);
+    if (!includeUnpurchased)
+      upgrades = upgrades.filter(upgrade => upgrade.purchased);
+
+    return upgrades;
+  }
   
   public getUpgradeTypeString(id: number): string {
     return UpgradeType[this.upgrades[id].upgradeType];

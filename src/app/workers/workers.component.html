@@ -1,10 +1,20 @@
 <ul class="workers">
-  <li *ngFor="let worker of workersService.workables()"
-      (click)="hireWorker(worker.id)"
-      matTooltip="{{workersService.getTooltip(worker.id).tooltipMessage}}"
-      matTooltipPosition="right">
-    {{resourcesService.resources[worker.resourceId].name | titlecase }}
-    <mat-chip selected [color]="accent">{{worker.cost | number:'1.0-0'}} Gold</mat-chip>
-    <span class=badge>{{worker.workerCount}}</span>
-  </li>
+  <mat-accordion multi="true">
+    <mat-expansion-panel expanded="true" *ngFor="let resourceType of resourceTypes | enumToArray">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{resourceType}}
+        </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <button mat-raised-button *ngFor="let worker of workersOfType(resourceType, true)" (click)="hireWorker(worker.id)"
+      [color]="canAfford(worker.id) ? 'accent' : 'disabled'"
+        matTooltip="{{getTooltip(worker.id).tooltipMessage}}" matTooltipPosition="right">
+        <mat-card-title>{{resourcesService.resources[worker.resourceId].name | titlecase }}</mat-card-title>
+        <mat-card-subtitle>{{worker.workerCount}} Workers | {{worker.cost | number:'1.0-0'}} Gold</mat-card-subtitle>
+      </button>
+    </mat-expansion-panel>
+  </mat-accordion>
 </ul>

@@ -3,19 +3,34 @@
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
-  width: 15em;
+  width: 25em;
 }
-.store li {
+
+.store mat-expansion-panel {
+  margin: 0;
+}
+
+.store mat-expansion-panel-header {
+  height: 30px !important;
+}
+
+.store mat-card-subtitle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.store mat-card {
   position: relative;
   cursor: pointer;
   background-color: #EEE;
   margin: .5em;
-  padding: .3em 0;
+  padding: .4em 0;
   height: 1.6em;
   border-radius: 4px;
 }
 
-.store li:hover {
+.store mat-card:hover {
   color: #607D8B;
   background-color: #DDD;
   left: .1em;
@@ -60,17 +75,14 @@
 
 .right {
   position: absolute;
-  right: 0;
+  right: 3px;
+  top: 3px;
 }
 
 button {
-  background-color: #eee;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  cursor: hand;
-  font-family: Arial;
+  min-width: unset;
+  height: 27px;
+  line-height: unset;
 }
 
 button:hover {

@@ -37,6 +37,10 @@ export class ClickerMainComponent implements OnInit {
     const processSource = timer(1000, 1000);
     const processSubscribe = processSource.subscribe(_ => this.workersService.processWorkers());
   }
+
+  resourcesOfType(resourceType: string): Resource[] {
+    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType]);
+  }
   
   public getTooltip(id: number): Tooltip {
     const resource = this.resourcesService.resources[id];
