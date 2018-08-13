@@ -30,4 +30,8 @@ export class Resource {
   resourceDescription: string;
   workerVerb: string;
   workerNoun: string;
+
+  resourceAccessible: boolean;
+  resourceTier: number;
+  previousTier: number;
 }

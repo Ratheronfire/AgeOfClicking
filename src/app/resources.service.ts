@@ -14,15 +14,20 @@ export class ResourcesService {
   constructor(private messagesService: MessagesService) { }
 
   harvestResource(id: number) {
-    if (!this.resources[id].harvestable || !this.canHarvest(id)) {
+    const resource = this.resources[id];
+
+    if (!resource.harvestable || !this.canHarvest(id)) {
       return;
     }
 
-    for (const resourceConsume of this.resources[id].resourceConsumes) {
+    for (const resourceConsume of resource.resourceConsumes) {
       this.resources[resourceConsume.resourceId].amount -= resourceConsume.cost;
     }
 
-    this.resources[id].amount += this.resources[id].harvestYield;
+    this.resources.filter(r => r.previousTier === resource.resourceTier && r.resourceType === resource.resourceType)
+      .map(r => r.resourceAccessible = true);
+
+    resource.amount += resource.harvestYield;
   }
 
   public canHarvest(id: number): boolean {
@@ -41,8 +46,9 @@ export class ResourcesService {
     return true;
   }
 
-  public resourcesOfType(resourceType: ResourceType): Resource[] {
-    return this.resources.filter(resource => resource.resourceType === resourceType);
+  public resourcesOfType(resourceType: ResourceType, onlyIncludeAccessible: boolean): Resource[] {
+    return this.resources.filter(resource => resource.resourceType === resourceType &&
+      (!onlyIncludeAccessible || resource.resourceAccessible));
   }
 
   public harvestableResources(): Resource[] {

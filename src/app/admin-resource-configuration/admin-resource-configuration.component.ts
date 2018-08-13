@@ -24,7 +24,7 @@ export class AdminResourceConfigurationComponent implements OnInit {
     this.resourceId = this.resourcesService.resources.length;
     this.resource = {id: this.resourceId, name: '', resourceType: ResourceType.Currency, amount: 0,
     resourceConsumes: [], harvestable: true, harvestYield: 1, harvestMilliseconds: 1000, workerYield: 1, sellable: true,
-    sellsFor: 5, resourceDescription: '', workerVerb: '', workerNoun: ''};
+    sellsFor: 5, resourceDescription: '', workerVerb: '', workerNoun: '', resourceAccessible: true, resourceTier: 0, previousTier: 0};
 
     this.resourcesService.resources[this.resourceId] = this.resource;
 
@@ -71,10 +71,17 @@ export class AdminResourceConfigurationComponent implements OnInit {
   }
 
   stringifyResource() {
+    this.resource.resourceAccessible = +this.resource.resourceTier === 0;
+    console.log(this.resource.resourceTier);
+
     alert(JSON.stringify(this.resource));
   }
 
   stringifyResources() {
+    for (const resource of this.resourcesService.resources) {
+      resource.resourceAccessible = +resource.resourceTier === 0;
+    }
+
     alert(JSON.stringify(this.resourcesService.resources));
   }
 
