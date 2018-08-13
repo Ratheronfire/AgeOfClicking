@@ -133,3 +133,25 @@
     <input matInput placeholder="Previous Tier" [(ngModel)]="resource.previousTier">
   </mat-card-content>
 </mat-card>
+
+<mat-card>
+  <mat-card-title mat-line>Worker:</mat-card-title>
+
+  <mat-card>
+    <mat-checkbox [(ngModel)]="resource.worker.workable">Workable</mat-checkbox>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-title mat-line>Worker Count:</mat-card-title>
+    <mat-card-content mat-line>
+      <input matInput placeholder="Worker Count" [(ngModel)]="resource.worker.workerCount">
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-title mat-line>Worker Cost:</mat-card-title>
+    <mat-card-content mat-line>
+      <input matInput placeholder="Worker Cost" [(ngModel)]="resource.worker.cost">
+    </mat-card-content>
+  </mat-card>
+</mat-card>
