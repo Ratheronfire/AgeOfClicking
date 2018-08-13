@@ -27,3 +27,8 @@ nav a:hover {
 nav a.active {
   color: #039be5;
 }
+.debug-pane {
+  position: absolute;
+  top: 0px;
+  right: 5%;
+}

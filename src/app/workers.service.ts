@@ -24,22 +24,24 @@ export class WorkersService {
 
   constructor(private resourcesService: ResourcesService,
               private messagesService: MessagesService) { }
-  
+
   public processWorkers() {
-    for (let worker of this.workers) {
-      if (worker.workerCount <= 0)
+    for (const worker of this.workers) {
+      if (worker.workerCount <= 0) {
         continue;
-      
-      var resource = this.resourcesService.resources[worker.resourceId];
-      
+      }
+
+      const resource = this.resourcesService.resources[worker.resourceId];
+
       resource.amount += resource.workerYield * worker.workerCount;
     }
   }
-  
+
   public hireWorker(id: number) {
-    if (!this.canAfford(id))
+    if (!this.canAfford(id)) {
       return;
-    
+    }
+
     this.resourcesService.resources[0].amount -= this.workers[id].cost;
     this.workers[id].cost *= 1.01;
     this.workers[id].workerCount++;
@@ -48,10 +50,10 @@ export class WorkersService {
   public canAfford(id: number): boolean {
     return (this.resourcesService.resources[0].amount >= this.workers[id].cost);
   }
-  
+
   public getTooltip(id: number): Tooltip {
     const workerYield = this.resourcesService.resources[id].workerYield;
-    
+
     const workerTooltips: Tooltip[] = [
       { elementId: 0, tooltipMessage: '' },
       { elementId: 1, tooltipMessage: `Fells ${workerYield} tree${workerYield == 1 ? '' : 's'}  per second.` },
@@ -66,17 +68,25 @@ export class WorkersService {
   }
 
   public workersByType(resourceType: ResourceType, filterByWorkable: boolean): Worker[] {
-    var workers = this.workers.filter(worker => this.resourcesService.resources[worker.resourceId].resourceType === resourceType);
-    if (filterByWorkable)
+    let workers = this.workers.filter(worker => this.resourcesService.resources[worker.resourceId].resourceType === resourceType);
+    if (filterByWorkable) {
       workers = workers.filter(worker => worker.workable);
+    }
 
     return workers;
   }
-  
+
+  public workerTooltip(id: number): string {
+    const worker = this.workers[id];
+    const resource = this.resourcesService.resources[worker.resourceId];
+
+    return `${resource.workerVerb} ${resource.workerYield} ${resource.workerNoun}${resource.workerYield == 1? '' : 's'} per second.`;
+  }
+
   public workables(): Worker[] {
     return this.workers.filter(worker => worker.workable);
   }
-         
+
   private log(message: string) {
     this.messagesService.add(`WorkersService: ${message}`);
   }

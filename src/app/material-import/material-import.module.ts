@@ -10,6 +10,9 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
   imports: [
@@ -23,7 +26,10 @@ import { MatDividerModule } from '@angular/material/divider';
     MatGridListModule,
     MatTabsModule,
     MatExpansionModule,
-    MatDividerModule
+    MatDividerModule,
+    MatInputModule,
+    MatSelectModule,
+    MatListModule
   ],
   exports: [
     MatButtonModule,
@@ -36,7 +42,10 @@ import { MatDividerModule } from '@angular/material/divider';
     MatGridListModule,
     MatTabsModule,
     MatExpansionModule,
-    MatDividerModule
+    MatDividerModule,
+    MatInputModule,
+    MatSelectModule,
+    MatListModule
   ]
 })
 export class MaterialImportModule { }

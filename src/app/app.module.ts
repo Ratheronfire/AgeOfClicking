@@ -12,6 +12,8 @@ import { StoreComponent } from './store/store.component';
 import { UpgradesComponent } from './upgrades/upgrades.component';
 import { MaterialImportModule } from './material-import/material-import.module';
 import { PipeModule } from 'src/app/pipe/pipe.module';
+import { AdminDebugComponent } from './admin-debug/admin-debug.component';
+import { AdminConfigurationComponent } from './admin-configuration/admin-configuration.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +22,9 @@ import { PipeModule } from 'src/app/pipe/pipe.module';
     MessagesComponent,
     WorkersComponent,
     StoreComponent,
-    UpgradesComponent
+    UpgradesComponent,
+    AdminDebugComponent,
+    AdminConfigurationComponent
   ],
   imports: [
     BrowserModule,

@@ -29,8 +29,8 @@ export class WorkersComponent implements OnInit {
     return this.workersService.canAfford(id);
   }
 
-  getTooltip(id: number) {
-    return this.workersService.getTooltip(id);
+  getTooltipMessage(id: number): string {
+    return this.workersService.workerTooltip(id);
   }
 
   hireWorker(id: number) {

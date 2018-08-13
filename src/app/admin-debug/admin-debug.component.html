@@ -1,0 +1,7 @@
+<h2>Debug</h2>
+
+<div *ngFor="let resource of resourcesService.resources">
+  <mat-form-field class="example-full-width">
+      <input matInput placeholder="{{resource.name | titlecase}}" [(ngModel)]="resource.amount">
+    </mat-form-field>
+</div>

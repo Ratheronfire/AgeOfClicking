@@ -11,7 +11,7 @@
 
       <button mat-raised-button *ngFor="let worker of workersOfType(resourceType, true)" (click)="hireWorker(worker.id)"
       [color]="canAfford(worker.id) ? 'accent' : 'disabled'"
-        matTooltip="{{getTooltip(worker.id).tooltipMessage}}" matTooltipPosition="right">
+        matTooltip="{{getTooltipMessage(worker.id)}}" matTooltipPosition="right">
         <mat-card-title>{{resourcesService.resources[worker.resourceId].name | titlecase }}</mat-card-title>
         <mat-card-subtitle>{{worker.workerCount}} Workers | {{worker.cost | number:'1.0-0'}} Gold</mat-card-subtitle>
       </button>
