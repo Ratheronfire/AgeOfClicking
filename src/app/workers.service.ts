@@ -6,21 +6,13 @@ import { ResourcesService } from './resources.service';
 import { MessagesService } from './messages.service';
 import { Tooltip } from './tooltip';
 
-const baseWorkers: Worker[] = [
-  { id: 0, workable: false, resourceId: 0, workerCount: 0 },
-  { id: 1, workable: true, resourceId: 1, workerCount: 0, cost: 50 },
-  { id: 2, workable: true, resourceId: 2, workerCount: 0, cost: 75 },
-  { id: 3, workable: true, resourceId: 3, workerCount: 0, cost: 75 },
-  { id: 4, workable: false, resourceId: 4, workerCount: 0, cost: 100 },
-  { id: 5, workable: false, resourceId: 5, workerCount: 0, cost: 150 },
-  { id: 6, workable: false, resourceId: 6, workerCount: 0, cost: 250 }
-];
+import * as baseWorkers from 'src/assets/json/workers.json';
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkersService {
-  public workers: Worker[] = baseWorkers;
+  public workers: Worker[] = baseWorkers.default;
 
   constructor(private resourcesService: ResourcesService,
               private messagesService: MessagesService) { }

@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ResourcesService } from 'src/app/resources.service';
-import { ResourceType } from 'src/app/resource';
+import { ResourceType, ResourceConsume } from 'src/app/resource';
 import { WorkersService } from 'src/app/workers.service';
 
 @Component({
-  selector: 'app-admin-configuration',
-  templateUrl: './admin-configuration.component.html',
-  styleUrls: ['./admin-configuration.component.css']
+  selector: 'app-admin-resource-configuration',
+  templateUrl: './admin-resource-configuration.component.html',
+  styleUrls: ['./admin-resource-configuration.component.css']
 })
-export class AdminConfigurationComponent implements OnInit {
+export class AdminResourceConfigurationComponent implements OnInit {
   resourceTypes = ResourceType;
   resourceId = 0;
   resource = this.resourcesService.resources[this.resourceId];
@@ -30,6 +30,18 @@ export class AdminConfigurationComponent implements OnInit {
 
     this.workersService.workers[this.resourceId] = {id: this.resourceId, workable: true,
       resourceId: this.resourceId, workerCount: 0, cost: 15};
+  }
+
+  newResourceConsume() {
+    this.resource.resourceConsumes[this.resource.resourceConsumes.length] = {resourceId: 0, cost: 1};
+  }
+
+  removeResourceConsume(resourceConsume: ResourceConsume) {
+    this.resource.resourceConsumes = this.resource.resourceConsumes.filter(rc => rc !== resourceConsume);
+  }
+
+  removeResource() {
+    this.resourcesService.resources = this.resourcesService.resources.filter(resource => resource.id !== this.resourceId);
   }
 
   previousResourceExists(): boolean {

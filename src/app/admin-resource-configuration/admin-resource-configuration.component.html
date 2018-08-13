@@ -1,6 +1,7 @@
 <button mat-raised-button color="primary" (click)="previousResource()" [disabled]="!previousResourceExists()">Previous</button>
 <button mat-raised-button color="primary" (click)="nextResource()" [disabled]="!nextResourceExists()"> Next</button>
 <button mat-raised-button color="accent" (click)="newResource()">Add New</button>
+<button mat-raised-button color="warn" (click)="removeResource()">Remove Resource</button>
 <br />
 <button mat-raised-button color="accent" (click)="stringifyResource()">Export to JSON</button>
 <button mat-raised-button color="accent" (click)="stringifyResources()">Export All Resources to JSON</button>
@@ -41,8 +42,10 @@
 <mat-card>
   <mat-card-title mat-line>Resources Consumed:</mat-card-title>
 
+  <button mat-raised-button color="accent" (click)="newResourceConsume()">Add New Consumed Resource</button>
   <div *ngFor="let resourceConsume of resource.resourceConsumes">
     <mat-card>
+      <button class="inner-delete" mat-raised-button color="warn" (click)="removeResourceConsume(resourceConsume)">Remove Consumed Resource</button>
       <mat-card-title mat-line>Resource:</mat-card-title>
       <mat-form-field>
         <mat-select [(ngModel)]="resourceConsume.resourceId">

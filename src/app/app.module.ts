@@ -13,7 +13,8 @@ import { UpgradesComponent } from './upgrades/upgrades.component';
 import { MaterialImportModule } from './material-import/material-import.module';
 import { PipeModule } from 'src/app/pipe/pipe.module';
 import { AdminDebugComponent } from './admin-debug/admin-debug.component';
-import { AdminConfigurationComponent } from './admin-configuration/admin-configuration.component';
+import { AdminResourceConfigurationComponent } from './admin-resource-configuration/admin-resource-configuration.component';
+import { AdminUpgradeConfigurationComponent } from './admin-upgrade-configuration/admin-upgrade-configuration.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { AdminConfigurationComponent } from './admin-configuration/admin-configu
     StoreComponent,
     UpgradesComponent,
     AdminDebugComponent,
-    AdminConfigurationComponent
+    AdminResourceConfigurationComponent,
+    AdminUpgradeConfigurationComponent
   ],
   imports: [
     BrowserModule,

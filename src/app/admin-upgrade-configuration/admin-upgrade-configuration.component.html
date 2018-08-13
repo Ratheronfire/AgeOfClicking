@@ -1,0 +1,102 @@
+<button mat-raised-button color="primary" (click)="previousUpgrade()" [disabled]="!previousUpgradeExists()">Previous</button>
+<button mat-raised-button color="primary" (click)="nextUpgrade()" [disabled]="!nextUpgradeExists()"> Next</button>
+<button mat-raised-button color="accent" (click)="newUpgrade()">Add New</button>
+<button mat-raised-button color="warn" (click)="removeUpgrade()">Remove Upgrade</button>
+<br />
+<button mat-raised-button color="accent" (click)="stringifyUpgrade()">Export to JSON</button>
+<button mat-raised-button color="accent" (click)="stringifyUpgrades()">Export All Upgrades to JSON</button>
+
+<mat-card>
+  <mat-card-title mat-line>ID:</mat-card-title>
+  <mat-card-content mat-line>{{upgrade.id}}</mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-title mat-line>Upgrade Type:</mat-card-title>
+  <mat-card-content mat-line>
+    <mat-form-field>
+      <mat-select [(ngModel)]="upgrade.upgradeType">
+        <mat-option placeholder="Upgrade Type" *ngFor="let upgradeType of upgradeTypes | enumToArray" value="{{upgradeTypes[upgradeType]}}">
+          {{upgradeType}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-title mat-line>Name:</mat-card-title>
+  <mat-card-content mat-line>
+    <input matInput placeholder="Name" [(ngModel)]="upgrade.name">
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-title mat-line>Description:</mat-card-title>
+  <mat-card-content mat-line>
+    <input matInput placeholder="Description" [(ngModel)]="upgrade.description">
+  </mat-card-content>
+</mat-card>
+
+<mat-card>
+  <mat-card-title mat-line>Upgrade Effects:</mat-card-title>
+
+  <button mat-raised-button color="accent" (click)="newUpgradeEffect()">Add New Upgrade Effect</button>
+  <div *ngFor="let upgradeEffect of upgrade.upgradeEffects">
+    <mat-card>
+      <button class="inner-delete" mat-raised-button color="warn" (click)="removeUpgradeEffect(upgradeEffect)">Remove Upgrade Effect</button>
+      <mat-card-title mat-line>Resource:</mat-card-title>
+      <mat-card-content mat-line>
+        <mat-form-field>
+          <mat-select [(ngModel)]="upgradeEffect.upgradeTargetId">
+            <mat-option placeholder="Resource" *ngFor="let resource of resourcesService.resources" value="{{resource.id}}">
+              {{resource.name | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-title mat-line>Upgrade Variable:</mat-card-title>
+      <mat-card-content mat-line>
+        <mat-form-field>
+          <mat-select [(ngModel)]="upgradeEffect.upgradeVariable">
+            <mat-option placeholder="Upgrade Variable" *ngFor="let upgradeVariable of upgradeVariables | enumToArray" value="{{upgradeVariables[upgradeVariable]}}">
+              {{upgradeVariable}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-title mat-line>Upgrade Factor:</mat-card-title>
+      <mat-card-content mat-line>
+        <input matInput placeholder="Upgrade Factor" [(ngModel)]="upgradeEffect.upgradeFactor">
+      </mat-card-content>
+    </mat-card>
+  </div>
+</mat-card>
+
+<mat-card>
+  <mat-card-title mat-line>Resource Costs:</mat-card-title>
+
+  <button mat-raised-button color="accent" (click)="newResourceCost()">Add New Resource Cost</button>
+  <div *ngFor="let resourceCost of upgrade.resourceCosts">
+    <mat-card>
+      <button class="inner-delete" mat-raised-button color="warn" (click)="removeResourceCost(resourceCost)">Remove Resource Cost</button>
+      <mat-card-title mat-line>Resource:</mat-card-title>
+      <mat-card-content mat-line>
+        <mat-form-field>
+          <mat-select [(ngModel)]="resourceCost.resourceId">
+            <mat-option placeholder="Resource" *ngFor="let resource of resourcesService.resources" value="{{resource.id}}">
+              {{resource.name | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+
+      <mat-card-title mat-line>Upgrade Cost:</mat-card-title>
+      <mat-card-content mat-line>
+        <input matInput placeholder="Upgrade Cost" [(ngModel)]="resourceCost.resourceCost">
+      </mat-card-content>
+    </mat-card>
+  </div>
+</mat-card>
