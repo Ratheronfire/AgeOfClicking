@@ -9,11 +9,11 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button mat-raised-button *ngFor="let worker of workersOfType(resourceType, true, true)" (click)="hireWorker(worker.id)"
-      [color]="canAfford(worker.id) ? 'accent' : 'disabled'"
-        matTooltip="{{getTooltipMessage(worker.id)}}" matTooltipPosition="right">
-        <mat-card-title>{{resourcesService.resources[worker.resourceId].name | titlecase }}</mat-card-title>
-        <mat-card-subtitle>{{worker.workerCount}} Workers | {{worker.cost | number:'1.0-0'}} Gold</mat-card-subtitle>
+      <button mat-raised-button *ngFor="let resource of resourcesOfType(resourceType, true, true)" (click)="hireWorker(resource.id)"
+      [color]="canAfford(resource.id) ? 'accent' : 'disabled'"
+        matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
+        <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
+        <mat-card-subtitle>{{resource.worker.workerCount}} Workers | {{resource.worker.cost | number:'1.0-0'}} Gold</mat-card-subtitle>
       </button>
     </mat-expansion-panel>
   </mat-accordion>

@@ -12,7 +12,12 @@
         "workerNoun": "gold",
         "resourceAccessible": true,
         "resourceTier": 0,
-        "previousTier": 0
+        "previousTier": 0,
+        "worker": {
+          "workable": false,
+          "workerCount": 0,
+          "cost": 0
+        }
     },
     {
         "id": 1,
@@ -23,7 +28,7 @@
         "harvestable": true,
         "harvestYield": 1,
         "harvestMilliseconds": 1000,
-        "workerYield": 2,
+        "workerYield": 1,
         "sellable": true,
         "sellsFor": 5,
         "resourceDescription": "Strong oak logs",
@@ -31,7 +36,12 @@
         "workerNoun": "log",
         "resourceAccessible": true,
         "resourceTier": 0,
-        "previousTier": 0
+        "previousTier": 0,
+        "worker": {
+          "workable": true,
+          "workerCount": 0,
+          "cost": 50
+        }
     },
     {
         "id": 2,
@@ -50,7 +60,12 @@
         "workerNoun": "copper ore",
         "resourceAccessible": true,
         "resourceTier": 0,
-        "previousTier": 0
+        "previousTier": 0,
+        "worker": {
+          "workable": true,
+          "workerCount": 0,
+          "cost": 75
+        }
     },
     {
         "id": 3,
@@ -69,7 +84,12 @@
         "workerNoun": "tin ore",
         "resourceAccessible": true,
         "resourceTier": 0,
-        "previousTier": 0
+        "previousTier": 0,
+        "worker": {
+          "workable": true,
+          "workerCount": 0,
+          "cost": 75
+        }
     },
     {
         "id": 4,
@@ -97,7 +117,12 @@
         "workerNoun": "bronze ingot",
         "resourceAccessible": false,
         "resourceTier": 1,
-        "previousTier": 0
+        "previousTier": 0,
+        "worker": {
+          "workable": false,
+          "workerCount": 0,
+          "cost": 100
+        }
     },
     {
         "id": 5,
@@ -116,7 +141,12 @@
         "workerNoun": "iron ore",
         "resourceAccessible": false,
         "resourceTier": 2,
-        "previousTier": 1
+        "previousTier": 1,
+        "worker": {
+          "workable": false,
+          "workerCount": 0,
+          "cost": 150
+        }
     },
     {
         "id": 6,
@@ -140,6 +170,11 @@
         "workerNoun": "iron ingot",
         "resourceAccessible": false,
         "resourceTier": 3,
-        "previousTier": 2
+        "previousTier": 2,
+        "worker": {
+          "workable": false,
+          "workerCount": 0,
+          "cost": 250
+        }
     }
 ]

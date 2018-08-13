@@ -4,8 +4,6 @@ import { timer } from 'rxjs';
 
 import { Resource, ResourceType } from '../resource';
 import { ResourcesService } from '../resources.service';
-import { Worker } from '../worker';
-import { WorkersService } from '../workers.service';
 import { Tooltip } from '../tooltip';
 
 @Component({
@@ -30,20 +28,19 @@ export class ClickerMainComponent implements OnInit {
 
   resourceTypes = ResourceType;
 
-  constructor(private resourcesService: ResourcesService,
-              private workersService: WorkersService) { }
+  constructor(private resourcesService: ResourcesService) { }
 
   ngOnInit() {
     const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.workersService.processWorkers());
+    const processSubscribe = processSource.subscribe(_ => this.resourcesService.processWorkers());
   }
 
   resourcesOfType(resourceType: string, filterByAccessible: boolean): Resource[] {
-    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], filterByAccessible);
+    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], false, filterByAccessible);
   }
 
   public getTooltipMessage(id: number) {
-    const workerCount = this.workersService.workers.find(worker => worker.resourceId === id).workerCount;
+    const workerCount = this.resourcesService.resources[id].worker.workerCount;
     return this.resourcesService.resourceTooltip(id, workerCount);
   }
 

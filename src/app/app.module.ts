@@ -5,7 +5,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { AppComponent } from './app.component';
 import { ClickerMainComponent } from './clicker-main/clicker-main.component';
-import { AppRoutingModule } from './/app-routing.module';
 import { MessagesComponent } from './messages/messages.component';
 import { WorkersComponent } from './workers/workers.component';
 import { StoreComponent } from './store/store.component';
@@ -31,7 +30,6 @@ import { AdminUpgradeConfigurationComponent } from './admin-upgrade-configuratio
   imports: [
     BrowserModule,
     FormsModule,
-    AppRoutingModule,
     BrowserAnimationsModule,
     MaterialImportModule,
     PipeModule

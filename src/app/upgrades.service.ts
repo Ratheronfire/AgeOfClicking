@@ -3,8 +3,6 @@ import { Injectable } from '@angular/core';
 import { Upgrade, UpgradeType, UpgradeVariable } from './upgrade';
 import { Resource } from './resource';
 import { ResourcesService } from './resources.service';
-import { Worker } from './worker';
-import { WorkersService } from './workers.service';
 import { MessagesService } from './messages.service';
 import { Tooltip } from './tooltip';
 
@@ -17,7 +15,6 @@ export class UpgradesService {
   public upgrades = baseUpgrades.default;
 
   constructor(private resourcesService: ResourcesService,
-              private workersService: WorkersService,
               private messagesService: MessagesService) { }
 
   public purchaseUpgrade(id: number) {
@@ -33,7 +30,6 @@ export class UpgradesService {
 
     for (const upgradeEffect of upgrade.upgradeEffects) {
       const resourceToUpgrade = this.resourcesService.resources[upgradeEffect.upgradeTargetId];
-      const workerToUpgrade = this.workersService.workers[upgradeEffect.upgradeTargetId];
 
       switch (upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Harvestability: {
@@ -49,7 +45,7 @@ export class UpgradesService {
             break;
           }
           case UpgradeVariable.Workable: {
-            workerToUpgrade.workable = !!upgradeEffect.upgradeFactor;
+            resourceToUpgrade.worker.workable = !!upgradeEffect.upgradeFactor;
             break;
           }
           case UpgradeVariable.WorkerYield: {
@@ -57,7 +53,7 @@ export class UpgradesService {
             break;
           }
           case UpgradeVariable.WorkerCost: {
-            workerToUpgrade.cost *= upgradeEffect.upgradeFactor;
+            resourceToUpgrade.worker.cost *= upgradeEffect.upgradeFactor;
             break;
           }
     }
@@ -102,6 +98,6 @@ export class UpgradesService {
   }
 
   private log(message: string) {
-    this.messagesService.add(`WorkersService: ${message}`);
+    this.messagesService.add(`UpgradesService: ${message}`);
   }
 }

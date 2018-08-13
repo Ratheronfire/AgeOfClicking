@@ -46,9 +46,12 @@ export class ResourcesService {
     return true;
   }
 
-  public resourcesOfType(resourceType: ResourceType, filterByAccessible: boolean): Resource[] {
+  public resourcesOfType(resourceType: ResourceType, filterByWorkable: boolean, filterByAccessible: boolean): Resource[] {
     let resources = this.resources.filter(resource => resource.resourceType === resourceType);
 
+    if (filterByWorkable) {
+      resources = resources.filter(resource => resource.worker.workable);
+    }
     if (filterByAccessible) {
       resources = resources.filter(resource => resource.resourceAccessible);
     }
@@ -77,6 +80,42 @@ export class ResourcesService {
 
     return `${resource.resourceDescription}. ${resource.harvestYield / resource.harvestMilliseconds * 1000}
      harvested per second; ${resource.workerYield * workerCount} per second from workers.`;
+  }
+
+  public processWorkers() {
+    for (const resource of this.resources) {
+      if (resource.worker.workerCount <= 0) {
+        continue;
+      }
+
+      resource.amount += resource.workerYield * resource.worker.workerCount;
+    }
+  }
+
+  public hireWorker(id: number) {
+    if (!this.canAfford(id)) {
+      return;
+    }
+
+    const worker = this.resources[id].worker;
+
+    this.resources[0].amount -= worker.cost;
+    worker.cost *= 1.01;
+    worker.workerCount++;
+  }
+
+  public canAfford(id: number): boolean {
+    return (this.resources[0].amount >= this.resources[id].worker.cost);
+  }
+
+  public workerTooltip(id: number): string {
+    const resource = this.resources[id];
+
+    return `${resource.workerVerb} ${resource.workerYield} ${resource.workerNoun}${resource.workerYield === 1 ? '' : 's'} per second.`;
+  }
+
+  public workables(): Resource[] {
+    return this.resources.filter(resource => resource.worker.workable);
   }
 
   private log(message: string) {

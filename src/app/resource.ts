@@ -9,6 +9,12 @@ export interface ResourceConsume {
   cost: number;
 }
 
+export interface Worker {
+  workable: boolean;
+  workerCount: number;
+  cost: number;
+}
+
 export class Resource {
   id: number;
   name: string;
@@ -34,4 +40,6 @@ export class Resource {
   resourceAccessible: boolean;
   resourceTier: number;
   previousTier: number;
+
+  worker: Worker;
 }

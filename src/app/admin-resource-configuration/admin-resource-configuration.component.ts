@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { ResourcesService } from 'src/app/resources.service';
 import { ResourceType, ResourceConsume } from 'src/app/resource';
-import { WorkersService } from 'src/app/workers.service';
 
 @Component({
   selector: 'app-admin-resource-configuration',
@@ -14,8 +13,7 @@ export class AdminResourceConfigurationComponent implements OnInit {
   resourceId = 0;
   resource = this.resourcesService.resources[this.resourceId];
 
-  constructor(private resourcesService: ResourcesService,
-              private workersService: WorkersService) { }
+  constructor(private resourcesService: ResourcesService) { }
 
   ngOnInit() {
   }
@@ -24,12 +22,10 @@ export class AdminResourceConfigurationComponent implements OnInit {
     this.resourceId = this.resourcesService.resources.length;
     this.resource = {id: this.resourceId, name: '', resourceType: ResourceType.Currency, amount: 0,
     resourceConsumes: [], harvestable: true, harvestYield: 1, harvestMilliseconds: 1000, workerYield: 1, sellable: true,
-    sellsFor: 5, resourceDescription: '', workerVerb: '', workerNoun: '', resourceAccessible: true, resourceTier: 0, previousTier: 0};
+    sellsFor: 5, resourceDescription: '', workerVerb: '', workerNoun: '', resourceAccessible: true, resourceTier: 0,
+    previousTier: 0, worker: {workable: true, workerCount: 0, cost: 50}};
 
     this.resourcesService.resources[this.resourceId] = this.resource;
-
-    this.workersService.workers[this.resourceId] = {id: this.resourceId, workable: true,
-      resourceId: this.resourceId, workerCount: 0, cost: 15};
   }
 
   newResourceConsume() {
@@ -83,9 +79,5 @@ export class AdminResourceConfigurationComponent implements OnInit {
     }
 
     alert(JSON.stringify(this.resourcesService.resources));
-  }
-
-  stringifyWorkers() {
-    alert(JSON.stringify(this.workersService.workers));
   }
 }

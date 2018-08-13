@@ -2,8 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { timer } from 'rxjs';
 
-import { Worker } from '../worker';
-import { WorkersService } from '../workers.service';
 import { Resource, ResourceType } from '../resource';
 import { ResourcesService } from '../resources.service';
 
@@ -15,25 +13,24 @@ import { ResourcesService } from '../resources.service';
 export class WorkersComponent implements OnInit {
   resourceTypes = ResourceType;
 
-  constructor(private workersService: WorkersService,
-              private resourcesService: ResourcesService) { }
+  constructor(private resourcesService: ResourcesService) { }
 
   ngOnInit() {
   }
 
-  workersOfType(resourceType: string, filterByWorkable: boolean, filterByAccessible: boolean): Worker[] {
-    return this.workersService.workersByType(this.resourceTypes[resourceType], filterByWorkable, filterByAccessible);
+  resourcesOfType(resourceType: string, filterByWorkable: boolean, filterByAccessible: boolean): Resource[] {
+    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], filterByWorkable, filterByAccessible);
   }
 
   canAfford(id: number): boolean {
-    return this.workersService.canAfford(id);
+    return this.resourcesService.canAfford(id);
   }
 
   getTooltipMessage(id: number): string {
-    return this.workersService.workerTooltip(id);
+    return this.resourcesService.workerTooltip(id);
   }
 
   hireWorker(id: number) {
-    this.workersService.hireWorker(id);
+    this.resourcesService.hireWorker(id);
   }
 }
