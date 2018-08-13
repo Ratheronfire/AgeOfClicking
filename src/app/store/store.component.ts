@@ -11,7 +11,7 @@ import { StoreService } from '../store.service';
 })
 export class StoreComponent implements OnInit {
   resourceTypes = ResourceType;
-  
+
   constructor(private resourcesService: ResourcesService,
               private storeService: StoreService) { }
 
@@ -22,13 +22,13 @@ export class StoreComponent implements OnInit {
     return this.storeService.canSellResource(id, amount);
   }
 
-  resourcesOfType(resourceType: string, filterBySellable: boolean): Resource[] {
-    return this.storeService.resourcesOfType(this.resourceTypes[resourceType], filterBySellable);
+  resourcesOfType(resourceType: string, filterBySellable: boolean, filterByAccessible): Resource[] {
+    return this.storeService.resourcesOfType(this.resourceTypes[resourceType], filterBySellable, filterByAccessible);
   }
 
   sellResource(id: number, amount: number) {
-    var resource = this.resourcesService.resources[id];
-    
+    const resource = this.resourcesService.resources[id];
+
     this.storeService.sellResource(id, amount);
   }
 }

@@ -13,7 +13,7 @@ import { UpgradesService } from '../upgrades.service';
 export class UpgradesComponent implements OnInit {
   upgradeTypes = UpgradeType;
   hidePurchased = false;
-  
+
   constructor(private resourcesService: ResourcesService,
               private upgradesService: UpgradesService) { }
 
@@ -24,22 +24,23 @@ export class UpgradesComponent implements OnInit {
     return this.upgradesService.canAffordUpgrade(id);
   }
 
-  upgradesOfType(upgradeType: string, includePurchased: boolean = true, includeUnpurchased: boolean = true): Upgrade[] {
-    return this.upgradesService.upgradesOfType(this.upgradeTypes[upgradeType], includePurchased, includeUnpurchased);
+  upgradesOfType(upgradeType: string, filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
+    return this.upgradesService.upgradesOfType(this.upgradeTypes[upgradeType], filterByPurchased, filterByUnpurchased, filterByAccessible);
   }
-  
+
   purchaseUpgrade(id: number) {
     this.upgradesService.purchaseUpgrade(id);
   }
-  
+
   getBackgroundColor(id: number): string {
     const upgrade = this.upgradesService.upgrades[id];
-    
-    if (upgrade.purchased)
+
+    if (upgrade.purchased) {
       return 'lightgreen';
-    else if (!this.upgradesService.canAffordUpgrade(id))
+    } else if (!this.upgradesService.canAffordUpgrade(id)) {
       return 'gray';
-    
+    }
+
     return 'lightblue';
   }
 }

@@ -20,9 +20,9 @@ export class WorkersComponent implements OnInit {
 
   ngOnInit() {
   }
-  
-  workersOfType(resourceType: string, filterByWorkable: boolean): Worker[] {
-    return this.workersService.workersByType(this.resourceTypes[resourceType], filterByWorkable);
+
+  workersOfType(resourceType: string, filterByWorkable: boolean, filterByAccessible: boolean): Worker[] {
+    return this.workersService.workersByType(this.resourceTypes[resourceType], filterByWorkable, filterByAccessible);
   }
 
   canAfford(id: number): boolean {

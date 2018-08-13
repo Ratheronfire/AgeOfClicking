@@ -76,14 +76,18 @@ export class UpgradesService {
     return true;
   }
 
-  public upgradesOfType(upgradeType: UpgradeType, includePurchased: boolean = true, includeUnpurchased: boolean = true) {
+  public upgradesOfType(upgradeType: UpgradeType, filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean) {
     let upgrades = this.upgrades.filter(upgrade => upgrade.upgradeType === upgradeType);
 
-    if (!includePurchased) {
+    if (filterByPurchased) {
+      upgrades = upgrades.filter(upgrade => upgrade.purchased);
+    }
+    if (filterByUnpurchased) {
       upgrades = upgrades.filter(upgrade => !upgrade.purchased);
     }
-    if (!includeUnpurchased) {
-      upgrades = upgrades.filter(upgrade => upgrade.purchased);
+    if (filterByAccessible) {
+      upgrades = upgrades.filter(upgrade => upgrade.upgradeEffects.every(
+        ue => this.resourcesService.resources[ue.upgradeTargetId].resourceAccessible));
     }
 
     return upgrades;

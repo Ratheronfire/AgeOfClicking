@@ -8,8 +8,8 @@
           <mat-panel-description>
           </mat-panel-description>
         </mat-expansion-panel-header>
-  
-        <mat-card *ngFor="let resource of resourcesOfType(resourceType, true)"
+
+        <mat-card *ngFor="let resource of resourcesOfType(resourceType, true, true)"
           matTooltip="Sells for {{resource.sellsFor}} gold." matTooltipPosition="right">
           {{resource.name | titlecase }}
           <span class="right">

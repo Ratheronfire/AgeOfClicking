@@ -43,26 +43,14 @@ export class WorkersService {
     return (this.resourcesService.resources[0].amount >= this.workers[id].cost);
   }
 
-  public getTooltip(id: number): Tooltip {
-    const workerYield = this.resourcesService.resources[id].workerYield;
-
-    const workerTooltips: Tooltip[] = [
-      { elementId: 0, tooltipMessage: '' },
-      { elementId: 1, tooltipMessage: `Fells ${workerYield} tree${workerYield == 1 ? '' : 's'}  per second.` },
-      { elementId: 2, tooltipMessage: `Mines ${workerYield} copper ore per second.` },
-      { elementId: 3, tooltipMessage: `Mines ${workerYield} tin ore per second.` },
-      { elementId: 4, tooltipMessage: `Forges ${workerYield} bronze ingots per second.` },
-      { elementId: 5, tooltipMessage: `Mines ${workerYield} iron ore per second.` },
-      { elementId: 6, tooltipMessage: `Forges ${workerYield} iron ingot${workerYield == 1 ? '' : 's'} per second.` },
-    ];
-
-    return workerTooltips[id];
-  }
-
-  public workersByType(resourceType: ResourceType, filterByWorkable: boolean): Worker[] {
+  public workersByType(resourceType: ResourceType, filterByWorkable: boolean, filterByAccessible: boolean): Worker[] {
     let workers = this.workers.filter(worker => this.resourcesService.resources[worker.resourceId].resourceType === resourceType);
+
     if (filterByWorkable) {
       workers = workers.filter(worker => worker.workable);
+    }
+    if (filterByAccessible) {
+      workers = workers.filter(worker => this.resourcesService.resources[worker.resourceId].resourceAccessible);
     }
 
     return workers;

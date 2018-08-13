@@ -46,9 +46,14 @@ export class ResourcesService {
     return true;
   }
 
-  public resourcesOfType(resourceType: ResourceType, onlyIncludeAccessible: boolean): Resource[] {
-    return this.resources.filter(resource => resource.resourceType === resourceType &&
-      (!onlyIncludeAccessible || resource.resourceAccessible));
+  public resourcesOfType(resourceType: ResourceType, filterByAccessible: boolean): Resource[] {
+    let resources = this.resources.filter(resource => resource.resourceType === resourceType);
+
+    if (filterByAccessible) {
+      resources = resources.filter(resource => resource.resourceAccessible);
+    }
+
+    return resources;
   }
 
   public harvestableResources(): Resource[] {

@@ -38,8 +38,8 @@ export class ClickerMainComponent implements OnInit {
     const processSubscribe = processSource.subscribe(_ => this.workersService.processWorkers());
   }
 
-  resourcesOfType(resourceType: string, onlyIncludeAccessible: boolean): Resource[] {
-    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], onlyIncludeAccessible);
+  resourcesOfType(resourceType: string, filterByAccessible: boolean): Resource[] {
+    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], filterByAccessible);
   }
 
   public getTooltipMessage(id: number) {
