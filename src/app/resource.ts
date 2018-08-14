@@ -1,7 +1,8 @@
 export enum ResourceType {
   Currency = 'CURRENCY',
   Wood = 'WOOD',
-  Metal = 'METAL'
+  Metal = 'METAL',
+  Miscellaneous = 'MISCELLANEOUS'
 }
 
 export interface ResourceConsume {

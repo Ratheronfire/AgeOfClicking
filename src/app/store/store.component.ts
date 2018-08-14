@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { Resource, ResourceType } from '../resource';
 import { ResourcesService } from '../resources.service';
 import { StoreService } from '../store.service';
+import { AdminService } from 'src/app/admin.service';
 
 @Component({
   selector: 'app-store',
@@ -13,7 +14,8 @@ export class StoreComponent implements OnInit {
   resourceTypes = ResourceType;
 
   constructor(private resourcesService: ResourcesService,
-              private storeService: StoreService) { }
+              private storeService: StoreService,
+              private adminService: AdminService) { }
 
   ngOnInit() {
   }

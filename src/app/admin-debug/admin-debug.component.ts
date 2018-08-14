@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+
+import { AdminService } from './../admin.service';
 import { ResourcesService } from 'src/app/resources.service';
 
 @Component({
@@ -7,8 +9,10 @@ import { ResourcesService } from 'src/app/resources.service';
   styleUrls: ['./admin-debug.component.css']
 })
 export class AdminDebugComponent implements OnInit {
+  public filterAccessible = true;
 
-  constructor(private resourcesService: ResourcesService) { }
+  constructor(private resourcesService: ResourcesService,
+              private adminService: AdminService) { }
 
   ngOnInit() {
   }

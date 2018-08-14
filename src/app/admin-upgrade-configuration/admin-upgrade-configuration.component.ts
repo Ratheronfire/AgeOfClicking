@@ -83,11 +83,33 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
     this.upgrade = this.upgradesService.upgrades[this.upgradeId];
   }
 
+  prepareUpgradeForJson(upgrade: Upgrade) {
+    upgrade.id = +upgrade.id;
+
+    for (const upgradeEffect of upgrade.upgradeEffects) {
+      upgradeEffect.upgradeTargetId = +upgradeEffect.upgradeTargetId;
+      upgradeEffect.upgradeFactor = +upgradeEffect.upgradeFactor;
+    }
+
+    for (const resourceCost of upgrade.resourceCosts) {
+      resourceCost.resourceId = +resourceCost.resourceId;
+      resourceCost.resourceCost = + resourceCost.resourceCost;
+    }
+
+    upgrade.purchased = false;
+  }
+
   stringifyUpgrade() {
+    this.prepareUpgradeForJson(this.upgrade);
+
     alert(JSON.stringify(this.upgrade));
   }
 
   stringifyUpgrades() {
+    for (const upgrade of this.upgradesService.upgrades) {
+      this.prepareUpgradeForJson(upgrade);
+    }
+
     alert(JSON.stringify(this.upgradesService.upgrades));
   }
 }

@@ -82,8 +82,8 @@ export class UpgradesService {
       upgrades = upgrades.filter(upgrade => !upgrade.purchased);
     }
     if (filterByAccessible) {
-      upgrades = upgrades.filter(upgrade => upgrade.upgradeEffects.every(
-        ue => this.resourcesService.resources[ue.upgradeTargetId].resourceAccessible));
+      upgrades = upgrades.filter(upgrade => upgrade.resourceCosts.every(
+        rc => this.resourcesService.resources[rc.resourceId].resourceAccessible));
     }
 
     return upgrades;

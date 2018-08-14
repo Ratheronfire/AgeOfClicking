@@ -4,7 +4,7 @@ import { timer } from 'rxjs';
 
 import { Resource, ResourceType } from '../resource';
 import { ResourcesService } from '../resources.service';
-import { Tooltip } from '../tooltip';
+import { AdminService } from './../admin.service';
 
 @Component({
   selector: 'app-clicker-main',
@@ -28,7 +28,8 @@ export class ClickerMainComponent implements OnInit {
 
   resourceTypes = ResourceType;
 
-  constructor(private resourcesService: ResourcesService) { }
+  constructor(private resourcesService: ResourcesService,
+              private adminService: AdminService) { }
 
   ngOnInit() {
     const processSource = timer(1000, 1000);

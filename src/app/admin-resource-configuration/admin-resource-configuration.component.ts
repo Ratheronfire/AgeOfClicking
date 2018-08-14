@@ -1,7 +1,8 @@
+
 import { Component, OnInit } from '@angular/core';
 
+import { Resource, ResourceType, ResourceConsume } from './../resource';
 import { ResourcesService } from 'src/app/resources.service';
-import { ResourceType, ResourceConsume } from 'src/app/resource';
 
 @Component({
   selector: 'app-admin-resource-configuration',
@@ -66,8 +67,34 @@ export class AdminResourceConfigurationComponent implements OnInit {
     this.resource = this.resourcesService.resources[this.resourceId];
   }
 
+  prepareResourceForJson(resource: Resource) {
+    resource.id = +resource.id;
+
+    resource.amount = +resource.amount;
+
+    for (const resourceConsume of resource.resourceConsumes) {
+      resourceConsume.resourceId = +resourceConsume.resourceId;
+      resourceConsume.cost = +resourceConsume.cost;
+    }
+
+    resource.harvestYield = +resource.harvestYield;
+    resource.harvestMilliseconds = +resource.harvestMilliseconds;
+
+    resource.workerYield = +resource.workerYield;
+    resource.sellsFor = +resource.sellsFor;
+
+    resource.resourceTier = +resource.resourceTier;
+    resource.previousTier = +resource.previousTier;
+
+    resource.worker.workerCount = +resource.worker.workerCount;
+    resource.worker.cost = +resource.worker.cost;
+
+    resource.amount = 0;
+    resource.resourceAccessible = resource.resourceTier === 0;
+  }
+
   stringifyResource() {
-    this.resource.resourceAccessible = +this.resource.resourceTier === 0;
+    this.prepareResourceForJson(this.resource);
     console.log(this.resource.resourceTier);
 
     alert(JSON.stringify(this.resource));
@@ -75,7 +102,7 @@ export class AdminResourceConfigurationComponent implements OnInit {
 
   stringifyResources() {
     for (const resource of this.resourcesService.resources) {
-      resource.resourceAccessible = +resource.resourceTier === 0;
+      this.prepareResourceForJson(resource);
     }
 
     alert(JSON.stringify(this.resourcesService.resources));

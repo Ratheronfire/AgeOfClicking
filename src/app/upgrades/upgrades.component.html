@@ -13,7 +13,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div *ngFor="let upgrade of upgradesOfType(upgradeType, false, hidePurchased, true)">
+      <div *ngFor="let upgrade of upgradesOfType(upgradeType, false, hidePurchased, adminService.filterAccessible)">
         <mat-divider></mat-divider>
         <button mat-raised-button color="accent"
           [disabled]='!canAffordUpgrade(upgrade.id)'

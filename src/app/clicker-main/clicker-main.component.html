@@ -10,7 +10,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button mat-raised-button *ngFor="let resource of resourcesOfType(resourceType, true)"
+      <button mat-raised-button *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)"
         [color]="resourcesService.canHarvest(resource.id) ? 'accent' : 'disabled'"
         [disabled]="!resourcesService.canHarvest(resource.id)"
         (mousedown)='startHarvesting(resource.id)' (mouseup)='stopHarvesting(resource.id)' (mouseleave)='stopHarvesting(resource.id)'

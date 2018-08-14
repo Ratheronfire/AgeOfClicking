@@ -1,5 +1,9 @@
 <h2>Debug</h2>
 
+<mat-checkbox class="filterAccessible" checked="false" [(ngModel)]="adminService.filterAccessible">Hide Inaccessible Upgrades</mat-checkbox>
+<br />
+<br />
+
 <div *ngFor="let resource of resourcesService.resources">
   <mat-form-field class="example-full-width">
       <input matInput placeholder="{{resource.name | titlecase}}" [(ngModel)]="resource.amount">

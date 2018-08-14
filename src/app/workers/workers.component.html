@@ -9,7 +9,7 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button mat-raised-button *ngFor="let resource of resourcesOfType(resourceType, true, true)" (click)="hireWorker(resource.id)"
+      <button mat-raised-button *ngFor="let resource of resourcesOfType(resourceType, true, adminService.filterAccessible)" (click)="hireWorker(resource.id)"
       [color]="canAfford(resource.id) ? 'accent' : 'disabled'"
         matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
         <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
