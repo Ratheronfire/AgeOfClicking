@@ -35,7 +35,7 @@ export class UpgradesComponent implements OnInit {
   }
 
   getBackgroundColor(id: number): string {
-    const upgrade = this.upgradesService.upgrades[id];
+    const upgrade = this.upgradesService.getUpgrade(id);
 
     if (upgrade.purchased) {
       return 'lightgreen';

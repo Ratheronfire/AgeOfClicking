@@ -11,8 +11,8 @@ import { ResourcesService } from 'src/app/resources.service';
 })
 export class AdminResourceConfigurationComponent implements OnInit {
   resourceTypes = ResourceType;
-  resourceId = 0;
-  resource = this.resourcesService.resources[this.resourceId];
+  resourceIndex = 0;
+  resource = this.resourcesService.resources[this.resourceIndex];
 
   constructor(private resourcesService: ResourcesService) { }
 
@@ -20,13 +20,13 @@ export class AdminResourceConfigurationComponent implements OnInit {
   }
 
   newResource() {
-    this.resourceId = this.resourcesService.resources.length;
-    this.resource = {id: this.resourceId, name: '', resourceType: ResourceType.Currency, amount: 0,
+    this.resourceIndex = this.resourcesService.resources.length;
+    this.resource = {id: this.resourceIndex, name: '', resourceType: ResourceType.Currency, amount: 0,
     resourceConsumes: [], harvestable: true, harvestYield: 1, harvestMilliseconds: 1000, workerYield: 1, sellable: true,
     sellsFor: 5, resourceDescription: '', workerVerb: '', workerNoun: '', resourceAccessible: true, resourceTier: 0,
     previousTier: 0, worker: {workable: true, workerCount: 0, cost: 50}};
 
-    this.resourcesService.resources[this.resourceId] = this.resource;
+    this.resourcesService.resources[this.resourceIndex] = this.resource;
   }
 
   newResourceConsume() {
@@ -38,15 +38,15 @@ export class AdminResourceConfigurationComponent implements OnInit {
   }
 
   removeResource() {
-    this.resourcesService.resources = this.resourcesService.resources.filter(resource => resource.id !== this.resourceId);
+    this.resourcesService.resources = this.resourcesService.resources.filter(resource => resource.id !== this.resourceIndex);
   }
 
   previousResourceExists(): boolean {
-    return this.resourceId > 0;
+    return this.resourceIndex > 0;
   }
 
   nextResourceExists(): boolean {
-    return this.resourceId + 1 < this.resourcesService.resources.length;
+    return this.resourceIndex + 1 < this.resourcesService.resources.length;
   }
 
   previousResource() {
@@ -54,8 +54,8 @@ export class AdminResourceConfigurationComponent implements OnInit {
       return;
     }
 
-    this.resourceId--;
-    this.resource = this.resourcesService.resources[this.resourceId];
+    this.resourceIndex--;
+    this.resource = this.resourcesService.resources[this.resourceIndex];
   }
 
   nextResource() {
@@ -63,8 +63,8 @@ export class AdminResourceConfigurationComponent implements OnInit {
       return;
     }
 
-    this.resourceId++;
-    this.resource = this.resourcesService.resources[this.resourceId];
+    this.resourceIndex++;
+    this.resource = this.resourcesService.resources[this.resourceIndex];
   }
 
   prepareResourceForJson(resource: Resource) {

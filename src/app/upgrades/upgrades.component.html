@@ -26,7 +26,7 @@
           <br />
           <h3>Costs</h3>
           <div *ngFor="let resourceCost of upgrade.resourceCosts">
-            {{resourcesService.resources[resourceCost.resourceId].name | titlecase }}: {{resourceCost.resourceCost}}
+            {{resourcesService.getResource(resourceCost.resourceId).name | titlecase }}: {{resourceCost.resourceCost}}
           </div>
         </mat-card-content>
       </div>

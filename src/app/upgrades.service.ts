@@ -17,19 +17,23 @@ export class UpgradesService {
   constructor(private resourcesService: ResourcesService,
               private messagesService: MessagesService) { }
 
+  public getUpgrade(id: number): Upgrade {
+    return this.upgrades.find(upgrade => upgrade.id === id);
+  }
+
   public purchaseUpgrade(id: number) {
-    const upgrade = this.upgrades[id];
+    const upgrade = this.getUpgrade(id);
 
     if (upgrade.purchased || !this.canAffordUpgrade(id)) {
       return;
     }
 
     for (const resourceCost of upgrade.resourceCosts) {
-      this.resourcesService.resources[resourceCost.resourceId].amount -= resourceCost.resourceCost;
+      this.resourcesService.getResource(resourceCost.resourceId).amount -= resourceCost.resourceCost;
     }
 
     for (const upgradeEffect of upgrade.upgradeEffects) {
-      const resourceToUpgrade = this.resourcesService.resources[upgradeEffect.upgradeTargetId];
+      const resourceToUpgrade = this.resourcesService.getResource(upgradeEffect.upgradeTargetId);
 
       switch (upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Harvestability: {
@@ -63,8 +67,8 @@ export class UpgradesService {
   }
 
   public canAffordUpgrade(id: number): boolean {
-    for (const resourceCost of this.upgrades[id].resourceCosts) {
-      if (this.resourcesService.resources[resourceCost.resourceId].amount < resourceCost.resourceCost) {
+    for (const resourceCost of this.getUpgrade(id).resourceCosts) {
+      if (this.resourcesService.getResource(resourceCost.resourceId).amount < resourceCost.resourceCost) {
         return false;
       }
     }
@@ -83,18 +87,18 @@ export class UpgradesService {
     }
     if (filterByAccessible) {
       upgrades = upgrades.filter(upgrade => upgrade.resourceCosts.every(
-        rc => this.resourcesService.resources[rc.resourceId].resourceAccessible));
+        rc => this.resourcesService.getResource(rc.resourceId).resourceAccessible));
     }
 
     return upgrades;
   }
 
   public getUpgradeTypeString(id: number): string {
-    return UpgradeType[this.upgrades[id].upgradeType];
+    return UpgradeType[this.getUpgrade(id).upgradeType];
   }
 
   public getUpgradeVariableString(upgradeId: number, effectId: number): string {
-    return UpgradeVariable[this.upgrades[upgradeId].upgradeEffects[effectId].upgradeVariable];
+    return UpgradeVariable[this.getUpgrade(upgradeId).upgradeEffects[effectId].upgradeVariable];
   }
 
   private log(message: string) {

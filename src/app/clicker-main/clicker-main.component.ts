@@ -41,12 +41,12 @@ export class ClickerMainComponent implements OnInit {
   }
 
   public getTooltipMessage(id: number) {
-    const workerCount = this.resourcesService.resources[id].worker.workerCount;
+    const workerCount = this.resourcesService.getResource(id).worker.workerCount;
     return this.resourcesService.resourceTooltip(id, workerCount);
   }
 
   startHarvesting(id: number) {
-    const resource = this.resourcesService.resources[id];
+    const resource = this.resourcesService.getResource(id);
 
     if (!this.resourcesService.canHarvest(id)) {
       return;
@@ -85,11 +85,11 @@ export class ClickerMainComponent implements OnInit {
   updateProgressBar(id: number) {
     this.millisecondsElapsed += this.progressBarUpdateDelay;
 
-    this.value = this.millisecondsElapsed / this.resourcesService.resources[id].harvestMilliseconds * 100;
+    this.value = this.millisecondsElapsed / this.resourcesService.getResource(id).harvestMilliseconds * 100;
   }
 
   shouldAnimateProgressBar(id: number): boolean {
-    return this.resourcesService.resources[id].harvestMilliseconds > this.progressBarUpdateDelay;
+    return this.resourcesService.getResource(id).harvestMilliseconds > this.progressBarUpdateDelay;
   }
 
   harvestResource(id: number) {

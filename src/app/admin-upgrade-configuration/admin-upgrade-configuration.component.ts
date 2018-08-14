@@ -13,8 +13,8 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
   upgradeVariables = UpgradeVariable;
 
   upgradeTypes = UpgradeType;
-  upgradeId = 0;
-  upgrade = this.upgradesService.upgrades[this.upgradeId];
+  upgradeIndex = 0;
+  upgrade = this.upgradesService.upgrades[this.upgradeIndex];
 
   constructor(private upgradesService: UpgradesService,
               private resourcesService: ResourcesService) { }
@@ -23,11 +23,11 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
   }
 
   newUpgrade() {
-    this.upgradeId = this.upgradesService.upgrades.length;
-    this.upgrade = {id: this.upgradeId, upgradeType: UpgradeType.Resource, name: '', description: '',
+    this.upgradeIndex = this.upgradesService.upgrades.length;
+    this.upgrade = {id: this.upgradeIndex, upgradeType: UpgradeType.Resource, name: '', description: '',
       upgradeEffects: [], resourceCosts: [], purchased: false};
 
-    this.upgradesService.upgrades[this.upgradeId] = this.upgrade;
+    this.upgradesService.upgrades[this.upgradeIndex] = this.upgrade;
   }
 
   newUpgradeEffect() {
@@ -48,21 +48,21 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
   }
 
   removeUpgrade() {
-    this.upgradesService.upgrades = this.upgradesService.upgrades.filter(upgrade => upgrade.id !== this.upgradeId);
+    this.upgradesService.upgrades = this.upgradesService.upgrades.filter(upgrade => upgrade.id !== this.upgradeIndex);
 
-    if (this.upgradeId > 0) {
-      this.upgradeId--;
+    if (this.upgradeIndex > 0) {
+      this.upgradeIndex--;
     }
 
-    this.upgrade = this.upgradesService.upgrades[this.upgradeId];
+    this.upgrade = this.upgradesService.upgrades[this.upgradeIndex];
   }
 
   previousUpgradeExists(): boolean {
-    return this.upgradeId > 0;
+    return this.upgradeIndex > 0;
   }
 
   nextUpgradeExists(): boolean {
-    return this.upgradeId + 1 < this.upgradesService.upgrades.length;
+    return this.upgradeIndex + 1 < this.upgradesService.upgrades.length;
   }
 
   previousUpgrade() {
@@ -70,8 +70,8 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
       return;
     }
 
-    this.upgradeId--;
-    this.upgrade = this.upgradesService.upgrades[this.upgradeId];
+    this.upgradeIndex--;
+    this.upgrade = this.upgradesService.upgrades[this.upgradeIndex];
   }
 
   nextUpgrade() {
@@ -79,8 +79,8 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
       return;
     }
 
-    this.upgradeId++;
-    this.upgrade = this.upgradesService.upgrades[this.upgradeId];
+    this.upgradeIndex++;
+    this.upgrade = this.upgradesService.upgrades[this.upgradeIndex];
   }
 
   prepareUpgradeForJson(upgrade: Upgrade) {

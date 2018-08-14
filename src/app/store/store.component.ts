@@ -29,7 +29,7 @@ export class StoreComponent implements OnInit {
   }
 
   sellResource(id: number, amount: number) {
-    const resource = this.resourcesService.resources[id];
+    const resource = this.resourcesService.getResource(id);
 
     this.storeService.sellResource(id, amount);
   }

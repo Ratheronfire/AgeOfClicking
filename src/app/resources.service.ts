@@ -13,15 +13,19 @@ export class ResourcesService {
 
   constructor(private messagesService: MessagesService) { }
 
-  harvestResource(id: number) {
-    const resource = this.resources[id];
+  public getResource(id: number): Resource {
+    return this.resources.find(resource => resource.id === id);
+  }
+
+  public harvestResource(id: number) {
+    const resource = this.getResource(id);
 
     if (!resource.harvestable || !this.canHarvest(id)) {
       return;
     }
 
     for (const resourceConsume of resource.resourceConsumes) {
-      this.resources[resourceConsume.resourceId].amount -= resourceConsume.cost;
+      this.getResource(resourceConsume.resourceId).amount -= resourceConsume.cost;
     }
 
     this.resources.filter(r => r.previousTier === resource.resourceTier && r.resourceType === resource.resourceType)
@@ -31,14 +35,14 @@ export class ResourcesService {
   }
 
   public canHarvest(id: number): boolean {
-    const resource = this.resources[id];
+    const resource = this.getResource(id);
 
     if (!resource.harvestable) {
       return false;
     }
 
     for (const resourceConsume of resource.resourceConsumes) {
-      if (this.resources[resourceConsume.resourceId].amount < resourceConsume.cost) {
+      if (this.getResource(resourceConsume.resourceId).amount < resourceConsume.cost) {
         return false;
       }
     }
@@ -72,7 +76,7 @@ export class ResourcesService {
   }
 
   public resourceTooltip(id: number, workerCount: number): string {
-    const resource = this.resources[id];
+    const resource = this.getResource(id);
 
     if (id === 0) {
       return `${resource.resourceDescription}.`;
@@ -97,19 +101,19 @@ export class ResourcesService {
       return;
     }
 
-    const worker = this.resources[id].worker;
+    const worker = this.getResource(id).worker;
 
-    this.resources[0].amount -= worker.cost;
+    this.getResource(0).amount -= worker.cost;
     worker.cost *= 1.01;
     worker.workerCount++;
   }
 
   public canAfford(id: number): boolean {
-    return (this.resources[0].amount >= this.resources[id].worker.cost);
+    return (this.getResource(0).amount >= this.getResource(id).worker.cost);
   }
 
   public workerTooltip(id: number): string {
-    const resource = this.resources[id];
+    const resource = this.getResource(id);
 
     return `${resource.workerVerb} ${resource.workerYield} ${resource.workerNoun}${resource.workerYield === 1 ? '' : 's'} per second.`;
   }

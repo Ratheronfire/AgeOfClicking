@@ -17,18 +17,18 @@ export class StoreService {
       return;
     }
 
-    const resource = this.resourcesService.resources[id];
+    const resource = this.resourcesService.getResource(id);
 
     if (amount === -1) {
       amount = resource.amount;
     }
 
     resource.amount -= amount;
-    this.resourcesService.resources[0].amount += amount * resource.sellsFor;
+    this.resourcesService.getResource(0).amount += amount * resource.sellsFor;
   }
 
   public canSellResource(id: number, amount: number): boolean {
-    const resource = this.resourcesService.resources[id];
+    const resource = this.resourcesService.getResource(id);
 
     if (amount === -1) {
       return resource.sellable && resource.amount > 0;
