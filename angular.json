@@ -21,7 +21,8 @@
             "assets": [
               "src/favicon.ico",
               "src/assets",
-              "src/assets/json"
+              "src/assets/json",
+              "src/assets/sprites"
             ],
             "styles": [
               "src/styles.css"

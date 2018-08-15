@@ -70,10 +70,17 @@ button {
   display: flex;
   align-content: center;
   align-items: center;
-  
+
   height: 100%;
   top: 0px;
-  
+
   position: absolute;
   opacity: 0.5;
+}
+
+.resource-img {
+  position: absolute;
+
+  top: 0;
+  left: 0;
 }

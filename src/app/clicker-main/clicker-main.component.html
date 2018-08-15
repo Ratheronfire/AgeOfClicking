@@ -17,6 +17,7 @@
         matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
         <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
         <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
+        <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
         <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [value]="value">
         </mat-progress-bar>
       </button>

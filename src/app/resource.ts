@@ -20,6 +20,7 @@ export class Resource {
   id: number;
   name: string;
   resourceType: ResourceType;
+  iconPath: string;
 
   amount: number;
 

@@ -33,9 +33,10 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
   }
 
   newUpgradeEffect() {
-    this.upgrade.upgradeEffects[this.upgrade.upgradeEffects.length] =
-      {upgradeIsForWholeType: false, resourceType: ResourceType.Currency, resourceId: 0,
-        upgradeVariable: UpgradeVariable.HarvestYield, upgradeFactor: 2};
+    this.upgrade.upgradeEffects[this.upgrade.upgradeEffects.length] = {
+        upgradeIsForWholeType: false, resourceType: ResourceType.Currency, resourceId: 0,
+        upgradeVariable: UpgradeVariable.HarvestYield, upgradeFactor: 2
+      };
   }
 
   removeUpgradeEffect(upgradeEffect: UpgradeEffect) {
