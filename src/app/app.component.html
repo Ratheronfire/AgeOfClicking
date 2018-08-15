@@ -14,9 +14,10 @@
   </mat-tab>
 </mat-tab-group>
 
-<div class="debug-pane" *ngIf="debugMode">
+<mat-card class="debug-pane" *ngIf="debugMode">
   <h1>Admin Dashboard</h1>
-  <mat-tab-group dynamicHeight>
+  <mat-checkbox class="debug-toggle" [(ngModel)]="debugPaneOpen">Debug Pane Visible</mat-checkbox>
+  <mat-tab-group dynamicHeight *ngIf="debugPaneOpen">
       <mat-tab label="Debug">
         <app-admin-debug></app-admin-debug>
       </mat-tab>
@@ -28,4 +29,4 @@
       </mat-tab>
     </mat-tab-group>
   <app-messages></app-messages>
-</div>
+</mat-card>

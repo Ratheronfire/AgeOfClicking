@@ -1,4 +1,4 @@
-import { Tooltip } from './tooltip';
+import { ResourceType } from './resource';
 
 export enum UpgradeType {
   Resource = 'RESOURCE',
@@ -15,7 +15,11 @@ export enum UpgradeVariable {
 }
 
 export interface UpgradeEffect {
-  upgradeTargetId: number;
+  upgradeIsForWholeType: boolean;
+
+  resourceType?: ResourceType;
+  resourceId?: number;
+
   upgradeVariable: UpgradeVariable;
   upgradeFactor: number;
 }

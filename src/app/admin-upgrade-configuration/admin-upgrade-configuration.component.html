@@ -45,12 +45,24 @@
   <div *ngFor="let upgradeEffect of upgrade.upgradeEffects">
     <mat-card>
       <button class="inner-delete" mat-raised-button color="warn" (click)="removeUpgradeEffect(upgradeEffect)">Remove Upgrade Effect</button>
-      <mat-card-title mat-line>Resource:</mat-card-title>
-      <mat-card-content mat-line>
+      <mat-checkbox [(ngModel)]="upgradeEffect.upgradeIsForWholeType">Upgrade Is For Whole Type</mat-checkbox>
+
+      <mat-card-title mat-line *ngIf="!upgradeEffect.upgradeIsForWholeType">Resource:</mat-card-title>
+      <mat-card-content mat-line *ngIf="!upgradeEffect.upgradeIsForWholeType">
         <mat-form-field>
-          <mat-select [(ngModel)]="upgradeEffect.upgradeTargetId">
+          <mat-select [(ngModel)]="upgradeEffect.resourceId">
             <mat-option placeholder="Resource" *ngFor="let resource of resourcesService.resources" value="{{resource.id}}">
-              {{resource.name | titlecase }}
+              {{resource.name | titlecase}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </mat-card-content>
+      <mat-card-title mat-line *ngIf="upgradeEffect.upgradeIsForWholeType">Resource Type:</mat-card-title>
+      <mat-card-content mat-line *ngIf="upgradeEffect.upgradeIsForWholeType">
+        <mat-form-field>
+          <mat-select [(ngModel)]="upgradeEffect.resourceType">
+            <mat-option placeholder="Resource Type" *ngFor="let resourceType of resourceTypes | enumToArray" value="{{resourceTypes[resourceType]}}">
+              {{resourceType}}
             </mat-option>
           </mat-select>
         </mat-form-field>

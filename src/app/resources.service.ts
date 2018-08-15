@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Resource, ResourceType } from './resource';
 import { MessagesService } from './messages.service';
 
-import * as baseResources from 'src/assets/json/resources.json';
+import * as baseResources from '../assets/json/resources.json';
 
 @Injectable({
   providedIn: 'root'

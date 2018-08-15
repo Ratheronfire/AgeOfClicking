@@ -6,7 +6,7 @@ import { ResourcesService } from './resources.service';
 import { MessagesService } from './messages.service';
 import { Tooltip } from './tooltip';
 
-import * as baseUpgrades from 'src/assets/json/upgrades.json';
+import * as baseUpgrades from '../assets/json/upgrades.json';
 
 @Injectable({
   providedIn: 'root'
@@ -33,8 +33,13 @@ export class UpgradesService {
     }
 
     for (const upgradeEffect of upgrade.upgradeEffects) {
-      const resourceToUpgrade = this.resourcesService.getResource(upgradeEffect.upgradeTargetId);
+      let resourcesToUpgrade = [this.resourcesService.getResource(upgradeEffect.resourceId)];
 
+      if (upgradeEffect.upgradeIsForWholeType) {
+        resourcesToUpgrade = this.resourcesService.resourcesOfType(upgradeEffect.resourceType, false, false);
+      }
+
+      for (const resourceToUpgrade of resourcesToUpgrade) {
       switch (upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Harvestability: {
             resourceToUpgrade.harvestable = !!upgradeEffect.upgradeFactor;
@@ -60,7 +65,8 @@ export class UpgradesService {
             resourceToUpgrade.worker.cost *= upgradeEffect.upgradeFactor;
             break;
           }
-    }
+        }
+      }
     }
 
     upgrade.purchased = true;

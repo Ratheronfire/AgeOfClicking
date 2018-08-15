@@ -1,3 +1,4 @@
+import { ResourceType } from './../resource';
 import { Component, OnInit } from '@angular/core';
 
 import { Upgrade, UpgradeType, UpgradeVariable, UpgradeEffect, ResourceCost } from 'src/app/upgrade';
@@ -13,6 +14,7 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
   upgradeVariables = UpgradeVariable;
 
   upgradeTypes = UpgradeType;
+  resourceTypes = ResourceType;
   upgradeIndex = 0;
   upgrade = this.upgradesService.upgrades[this.upgradeIndex];
 
@@ -32,7 +34,8 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
 
   newUpgradeEffect() {
     this.upgrade.upgradeEffects[this.upgrade.upgradeEffects.length] =
-      {upgradeTargetId: 0, upgradeVariable: UpgradeVariable.HarvestYield, upgradeFactor: 2};
+      {upgradeIsForWholeType: false, resourceType: ResourceType.Currency, resourceId: 0,
+        upgradeVariable: UpgradeVariable.HarvestYield, upgradeFactor: 2};
   }
 
   removeUpgradeEffect(upgradeEffect: UpgradeEffect) {
@@ -87,7 +90,7 @@ export class AdminUpgradeConfigurationComponent implements OnInit {
     upgrade.id = +upgrade.id;
 
     for (const upgradeEffect of upgrade.upgradeEffects) {
-      upgradeEffect.upgradeTargetId = +upgradeEffect.upgradeTargetId;
+      upgradeEffect.resourceId = +upgradeEffect.resourceId;
       upgradeEffect.upgradeFactor = +upgradeEffect.upgradeFactor;
     }
 
