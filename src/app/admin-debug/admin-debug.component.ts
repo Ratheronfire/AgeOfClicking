@@ -11,8 +11,8 @@ import { ResourcesService } from 'src/app/resources.service';
 export class AdminDebugComponent implements OnInit {
   public filterAccessible = true;
 
-  constructor(private resourcesService: ResourcesService,
-              private adminService: AdminService) { }
+  constructor(protected resourcesService: ResourcesService,
+              protected adminService: AdminService) { }
 
   ngOnInit() {
   }

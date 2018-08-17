@@ -5,6 +5,7 @@ import { Injectable } from '@angular/core';
 })
 export class AdminService {
   public filterAccessible = true;
+  public clampMap = true;
 
   constructor() { }
 }

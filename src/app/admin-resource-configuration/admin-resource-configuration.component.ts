@@ -21,7 +21,7 @@ export class AdminResourceConfigurationComponent implements OnInit {
 
   newResource() {
     this.resourceIndex = this.resourcesService.resources.length;
-    this.resource = {id: this.resourceIndex, name: '', resourceType: ResourceType.Currency, amount: 0,
+    this.resource = {id: this.resourceIndex, name: '', resourceType: ResourceType.Currency, amount: 0, iconPath: '',
     resourceConsumes: [], harvestable: true, harvestYield: 1, harvestMilliseconds: 1000, workerYield: 1, sellable: true,
     sellsFor: 5, resourceDescription: '', workerVerb: '', workerNoun: '', resourceAccessible: true, resourceTier: 0,
     previousTier: 0, worker: {workable: true, workerCount: 0, cost: 50}};

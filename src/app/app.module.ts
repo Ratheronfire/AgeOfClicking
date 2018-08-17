@@ -14,6 +14,7 @@ import { PipeModule } from 'src/app/pipe/pipe.module';
 import { AdminDebugComponent } from './admin-debug/admin-debug.component';
 import { AdminResourceConfigurationComponent } from './admin-resource-configuration/admin-resource-configuration.component';
 import { AdminUpgradeConfigurationComponent } from './admin-upgrade-configuration/admin-upgrade-configuration.component';
+import { MapComponent } from './map/map.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AdminUpgradeConfigurationComponent } from './admin-upgrade-configuratio
     UpgradesComponent,
     AdminDebugComponent,
     AdminResourceConfigurationComponent,
-    AdminUpgradeConfigurationComponent
+    AdminUpgradeConfigurationComponent,
+    MapComponent
   ],
   imports: [
     BrowserModule,
