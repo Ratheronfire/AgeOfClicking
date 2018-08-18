@@ -1,0 +1,23 @@
+import { ResourceType } from './resource';
+
+export interface ResourceWorker {
+  resourceId: number;
+  workable: boolean;
+
+  workerCount: number;
+  workerYield: number;
+
+  sliderSettingValid: boolean;
+}
+
+export class Worker {
+  id: number;
+
+  cost: number;
+
+  resourceType: ResourceType;
+  workerCount: number;
+  freeWorkers: number;
+
+  workersByResource: ResourceWorker[];
+}

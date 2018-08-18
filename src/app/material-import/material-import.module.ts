@@ -13,6 +13,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
+import { MatSliderModule } from '@angular/material/slider';
 
 @NgModule({
   imports: [
@@ -29,7 +30,8 @@ import { MatListModule } from '@angular/material/list';
     MatDividerModule,
     MatInputModule,
     MatSelectModule,
-    MatListModule
+    MatListModule,
+    MatSliderModule
   ],
   exports: [
     MatButtonModule,
@@ -45,7 +47,8 @@ import { MatListModule } from '@angular/material/list';
     MatDividerModule,
     MatInputModule,
     MatSelectModule,
-    MatListModule
+    MatListModule,
+    MatSliderModule
   ]
 })
 export class MaterialImportModule { }

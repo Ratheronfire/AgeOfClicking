@@ -4,6 +4,7 @@ import { timer } from 'rxjs';
 
 import { Resource, ResourceType } from '../resource';
 import { ResourcesService } from '../resources.service';
+import { WorkersService } from './../workers.service';
 import { AdminService } from './../admin.service';
 
 @Component({
@@ -29,11 +30,12 @@ export class ClickerMainComponent implements OnInit {
   resourceTypes = ResourceType;
 
   constructor(private resourcesService: ResourcesService,
+              private workersService: WorkersService,
               private adminService: AdminService) { }
 
   ngOnInit() {
     const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.resourcesService.processWorkers());
+    const processSubscribe = processSource.subscribe(_ => this.workersService.processWorkers());
   }
 
   resourcesOfType(resourceType: string, filterByAccessible: boolean): Resource[] {

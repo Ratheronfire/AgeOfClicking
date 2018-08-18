@@ -25,13 +25,13 @@ export class ResourcesService {
     }
 
     for (const resourceConsume of resource.resourceConsumes) {
-      this.getResource(resourceConsume.resourceId).amount -= resourceConsume.cost;
+      this.addResourceAmount(resourceConsume.resourceId, -resourceConsume.cost);
     }
 
     this.resources.filter(r => r.previousTier === resource.resourceTier && r.resourceType === resource.resourceType)
       .map(r => r.resourceAccessible = true);
 
-    resource.amount += resource.harvestYield;
+    this.addResourceAmount(resource.id, resource.harvestYield);
   }
 
   public canHarvest(id: number): boolean {
@@ -86,40 +86,12 @@ export class ResourcesService {
      harvested per second; ${resource.workerYield * workerCount} per second from workers.`;
   }
 
-  public processWorkers() {
-    for (const resource of this.resources) {
-      if (resource.worker.workerCount <= 0) {
-        continue;
-      }
-
-      resource.amount += resource.workerYield * resource.worker.workerCount;
-    }
-  }
-
-  public hireWorker(id: number) {
-    if (!this.canAfford(id)) {
-      return;
-    }
-
-    const worker = this.getResource(id).worker;
-
-    this.getResource(0).amount -= worker.cost;
-    worker.cost *= 1.01;
-    worker.workerCount++;
+  public addResourceAmount(id: number, amount: number) {
+    this.getResource(id).amount += amount;
   }
 
   public canAfford(id: number): boolean {
     return (this.getResource(0).amount >= this.getResource(id).worker.cost);
-  }
-
-  public workerTooltip(id: number): string {
-    const resource = this.getResource(id);
-
-    return `${resource.workerVerb} ${resource.workerYield} ${resource.workerNoun}${resource.workerYield === 1 ? '' : 's'} per second.`;
-  }
-
-  public workables(): Resource[] {
-    return this.resources.filter(resource => resource.worker.workable);
   }
 
   private log(message: string) {

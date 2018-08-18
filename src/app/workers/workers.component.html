@@ -1,20 +1,29 @@
 <ul class="workers">
   <mat-accordion multi="true">
-    <mat-expansion-panel expanded="true" *ngFor="let resourceType of resourceTypes | enumToArray">
+    <mat-expansion-panel expanded="true" *ngFor="let worker of getWorkers()">
       <mat-expansion-panel-header>
         <mat-panel-title>
-          {{resourceType}}
+          {{worker.resourceType | titlecase}}
         </mat-panel-title>
         <mat-panel-description>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button mat-raised-button *ngFor="let resource of resourcesOfType(resourceType, true, adminService.filterAccessible)" (click)="hireWorker(resource.id)"
-      [color]="canAfford(resource.id) ? 'accent' : 'disabled'"
-        matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
-        <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
-        <mat-card-subtitle>{{resource.worker.workerCount}} Workers | {{resource.worker.cost | number:'1.0-0'}} Gold</mat-card-subtitle>
+      <button mat-raised-button [color]="canAfford(worker.id) ? 'accent' : 'disabled'" (click)="hireWorker(worker.id)">
+        <mat-card-title>{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
+        <mat-card-subtitle>{{worker.cost}} Gold</mat-card-subtitle>
       </button>
+
+      <div *ngFor="let resourceWorker of worker.workersByResource">
+        <mat-card *ngIf="resourceWorker.workable || !adminService.filterAccessible" matTooltip="{{getTooltipMessage(resourceWorker.resourceId)}}"
+          matTooltipPosition="right">
+          <mat-card-title>{{resourcesService.getResource(resourceWorker.resourceId).name | titlecase}}</mat-card-title>
+          <mat-card-subtitle>{{resourceWorker.workerCount}} Workers</mat-card-subtitle>
+          <mat-slider [color]="resourceWorker.sliderSettingValid ? 'accent' : 'warn'" [id]="resourceWorker.resourceId" [max]="worker.workerCount"
+            [tickInterval]="1" [thumbLabel]="true" (input)="checkSliderValue($event)" (change)="updateResourceWorkers($event)">
+          </mat-slider>
+        </mat-card>
+      </div>
     </mat-expansion-panel>
   </mat-accordion>
 </ul>

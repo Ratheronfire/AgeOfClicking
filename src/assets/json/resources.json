@@ -278,7 +278,7 @@
   {
     "id": 13,
     "name": "Stone",
-    "resourceType": "MISCELLANEOUS",
+    "resourceType": "METAL",
     "iconPath": "/src/assets/sprites/stone.png",
     "amount": 0,
     "resourceConsumes": [],

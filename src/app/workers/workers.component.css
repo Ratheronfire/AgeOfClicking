@@ -24,6 +24,21 @@
   right: 10px;
 }
 
+.workers mat-slider {
+  width: 100%;
+  top: -22px;
+}
+
+.workers mat-card {
+  position: relative;
+  cursor: pointer;
+  margin: .5em;
+  padding: .4em 0;
+  height: 3.6em;
+  width: 100%;
+  border-radius: 4px;
+}
+
 .workers button {
   position: relative;
   cursor: pointer;

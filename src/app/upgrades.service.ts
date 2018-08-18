@@ -29,7 +29,7 @@ export class UpgradesService {
     }
 
     for (const resourceCost of upgrade.resourceCosts) {
-      this.resourcesService.getResource(resourceCost.resourceId).amount -= resourceCost.resourceCost;
+      this.resourcesService.addResourceAmount(resourceCost.resourceId, -resourceCost.resourceCost);
     }
 
     for (const upgradeEffect of upgrade.upgradeEffects) {

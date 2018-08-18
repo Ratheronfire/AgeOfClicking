@@ -23,8 +23,8 @@ export class StoreService {
       amount = resource.amount;
     }
 
-    resource.amount -= amount;
-    this.resourcesService.getResource(0).amount += amount * resource.sellsFor;
+    this.resourcesService.addResourceAmount(resource.id, -amount);
+    this.resourcesService.addResourceAmount(0, amount * resource.sellsFor);
   }
 
   public canSellResource(id: number, amount: number): boolean {

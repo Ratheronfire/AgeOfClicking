@@ -1,0 +1,111 @@
+[
+  {
+    "id": 0,
+    "cost": 500,
+    "resourceType": "WOOD",
+    "workerCount": 0,
+    "freeWorkers": 0,
+    "workersByResource": [
+      {
+        "resourceId": 1,
+        "workable": true,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 7,
+        "workable": true,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 8,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 9,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      }
+    ]
+  },
+  {
+    "id": 1,
+    "cost": 2000,
+    "resourceType": "METAL",
+    "workerCount": 0,
+    "freeWorkers": 0,
+    "workersByResource": [
+      {
+        "resourceId": 2,
+        "workable": true,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 3,
+        "workable": true,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 4,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 5,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 6,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 10,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 11,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 12,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 13,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      }
+    ]
+  }
+]
