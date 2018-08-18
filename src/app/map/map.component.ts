@@ -10,12 +10,10 @@ import { Component, OnInit, HostListener } from '@angular/core';
 })
 export class MapComponent implements OnInit {
   tileTypes = TileType;
-  tilePixels = 50;
+  tilePixels = 30;
 
-  windowSize = [12, 12];
+  windowSize = [15, 15];
   topLeft = [0, 0];
-  xOffset = 0;
-  yOffset = 0;
 
   constructor(protected mapService: MapService,
               protected adminService: AdminService) { }
@@ -68,20 +66,34 @@ export class MapComponent implements OnInit {
       return;
     }
 
-    const playerLocation = this.getPlayerLocation();
+    this.topLeft = [this.mapService.playerTileLocation[0] - this.windowSize[0] / 2,
+    this.mapService.playerTileLocation[1] - this.windowSize[1] / 2];
 
-    const distanceFromCenter = [Math.abs(playerLocation[0] - (this.topLeft[0] + this.windowSize[0] / 2)),
-                                Math.abs(playerLocation[1] - (this.topLeft[1] + this.windowSize[1] / 2))];
-
-    const newCameraX = this.topLeft[1] + xOffset;
-    const newCameraY = this.topLeft[0] + yOffset;
-
-    if (newCameraX >= 0 && newCameraX + this.windowSize[1] <= this.getColumnCount() && distanceFromCenter[1] >= 1) {
-      this.topLeft[1] = newCameraX;
+    if (this.topLeft[0] < 0) {
+      this.topLeft[0] = 0;
+    } else if (this.topLeft[0] + this.windowSize[0] > this.mapService.tileMap.length) {
+      this.topLeft[0] = this.mapService.tileMap.length - this.windowSize[0];
     }
-    if (newCameraY >= 0 && newCameraY + this.windowSize[0] <= this.getRowCount() && distanceFromCenter[0] >= 1) {
-      this.topLeft[0] = newCameraY;
+    if (this.topLeft[1] < 0) {
+      this.topLeft[1] = 0;
+    } else if (this.topLeft[1] + this.windowSize[1] > this.mapService.tileMap[0].length) {
+      this.topLeft[1] = this.mapService.tileMap[0].length - this.windowSize[1];
     }
+
+    // const playerLocation = this.getPlayerLocation();
+
+    // const distanceFromCenter = [Math.abs(playerLocation[0] - (this.topLeft[0] + this.windowSize[0] / 2)),
+    //                             Math.abs(playerLocation[1] - (this.topLeft[1] + this.windowSize[1] / 2))];
+
+    // const newCameraX = this.topLeft[1] + xOffset;
+    // const newCameraY = this.topLeft[0] + yOffset;
+
+    // if (newCameraX >= 0 && newCameraX + this.windowSize[1] <= this.getColumnCount() && distanceFromCenter[1] >= 1) {
+    //   this.topLeft[1] = newCameraX;
+    // }
+    // if (newCameraY >= 0 && newCameraY + this.windowSize[0] <= this.getRowCount() && distanceFromCenter[0] >= 1) {
+    //   this.topLeft[0] = newCameraY;
+    // }
   }
 
   getRowCount(): number {

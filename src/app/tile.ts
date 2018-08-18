@@ -7,7 +7,4 @@ export enum TileType {
 
 export class Tile {
   tileType: TileType;
-
-  x: number;
-  y: number;
 }

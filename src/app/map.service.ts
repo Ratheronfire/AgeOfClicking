@@ -2,24 +2,58 @@ import { Injectable } from '@angular/core';
 import { Tile, TileType } from './tile';
 
 import * as baseMap from '../assets/json/map.json';
+const Jimp = require('jimp');
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
-  public tileMap: Tile[][] = baseMap.default;
+  public tileMap: Tile[][] = []; // = baseMap.default;
   public tileSprites = { };
 
   walkableTiles = [TileType.Grass];
 
   playerTileLocation = [5, 5];
-  playerTile = this.tileMap[this.playerTileLocation[0]][this.playerTileLocation[1]];
+  playerTile: Tile;
 
   constructor() {
     this.tileSprites[TileType.Grass] = '../assets/sprites/grass.png';
     this.tileSprites[TileType.Water] = '../assets/sprites/water.png';
     this.tileSprites[TileType.Mountain] = '../assets/sprites/mountain.png';
     this.tileSprites[TileType.Player] = '../assets/sprites/player.png';
+
+    Jimp.read('../assets/sprites/map.png', (err, mapImage) => {
+      if (err) {
+        throw err;
+      }
+
+      let tileRow = [];
+
+      const colorValues = {
+        '1565637887': TileType.Water,
+        '1436510719': TileType.Grass,
+        '1079469055': TileType.Mountain,
+        '4285137151': TileType.Player
+      };
+
+      for (let j = 0; j < mapImage.bitmap.width; j++) {
+        for (let i = 0; i < mapImage.bitmap.height; i++) {
+          let tileType = colorValues[mapImage.getPixelColor(i, j)];
+
+          if (tileType === TileType.Player) {
+            tileType = TileType.Grass;
+            this.playerTileLocation = [j, i];
+          }
+
+          tileRow.push({'tileType': tileType});
+        }
+
+        this.tileMap.push(tileRow);
+        tileRow = [];
+      }
+
+      this.playerTile = this.tileMap[this.playerTileLocation[0]][this.playerTileLocation[1]];
+    });
   }
 
   getRowCount(): number {
