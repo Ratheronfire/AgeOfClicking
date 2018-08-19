@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 
 import { ResourceType } from './resource';
 import { ResourcesService } from './resources.service';
-import { Worker } from './worker';
+import { Worker, ResourceWorker } from './worker';
 import { MessagesService } from './messages.service';
 
 import * as baseWorkers from '../assets/json/workers.json';
@@ -20,10 +20,21 @@ export class WorkersService {
     return this.workers;
   }
 
-  public getWorker(idOrResourceType: number | ResourceType) {
+  public getWorker(idOrResourceType: number | string | ResourceType) {
     return typeof idOrResourceType === 'number' ?
       this.workers[idOrResourceType] :
       this.workers.find(worker => worker.resourceType === idOrResourceType);
+  }
+
+  public getResourceWorker(resourceId: number): ResourceWorker {
+    const resourceType = this.resourcesService.getResource(resourceId).resourceType;
+    const worker = this.getWorker(resourceType);
+
+    if (worker === undefined) {
+      return null;
+    }
+
+    return worker.workersByResource.find(rw => rw.resourceId === resourceId);
   }
 
   canAfford(id: number): boolean {

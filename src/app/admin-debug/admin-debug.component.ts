@@ -2,6 +2,14 @@ import { Component, OnInit } from '@angular/core';
 
 import { AdminService } from './../admin.service';
 import { ResourcesService } from 'src/app/resources.service';
+import { Resource, ResourceType } from '../resource';
+import { Worker } from '../worker';
+import { WorkersService } from './../workers.service';
+import { Upgrade } from './../upgrade';
+import { UpgradesService } from 'src/app/upgrades.service';
+import { ResourceDialogComponent } from '../resource-dialog/resource-dialog.component';
+import { UpgradeDialogComponent } from '../upgrade-dialog/upgrade-dialog.component';
+import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-admin-debug',
@@ -11,10 +19,115 @@ import { ResourcesService } from 'src/app/resources.service';
 export class AdminDebugComponent implements OnInit {
   public filterAccessible = true;
 
-  constructor(protected resourcesService: ResourcesService,
-              protected adminService: AdminService) { }
+  protected selectedResource: Resource;
+  amount: number;
 
-  ngOnInit() {
+  constructor(
+    protected resourcesService: ResourcesService,
+    protected workersService: WorkersService,
+    protected upgradesService: UpgradesService,
+    protected adminService: AdminService,
+    public dialog: MatDialog
+  ) {}
+
+  ngOnInit() {}
+
+  openResourceDialog() {
+    const dialogRef = this.dialog.open(ResourceDialogComponent, {
+      width: '750px',
+      height: '600px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed.');
+      console.log(result);
+    });
   }
 
+  openUpgradeDialog() {
+    const dialogRef = this.dialog.open(UpgradeDialogComponent, {
+      width: '750px',
+      height: '525px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      console.log('The dialog was closed.');
+      console.log(result);
+    });}
+
+  addResourceAmount() {
+    this.resourcesService.addResourceAmount(
+      +this.selectedResource.id,
+      +this.amount
+    );
+  }
+
+  prepareResourceForJson(resource: Resource) {
+    resource.id = +resource.id;
+
+    resource.amount = +resource.amount;
+
+    for (const resourceConsume of resource.resourceConsumes) {
+      resourceConsume.resourceId = +resourceConsume.resourceId;
+      resourceConsume.cost = +resourceConsume.cost;
+    }
+
+    resource.harvestYield = +resource.harvestYield;
+    resource.harvestMilliseconds = +resource.harvestMilliseconds;
+
+    resource.workerYield = +resource.workerYield;
+    resource.sellsFor = +resource.sellsFor;
+
+    resource.resourceTier = +resource.resourceTier;
+    resource.previousTier = resource.resourceTier === 0 ? 0 : resource.resourceTier - 1;
+    resource.resourceAccessible = resource.resourceTier === 0;
+
+    resource.worker.workerCount = +resource.worker.workerCount;
+    resource.worker.cost = +resource.worker.cost;
+
+    resource.amount = 0;
+    resource.resourceAccessible = resource.resourceTier === 0;
+  }
+
+  prepareWorkerForJson(worker: Worker) {
+    worker.id = +worker.id;
+
+    worker.cost = +worker.cost;
+
+    for (const resourceWorker of worker.workersByResource) {
+      resourceWorker.resourceId = +resourceWorker.resourceId;
+
+      resourceWorker.workerCount = +resourceWorker.workerCount;
+      resourceWorker.workerYield = +resourceWorker.workerYield;
+    }
+
+    worker.workerCount = 0;
+    worker.freeWorkers = 0;
+  }
+
+  stringifyResource(resource: Resource) {
+    this.prepareResourceForJson(resource);
+
+    alert(JSON.stringify(resource));
+  }
+
+  stringifyResources() {
+    for (const resource of this.resourcesService.resources) {
+      this.prepareResourceForJson(resource);
+    }
+
+    alert(JSON.stringify(this.resourcesService.resources));
+  }
+
+  stringifyWorkers() {
+    for (const worker of this.workersService.workers) {
+      this.prepareWorkerForJson(worker);
+    }
+
+    alert(JSON.stringify(this.workersService.workers));
+  }
+
+  stringifyUpgrades() {
+    alert(JSON.stringify(this.upgradesService.upgrades));
+  }
 }

@@ -1,0 +1,135 @@
+import { Component, OnInit, Inject } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+
+import { ResourceType, ResourceConsume, Resource } from '../resource';
+import { ResourcesService } from 'src/app/resources.service';
+import { Worker, ResourceWorker } from '../worker';
+import { WorkersService } from './../workers.service';
+
+@Component({
+  selector: 'app-resource-dialog',
+  templateUrl: './resource-dialog.component.html',
+  styleUrls: ['./resource-dialog.component.css']
+})
+export class ResourceDialogComponent implements OnInit {
+  resource: Resource = {
+    id: this.resourcesService.resources.length,
+    name: '',
+    resourceType: ResourceType.Currency,
+    amount: 0,
+    iconPath: '',
+    resourceConsumes: [],
+    harvestable: true,
+    harvestYield: 1,
+    harvestMilliseconds: 1000,
+    workerYield: 1,
+    sellable: true,
+    sellsFor: 5,
+    resourceDescription: '',
+    workerVerb: '',
+    workerNoun: '',
+    resourceAccessible: true,
+    resourceTier: 0,
+    previousTier: 0,
+    worker: { workable: true, workerCount: 0, cost: 50 }
+  };
+  resourceWorker: ResourceWorker = this.workersService.getResourceWorker(0);
+
+  oldResourceId = 0;
+
+  resourceTypes = ResourceType;
+
+  constructor(
+    protected resourcesService: ResourcesService,
+    protected workersService: WorkersService,
+    protected _formBuilder: FormBuilder,
+    public dialogRef: MatDialogRef<ResourceDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DialogData) {}
+
+
+  ngOnInit() {
+  }
+
+  populateResource() {
+    const resourceId = +this.oldResourceId;
+    const oldResource = this.resourcesService.getResource(resourceId);
+
+    this.resource.name = oldResource.name;
+    this.resource.resourceType = oldResource.resourceType;
+    this.resource.iconPath = oldResource.iconPath;
+    this.resource.amount = oldResource.amount;
+    this.resource.harvestable = oldResource.harvestable;
+    this.resource.harvestYield = oldResource.harvestYield;
+    this.resource.harvestMilliseconds = oldResource.harvestMilliseconds;
+    this.resource.workerYield = oldResource.workerYield;
+    this.resource.sellable = oldResource.sellable;
+    this.resource.sellsFor = oldResource.sellsFor;
+    this.resource.resourceDescription = oldResource.resourceDescription;
+    this.resource.workerVerb = oldResource.workerVerb;
+    this.resource.workerNoun = oldResource.workerNoun;
+    this.resource.resourceAccessible = oldResource.resourceAccessible;
+    this.resource.resourceTier = oldResource.resourceTier;
+    this.resource.previousTier = oldResource.previousTier;
+
+    for (const resourceConsume of oldResource.resourceConsumes) {
+      this.resource.resourceConsumes.push({
+        resourceId: resourceConsume.resourceId,
+        cost: resourceConsume.cost
+      });
+    }
+
+    this.resource.worker = {
+      workable: oldResource.worker.workable,
+      workerCount: oldResource.worker.workerCount,
+      cost: oldResource.worker.cost
+    };
+
+    this.resourceWorker = {
+      resourceId: resourceId,
+      workable: true,
+      workerCount: 0,
+      workerYield: 1,
+      sliderSettingValid: true
+    };
+  }
+
+  onNoClick(): void {
+    this.dialogRef.close();
+  }
+
+  newResourceConsume() {
+    this.resource.resourceConsumes[this.resource.resourceConsumes.length] = {resourceId: 0, cost: 1};
+  }
+
+  removeResourceConsume(resourceConsume: ResourceConsume) {
+    this.resource.resourceConsumes = this.resource.resourceConsumes.filter(rc => rc !== resourceConsume);
+  }
+
+  updateResourceWorker() {
+    const worker = this.workersService.getWorker(this.resource.resourceType);
+
+    if (worker === undefined) {
+      console.log(`No worker found for ${this.resource.resourceType}`);
+      return;
+    }
+
+    this.resourceWorker.resourceId = this.resource.id;
+
+    const resourceWorkers = worker.workersByResource;
+
+    if (!resourceWorkers.find(rw => rw === this.resourceWorker)) {
+      resourceWorkers.push(this.resourceWorker);
+    }
+  }
+
+  saveResource() {
+    this.updateResourceWorker();
+
+    this.resourcesService.resources.push(this.resource);
+  }
+
+  compareFn(item1: number, item2: number) {
+    return +item1 === +item2;
+  }
+}

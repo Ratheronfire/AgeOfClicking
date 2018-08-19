@@ -1,0 +1,149 @@
+<mat-vertical-stepper>
+  <mat-step>
+    <ng-template matStepLabel>Select Resource Template</ng-template>
+    <mat-form-field class="full-width">
+      <mat-select [(ngModel)]="oldResourceId" [compareWith]="compareFn" (selectionChange)="populateResource()">
+        <mat-option placeholder="Resource Type" *ngFor="let resource of resourcesService.resources" value="{{resource.id}}">
+          {{resource.name | titlecase}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Set Resource Details</ng-template>
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Name" [(ngModel)]="resource.name">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-select [(ngModel)]="resource.resourceType">
+        <mat-option placeholder="Resource Type" *ngFor="let resourceType of resourceTypes | enumToArray" value="{{resourceTypes[resourceType]}}">
+          {{resourceType}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Icon Path" [(ngModel)]="resource.iconPath">
+    </mat-form-field>
+
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Set Resource Consumes</ng-template>
+
+    <button mat-raised-button color="accent" (click)="newResourceConsume()">Add New Consumed Resource</button>
+    <div *ngFor="let resourceConsume of resource.resourceConsumes">
+      <mat-card>
+        <button class="inner-delete" mat-raised-button color="warn" (click)="removeResourceConsume(resourceConsume)">Remove Consumed Resource</button>
+        <mat-form-field class="full-width">
+          <mat-select [(ngModel)]="resourceConsume.resourceId" [compareWith]="compareFn">
+            <mat-option placeholder="Resource" *ngFor="let _resource of resourcesService.resources" value="{{_resource.id}}">
+              {{_resource.name | titlecase }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field class="full-width">
+          <input matInput placeholder="Cost" [(ngModel)]="resourceConsume.cost">
+        </mat-form-field>
+      </mat-card>
+    </div>
+
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Set Resource Values</ng-template>
+
+    <mat-checkbox [(ngModel)]="resource.harvestable">Harvestable</mat-checkbox>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Harvest Yield" [(ngModel)]="resource.harvestYield">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Harvest Time (Milliseconds)" [(ngModel)]="resource.harvestMilliseconds">
+    </mat-form-field>
+
+    <mat-divider></mat-divider>
+    <br />
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Worker Yield" [(ngModel)]="resource.workerYield">
+    </mat-form-field>
+
+    <mat-divider></mat-divider>
+    <br />
+
+    <mat-checkbox [(ngModel)]="resource.sellable">Sellable</mat-checkbox>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Sells For" [(ngModel)]="resource.sellsFor">
+    </mat-form-field>
+
+    <mat-divider></mat-divider>
+    <br />
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Resource Tier" [(ngModel)]="resource.resourceTier">
+    </mat-form-field>
+
+    <div *ngIf="resourceWorker !== null">
+      <mat-divider></mat-divider>
+      <br />
+
+      <mat-form-field class="full-width">
+        <input matInput placeholder="Worker Yield" [(ngModel)]="resourceWorker.workerYield">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Set Description</ng-template>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Resource Description" [(ngModel)]="resource.resourceDescription">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Worker Verb" [(ngModel)]="resource.workerVerb">
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input matInput placeholder="Worker Noun" [(ngModel)]="resource.workerNoun">
+    </mat-form-field>
+
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-button matStepperNext>Next</button>
+    </div>
+  </mat-step>
+
+  <mat-step>
+    <ng-template matStepLabel>Done</ng-template>
+    {{resource.name}} configured.
+    <div>
+      <button mat-button matStepperPrevious>Back</button>
+      <button mat-raised-button (click)="saveResource()">Save Resource</button>
+      <button mat-raised-button color="warn" (click)="stepper.reset()">Reset</button>
+    </div>
+  </mat-step>
+</mat-vertical-stepper>

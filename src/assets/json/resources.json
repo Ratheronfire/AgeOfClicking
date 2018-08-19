@@ -295,5 +295,6 @@
     "resourceTier": 0,
     "previousTier": 0,
     "worker": { "workable": true, "workerCount": 0, "cost": 80 }
-  }
+  },
+  {"id":14,"name":"Marble","resourceType":"METAL","amount":0,"iconPath":"/src/assets/sprites/marble.png","resourceConsumes":[],"harvestable":true,"harvestYield":1,"harvestMilliseconds":2500,"workerYield":1,"sellable":true,"sellsFor":45,"resourceDescription":"Beautiful, crystalline rock. Highly valued for construction projects","workerVerb":"Mines","workerNoun":"marble","resourceAccessible":false,"resourceTier":1,"previousTier":0,"worker":{"workable":true,"workerCount":0,"cost":80}}
 ]

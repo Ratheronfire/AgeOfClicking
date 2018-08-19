@@ -8,5 +8,4 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'clicker-game';
   debugMode = true;
-  debugPaneOpen = false;
 }

@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
@@ -12,9 +12,9 @@ import { UpgradesComponent } from './upgrades/upgrades.component';
 import { MaterialImportModule } from './material-import/material-import.module';
 import { PipeModule } from 'src/app/pipe/pipe.module';
 import { AdminDebugComponent } from './admin-debug/admin-debug.component';
-import { AdminResourceConfigurationComponent } from './admin-resource-configuration/admin-resource-configuration.component';
-import { AdminUpgradeConfigurationComponent } from './admin-upgrade-configuration/admin-upgrade-configuration.component';
 import { MapComponent } from './map/map.component';
+import { ResourceDialogComponent } from './resource-dialog/resource-dialog.component';
+import { UpgradeDialogComponent } from './upgrade-dialog/upgrade-dialog.component';
 
 @NgModule({
   declarations: [
@@ -25,16 +25,21 @@ import { MapComponent } from './map/map.component';
     StoreComponent,
     UpgradesComponent,
     AdminDebugComponent,
-    AdminResourceConfigurationComponent,
-    AdminUpgradeConfigurationComponent,
-    MapComponent
+    MapComponent,
+    ResourceDialogComponent,
+    UpgradeDialogComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialImportModule,
     PipeModule
+  ],
+  entryComponents: [
+    ResourceDialogComponent,
+    UpgradeDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

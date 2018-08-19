@@ -14,6 +14,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatListModule } from '@angular/material/list';
 import { MatSliderModule } from '@angular/material/slider';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatStepperModule } from '@angular/material/stepper';
 
 @NgModule({
   imports: [
@@ -31,7 +33,9 @@ import { MatSliderModule } from '@angular/material/slider';
     MatInputModule,
     MatSelectModule,
     MatListModule,
-    MatSliderModule
+    MatSliderModule,
+    MatDialogModule,
+    MatStepperModule
   ],
   exports: [
     MatButtonModule,
@@ -48,7 +52,9 @@ import { MatSliderModule } from '@angular/material/slider';
     MatInputModule,
     MatSelectModule,
     MatListModule,
-    MatSliderModule
+    MatSliderModule,
+    MatDialogModule,
+    MatStepperModule
   ]
 })
 export class MaterialImportModule { }

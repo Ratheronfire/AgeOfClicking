@@ -105,6 +105,13 @@
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
+      },
+      {
+        "resourceId": 14,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
       }
     ]
   }

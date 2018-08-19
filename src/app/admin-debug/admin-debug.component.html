@@ -1,12 +1,37 @@
 <h2>Debug</h2>
 
-<mat-checkbox class="filterAccessible" checked="false" [(ngModel)]="adminService.filterAccessible">Hide Inaccessible Upgrades</mat-checkbox>
+<mat-checkbox class="filterAccessible" checked="true" [(ngModel)]="adminService.filterAccessible">Hide Inaccessible Upgrades</mat-checkbox>
 <!-- <mat-checkbox class="filterAccessible" checked="false" [(ngModel)]="adminService.clampMap">Clamp Map</mat-checkbox> -->
+
+<mat-divider></mat-divider>
 <br />
 <br />
 
-<div *ngFor="let resource of resourcesService.resources">
+<mat-select [(ngModel)]="selectedResource">
+  <mat-option *ngFor="let resource of resourcesService.resources" [value]="resource">
+    {{resource.name | titlecase}}
+  </mat-option>
+</mat-select>
+
+<mat-divider></mat-divider>
+<br />
+<br />
+
+<div *ngIf="selectedResource !== undefined">
   <mat-form-field class="example-full-width">
-      <input matInput placeholder="{{resource.name | titlecase}}" [(ngModel)]="resource.amount">
-    </mat-form-field>
+    <input matInput (submit)="addResourceAmount()" [(ngModel)]="amount">
+  </mat-form-field>
+  <button mat-raised-button (click)="addResourceAmount()">Add to {{selectedResource.name | titlecase}}</button>
+  <button mat-raised-button color="accent" (click)="stringifyResource(selectedResource)">Export {{selectedResource.name | titlecase}} To JSON</button>
 </div>
+
+<button mat-raised-button color="primary" (click)="openResourceDialog()">New Resource</button>
+<button mat-raised-button color="primary" (click)="openUpgradeDialog()">New Upgrade</button>
+
+<mat-divider></mat-divider>
+<br />
+<br />
+
+<button mat-raised-button color="accent" (click)="stringifyResources()">Export Resources To JSON</button>
+<button mat-raised-button color="accent" (click)="stringifyWorkers()">Export Workers To JSON</button>
+<button mat-raised-button color="accent" (click)="stringifyUpgrades()">Export Upgrades To JSON</button>
