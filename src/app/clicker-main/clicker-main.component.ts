@@ -20,18 +20,18 @@ export class ClickerMainComponent implements OnInit {
 
   resourceBeingHarvested = -1;
 
-  color = 'primary';
-  value = 50;
+  value = 0;
   mode = 'determinate';
 
-  millisecondsElapsed = 0;
-  progressBarUpdateDelay = 100;
+  millisecondsTotal = 1000;
+  harvestStartDate: number;
+  progressBarUpdateDelay = 200;
 
   resourceTypes = ResourceType;
 
-  constructor(private resourcesService: ResourcesService,
-              private workersService: WorkersService,
-              private adminService: AdminService) { }
+  constructor(protected resourcesService: ResourcesService,
+              protected workersService: WorkersService,
+              protected adminService: AdminService) { }
 
   ngOnInit() {
     const processSource = timer(1000, 1000);
@@ -49,17 +49,19 @@ export class ClickerMainComponent implements OnInit {
 
   startHarvesting(id: number) {
     const resource = this.resourcesService.getResource(id);
+    this.harvestStartDate = Date.now();
 
     if (!this.resourcesService.canHarvest(id)) {
       return;
     }
 
-    this.harvestTimer = timer(resource.harvestMilliseconds, resource.harvestMilliseconds);
+    this.millisecondsTotal = resource.harvestMilliseconds;
+    this.harvestTimer = timer(this.millisecondsTotal, this.millisecondsTotal);
     this.harvestSubscribe = this.harvestTimer.subscribe(_ => this.harvestResource(id));
 
     if (this.shouldAnimateProgressBar(id)) {
       this.mode = 'determinate';
-      this.progressBarTimer = timer(this.progressBarUpdateDelay, this.progressBarUpdateDelay);
+      this.progressBarTimer = timer(0, this.progressBarUpdateDelay);
       this.progressBarSubscribe = this.progressBarTimer.subscribe(_ => this.updateProgressBar(id));
     } else {
       this.mode = 'indeterminate';
@@ -80,14 +82,12 @@ export class ClickerMainComponent implements OnInit {
 
     this.harvestSubscribe.unsubscribe();
 
+    this.value = 0;
     this.resourceBeingHarvested = -1;
-    this.millisecondsElapsed = 0;
   }
 
   updateProgressBar(id: number) {
-    this.millisecondsElapsed += this.progressBarUpdateDelay;
-
-    this.value = this.millisecondsElapsed / this.resourcesService.getResource(id).harvestMilliseconds * 100;
+    this.value = Math.floor((Date.now() - this.harvestStartDate) / this.millisecondsTotal * 100);
   }
 
   shouldAnimateProgressBar(id: number): boolean {
@@ -96,7 +96,8 @@ export class ClickerMainComponent implements OnInit {
 
   harvestResource(id: number) {
     this.resourcesService.harvestResource(id);
-    this.millisecondsElapsed = 0;
+
+    this.harvestStartDate = Date.now();
 
     if (this.shouldAnimateProgressBar(id)) {
       this.value = 0;
