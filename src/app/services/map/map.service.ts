@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Tile, TileType } from './tile';
+import { Tile, TileType } from '../../objects/tile';
 
 declare var require: any;
 const Jimp = require('jimp');

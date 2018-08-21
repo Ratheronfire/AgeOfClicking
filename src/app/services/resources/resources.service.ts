@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Resource, ResourceType } from './resource';
-import { MessagesService } from './messages.service';
+import { Resource, ResourceType } from '../../objects/resource';
+import { MessagesService } from '../messages/messages.service';
 
 declare var require: any;
-const baseResources = require('../assets/json/resources.json');
+const baseResources = require('../../../assets/json/resources.json');
 
 @Injectable({
   providedIn: 'root'

@@ -2,10 +2,10 @@ import { Component, OnInit, } from '@angular/core';
 
 import { timer } from 'rxjs';
 
-import { Resource, ResourceType } from '../resource';
-import { ResourcesService } from '../resources.service';
-import { WorkersService } from './../workers.service';
-import { AdminService } from './../admin.service';
+import { Resource, ResourceType } from '../../objects/resource';
+import { ResourcesService } from '../../services/resources/resources.service';
+import { WorkersService } from '../../services/workers/workers.service';
+import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
   selector: 'app-clicker-main',

@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Resource } from '../resource';
-import { ResourcesService } from '../resources.service';
-import { Upgrade, ResourceCost, UpgradeType } from '../upgrade';
-import { UpgradesService } from '../upgrades.service';
-import { AdminService } from '../admin.service';
+import { Resource } from '../../objects/resource';
+import { ResourcesService } from '../../services/resources/resources.service';
+import { Upgrade, ResourceCost, UpgradeType } from '../../objects/upgrade';
+import { UpgradesService } from '../../services/upgrades/upgrades.service';
+import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
   selector: 'app-upgrades',

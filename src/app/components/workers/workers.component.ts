@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Resource, ResourceType } from '../resource';
-import { ResourcesService } from '../resources.service';
-import { Worker } from '../worker';
-import { WorkersService } from './../workers.service';
-import { AdminService } from './../admin.service';
+import { Resource, ResourceType } from '../../objects/resource';
+import { ResourcesService } from '../../services/resources/resources.service';
+import { Worker } from '../../objects/worker';
+import { WorkersService } from '../../services/workers/workers.service';
+import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
   selector: 'app-workers',

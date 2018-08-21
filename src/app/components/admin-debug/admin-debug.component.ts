@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 
-import { AdminService } from './../admin.service';
-import { ResourcesService } from 'src/app/resources.service';
-import { Resource } from '../resource';
-import { Worker } from '../worker';
-import { WorkersService } from './../workers.service';
-import { UpgradesService } from 'src/app/upgrades.service';
+import { AdminService } from '../../services/admin/admin.service';
+import { ResourcesService } from '../../services/resources/resources.service';
+import { Resource } from '../../objects/resource';
+import { Worker } from '../../objects/worker';
+import { WorkersService } from '../../services/workers/workers.service';
+import { UpgradesService } from '../../services/upgrades/upgrades.service';
 
 @Component({
   selector: 'app-admin-debug',

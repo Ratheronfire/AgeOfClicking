@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material';
 
-import { ResourceDialogComponent } from './resource-dialog/resource-dialog.component';
-import { UpgradeDialogComponent } from './upgrade-dialog/upgrade-dialog.component';
+import { ResourceDialogComponent } from '../../components/resource-dialog/resource-dialog.component';
+import { UpgradeDialogComponent } from '../../components/upgrade-dialog/upgrade-dialog.component';
 
 @Injectable({
   providedIn: 'root'

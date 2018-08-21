@@ -1,6 +1,6 @@
-import { AdminService } from './../admin.service';
-import { TileType, Tile } from './../tile';
-import { MapService } from './../map.service';
+import { AdminService } from '../../services/admin/admin.service';
+import { TileType, Tile } from '../../objects/tile';
+import { MapService } from '../../services/map/map.service';
 import { Component, OnInit, HostListener } from '@angular/core';
 
 @Component({

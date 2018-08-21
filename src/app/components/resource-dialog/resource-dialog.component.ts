@@ -2,10 +2,10 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 
-import { ResourceType, ResourceConsume, Resource } from '../resource';
-import { ResourcesService } from 'src/app/resources.service';
-import { Worker, ResourceWorker } from '../worker';
-import { WorkersService } from './../workers.service';
+import { ResourceType, ResourceConsume, Resource } from '../../objects/resource';
+import { ResourcesService } from '../../services/resources/resources.service';
+import { Worker, ResourceWorker } from '../../objects/worker';
+import { WorkersService } from '../../services/workers/workers.service';
 
 @Component({
   selector: 'app-resource-dialog',

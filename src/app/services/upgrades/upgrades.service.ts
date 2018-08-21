@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 
-import { Upgrade, UpgradeType, UpgradeVariable } from './upgrade';
-import { Resource } from './resource';
-import { ResourcesService } from './resources.service';
-import { MessagesService } from './messages.service';
-import { Tooltip } from './tooltip';
+import { Upgrade, UpgradeType, UpgradeVariable } from '../../objects/upgrade';
+import { Resource } from '../../objects/resource';
+import { ResourcesService } from '../resources/resources.service';
+import { MessagesService } from '../messages/messages.service';
+import { Tooltip } from '../../objects/tooltip';
 
 declare var require: any;
-const baseUpgrades = require('../assets/json/upgrades.json');
+const baseUpgrades = require('../../../assets/json/upgrades.json');
 
 @Injectable({
   providedIn: 'root'

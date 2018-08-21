@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { Resource, ResourceType } from './resource';
-import { ResourcesService } from './resources.service';
-import { MessagesService } from './messages.service';
+import { Resource, ResourceType } from '../../objects/resource';
+import { ResourcesService } from '../resources/resources.service';
+import { MessagesService } from '../messages/messages.service';
 
 @Injectable({
   providedIn: 'root'

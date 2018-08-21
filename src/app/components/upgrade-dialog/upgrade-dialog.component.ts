@@ -2,10 +2,10 @@ import { Component, OnInit, Inject } from '@angular/core';
 
 import { FormBuilder } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import { ResourceType, } from '../resource';
-import { ResourcesService } from 'src/app/resources.service';
-import { Upgrade, UpgradeType, UpgradeVariable, UpgradeEffect, ResourceCost } from './../upgrade';
-import { UpgradesService } from '../upgrades.service';
+import { ResourceType, } from '../../objects/resource';
+import { ResourcesService } from '../../services/resources/resources.service';
+import { Upgrade, UpgradeType, UpgradeVariable, UpgradeEffect, ResourceCost } from '../../objects/upgrade';
+import { UpgradesService } from '../../services/upgrades/upgrades.service';
 import { ResourceDialogComponent } from '../resource-dialog/resource-dialog.component';
 
 @Component({

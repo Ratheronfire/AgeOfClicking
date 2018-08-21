@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 
-import { ResourceType } from './resource';
-import { ResourcesService } from './resources.service';
-import { Worker, ResourceWorker } from './worker';
-import { MessagesService } from './messages.service';
+import { ResourceType } from '../../objects/resource';
+import { ResourcesService } from '../resources/resources.service';
+import { Worker, ResourceWorker } from '../../objects/worker';
+import { MessagesService } from '../messages/messages.service';
 
 declare var require: any;
-const baseWorkers = require('../assets/json/workers.json');
+const baseWorkers = require('../../../assets/json/workers.json');
 
 @Injectable({
   providedIn: 'root'
