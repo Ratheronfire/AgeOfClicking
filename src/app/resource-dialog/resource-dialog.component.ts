@@ -36,6 +36,8 @@ export class ResourceDialogComponent implements OnInit {
   };
   resourceWorker: ResourceWorker = this.workersService.getResourceWorker(0);
 
+  editMode = false;
+
   oldResourceId = 0;
 
   resourceTypes = ResourceType;
@@ -49,6 +51,12 @@ export class ResourceDialogComponent implements OnInit {
 
 
   ngOnInit() {
+    if (this.data.resourceId !== undefined) {
+      this.resource = this.resourcesService.getResource(this.data.resourceId);
+      this.resourceWorker = this.workersService.getResourceWorker(this.resource.id);
+
+      this.editMode = true;
+    }
   }
 
   populateResource() {
@@ -126,7 +134,13 @@ export class ResourceDialogComponent implements OnInit {
   saveResource() {
     this.updateResourceWorker();
 
-    this.resourcesService.resources.push(this.resource);
+    let existingResource = this.resourcesService.getResource(this.resource.id);
+
+    if (existingResource === undefined) {
+      this.resourcesService.resources.push(this.resource);
+    } else {
+      existingResource = this.resource;
+    }
   }
 
   compareFn(item1: number, item2: number) {

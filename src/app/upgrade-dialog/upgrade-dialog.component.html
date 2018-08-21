@@ -1,5 +1,5 @@
 <mat-vertical-stepper>
-  <mat-step>
+  <mat-step *ngIf="!editMode">
     <ng-template matStepLabel>Select Upgrade Template</ng-template>
     <mat-form-field class="full-width">
       <mat-select [(ngModel)]="oldUpgradeId" [compareWith]="compareFn" (selectionChange)="populateUpgrade()">

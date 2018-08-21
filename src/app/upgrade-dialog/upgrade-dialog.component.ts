@@ -24,6 +24,8 @@ export class UpgradeDialogComponent implements OnInit {
     purchased: false
   };
 
+  editMode = false;
+
   resourceTypes = ResourceType;
   upgradeTypes = UpgradeType;
   upgradeVariables = UpgradeVariable;
@@ -37,6 +39,10 @@ export class UpgradeDialogComponent implements OnInit {
               @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
 
   ngOnInit() {
+    if (this.data.upgradeId !== undefined) {
+      this.upgrade = this.upgradesService.getUpgrade(this.data.upgradeId);
+      this.editMode = true;
+    }
   }
 
   populateUpgrade() {
@@ -110,7 +116,13 @@ export class UpgradeDialogComponent implements OnInit {
       resourceCost.resourceCost = +resourceCost.resourceCost;
     }
 
-    this.upgradesService.upgrades.push(this.upgrade);
+    let existingUpgrade = this.upgradesService.getUpgrade(this.upgrade.id);
+
+    if (existingUpgrade === undefined) {
+      this.upgradesService.upgrades.push(this.upgrade);
+    } else {
+      existingUpgrade = this.upgrade;
+    }
   }
 
   compareFn(item1: number, item2: number) {

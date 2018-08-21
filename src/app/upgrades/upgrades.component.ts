@@ -45,4 +45,8 @@ export class UpgradesComponent implements OnInit {
 
     return 'lightblue';
   }
+
+  editUpgrade(id: number) {
+    this.adminService.openUpgradeDialog(id);
+  }
 }

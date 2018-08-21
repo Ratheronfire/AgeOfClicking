@@ -29,6 +29,9 @@
             {{resourcesService.getResource(resourceCost.resourceId).name | titlecase }}: {{resourceCost.resourceCost}}
           </div>
         </mat-card-content>
+        <div *ngIf="adminService.editMode">
+          <button (click)="editUpgrade(upgrade.id)">Edit {{upgrade.name | titlecase}}</button>
+        </div>
       </div>
     </mat-expansion-panel>
   </mat-accordion>

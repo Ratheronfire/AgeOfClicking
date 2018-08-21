@@ -107,4 +107,8 @@ export class ClickerMainComponent implements OnInit {
       this.stopHarvesting(id);
     }
   }
+
+  editResource(id: number) {
+    this.adminService.openResourceDialog(id);
+  }
 }

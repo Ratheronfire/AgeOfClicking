@@ -2,14 +2,10 @@ import { Component, OnInit } from '@angular/core';
 
 import { AdminService } from './../admin.service';
 import { ResourcesService } from 'src/app/resources.service';
-import { Resource, ResourceType } from '../resource';
+import { Resource } from '../resource';
 import { Worker } from '../worker';
 import { WorkersService } from './../workers.service';
-import { Upgrade } from './../upgrade';
 import { UpgradesService } from 'src/app/upgrades.service';
-import { ResourceDialogComponent } from '../resource-dialog/resource-dialog.component';
-import { UpgradeDialogComponent } from '../upgrade-dialog/upgrade-dialog.component';
-import { MatDialog } from '@angular/material';
 
 @Component({
   selector: 'app-admin-debug',
@@ -26,34 +22,18 @@ export class AdminDebugComponent implements OnInit {
     protected resourcesService: ResourcesService,
     protected workersService: WorkersService,
     protected upgradesService: UpgradesService,
-    protected adminService: AdminService,
-    public dialog: MatDialog
+    protected adminService: AdminService
   ) {}
 
   ngOnInit() {}
 
   openResourceDialog() {
-    const dialogRef = this.dialog.open(ResourceDialogComponent, {
-      width: '750px',
-      height: '600px'
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed.');
-      console.log(result);
-    });
+    this.adminService.openResourceDialog();
   }
 
   openUpgradeDialog() {
-    const dialogRef = this.dialog.open(UpgradeDialogComponent, {
-      width: '750px',
-      height: '525px'
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed.');
-      console.log(result);
-    });}
+    this.adminService.openUpgradeDialog();
+  }
 
   addResourceAmount() {
     this.resourcesService.addResourceAmount(

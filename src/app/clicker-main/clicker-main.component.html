@@ -1,7 +1,6 @@
 <ul class="resources noselect">
   <mat-accordion multi="true">
-    <mat-expansion-panel expanded="true"
-        *ngFor="let resourceType of resourceTypes | enumToArray">
+    <mat-expansion-panel expanded="true" *ngFor="let resourceType of resourceTypes | enumToArray">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{resourceType}}
@@ -10,16 +9,20 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button mat-raised-button *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)"
-        [color]="resourcesService.canHarvest(resource.id) ? 'accent' : 'disabled'"
-        [disabled]="!resourcesService.canHarvest(resource.id)"
-        (mousedown)='startHarvesting(resource.id)' (mouseup)='stopHarvesting(resource.id)' (mouseleave)='stopHarvesting(resource.id)'
-        matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
-        <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
-        <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
-        <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [mode]="mode" [value]="value"></mat-progress-bar>
-        <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
-      </button>
+      <div *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)">
+        <button mat-raised-button class="resource-button" [color]="resourcesService.canHarvest(resource.id) ? 'accent' : 'disabled'"
+          [disabled]="!resourcesService.canHarvest(resource.id)" (mousedown)='startHarvesting(resource.id)' (mouseup)='stopHarvesting(resource.id)'
+          (mouseleave)='stopHarvesting(resource.id)' matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
+          <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
+          <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
+          <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [mode]="mode" [value]="value"></mat-progress-bar>
+          <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
+        </button>
+        <div *ngIf="adminService.editMode">
+          <br />
+          <button (click)="editResource(resource.id)">Edit {{resource.name | titlecase}}</button>
+        </div>
+      </div>
     </mat-expansion-panel>
   </mat-accordion>
 </ul>
