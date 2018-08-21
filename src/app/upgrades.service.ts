@@ -6,13 +6,14 @@ import { ResourcesService } from './resources.service';
 import { MessagesService } from './messages.service';
 import { Tooltip } from './tooltip';
 
-import * as baseUpgrades from '../assets/json/upgrades.json';
+declare var require: any;
+const baseUpgrades = require('../assets/json/upgrades.json');
 
 @Injectable({
   providedIn: 'root'
 })
 export class UpgradesService {
-  public upgrades = baseUpgrades.default;
+  public upgrades = baseUpgrades;
 
   constructor(private resourcesService: ResourcesService,
               private messagesService: MessagesService) { }

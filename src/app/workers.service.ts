@@ -5,13 +5,14 @@ import { ResourcesService } from './resources.service';
 import { Worker, ResourceWorker } from './worker';
 import { MessagesService } from './messages.service';
 
-import * as baseWorkers from '../assets/json/workers.json';
+declare var require: any;
+const baseWorkers = require('../assets/json/workers.json');
 
 @Injectable({
   providedIn: 'root'
 })
 export class WorkersService {
-  public workers: Worker[] = baseWorkers.default;
+  public workers: Worker[] = baseWorkers;
 
   constructor(protected resourcesService: ResourcesService,
               protected messagesService: MessagesService) { }

@@ -36,7 +36,7 @@ export class UpgradeDialogComponent implements OnInit {
               protected upgradesService: UpgradesService,
               protected _formBuilder: FormBuilder,
               public dialogRef: MatDialogRef<ResourceDialogComponent>,
-              @Inject(MAT_DIALOG_DATA) public data: DialogData) { }
+              @Inject(MAT_DIALOG_DATA) public data: any) { }
 
   ngOnInit() {
     if (this.data.upgradeId !== undefined) {

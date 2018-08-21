@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { Tile, TileType } from './tile';
 
-import * as baseMap from '../assets/json/map.json';
+declare var require: any;
 const Jimp = require('jimp');
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
-  public tileMap: Tile[][] = []; // = baseMap.default;
+  public tileMap: Tile[][] = [];
   public tileSprites = { };
 
   walkableTiles = [TileType.Grass];

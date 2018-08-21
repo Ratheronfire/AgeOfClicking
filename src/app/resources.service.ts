@@ -3,13 +3,14 @@ import { Injectable } from '@angular/core';
 import { Resource, ResourceType } from './resource';
 import { MessagesService } from './messages.service';
 
-import * as baseResources from '../assets/json/resources.json';
+declare var require: any;
+const baseResources = require('../assets/json/resources.json');
 
 @Injectable({
   providedIn: 'root'
 })
 export class ResourcesService {
-  public resources: Resource[] = baseResources.default;
+  public resources: Resource[] = baseResources;
 
   constructor(private messagesService: MessagesService) { }
 
