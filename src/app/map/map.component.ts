@@ -10,10 +10,12 @@ import { Component, OnInit, HostListener } from '@angular/core';
 })
 export class MapComponent implements OnInit {
   tileTypes = TileType;
-  tilePixels = 30;
+  tilePixels = 48;
 
-  windowSize = [15, 15];
-  topLeft = [0, 0];
+  topLeftX = 0;
+  topLeftY = 0;
+  windowWidth = 15;
+  windowHeight = 15;
 
   constructor(protected mapService: MapService,
               protected adminService: AdminService) { }
@@ -47,8 +49,8 @@ export class MapComponent implements OnInit {
     }
   }
 
-  getMap(clampToWindow: boolean): Tile[][] {
-    return this.mapService.getMap(clampToWindow, this.topLeft, this.windowSize);
+  getMap(clampToWindow: boolean): Tile[] {
+    return this.mapService.getMap(clampToWindow, this.topLeftX, this.topLeftY, this.windowWidth, this.windowHeight);
   }
 
   getTileSprite(tile: Tile) {
@@ -66,34 +68,34 @@ export class MapComponent implements OnInit {
       return;
     }
 
-    this.topLeft = [this.mapService.playerTileLocation[0] - this.windowSize[0] / 2,
-    this.mapService.playerTileLocation[1] - this.windowSize[1] / 2];
+    this.topLeftX = Math.floor(this.mapService.playerX - this.windowWidth / 2);
+    this.topLeftY = Math.floor(this.mapService.playerY - this.windowHeight / 2);
 
-    if (this.topLeft[0] < 0) {
-      this.topLeft[0] = 0;
-    } else if (this.topLeft[0] + this.windowSize[0] > this.mapService.tileMap.length) {
-      this.topLeft[0] = this.mapService.tileMap.length - this.windowSize[0];
+    if (this.topLeftX < 0) {
+      this.topLeftX = 0;
+    } else if (this.topLeftX + this.windowWidth > this.mapService.mapWidth) {
+      this.topLeftX = this.mapService.mapWidth - this.windowWidth;
     }
-    if (this.topLeft[1] < 0) {
-      this.topLeft[1] = 0;
-    } else if (this.topLeft[1] + this.windowSize[1] > this.mapService.tileMap[0].length) {
-      this.topLeft[1] = this.mapService.tileMap[0].length - this.windowSize[1];
+    if (this.topLeftY < 0) {
+      this.topLeftY = 0;
+    } else if (this.topLeftY + this.windowHeight > this.mapService.mapHeight) {
+      this.topLeftY = this.mapService.mapHeight - this.windowHeight;
     }
 
-    // const playerLocation = this.getPlayerLocation();
+    const playerLocation = this.getPlayerLocation();
 
-    // const distanceFromCenter = [Math.abs(playerLocation[0] - (this.topLeft[0] + this.windowSize[0] / 2)),
-    //                             Math.abs(playerLocation[1] - (this.topLeft[1] + this.windowSize[1] / 2))];
+    const distanceFromCenterX = Math.abs(playerLocation[0] - (this.topLeftX + this.windowWidth / 2));
+    const distanceFromCenterY = Math.abs(playerLocation[1] - (this.topLeftY + this.windowHeight / 2));
 
-    // const newCameraX = this.topLeft[1] + xOffset;
-    // const newCameraY = this.topLeft[0] + yOffset;
+    const newCameraX = this.topLeftX + xOffset;
+    const newCameraY = this.topLeftY + yOffset;
 
-    // if (newCameraX >= 0 && newCameraX + this.windowSize[1] <= this.getColumnCount() && distanceFromCenter[1] >= 1) {
-    //   this.topLeft[1] = newCameraX;
-    // }
-    // if (newCameraY >= 0 && newCameraY + this.windowSize[0] <= this.getRowCount() && distanceFromCenter[0] >= 1) {
-    //   this.topLeft[0] = newCameraY;
-    // }
+    if (newCameraX >= 0 && newCameraX + this.windowWidth <= this.getColumnCount() && distanceFromCenterX >= 1) {
+      this.topLeftX = newCameraX;
+    }
+    if (newCameraY >= 0 && newCameraY + this.windowHeight <= this.getRowCount() && distanceFromCenterY >= 1) {
+      this.topLeftY = newCameraY;
+    }
   }
 
   getRowCount(): number {

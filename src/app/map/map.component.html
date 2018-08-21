@@ -1,9 +1,7 @@
-<div class="map noselect" [ngStyle]="{ 'width.px': (adminService.clampMap ? windowSize[1] : getColumnCount()) * tilePixels}">
-  <mat-grid-list [cols]="(adminService.clampMap ? windowSize[0] : getRowCount())" gutterSize="0" rowHeight="{{tilePixels}}">
-    <div *ngFor="let mapRow of getMap(adminService.clampMap)">
-      <mat-grid-tile *ngFor="let tile of mapRow">
-        <img src={{getTileSprite(tile)}} draggable="false" onmousedown="return false" style="user-drag: none">
-      </mat-grid-tile>
-    </div>
+<div class="map noselect" [ngStyle]="{ 'width.px': (adminService.clampMap ? windowWidth : getColumnCount()) * tilePixels}">
+  <mat-grid-list [cols]="(adminService.clampMap ? windowHeight : getRowCount())" gutterSize="0" rowHeight="{{tilePixels}}">
+    <mat-grid-tile *ngFor="let tile of getMap(adminService.clampMap)">
+      <img src={{getTileSprite(tile)}} draggable="false" onmousedown="return false" style="user-drag: none">
+    </mat-grid-tile>
   </mat-grid-list>
 </div>

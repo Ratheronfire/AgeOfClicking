@@ -8,12 +8,16 @@ const Jimp = require('jimp');
   providedIn: 'root'
 })
 export class MapService {
-  public tileMap: Tile[][] = [];
   public tileSprites = { };
+  mapWidth: number;
+  mapHeight: number;
+
+  public tiledMap: Tile[] = [];
 
   walkableTiles = [TileType.Grass];
 
-  playerTileLocation = [5, 5];
+  playerY = 100;
+  playerX = 100;
   playerTile: Tile;
 
   constructor() {
@@ -22,58 +26,53 @@ export class MapService {
     this.tileSprites[TileType.Mountain] = '../assets/sprites/mountain.png';
     this.tileSprites[TileType.Player] = '../assets/sprites/player.png';
 
-    Jimp.read('../assets/sprites/map.png', (err, mapImage) => {
-      if (err) {
-        throw err;
-      }
+    const _tiledMap: Tile[] = [];
+    const tileTypes = [TileType.Grass, TileType.Water, TileType.Mountain];
+    let _mapWidth: number, _mapHeight: number;
 
-      let tileRow = [];
+    const xmlRequest = new XMLHttpRequest();
+    xmlRequest.onload = function() {
+      const xmlDoc = new DOMParser().parseFromString(xmlRequest.responseText, 'text/xml');
+      const mapValues = xmlDoc.getElementsByTagName('data')[0].textContent;
+      const layerData = xmlDoc.getElementsByTagName('layer')[0];
 
-      const colorValues = {
-        '1565637887': TileType.Water,
-        '1436510719': TileType.Grass,
-        '1079469055': TileType.Mountain,
-        '4285137151': TileType.Player
-      };
+      _mapWidth = +layerData.attributes.getNamedItem('width').value;
+      _mapHeight = +layerData.attributes.getNamedItem('height').value;
 
-      for (let j = 0; j < mapImage.bitmap.width; j++) {
-        for (let i = 0; i < mapImage.bitmap.height; i++) {
-          let tileType = colorValues[mapImage.getPixelColor(i, j)];
+      mapValues.split(',').map(tileIndex => _tiledMap.push({tileType: tileTypes[+tileIndex - 1]}));
+    };
 
-          if (tileType === TileType.Player) {
-            tileType = TileType.Grass;
-            this.playerTileLocation = [j, i];
-          }
+    xmlRequest.open('GET', '../assets/tilemap/map.tmx', false);
+    xmlRequest.send();
 
-          tileRow.push({'tileType': tileType});
-        }
-
-        this.tileMap.push(tileRow);
-        tileRow = [];
-      }
-
-      this.playerTile = this.tileMap[this.playerTileLocation[0]][this.playerTileLocation[1]];
-    });
+    this.tiledMap = _tiledMap;
+    this.mapWidth = _mapWidth;
+    this.mapHeight = _mapHeight;
   }
 
   getRowCount(): number {
-    return this.tileMap.length;
+    return this.mapHeight;
   }
 
   getColumnCount(): number {
-    return this.tileMap[0].length;
+    return this.mapWidth;
   }
 
-  getMap(clampToWindow: boolean, topLeft: number[] = [], windowSize: number[] = []): Tile[][] {
+  getTile(x: number, y: number) {
+    return this.tiledMap[x + y * this.mapWidth];
+  }
+
+  getMap(clampToWindow: boolean, topLeftX: number, topLeftY: number, windowWidth: number, windowHeight: number): Tile[] {
     if (!clampToWindow) {
-      return this.tileMap;
+      return this.tiledMap;
     }
 
-    const submap = this.tileMap.slice(topLeft[0], topLeft[0] + windowSize[0]);
-    for (const i of Object.keys(submap)) {
-      const subrow = submap[i];
+    const submap: Tile[] = [];
 
-      submap[i] = subrow.slice(topLeft[1], topLeft[1] + windowSize[1]);
+    for (let i = topLeftY; i < topLeftY + windowHeight; i++) {
+      for (let j = topLeftX; j < topLeftX + windowWidth; j++) {
+        submap.push(this.getTile(j, i));
+      }
     }
 
     return submap;
@@ -87,25 +86,27 @@ export class MapService {
     return this.tileSprites[tile.tileType];
   }
 
-  canMove(newLocation: number[]): boolean {
-    return newLocation[0] >= 0 && newLocation[0] < this.tileMap.length &&
-           newLocation[1] >= 0 && newLocation[1] < this.tileMap[0].length &&
-           this.walkableTiles.some(tileType => tileType === this.tileMap[newLocation[0]][newLocation[1]].tileType);
+  canMove(newLocationX: number, newLocationY: number): boolean {
+    return newLocationX >= 0 && newLocationX < this.mapWidth &&
+           newLocationY >= 0 && newLocationY < this.mapHeight &&
+           this.walkableTiles.some(tileType => tileType === this.getTile(newLocationX, newLocationY).tileType);
   }
 
   getPlayerLocation(): number[] {
-    return this.playerTileLocation;
+    return [this.playerX, this.playerY];
   }
 
   setPlayerLocation(xOffset: number, yOffset: number): boolean {
-    const newLocation = [this.playerTileLocation[0] + yOffset, this.playerTileLocation[1] + xOffset];
+    const newLocationX = this.playerX + xOffset;
+    const newLocationY = this.playerY + yOffset;
 
-    if (!this.canMove(newLocation)) {
+    if (!this.canMove(newLocationX, newLocationY)) {
       return false;
     }
 
-    this.playerTileLocation = newLocation;
-    this.playerTile = this.tileMap[newLocation[0]][newLocation[1]];
+    this.playerX = newLocationX;
+    this.playerY = newLocationY;
+    this.playerTile = this.getTile(newLocationX, newLocationY);
 
     return true;
   }
