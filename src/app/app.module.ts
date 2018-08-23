@@ -15,6 +15,7 @@ import { AdminDebugComponent } from './components/admin-debug/admin-debug.compon
 import { MapComponent } from './components/map/map.component';
 import { ResourceDialogComponent } from './components/resource-dialog/resource-dialog.component';
 import { UpgradeDialogComponent } from './components/upgrade-dialog/upgrade-dialog.component';
+import { TouchDirective } from './directive/touch/touch.directive';
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import { UpgradeDialogComponent } from './components/upgrade-dialog/upgrade-dial
     AdminDebugComponent,
     MapComponent,
     ResourceDialogComponent,
-    UpgradeDialogComponent
+    UpgradeDialogComponent,
+    TouchDirective,
   ],
   imports: [
     BrowserModule,

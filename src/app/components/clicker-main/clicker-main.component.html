@@ -10,9 +10,9 @@
       </mat-expansion-panel-header>
 
       <div *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)">
-        <button mat-raised-button class="resource-button" [color]="resourcesService.canHarvest(resource.id) ? 'accent' : 'disabled'"
-          [disabled]="!resourcesService.canHarvest(resource.id)" (mousedown)='startHarvesting(resource.id)' (mouseup)='stopHarvesting(resource.id)'
-          (mouseleave)='stopHarvesting(resource.id)' matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
+        <button appTouch mat-raised-button class="resource-button" color="accent" [disabled]="!resourcesService.canHarvest(resource.id)" [id]="resource.id"
+          (mouseleave)='stopHarvesting(resource.id)'
+          matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
           <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
           <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [mode]="mode" [value]="value"></mat-progress-bar>

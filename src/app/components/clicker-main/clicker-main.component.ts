@@ -1,11 +1,9 @@
 import { Component, OnInit, } from '@angular/core';
 
-import { timer } from 'rxjs';
-
-import { Resource, ResourceType } from '../../objects/resource';
+import { ClickerMainService } from './../../services/clicker-main/clicker-main.service';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { WorkersService } from '../../services/workers/workers.service';
-import { AdminService } from '../../services/admin/admin.service';
+import { ResourceType, Resource } from '../../objects/resource';
+import { AdminService } from './../../services/admin/admin.service';
 
 @Component({
   selector: 'app-clicker-main',
@@ -13,102 +11,69 @@ import { AdminService } from '../../services/admin/admin.service';
   styleUrls: ['./clicker-main.component.css']
 })
 export class ClickerMainComponent implements OnInit {
-  harvestTimer;
-  harvestSubscribe;
-  progressBarTimer;
-  progressBarSubscribe;
-
-  resourceBeingHarvested = -1;
-
-  value = 0;
-  mode = 'determinate';
-
-  millisecondsTotal = 1000;
-  harvestStartDate: number;
-  progressBarUpdateDelay = 200;
-
   resourceTypes = ResourceType;
 
-  constructor(protected resourcesService: ResourcesService,
-              protected workersService: WorkersService,
+  constructor(protected clickerMainService: ClickerMainService,
+              protected resourcesService: ResourcesService,
               protected adminService: AdminService) { }
 
   ngOnInit() {
-    const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.workersService.processWorkers());
   }
 
   resourcesOfType(resourceType: string, filterByAccessible: boolean): Resource[] {
     return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], false, filterByAccessible);
   }
 
-  public getTooltipMessage(id: number) {
+  public getTooltipMessage(id: number): string {
     const workerCount = this.resourcesService.getResource(id).worker.workerCount;
     return this.resourcesService.resourceTooltip(id, workerCount);
   }
 
   startHarvesting(id: number) {
-    const resource = this.resourcesService.getResource(id);
-    this.harvestStartDate = Date.now();
-
-    if (!this.resourcesService.canHarvest(id)) {
-      return;
-    }
-
-    this.millisecondsTotal = resource.harvestMilliseconds;
-    this.harvestTimer = timer(this.millisecondsTotal, this.millisecondsTotal);
-    this.harvestSubscribe = this.harvestTimer.subscribe(_ => this.harvestResource(id));
-
-    if (this.shouldAnimateProgressBar(id)) {
-      this.mode = 'determinate';
-      this.progressBarTimer = timer(0, this.progressBarUpdateDelay);
-      this.progressBarSubscribe = this.progressBarTimer.subscribe(_ => this.updateProgressBar(id));
-    } else {
-      this.mode = 'indeterminate';
-      this.value = 100;
-    }
-
-    this.resourceBeingHarvested = id;
+    this.clickerMainService.startHarvesting(id);
   }
 
   stopHarvesting(id: number) {
-    if (this.resourceBeingHarvested === -1) {
-      return;
-    }
-
-    if (this.shouldAnimateProgressBar(id)) {
-      this.progressBarSubscribe.unsubscribe();
-    }
-
-    this.harvestSubscribe.unsubscribe();
-
-    this.value = 0;
-    this.resourceBeingHarvested = -1;
+    this.clickerMainService.stopHarvesting(id);
   }
 
   updateProgressBar(id: number) {
-    this.value = Math.floor((Date.now() - this.harvestStartDate) / this.millisecondsTotal * 100);
+    this.clickerMainService.updateProgressBar(id);
   }
 
   shouldAnimateProgressBar(id: number): boolean {
-    return this.resourcesService.getResource(id).harvestMilliseconds > this.progressBarUpdateDelay;
+    return this.clickerMainService.shouldAnimateProgressBar(id);
   }
 
   harvestResource(id: number) {
-    this.resourcesService.harvestResource(id);
-
-    this.harvestStartDate = Date.now();
-
-    if (this.shouldAnimateProgressBar(id)) {
-      this.value = 0;
-    }
-
-    if (!this.resourcesService.canHarvest(id)) {
-      this.stopHarvesting(id);
-    }
+    this.clickerMainService.harvestResource(id);
   }
 
   editResource(id: number) {
     this.adminService.openResourceDialog(id);
+  }
+
+  get resourceBeingHarvested() {
+    return this.clickerMainService.resourceBeingHarvested;
+  }
+
+  get value() {
+    return this.clickerMainService.value;
+  }
+
+  get mode() {
+    return this.clickerMainService.mode;
+  }
+
+  get millisecondsTotal() {
+    return this.clickerMainService.millisecondsTotal;
+  }
+
+  get harvestStartDate() {
+    return this.clickerMainService.harvestStartDate;
+  }
+
+  get progressBarUpdateDelay() {
+    return this.clickerMainService.progressBarUpdateDelay;
   }
 }
