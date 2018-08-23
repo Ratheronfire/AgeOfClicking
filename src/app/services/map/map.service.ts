@@ -42,7 +42,7 @@ export class MapService {
       mapValues.split(',').map(tileIndex => _tiledMap.push({mapTileType: tileTypes[+tileIndex - 1]}));
     };
 
-    xmlRequest.open('GET', '../assets/tilemap/map.tmx', false);
+    xmlRequest.open('GET', '../../../assets/tilemap/map.tmx', false);
     xmlRequest.send();
 
     this.tiledMap = _tiledMap;

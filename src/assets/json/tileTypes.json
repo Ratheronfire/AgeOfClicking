@@ -3,26 +3,26 @@
     "GRASS": {
       "tileType": "GRASS",
       "name": "Grass",
-      "spritePath": "../assets/sprites/grass.png",
+      "spritePath": "../../../assets/sprites/grass.png",
       "walkable": true
     },
     "WATER": {
       "tileType": "WATER",
       "name": "Water",
-      "spritePath": "../assets/sprites/water.png",
+      "spritePath": "../../../assets/sprites/water.png",
       "walkable": false
     },
     "MOUNTAIN": {
       "tileType": "MOUNTAIN",
       "name": "Mountain",
-      "spritePath": "../assets/sprites/mountain.png",
+      "spritePath": "../../../assets/sprites/mountain.png",
       "walkable": false
     }
   },
   "buildingTiles": {
     "WALL": {
       "tileType": "WALL",
-      "spritePath": "../assets/sprites/wall.png",
+      "spritePath": "../../../assets/sprites/wall.png",
       "name": "Wall",
       "description": "Keeps invaders out.",
       "resourceCosts": [{
