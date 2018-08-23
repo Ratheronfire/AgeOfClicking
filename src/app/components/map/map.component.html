@@ -1,7 +1,38 @@
 <div class="map noselect" [ngStyle]="{ 'width.px': (adminService.clampMap ? windowWidth : getColumnCount()) * tilePixels}">
   <mat-grid-list [cols]="(adminService.clampMap ? windowHeight : getRowCount())" gutterSize="0" rowHeight="{{tilePixels}}">
     <mat-grid-tile *ngFor="let tile of getMap(adminService.clampMap)">
-      <img src={{getTileSprite(tile)}} draggable="false" onmousedown="return false" style="user-drag: none">
+      <mat-card *ngIf="showSelectedTileDialog && selectedTile === tile">
+        <mat-card-title>{{selectedBuilding.name}}</mat-card-title>
+        <mat-card-content>
+          {{selectedBuilding.description}}
+          <br />
+          <div *ngIf="selectedBuildingTile === undefined">
+            <h3>Costs</h3>
+            <div *ngFor="let resourceCost of selectedBuilding.resourceCosts">
+              {{resourcesService.getResource(resourceCost.resourceId).name | titlecase }}: {{resourceCost.resourceCost}}
+            </div>
+            <button mat-raised-button color="primary" [disabled]="!canAffordBuilding(selectedBuilding.tileType)" (click)="createBuilding(selectedTile, selectedBuilding.tileType)">
+              Build
+            </button>
+          </div>
+          <div *ngIf="selectedBuildingTile !== undefined">
+            <h3>Placed Building: {{selectedBuildingTile.name | titlecase}}</h3>
+            <button mat-raised-button color="warn" (click)="clearBuilding(selectedTile)">
+              Remove
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <a (click)="selectTile(tile)">
+        <img class="building-img" *ngIf="tile.buildingTileType !== undefined" src={{getBuildingTileSprite(tile)}} onmousedown="return false">
+        <img class="map-img" src={{getMapTileSprite(tile)}} onmousedown="return false">
+
+        <div *ngIf="showSelectedTileDialog && selectedTile === tile">
+          <img class="card-tail" src="../../../assets/sprites/card_tail.png" onmousedown="return false">
+          <img class="selected-border" src="../../../assets/sprites/selected_border.png" onmousedown="return false">
+        </div>
+      </a>
     </mat-grid-tile>
   </mat-grid-list>
 </div>

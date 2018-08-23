@@ -17,44 +17,28 @@ import { MatSliderModule } from '@angular/material/slider';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatStepperModule } from '@angular/material/stepper';
 
+const modules = [
+  MatButtonModule,
+  MatCheckboxModule,
+  MatProgressBarModule,
+  MatChipsModule,
+  MatIconModule,
+  MatTooltipModule,
+  MatCardModule,
+  MatGridListModule,
+  MatTabsModule,
+  MatExpansionModule,
+  MatDividerModule,
+  MatInputModule,
+  MatSelectModule,
+  MatListModule,
+  MatSliderModule,
+  MatDialogModule,
+  MatStepperModule
+];
+
 @NgModule({
-  imports: [
-    MatButtonModule,
-    MatCheckboxModule,
-    MatProgressBarModule,
-    MatChipsModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatCardModule,
-    MatGridListModule,
-    MatTabsModule,
-    MatExpansionModule,
-    MatDividerModule,
-    MatInputModule,
-    MatSelectModule,
-    MatListModule,
-    MatSliderModule,
-    MatDialogModule,
-    MatStepperModule
-  ],
-  exports: [
-    MatButtonModule,
-    MatCheckboxModule,
-    MatProgressBarModule,
-    MatChipsModule,
-    MatIconModule,
-    MatTooltipModule,
-    MatCardModule,
-    MatGridListModule,
-    MatTabsModule,
-    MatExpansionModule,
-    MatDividerModule,
-    MatInputModule,
-    MatSelectModule,
-    MatListModule,
-    MatSliderModule,
-    MatDialogModule,
-    MatStepperModule
-  ]
+  imports: modules,
+  exports: modules
 })
 export class MaterialImportModule { }

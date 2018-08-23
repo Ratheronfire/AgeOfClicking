@@ -1,33 +1,33 @@
 import { Injectable } from '@angular/core';
-import { Tile, TileType } from '../../objects/tile';
+
+import { ResourcesService } from '../resources/resources.service';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile } from '../../objects/tile';
 
 declare var require: any;
 const Jimp = require('jimp');
+const baseTiles = require('../../../assets/json/tileTypes.json');
 
 @Injectable({
   providedIn: 'root'
 })
 export class MapService {
-  public tileSprites = { };
+  public mapTiles: MapTile[] = baseTiles.mapTiles;
+  public buildingTiles: BuildingTile[] = baseTiles.buildingTiles;
+
   mapWidth: number;
   mapHeight: number;
 
   public tiledMap: Tile[] = [];
 
-  walkableTiles = [TileType.Grass];
+  walkableMapTiles = [MapTileType.Grass];
 
-  playerY = 100;
-  playerX = 100;
-  playerTile: Tile;
+  cameraY = 100;
+  cameraX = 100;
+  cameraTile: Tile;
 
-  constructor() {
-    this.tileSprites[TileType.Grass] = '../assets/sprites/grass.png';
-    this.tileSprites[TileType.Water] = '../assets/sprites/water.png';
-    this.tileSprites[TileType.Mountain] = '../assets/sprites/mountain.png';
-    this.tileSprites[TileType.Player] = '../assets/sprites/player.png';
-
+  constructor(protected resourcesService: ResourcesService) {
     const _tiledMap: Tile[] = [];
-    const tileTypes = [TileType.Grass, TileType.Water, TileType.Mountain];
+    const tileTypes = [MapTileType.Grass, MapTileType.Water, MapTileType.Mountain];
     let _mapWidth: number, _mapHeight: number;
 
     const xmlRequest = new XMLHttpRequest();
@@ -39,7 +39,7 @@ export class MapService {
       _mapWidth = +layerData.attributes.getNamedItem('width').value;
       _mapHeight = +layerData.attributes.getNamedItem('height').value;
 
-      mapValues.split(',').map(tileIndex => _tiledMap.push({tileType: tileTypes[+tileIndex - 1]}));
+      mapValues.split(',').map(tileIndex => _tiledMap.push({mapTileType: tileTypes[+tileIndex - 1]}));
     };
 
     xmlRequest.open('GET', '../assets/tilemap/map.tmx', false);
@@ -48,6 +48,37 @@ export class MapService {
     this.tiledMap = _tiledMap;
     this.mapWidth = _mapWidth;
     this.mapHeight = _mapHeight;
+  }
+
+  createBuilding(tile: Tile, buildingType: BuildingTileType): boolean {
+    const buildingTile = this.buildingTiles[buildingType];
+
+    if (tile.buildingTileType !== undefined ||
+        !buildingTile.buildableSurfaces.some(bs => bs === tile.mapTileType) ||
+        !this.canAffordBuilding(buildingTile)) {
+      return false;
+    }
+
+    for (const resourceCost of buildingTile.resourceCosts) {
+      this.resourcesService.addResourceAmount(resourceCost.resourceId, -resourceCost.resourceCost);
+    }
+
+    tile.buildingTileType = buildingType;
+    return true;
+  }
+
+  public canAffordBuilding(buildingTile: BuildingTile): boolean {
+    for (const resourceCost of buildingTile.resourceCosts) {
+      if (this.resourcesService.getResource(resourceCost.resourceId).amount < resourceCost.resourceCost) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  clearBuilding(tile: Tile) {
+    tile.buildingTileType = undefined;
   }
 
   getRowCount(): number {
@@ -78,35 +109,34 @@ export class MapService {
     return submap;
   }
 
-  getTileSprite(tile: Tile) {
-    if (tile === this.playerTile) {
-      return this.tileSprites[TileType.Player];
-    }
+  getMapTileSprite(tile: Tile) {
+    return this.mapTiles[tile.mapTileType].spritePath;
+  }
 
-    return this.tileSprites[tile.tileType];
+  getBuildingTileSprite(tile: Tile) {
+    return this.buildingTiles[tile.buildingTileType].spritePath;
   }
 
   canMove(newLocationX: number, newLocationY: number): boolean {
     return newLocationX >= 0 && newLocationX < this.mapWidth &&
-           newLocationY >= 0 && newLocationY < this.mapHeight &&
-           this.walkableTiles.some(tileType => tileType === this.getTile(newLocationX, newLocationY).tileType);
+           newLocationY >= 0 && newLocationY < this.mapHeight;
   }
 
-  getPlayerLocation(): number[] {
-    return [this.playerX, this.playerY];
+  getCameraLocation(): number[] {
+    return [this.cameraX, this.cameraY];
   }
 
-  setPlayerLocation(xOffset: number, yOffset: number): boolean {
-    const newLocationX = this.playerX + xOffset;
-    const newLocationY = this.playerY + yOffset;
+  setCameraLocation(xOffset: number, yOffset: number): boolean {
+    const newLocationX = this.cameraX + xOffset;
+    const newLocationY = this.cameraY + yOffset;
 
     if (!this.canMove(newLocationX, newLocationY)) {
       return false;
     }
 
-    this.playerX = newLocationX;
-    this.playerY = newLocationY;
-    this.playerTile = this.getTile(newLocationX, newLocationY);
+    this.cameraX = newLocationX;
+    this.cameraY = newLocationY;
+    this.cameraTile = this.getTile(newLocationX, newLocationY);
 
     return true;
   }

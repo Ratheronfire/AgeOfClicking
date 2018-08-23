@@ -1,7 +1,9 @@
-import { AdminService } from '../../services/admin/admin.service';
-import { TileType, Tile } from '../../objects/tile';
+import { Component, OnInit, HostListener, ViewChild, ElementRef } from '@angular/core';
+
+import { MapTileType, Tile, BuildingTileType, MapTile, BuildingTile } from '../../objects/tile';
 import { MapService } from '../../services/map/map.service';
-import { Component, OnInit, HostListener } from '@angular/core';
+import { AdminService } from '../../services/admin/admin.service';
+import { ResourcesService } from '../../services/resources/resources.service';
 
 @Component({
   selector: 'app-map',
@@ -9,7 +11,13 @@ import { Component, OnInit, HostListener } from '@angular/core';
   styleUrls: ['./map.component.css']
 })
 export class MapComponent implements OnInit {
-  tileTypes = TileType;
+  mapTileTypes = MapTileType;
+  buildingTileTypes = BuildingTileType;
+
+  showSelectedTileDialog = false;
+  selectedTile: Tile;
+  selectedBuilding: BuildingTile;
+
   tilePixels = 48;
 
   topLeftX = 0;
@@ -18,9 +26,13 @@ export class MapComponent implements OnInit {
   windowHeight = 15;
 
   constructor(protected mapService: MapService,
+              protected resourcesService: ResourcesService,
               protected adminService: AdminService) { }
 
   ngOnInit() {
+    this.setCameraLocation(0, 0);
+
+    this.selectedBuilding = this.mapService.buildingTiles[BuildingTileType.Wall];
   }
 
   @HostListener('document:keypress', ['$event'])
@@ -29,47 +41,70 @@ export class MapComponent implements OnInit {
       case 'w':
       case 'W':
       case 'ArrowUp':
-        this.setPlayerLocation(0, -1);
+        this.setCameraLocation(0, -1);
         break;
       case 'a':
       case 'A':
       case 'ArrowLeft':
-        this.setPlayerLocation(-1, 0);
+        this.setCameraLocation(-1, 0);
         break;
       case 's':
       case 'S':
       case 'ArrowDown':
-        this.setPlayerLocation(0, 1);
+        this.setCameraLocation(0, 1);
         break;
       case 'd':
       case 'D':
       case 'ArrowRight':
-        this.setPlayerLocation(1, 0);
+        this.setCameraLocation(1, 0);
         break;
     }
+  }
+
+  selectTile(tile: Tile) {
+    this.selectedTile = tile;
+    this.showSelectedTileDialog = true;
+  }
+
+  canAffordBuilding(buildingType: BuildingTileType): boolean {
+    return this.mapService.canAffordBuilding(this.mapService.buildingTiles[buildingType]);
+  }
+
+  createBuilding(tile: Tile, buildingType: BuildingTileType) {
+    const buildingCreated = this.mapService.createBuilding(tile, buildingType);
+
+    this.showSelectedTileDialog = !buildingCreated;
+  }
+
+  clearBuilding(tile: Tile) {
+    this.mapService.clearBuilding(tile);
   }
 
   getMap(clampToWindow: boolean): Tile[] {
     return this.mapService.getMap(clampToWindow, this.topLeftX, this.topLeftY, this.windowWidth, this.windowHeight);
   }
 
-  getTileSprite(tile: Tile) {
-    return this.mapService.getTileSprite(tile);
+  getMapTileSprite(tile: Tile) {
+    return this.mapService.getMapTileSprite(tile);
   }
 
-  getPlayerLocation(): number[] {
-    return this.mapService.getPlayerLocation();
+  getBuildingTileSprite(tile: Tile) {
+    return this.mapService.getBuildingTileSprite(tile);
   }
 
-  setPlayerLocation(xOffset: number, yOffset: number) {
-    const moveSuccessful = this.mapService.setPlayerLocation(xOffset, yOffset);
+  getCameraLocation(): number[] {
+    return this.mapService.getCameraLocation();
+  }
+
+  setCameraLocation(xOffset: number, yOffset: number) {
+    const moveSuccessful = this.mapService.setCameraLocation(xOffset, yOffset);
 
     if (!moveSuccessful) {
       return;
     }
 
-    this.topLeftX = Math.floor(this.mapService.playerX - this.windowWidth / 2);
-    this.topLeftY = Math.floor(this.mapService.playerY - this.windowHeight / 2);
+    this.topLeftX = Math.floor(this.mapService.cameraX - this.windowWidth / 2);
+    this.topLeftY = Math.floor(this.mapService.cameraY - this.windowHeight / 2);
 
     if (this.topLeftX < 0) {
       this.topLeftX = 0;
@@ -82,10 +117,10 @@ export class MapComponent implements OnInit {
       this.topLeftY = this.mapService.mapHeight - this.windowHeight;
     }
 
-    const playerLocation = this.getPlayerLocation();
+    const cameraCenter = this.getCameraLocation();
 
-    const distanceFromCenterX = Math.abs(playerLocation[0] - (this.topLeftX + this.windowWidth / 2));
-    const distanceFromCenterY = Math.abs(playerLocation[1] - (this.topLeftY + this.windowHeight / 2));
+    const distanceFromCenterX = Math.abs(cameraCenter[0] - (this.topLeftX + this.windowWidth / 2));
+    const distanceFromCenterY = Math.abs(cameraCenter[1] - (this.topLeftY + this.windowHeight / 2));
 
     const newCameraX = this.topLeftX + xOffset;
     const newCameraY = this.topLeftY + yOffset;
@@ -96,6 +131,22 @@ export class MapComponent implements OnInit {
     if (newCameraY >= 0 && newCameraY + this.windowHeight <= this.getRowCount() && distanceFromCenterY >= 1) {
       this.topLeftY = newCameraY;
     }
+  }
+
+  get selectedMapTile(): MapTile {
+    if (this.selectedTile === undefined) {
+      return undefined;
+    }
+
+    return this.mapService.mapTiles[this.selectedTile.mapTileType];
+  }
+
+  get selectedBuildingTile(): BuildingTile {
+    if (this.selectedTile === undefined || this.selectedTile.buildingTileType === undefined) {
+      return undefined;
+    }
+
+    return this.mapService.buildingTiles[this.selectedTile.buildingTileType];
   }
 
   getRowCount(): number {
