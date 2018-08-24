@@ -26,7 +26,7 @@
 
       <a (click)="selectTile(tile)">
         <img class="building-img" *ngIf="tile.buildingTileType !== undefined" src={{getBuildingTileSprite(tile)}} onmousedown="return false">
-        <img class="map-img" src={{getMapTileSprite(tile)}} onmousedown="return false">
+        <img class="map-img" appcrop src='{{getMapTileSprite(tile)}}' onmousedown="return false">
 
         <div *ngIf="showSelectedTileDialog && selectedTile === tile">
           <img class="card-tail" src="../../../assets/sprites/card_tail.png" onmousedown="return false">

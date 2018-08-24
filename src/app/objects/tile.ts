@@ -35,7 +35,17 @@ export interface BuildingTile {
   buildableSurfaces: MapTileType[];
 }
 
+export interface TileCropDetail {
+  x: number;
+  y: number;
+
+  width: number;
+  height: number;
+}
+
 export class Tile {
   mapTileType: MapTileType;
   buildingTileType?: BuildingTileType;
+
+  tileCropDetail: TileCropDetail;
 }

@@ -11,12 +11,16 @@ export class TouchDirective {
   constructor(protected element: ElementRef,
               protected renderer: Renderer2,
               protected clickerMainService: ClickerMainService) {
-    Hammer(element.nativeElement).on('press', function(event) {
+    const hammerControl = Hammer(element.nativeElement);
+
+    hammerControl.get('press').set({time: 0});
+
+    hammerControl.on('press', function(event) {
       const id = +element.nativeElement.attributes['id'].value;
       clickerMainService.startHarvesting(id);
     });
 
-    Hammer(element.nativeElement).on('pressup', function(event) {
+    hammerControl.on('pressup', function(event) {
       const id = +element.nativeElement.attributes['id'].value;
       clickerMainService.stopHarvesting(id);
     });

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ResourcesService } from '../resources/resources.service';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile } from '../../objects/tile';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail } from '../../objects/tile';
 
 declare var require: any;
 const Jimp = require('jimp');
@@ -29,6 +29,7 @@ export class MapService {
     const _tiledMap: Tile[] = [];
     const tileTypes = [MapTileType.Grass, MapTileType.Water, MapTileType.Mountain];
     let _mapWidth: number, _mapHeight: number;
+    let tileIds: number[];
 
     const xmlRequest = new XMLHttpRequest();
     xmlRequest.onload = function() {
@@ -39,11 +40,16 @@ export class MapService {
       _mapWidth = +layerData.attributes.getNamedItem('width').value;
       _mapHeight = +layerData.attributes.getNamedItem('height').value;
 
-      mapValues.split(',').map(tileIndex => _tiledMap.push({mapTileType: tileTypes[+tileIndex - 1]}));
+      tileIds = mapValues.split(',').map(tileId => +tileId);
     };
 
     xmlRequest.open('GET', '../../../assets/tilemap/map.tmx', false);
     xmlRequest.send();
+
+    console.log(tileIds);
+    tileIds.map(tileIndex =>
+      _tiledMap.push({mapTileType: tileTypes[tileIndex - 1], tileCropDetail: {x: 0, y: 0, width: 0, height: 0}}));
+      // _tiledMap.push({mapTileType: this.getTileType(tileIndex), tileCropDetail: this.getTileCropDetail(tileIndex)}));
 
     this.tiledMap = _tiledMap;
     this.mapWidth = _mapWidth;
@@ -139,5 +145,20 @@ export class MapService {
     this.cameraTile = this.getTile(newLocationX, newLocationY);
 
     return true;
+  }
+
+  getTileType(tileId: number): MapTileType {
+    if (tileId in [37, 38, 39, 40, 41, 42, 43, 44, 54, 55, 56, 57, 58, 59, 60, 61, 71, 72, 73, 74, 75, 76, 77, 78, 88,
+      89, 90, 91, 92, 93, 94, 95, 105, 106, 107, 108, 109, 110, 111, 112, 123, 124, 125, 126, 127, 128, 129, 130]) {
+      return MapTileType.Grass;
+    } else if (tileId in [53, 122]) {
+      return MapTileType.Water;
+    }
+
+    return MapTileType.Mountain;
+  }
+
+  getTileCropDetail(tileId: number): TileCropDetail {
+    return {x: 0, y: 0, width: 16, height: 16};
   }
 }
