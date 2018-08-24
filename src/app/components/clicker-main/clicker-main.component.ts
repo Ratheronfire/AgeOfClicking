@@ -3,6 +3,7 @@ import { Component, OnInit, } from '@angular/core';
 import { ClickerMainService } from './../../services/clicker-main/clicker-main.service';
 import { ResourcesService } from '../../services/resources/resources.service';
 import { ResourceType, Resource } from '../../objects/resource';
+import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { AdminService } from './../../services/admin/admin.service';
 
 @Component({
@@ -15,6 +16,7 @@ export class ClickerMainComponent implements OnInit {
 
   constructor(protected clickerMainService: ClickerMainService,
               protected resourcesService: ResourcesService,
+              protected tooltipService: TooltipService,
               protected adminService: AdminService) { }
 
   ngOnInit() {
@@ -25,8 +27,7 @@ export class ClickerMainComponent implements OnInit {
   }
 
   public getTooltipMessage(id: number): string {
-    const workerCount = this.resourcesService.getResource(id).worker.workerCount;
-    return this.resourcesService.resourceTooltip(id, workerCount);
+    return this.tooltipService.getResourceTooltip(id);
   }
 
   startHarvesting(id: number) {

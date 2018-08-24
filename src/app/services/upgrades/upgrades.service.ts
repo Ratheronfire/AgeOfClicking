@@ -100,6 +100,24 @@ export class UpgradesService {
     return upgrades;
   }
 
+  public upgradesOfVariable(upgradeVariable: UpgradeVariable,
+                            filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean) {
+    let upgrades = this.upgrades.filter(upgrade => upgrade.upgradeEffects.some(ue => ue.upgradeVariable === upgradeVariable));
+
+    if (filterByPurchased) {
+      upgrades = upgrades.filter(upgrade => upgrade.purchased);
+    }
+    if (filterByUnpurchased) {
+      upgrades = upgrades.filter(upgrade => !upgrade.purchased);
+    }
+    if (filterByAccessible) {
+      upgrades = upgrades.filter(upgrade => upgrade.resourceCosts.every(
+        rc => this.resourcesService.getResource(rc.resourceId).resourceAccessible));
+    }
+
+    return upgrades;
+  }
+
   public getUpgradeTypeString(id: number): string {
     return UpgradeType[this.getUpgrade(id).upgradeType];
   }

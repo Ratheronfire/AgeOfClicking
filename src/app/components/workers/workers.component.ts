@@ -4,6 +4,7 @@ import { Resource, ResourceType } from '../../objects/resource';
 import { ResourcesService } from '../../services/resources/resources.service';
 import { Worker } from '../../objects/worker';
 import { WorkersService } from '../../services/workers/workers.service';
+import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
@@ -16,6 +17,7 @@ export class WorkersComponent implements OnInit {
 
   constructor(protected resourcesService: ResourcesService,
               protected workersService: WorkersService,
+              protected tooltipService: TooltipService,
               protected adminService: AdminService) { }
 
   ngOnInit() {
@@ -34,7 +36,7 @@ export class WorkersComponent implements OnInit {
   }
 
   getTooltipMessage(id: number): string {
-    return this.workersService.getResourceTooltipMessage(id);
+    return this.tooltipService.getWorkerTooltip(id);
   }
 
   hireWorker(id: number) {

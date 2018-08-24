@@ -44,12 +44,6 @@ export class WorkersService {
     return worker.cost <= this.resourcesService.getResource(0).amount;
   }
 
-  getResourceTooltipMessage(resourceId: number): string {
-    const resource = this.resourcesService.getResource(resourceId);
-
-    return `${resource.workerVerb} ${resource.workerYield} ${resource.workerNoun}${resource.workerYield === 1 ? '' : 's'} per second.`;
-  }
-
   processWorkers() {
     for (const worker of this.workers) {
       for (const resourceWorker of worker.workersByResource) {
