@@ -30,6 +30,10 @@ export class Resource {
   harvestYield?: number;
   harvestMilliseconds?: number;
 
+  harvestStartDate = Date.now();
+  harvesting = false;
+  progressBarValue = 0;
+
   workerYield?: number;
 
   sellable: boolean;

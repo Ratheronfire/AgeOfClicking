@@ -10,14 +10,17 @@
       </mat-expansion-panel-header>
 
       <div *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)">
-        <button appTouch mat-raised-button class="resource-button" color="accent" [disabled]="!resourcesService.canHarvest(resource.id)" [id]="resource.id"
-          (mouseleave)='stopHarvesting(resource.id)'
+        <button mat-raised-button class="resource-button" color="accent" [disabled]="resource.harvesting || !resourcesService.canHarvest(resource.id)" [id]="resource.id"
+          (click)='startHarvesting(resource.id)'
           matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
           <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
-          <mat-progress-bar [class.hidden]="resourceBeingHarvested !== resource.id" class="harvest-progress" [mode]="mode" [value]="value"></mat-progress-bar>
+
+          <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [mode]="progressBarMode" [value]="resource.progressBarValue"></mat-progress-bar>
+
           <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
         </button>
+
         <div *ngIf="adminService.editMode">
           <br />
           <button (click)="editResource(resource.id)">Edit {{resource.name | titlecase}}</button>

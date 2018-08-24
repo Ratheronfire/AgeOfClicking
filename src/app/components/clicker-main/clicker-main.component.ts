@@ -3,6 +3,7 @@ import { Component, OnInit, } from '@angular/core';
 import { ClickerMainService } from './../../services/clicker-main/clicker-main.service';
 import { ResourcesService } from '../../services/resources/resources.service';
 import { ResourceType, Resource } from '../../objects/resource';
+import { WorkersService } from '../../services/workers/workers.service';
 import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { AdminService } from './../../services/admin/admin.service';
 
@@ -16,6 +17,7 @@ export class ClickerMainComponent implements OnInit {
 
   constructor(protected clickerMainService: ClickerMainService,
               protected resourcesService: ResourcesService,
+              protected workersService: WorkersService,
               protected tooltipService: TooltipService,
               protected adminService: AdminService) { }
 
@@ -38,10 +40,6 @@ export class ClickerMainComponent implements OnInit {
     this.clickerMainService.stopHarvesting(id);
   }
 
-  updateProgressBar(id: number) {
-    this.clickerMainService.updateProgressBar(id);
-  }
-
   shouldAnimateProgressBar(id: number): boolean {
     return this.clickerMainService.shouldAnimateProgressBar(id);
   }
@@ -52,29 +50,5 @@ export class ClickerMainComponent implements OnInit {
 
   editResource(id: number) {
     this.adminService.openResourceDialog(id);
-  }
-
-  get resourceBeingHarvested() {
-    return this.clickerMainService.resourceBeingHarvested;
-  }
-
-  get value() {
-    return this.clickerMainService.value;
-  }
-
-  get mode() {
-    return this.clickerMainService.mode;
-  }
-
-  get millisecondsTotal() {
-    return this.clickerMainService.millisecondsTotal;
-  }
-
-  get harvestStartDate() {
-    return this.clickerMainService.harvestStartDate;
-  }
-
-  get progressBarUpdateDelay() {
-    return this.clickerMainService.progressBarUpdateDelay;
   }
 }
