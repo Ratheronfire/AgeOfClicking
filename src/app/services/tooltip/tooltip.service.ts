@@ -17,7 +17,7 @@ export class TooltipService {
     const resource = this.resourcesService.getResource(resourceId);
     const worker = this.workersService.getResourceWorker(resourceId);
 
-    let tooltip = `${resource.resourceDescription}.`;
+    let tooltip = `${resource.resourceDescription}`;
 
     if (resourceId === 0) {
       return tooltip;

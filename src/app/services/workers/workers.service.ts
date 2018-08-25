@@ -17,7 +17,12 @@ export class WorkersService {
   constructor(protected resourcesService: ResourcesService,
               protected messagesService: MessagesService) { }
 
-  public getWorkers() {
+  public getWorkers(filterByAccessible: boolean) {
+    if (filterByAccessible) {
+      return this.workers.filter(worker => worker.workersByResource.some(
+        rw => this.resourcesService.getResource(rw.resourceId).resourceAccessible));
+    }
+
     return this.workers;
   }
 

@@ -15,10 +15,11 @@
 
       <div *ngFor="let upgrade of upgradesOfType(upgradeType, false, hidePurchased, adminService.filterAccessible)">
         <mat-divider></mat-divider>
-        <button mat-raised-button color="accent"
-          [disabled]='!canAffordUpgrade(upgrade.id)'
-          (click)='purchaseUpgrade(upgrade.id)'>
-          <mat-card-title>{{upgrade.name}}</mat-card-title>
+        <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
+          <mat-card-title>
+            <b><mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon></b>
+            {{upgrade.name}}
+          </mat-card-title>
         </button>
         <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
         <mat-card-content>

@@ -23,8 +23,8 @@ export class WorkersComponent implements OnInit {
   ngOnInit() {
   }
 
-  getWorkers(): Worker[] {
-    return this.workersService.getWorkers();
+  getWorkers(filterByAccessible: boolean): Worker[] {
+    return this.workersService.getWorkers(filterByAccessible);
   }
 
   public getWorker(idOrResourceType: number | ResourceType) {

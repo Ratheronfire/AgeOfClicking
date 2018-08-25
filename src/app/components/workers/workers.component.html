@@ -1,6 +1,6 @@
 <ul class="workers">
   <mat-accordion multi="true">
-    <mat-expansion-panel expanded="true" *ngFor="let worker of getWorkers()">
+    <mat-expansion-panel expanded="true" *ngFor="let worker of getWorkers(true)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{worker.resourceType | titlecase}}

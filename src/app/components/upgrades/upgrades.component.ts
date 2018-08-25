@@ -13,7 +13,7 @@ import { AdminService } from '../../services/admin/admin.service';
 })
 export class UpgradesComponent implements OnInit {
   upgradeTypes = UpgradeType;
-  hidePurchased = false;
+  hidePurchased = true;
 
   constructor(private resourcesService: ResourcesService,
               private upgradesService: UpgradesService,
