@@ -53,19 +53,7 @@ export class WorkersComponent implements OnInit {
     resourceWorker.sliderSettingValid = worker.freeWorkers + resourceWorker.workerCount - newValue >= 0;
   }
 
-  updateResourceWorkers(event: any) {
-    const resource = this.resourcesService.getResource(+event.source._elementRef.nativeElement.id);
-    const worker = this.getWorker(resource.resourceType);
-    const resourceWorker = worker.workersByResource.find(ws => ws.resourceId === resource.id);
-
-    if (!resourceWorker.sliderSettingValid) {
-      return;
-    }
-
-    const newValue = +event.value;
-    const newFreeWorkers = worker.freeWorkers + resourceWorker.workerCount - newValue;
-
-    worker.freeWorkers = newFreeWorkers;
-    resourceWorker.workerCount = newValue;
+  updateResourceWorker(event: any) {
+    this.workersService.updateResourceWorker(+event.source._elementRef.nativeElement.id, +event.value);
   }
 }

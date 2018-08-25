@@ -56,6 +56,21 @@ export class WorkersService {
     }
   }
 
+  updateResourceWorker(id: number, newWorkerCount: number) {
+    const resource = this.resourcesService.getResource(id);
+    const worker = this.getWorker(resource.resourceType);
+    const resourceWorker = worker.workersByResource.find(ws => ws.resourceId === resource.id);
+
+    if (!resourceWorker.sliderSettingValid) {
+      return;
+    }
+
+    const newFreeWorkers = worker.freeWorkers + resourceWorker.workerCount - newWorkerCount;
+
+    worker.freeWorkers = newFreeWorkers;
+    resourceWorker.workerCount = newWorkerCount;
+  }
+
   hireWorker(id: number) {
     if (!this.canAfford(id)) {
       return;

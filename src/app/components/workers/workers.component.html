@@ -20,7 +20,7 @@
           <mat-card-title>{{resourcesService.getResource(resourceWorker.resourceId).name | titlecase}}</mat-card-title>
           <mat-card-subtitle>{{resourceWorker.workerCount}} Workers</mat-card-subtitle>
           <mat-slider [color]="resourceWorker.sliderSettingValid ? 'accent' : 'warn'" [id]="resourceWorker.resourceId" [max]="worker.workerCount"
-            [tickInterval]="1" [thumbLabel]="true" (input)="checkSliderValue($event)" (change)="updateResourceWorkers($event)">
+             [tickInterval]="1" [thumbLabel]="true" (input)="checkSliderValue($event)" (change)="updateResourceWorker($event)">
           </mat-slider>
         </mat-card>
       </div>

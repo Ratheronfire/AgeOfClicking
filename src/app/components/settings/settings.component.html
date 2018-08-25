@@ -1,0 +1,27 @@
+<mat-accordion>
+  <mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon color="primary">save</mat-icon>
+        Save/Load
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-form-field>
+      <mat-select placeholder="Autosave Interval (Minutes)" [(value)]="autosaveInterval" (valueChange)="setAutosave()">
+        <mat-option [value]="-1">Disable</mat-option>
+        <mat-option [value]="60000">1</mat-option>
+        <mat-option [value]="900000">15</mat-option>
+        <mat-option [value]="1800000">30</mat-option>
+        <mat-option [value]="3600000">60</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" (click)="saveGame()">Save</button>
+    <button mat-raised-button color="accent" (click)="loadGame()">Load</button>
+
+    <button mat-raised-button (click)="exportSave()">Export Save</button>
+    <button mat-raised-button (click)="importSave()">Import Save</button>
+  </mat-expansion-panel>
+
+</mat-accordion>

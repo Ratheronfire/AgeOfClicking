@@ -1,0 +1,43 @@
+import { Component, OnInit } from '@angular/core';
+
+import { SettingsService } from '../../services/settings/settings.service';
+
+@Component({
+  selector: 'app-settings',
+  templateUrl: './settings.component.html',
+  styleUrls: ['./settings.component.css']
+})
+export class SettingsComponent implements OnInit {
+  constructor(protected settingsService: SettingsService) { }
+
+  ngOnInit() {
+  }
+
+  setAutosave() {
+    this.settingsService.setAutosave();
+  }
+
+  saveGame() {
+    this.settingsService.saveGame();
+  }
+
+  loadGame() {
+    this.settingsService.loadGame();
+  }
+
+  exportSave() {
+    alert(this.settingsService.exportSave());
+  }
+
+  importSave() {
+    this.settingsService.importSave(prompt('Paste Save Data'));
+  }
+
+  get autosaveInterval() {
+    return this.settingsService.autosaveInterval;
+  }
+
+  set autosaveInterval(value: number) {
+    this.settingsService.autosaveInterval = value;
+  }
+}
