@@ -17,7 +17,7 @@ export class TooltipService {
     const resource = this.resourcesService.getResource(resourceId);
     const worker = this.workersService.getResourceWorker(resourceId);
 
-    let tooltip = `${resource.resourceDescription}`;
+    let tooltip = `${resource.resourceDescription}.`;
 
     if (resourceId === 0) {
       return tooltip;
@@ -25,16 +25,12 @@ export class TooltipService {
 
     let neededUpgrades = this.upgradesService.upgradesOfVariable(UpgradeVariable.Harvestability, false, true, false);
     neededUpgrades = neededUpgrades.filter(upgrade => upgrade.upgradeEffects.some(ue =>
-      (ue.resourceType === resource.resourceType || ue.resourceId === resourceId)
-      && ue.upgradeVariable === UpgradeVariable.Harvestability));
+      ue.upgradeVariable === UpgradeVariable.Harvestability &&
+      ((ue.resourceType === resource.resourceType && ue.upgradeIsForWholeType && resource.resourceTier <= ue.maxTier) ||
+      ue.resourceId === resourceId)));
 
     if (neededUpgrades.length) {
-      tooltip += '\nNeeded Upgrades:';
-      for (const neededUpgrade of neededUpgrades) {
-        tooltip += ` ${neededUpgrade.name},`;
-      }
-      tooltip = tooltip.substring(0, tooltip.length - 1);
-      tooltip += '.';
+      tooltip += `\nNeeded Upgrade: ${neededUpgrades[0].name}.`;
     }
 
     if (resource.resourceConsumes.length) {

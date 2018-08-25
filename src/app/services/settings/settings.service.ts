@@ -53,6 +53,12 @@ export class SettingsService {
     this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
   }
 
+  deleteSave() {
+    localStorage.removeItem('clickerGameSaveData');
+
+    this.snackbar.open('Game save deleted.', '', {duration: 2000});
+  }
+
   exportSave() {
     const saveData: SaveData = {
       resources: [],

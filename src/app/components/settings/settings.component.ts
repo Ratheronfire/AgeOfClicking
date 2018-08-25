@@ -25,6 +25,12 @@ export class SettingsComponent implements OnInit {
     this.settingsService.loadGame();
   }
 
+  deleteGame() {
+    if (confirm('Are you sure you want to delete your save?')) {
+      this.settingsService.deleteSave();
+    }
+  }
+
   exportSave() {
     alert(this.settingsService.exportSave());
   }

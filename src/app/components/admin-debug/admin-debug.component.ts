@@ -88,7 +88,9 @@ export class AdminDebugComponent implements OnInit {
   stringifyResource(resource: Resource) {
     this.prepareResourceForJson(resource);
 
-    alert(JSON.stringify(resource));
+    const resourceJson = JSON.stringify(resource);
+    alert(resourceJson);
+    console.log(resourceJson);
   }
 
   stringifyResources() {
@@ -96,7 +98,9 @@ export class AdminDebugComponent implements OnInit {
       this.prepareResourceForJson(resource);
     }
 
-    alert(JSON.stringify(this.resourcesService.resources));
+    const resourcesJson = JSON.stringify(this.resourcesService.resources);
+    alert(resourcesJson);
+    console.log(resourcesJson);
   }
 
   stringifyWorkers() {
@@ -104,10 +108,14 @@ export class AdminDebugComponent implements OnInit {
       this.prepareWorkerForJson(worker);
     }
 
-    alert(JSON.stringify(this.workersService.workers));
+    const workersJson = JSON.stringify(this.workersService.workers);
+    alert(workersJson);
+    console.log(workersJson);
   }
 
   stringifyUpgrades() {
-    alert(JSON.stringify(this.upgradesService.upgrades));
+    const upgradesJson = JSON.stringify(this.upgradesService.upgrades);
+    alert(upgradesJson);
+    console.log(upgradesJson);
   }
 }

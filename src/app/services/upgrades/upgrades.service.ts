@@ -38,6 +38,11 @@ export class UpgradesService {
 
       if (upgradeEffect.upgradeIsForWholeType) {
         resourcesToUpgrade = this.resourcesService.resourcesOfType(upgradeEffect.resourceType, false, false);
+
+        console.log(upgradeEffect.maxTier);
+        if (upgradeEffect.maxTier >= 0) {
+          resourcesToUpgrade = resourcesToUpgrade.filter(resource => resource.resourceTier <= upgradeEffect.maxTier);
+        }
       }
 
       for (const resourceToUpgrade of resourcesToUpgrade) {
@@ -83,7 +88,8 @@ export class UpgradesService {
     return true;
   }
 
-  public upgradesOfType(upgradeType: UpgradeType, filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean) {
+  public upgradesOfType(upgradeType: UpgradeType,
+                        filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
     let upgrades = this.upgrades.filter(upgrade => upgrade.upgradeType === upgradeType);
 
     if (filterByPurchased) {
@@ -101,7 +107,7 @@ export class UpgradesService {
   }
 
   public upgradesOfVariable(upgradeVariable: UpgradeVariable,
-                            filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean) {
+                            filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
     let upgrades = this.upgrades.filter(upgrade => upgrade.upgradeEffects.some(ue => ue.upgradeVariable === upgradeVariable));
 
     if (filterByPurchased) {

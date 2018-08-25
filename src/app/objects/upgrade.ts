@@ -19,6 +19,7 @@ export interface UpgradeEffect {
 
   resourceType?: ResourceType;
   resourceId?: number;
+  maxTier?: number;
 
   upgradeVariable: UpgradeVariable;
   upgradeFactor: number;

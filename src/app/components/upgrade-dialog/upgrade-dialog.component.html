@@ -55,6 +55,10 @@
               </mat-option>
             </mat-select>
           </mat-form-field>
+
+          <mat-form-field class="full-width">
+            <input matInput placeholder="Max Tier" [(ngModel)]="upgradeEffect.maxTier">
+          </mat-form-field>
         </div>
         <div *ngIf="!upgradeEffect.upgradeIsForWholeType">
           <mat-form-field class="full-width">
