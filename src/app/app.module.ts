@@ -17,6 +17,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { AdminDebugComponent } from './components/admin-debug/admin-debug.component';
 import { ResourceDialogComponent } from './components/resource-dialog/resource-dialog.component';
 import { UpgradeDialogComponent } from './components/upgrade-dialog/upgrade-dialog.component';
+import { SaveDialogComponent } from './components/save-dialog/save-dialog/save-dialog.component';
 import { TouchDirective } from './directives/touch/touch.directive';
 import { CropDirective } from './directives/crop/crop.directive';
 
@@ -34,7 +35,8 @@ import { CropDirective } from './directives/crop/crop.directive';
     ResourceDialogComponent,
     UpgradeDialogComponent,
     TouchDirective,
-    CropDirective
+    CropDirective,
+    SaveDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -46,7 +48,8 @@ import { CropDirective } from './directives/crop/crop.directive';
   ],
   entryComponents: [
     ResourceDialogComponent,
-    UpgradeDialogComponent
+    UpgradeDialogComponent,
+    SaveDialogComponent
   ],
   providers: [],
   bootstrap: [AppComponent]

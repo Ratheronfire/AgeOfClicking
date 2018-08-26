@@ -32,11 +32,12 @@ export class SettingsComponent implements OnInit {
   }
 
   exportSave() {
-    alert(this.settingsService.exportSave());
+    this.settingsService.openSaveDialog(this.settingsService.exportSave());
   }
 
   importSave() {
-    this.settingsService.importSave(prompt('Paste Save Data'));
+    this.settingsService.openSaveDialog();
+    // this.settingsService.importSave(prompt('Paste Save Data'));
   }
 
   get autosaveInterval() {

@@ -1,0 +1,19 @@
+<div *ngIf="!exportMode">
+  Paste Save
+  <mat-form-field class="full-width">
+    <input matInput placeholder="Save Data" [(ngModel)]="saveData" (submit)="exportData()">
+  </mat-form-field>
+
+  <div>
+    <button mat-raised-button color="accent" (click)="exportData()">Load</button>
+    <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  </div>
+</div>
+
+<div *ngIf="exportMode" style="word-wrap: break-word">
+  <textarea readonly id="saveData" class="full-width">{{saveData}}</textarea>
+  <div>
+    <button mat-raised-button class="copy-button" color="accent" data-clipboard-action="copy" data-clipboard-target="#saveData">Copy to Clipboard</button>
+    <button mat-raised-button (click)="onNoClick()">Close</button>
+  </div>
+</div>

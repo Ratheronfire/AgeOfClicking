@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, MatDialog } from '@angular/material';
 
 import { timer, Observable, Subscription } from 'rxjs';
 
@@ -7,6 +7,7 @@ import { ResourcesService } from './../resources/resources.service';
 import { UpgradesService } from './../upgrades/upgrades.service';
 import { WorkersService } from './../workers/workers.service';
 import { SaveData, WorkerData } from '../../objects/savedata';
+import { SaveDialogComponent } from '../../components/save-dialog/save-dialog/save-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -20,8 +21,25 @@ export class SettingsService {
   constructor(protected resourcesService: ResourcesService,
               protected upgradesService: UpgradesService,
               protected workersService: WorkersService,
-              protected snackbar: MatSnackBar) {
+              protected snackbar: MatSnackBar,
+              public dialog: MatDialog) {
     this.loadGame();
+  }
+
+  openSaveDialog(saveData?: string) {
+    const dialogRef = this.dialog.open(SaveDialogComponent, {
+      width: '750px',
+      height: '150px',
+      data: saveData === undefined ? {} : {saveData: saveData}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (this.importSave(result)) {
+          this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
+        }
+      }
+    });
   }
 
   setAutosave() {
@@ -52,9 +70,9 @@ export class SettingsService {
       return;
     }
 
-    this.importSave(saveData);
-
-    this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
+    if (this.importSave(saveData)) {
+      this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
+    }
   }
 
   deleteSave() {
@@ -113,7 +131,7 @@ export class SettingsService {
     return  btoa(JSON.stringify(saveData));
   }
 
-  importSave(saveDataString: string) {
+  importSave(saveDataString: string): boolean {
     const backupSave = this.exportSave();
 
     try {
@@ -158,11 +176,15 @@ export class SettingsService {
       }
 
       this.autosaveInterval = saveData.autosaveInterval;
+
+      return true;
     } catch (error) {
       this.snackbar.open(`Error loading save data: ${error}`, '', {duration: 5000});
       this.importSave(backupSave);
 
       console.error(error);
+
+      return false;
     }
   }
 }
