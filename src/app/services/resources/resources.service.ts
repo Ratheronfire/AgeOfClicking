@@ -18,24 +18,24 @@ export class ResourcesService {
     return this.resources.find(resource => resource.id === id);
   }
 
-  public harvestResource(id: number) {
+  public harvestResource(id: number, multiplier = 1) {
     const resource = this.getResource(id);
 
-    if (!resource.harvestable || !this.canHarvest(id)) {
+    if (!resource.harvestable || !this.canHarvest(id, multiplier)) {
       return;
     }
 
     for (const resourceConsume of resource.resourceConsumes) {
-      this.addResourceAmount(resourceConsume.resourceId, -resourceConsume.cost);
+      this.addResourceAmount(resourceConsume.resourceId, -resourceConsume.cost * multiplier);
     }
 
     this.resources.filter(r => r.previousTier === resource.resourceTier && r.resourceType === resource.resourceType)
       .map(r => r.resourceAccessible = true);
 
-    this.addResourceAmount(resource.id, resource.harvestYield);
+    this.addResourceAmount(resource.id, resource.harvestYield * multiplier);
   }
 
-  public canHarvest(id: number): boolean {
+  public canHarvest(id: number, multiplier = 1): boolean {
     const resource = this.getResource(id);
 
     if (!resource.harvestable) {
@@ -43,7 +43,7 @@ export class ResourcesService {
     }
 
     for (const resourceConsume of resource.resourceConsumes) {
-      if (this.getResource(resourceConsume.resourceId).amount < resourceConsume.cost) {
+      if (this.getResource(resourceConsume.resourceId).amount < resourceConsume.cost * multiplier) {
         return false;
       }
     }

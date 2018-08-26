@@ -10,7 +10,7 @@ import { UpgradeDialogComponent } from '../../components/upgrade-dialog/upgrade-
 export class AdminService {
   public filterAccessible = true;
   public clampMap = true;
-  public editMode: false;
+  public editMode = false;
 
   constructor(public dialog: MatDialog) { }
 

@@ -17,13 +17,24 @@ export class WorkersService {
   constructor(protected resourcesService: ResourcesService,
               protected messagesService: MessagesService) { }
 
-  public getWorkers(filterByAccessible: boolean) {
+  public getWorkers(filterByAccessible: boolean, filterByWorkable: boolean, filterByHarvestable: boolean) {
+    let workers = this.workers;
+
     if (filterByAccessible) {
-      return this.workers.filter(worker => worker.workersByResource.some(
+      workers = this.workers.filter(worker => worker.workersByResource.some(
         rw => this.resourcesService.getResource(rw.resourceId).resourceAccessible));
     }
 
-    return this.workers;
+    if (filterByWorkable) {
+      workers = this.workers.filter(worker => worker.workersByResource.some(rw => rw.workable));
+    }
+
+    if (filterByHarvestable) {
+      workers = this.workers.filter(worker => worker.workersByResource.some(
+        rw => this.resourcesService.getResource(rw.resourceId).harvestable));
+    }
+
+    return workers;
   }
 
   public getWorker(idOrResourceType: number | string | ResourceType) {
@@ -56,7 +67,7 @@ export class WorkersService {
           continue;
         }
 
-        this.resourcesService.addResourceAmount(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount);
+        this.resourcesService.harvestResource(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount);
       }
     }
   }

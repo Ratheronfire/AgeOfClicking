@@ -35,9 +35,17 @@ export class AdminDebugComponent implements OnInit {
     this.adminService.openUpgradeDialog();
   }
 
-  addResourceAmount() {
+  addResourceAmount(selectedResource: Resource) {
+    if (selectedResource === undefined) {
+      for (const resource of this.resourcesService.resources) {
+        this.resourcesService.addResourceAmount(resource.id, +this.amount);
+      }
+
+      return;
+    }
+
     this.resourcesService.addResourceAmount(
-      +this.selectedResource.id,
+      +selectedResource.id,
       +this.amount
     );
   }

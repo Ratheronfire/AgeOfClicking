@@ -15,7 +15,7 @@
       },
       {
         "resourceId": 7,
-        "workable": true,
+        "workable": false,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -73,14 +73,14 @@
     "workersByResource": [
       {
         "resourceId": 2,
-        "workable": true,
+        "workable": false,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
       {
         "resourceId": 3,
-        "workable": true,
+        "workable": false,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -187,7 +187,7 @@
     "workersByResource": [
       {
         "resourceId": 13,
-        "workable": true,
+        "workable": false,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true

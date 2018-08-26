@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import { Upgrade, UpgradeType, UpgradeVariable } from '../../objects/upgrade';
-import { Resource } from '../../objects/resource';
 import { ResourcesService } from '../resources/resources.service';
+import { WorkersService } from './../workers/workers.service';
 import { MessagesService } from '../messages/messages.service';
-import { Tooltip } from '../../objects/tooltip';
 
 declare var require: any;
 const baseUpgrades = require('../../../assets/json/upgrades.json');
@@ -13,9 +12,10 @@ const baseUpgrades = require('../../../assets/json/upgrades.json');
   providedIn: 'root'
 })
 export class UpgradesService {
-  public upgrades = baseUpgrades;
+  public upgrades: Upgrade[] = baseUpgrades;
 
   constructor(private resourcesService: ResourcesService,
+              private workersService: WorkersService,
               private messagesService: MessagesService) { }
 
   public getUpgrade(id: number): Upgrade {
@@ -34,10 +34,17 @@ export class UpgradesService {
     }
 
     for (const upgradeEffect of upgrade.upgradeEffects) {
+      if (upgradeEffect.upgradeVariable === UpgradeVariable.WorkerCost) {
+        this.workersService.getWorker(upgradeEffect.resourceType).cost *= upgradeEffect.upgradeFactor;
+        continue;
+      }
+
       let resourcesToUpgrade = [this.resourcesService.getResource(upgradeEffect.resourceId)];
+      let workersToUpgrade = [this.workersService.getResourceWorker(upgradeEffect.resourceId)];
 
       if (upgradeEffect.upgradeIsForWholeType) {
         resourcesToUpgrade = this.resourcesService.resourcesOfType(upgradeEffect.resourceType, false, false);
+        workersToUpgrade = this.workersService.getWorker(upgradeEffect.resourceType).workersByResource;
 
         console.log(upgradeEffect.maxTier);
         if (upgradeEffect.maxTier >= 0) {
@@ -46,7 +53,7 @@ export class UpgradesService {
       }
 
       for (const resourceToUpgrade of resourcesToUpgrade) {
-      switch (upgradeEffect.upgradeVariable) {
+        switch (upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Harvestability: {
             resourceToUpgrade.harvestable = !!upgradeEffect.upgradeFactor;
             break;
@@ -59,16 +66,23 @@ export class UpgradesService {
             resourceToUpgrade.harvestMilliseconds *= upgradeEffect.upgradeFactor;
             break;
           }
+          default: {
+            break;
+          }
+        }
+      }
+
+      for (const workerToUpgrade of workersToUpgrade) {
+        switch(upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Workable: {
-            resourceToUpgrade.worker.workable = !!upgradeEffect.upgradeFactor;
+            workerToUpgrade.workable = !!upgradeEffect.upgradeFactor;
             break;
           }
           case UpgradeVariable.WorkerYield: {
-            resourceToUpgrade.workerYield *= upgradeEffect.upgradeFactor;
+            workerToUpgrade.workerYield *= upgradeEffect.upgradeFactor;
             break;
           }
-          case UpgradeVariable.WorkerCost: {
-            resourceToUpgrade.worker.cost *= upgradeEffect.upgradeFactor;
+          default: {
             break;
           }
         }

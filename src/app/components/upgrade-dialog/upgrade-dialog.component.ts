@@ -40,7 +40,11 @@ export class UpgradeDialogComponent implements OnInit {
 
   ngOnInit() {
     if (this.data.upgradeId !== undefined) {
-      this.upgrade = this.upgradesService.getUpgrade(this.data.upgradeId);
+      this.oldUpgradeId = this.data.upgradeId;
+
+      this.populateUpgrade();
+      this.upgrade.id = this.oldUpgradeId;
+
       this.editMode = true;
     }
   }
@@ -107,6 +111,9 @@ export class UpgradeDialogComponent implements OnInit {
       if (upgradeEffect.resourceId) {
         upgradeEffect.resourceId = +upgradeEffect.resourceId;
       }
+      if (upgradeEffect.maxTier) {
+        upgradeEffect.maxTier = +upgradeEffect.maxTier;
+      }
 
       upgradeEffect.upgradeFactor = +upgradeEffect.upgradeFactor;
     }
@@ -116,12 +123,13 @@ export class UpgradeDialogComponent implements OnInit {
       resourceCost.resourceCost = +resourceCost.resourceCost;
     }
 
-    let existingUpgrade = this.upgradesService.getUpgrade(this.upgrade.id);
+    const existingUpgrade = this.upgradesService.getUpgrade(this.upgrade.id);
 
     if (existingUpgrade === undefined) {
       this.upgradesService.upgrades.push(this.upgrade);
     } else {
-      existingUpgrade = this.upgrade;
+      const oldIndex = this.upgradesService.upgrades.indexOf(existingUpgrade);
+      this.upgradesService.upgrades[oldIndex] = this.upgrade;
     }
   }
 

@@ -23,12 +23,16 @@ export class WorkersComponent implements OnInit {
   ngOnInit() {
   }
 
-  getWorkers(filterByAccessible: boolean): Worker[] {
-    return this.workersService.getWorkers(filterByAccessible);
+  getWorkers(filterByAccessible: boolean, filterByWorkable: boolean, filterByHarvestable: boolean): Worker[] {
+    return this.workersService.getWorkers(filterByAccessible, filterByWorkable, filterByHarvestable);
   }
 
   public getWorker(idOrResourceType: number | ResourceType) {
     return this.workersService.getWorker(idOrResourceType);
+  }
+
+  getAccessibleResourceWorkers(worker: Worker) {
+    return worker.workersByResource.filter(rw => this.resourcesService.getResource(rw.resourceId).resourceAccessible);
   }
 
   canAfford(id: number): boolean {

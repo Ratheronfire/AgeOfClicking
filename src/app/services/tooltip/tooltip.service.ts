@@ -17,7 +17,7 @@ export class TooltipService {
     const resource = this.resourcesService.getResource(resourceId);
     const worker = this.workersService.getResourceWorker(resourceId);
 
-    let tooltip = `${resource.resourceDescription}.`;
+    let tooltip = `${resource.resourceDescription}`;
 
     if (resourceId === 0) {
       return tooltip;
@@ -52,7 +52,7 @@ export class TooltipService {
     const resource = this.resourcesService.getResource(resourceId);
     const resourceWorker = this.workersService.getResourceWorker(resourceId);
 
-    return `${resource.workerVerb} ${resourceWorker.workerYield} ` +
+    return `${resource.workerVerb} ${Math.floor(resourceWorker.workerYield * 100) / 100} ` +
       `${resource.workerNoun}${resourceWorker.workerYield === 1 ? '' : 's'} per second.`;
   }
 }

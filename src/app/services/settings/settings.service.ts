@@ -48,6 +48,10 @@ export class SettingsService {
   loadGame() {
     const saveData = localStorage.getItem('clickerGameSaveData');
 
+    if (saveData === null) {
+      return;
+    }
+
     this.importSave(saveData);
 
     this.snackbar.open('Game successfully loaded!', '', {duration: 2000});

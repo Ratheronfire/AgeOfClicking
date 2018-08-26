@@ -1,845 +1,808 @@
 [{
-    "id": 0,
-    "name": "gold",
-    "resourceType": "CURRENCY",
-    "iconPath": "../../../assets/sprites/coin.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "sellable": false,
-    "resourceDescription": "Shiny and valuable.",
-    "workerVerb": "",
-    "workerNoun": "gold ore",
-    "resourceAccessible": true,
-    "resourceTier": 0,
-    "previousTier": 0,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 0
-    },
-    "harvestYield": 0,
-    "harvestMilliseconds": 0,
-    "workerYield": 0,
-    "sellsFor": 0
+  "id": 0,
+  "name": "gold",
+  "resourceType": "CURRENCY",
+  "iconPath": "../../../assets/sprites/coin.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "sellable": false,
+  "resourceDescription": "Shiny and valuable.",
+  "workerVerb": "",
+  "workerNoun": "gold ore",
+  "resourceAccessible": true,
+  "resourceTier": 0,
+  "previousTier": 0,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 0
   },
-  {
-    "id": 1,
-    "name": "oak",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/oak.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": true,
-    "harvestYield": 1,
-    "harvestMilliseconds": 1000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 5,
-    "resourceDescription": "Sturdy oak logs.",
-    "workerVerb": "Fells",
-    "workerNoun": "oak tree",
-    "resourceAccessible": true,
-    "resourceTier": 0,
-    "previousTier": 0,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 50
-    }
-  },
-  {
-    "id": 7,
-    "name": "pine",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/pine.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": true,
-    "harvestYield": 1,
-    "harvestMilliseconds": 1250,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 10,
-    "resourceDescription": "Strong pine logs.",
-    "workerVerb": "Fells",
-    "workerNoun": "pine tree",
-    "resourceAccessible": false,
-    "resourceTier": 1,
-    "previousTier": 0,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 75
-    }
-  },
-  {
-    "id": 8,
-    "name": "birch",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/birch.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": true,
-    "harvestYield": 1,
-    "harvestMilliseconds": 1500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 15,
-    "resourceDescription": "Sometimes it feels like it's watching you...",
-    "workerVerb": "Fells",
-    "workerNoun": "birch tree",
-    "resourceAccessible": false,
-    "resourceTier": 2,
-    "previousTier": 1,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 150
-    }
-  },
-  {
-    "id": 9,
-    "name": "eucalyptus",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/eucalyptus.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 2000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 20,
-    "resourceDescription": "Logs as strong as their name is long.",
-    "workerVerb": "Fells",
-    "workerNoun": "eucalyptus tree",
-    "resourceAccessible": false,
-    "resourceTier": 3,
-    "previousTier": 2,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 200
-    }
-  },
-  {
-    "id": 15,
-    "name": "willow",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/willow.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 2500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 35,
-    "resourceDescription": "The saddest tree in the forest (because you chopped down its parents).",
-    "workerVerb": "Fells",
-    "workerNoun": "willow tree",
-    "resourceAccessible": false,
-    "resourceTier": 4,
-    "previousTier": 3,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 200
-    }
-  },
-  {
-    "id": 25,
-    "name": "teak",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/teak.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 3000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 40,
-    "resourceDescription": "Bright, thin logs; surprisingly resillient considering their appearance.",
-    "workerVerb": "Fells",
-    "workerNoun": "teak tree",
-    "resourceAccessible": false,
-    "resourceTier": 5,
-    "previousTier": 4,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 200
-    }
-  },
-  {
-    "id": 16,
-    "name": "ent soul",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/ent_soul.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 1,
-      "cost": 10
-    },{
-      "resourceId": 7,
-      "cost": 10
-    },{
-      "resourceId": 8,
-      "cost": 10
-    },{
-      "resourceId": 9,
-      "cost": 10
-    },{
-      "resourceId": 15,
-      "cost": 10
-    },{
-      "resourceId": 25,
-      "cost": 10
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 8000,
-    "workerYield": 1,
-    "sellable": false,
-    "sellsFor": 50,
-    "resourceDescription": "The spirit of a long-dead ent, still contained where it last took root.",
-    "workerVerb": "Releases",
-    "workerNoun": "ent spirit",
-    "resourceAccessible": false,
-    "resourceTier": 6,
-    "previousTier": 5,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 200
-    }
-  },
-  {
-    "id": 17,
-    "name": "reanimated ent",
-    "resourceType": "WOOD",
-    "iconPath": "../../../assets/sprites/reanimated_ent.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 16,
-      "cost": 1
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 20000,
-    "workerYield": 1,
-    "sellable": false,
-    "sellsFor": 100,
-    "resourceDescription": "An ancient ent warrior, given life once more to fight for you.",
-    "workerVerb": "Reanimates",
-    "workerNoun": "ent",
-    "resourceAccessible": false,
-    "resourceTier": 7,
-    "previousTier": 6,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 200
-    }
-  },
-  {
-    "id": 2,
-    "name": "copper ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/copper_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 1250,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 7,
-    "resourceDescription": "Can be forged into bronze along with tin.",
-    "workerVerb": "Mines",
-    "workerNoun": "copper ore",
-    "resourceAccessible": true,
-    "resourceTier": 0,
-    "previousTier": 0,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 75
-    }
-  },
-  {
-    "id": 3,
-    "name": "tin ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/tin_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 1250,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 7,
-    "resourceDescription": "Can be forged into bronze along with copper.",
-    "workerVerb": "Mines",
-    "workerNoun": "tin ore",
-    "resourceAccessible": true,
-    "resourceTier": 0,
-    "previousTier": 0,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 75
-    }
-  },
-  {
-    "id": 4,
-    "name": "bronze ingot",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/bronze_ingot.png",
-    "amount": 0,
-    "resourceConsumes": [{
-        "resourceId": 2,
-        "cost": 1
-      },
-      {
-        "resourceId": 3,
-        "cost": 1
-      }
-    ],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 2000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 7,
-    "resourceDescription": "Somewhat brittle ingots.",
-    "workerVerb": "Forges",
-    "workerNoun": "bronze ingot",
-    "resourceAccessible": false,
-    "resourceTier": 1,
-    "previousTier": 0,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 100
-    }
-  },
-  {
-    "id": 5,
-    "name": "iron ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/iron_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 2000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 15,
-    "resourceDescription": "Unrefined extracts of iron.",
-    "workerVerb": "Mines",
-    "workerNoun": "iron ore",
-    "resourceAccessible": false,
-    "resourceTier": 2,
-    "previousTier": 1,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 150
-    }
-  },
-  {
-    "id": 6,
-    "name": "iron ingot",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/iron_ingot.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 5,
-      "cost": 1
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 3000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 25,
-    "resourceDescription": "Dim but sturdy ingots.",
-    "workerVerb": "Forges",
-    "workerNoun": "iron ingot",
-    "resourceAccessible": false,
-    "resourceTier": 3,
-    "previousTier": 2,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 250
-    }
-  },
-  {
-    "id": 10,
-    "name": "steel ingot",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/steel_ingot.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 6,
-      "cost": 2
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 4000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 40,
-    "resourceDescription": "Refined and purified iron.",
-    "workerVerb": "Forges",
-    "workerNoun": "steel ingot",
-    "resourceAccessible": false,
-    "resourceTier": 4,
-    "previousTier": 3,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 350
-    }
-  },
-  {
-    "id": 11,
-    "name": "gold ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/gold_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 2500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 25,
-    "resourceDescription": "Unrefined extracts of gold.",
-    "workerVerb": "Mines",
-    "workerNoun": "gold",
-    "resourceAccessible": false,
-    "resourceTier": 3,
-    "previousTier": 2,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 150
-    }
-  },
-  {
-    "id": 12,
-    "name": "gold ingot",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/gold_ingot.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 11,
-      "cost": 1
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 4000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 60,
-    "resourceDescription": "Highly valuable and malleable.",
-    "workerVerb": "Forges",
-    "workerNoun": "gold ingot",
-    "resourceAccessible": false,
-    "resourceTier": 4,
-    "previousTier": 3,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 18,
-    "name": "latinum ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/latinum_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 4500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 75,
-    "resourceDescription": "Said to be highly valued by indivudals with large ears.",
-    "workerVerb": "Mines",
-    "workerNoun": "latinum ore",
-    "resourceAccessible": false,
-    "resourceTier": 4,
-    "previousTier": 3,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 19,
-    "name": "latinum ingot",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/latinum_ingot.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 10,
-      "cost": 1
-    },{
-      "resourceId": 12,
-      "cost": 1
-    },{
-      "resourceId": 18,
-      "cost": 1
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 5000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 100,
-    "resourceDescription": "QUARK!!!",
-    "workerVerb": "Forges",
-    "workerNoun": "latinum ingot",
-    "resourceAccessible": false,
-    "resourceTier": 5,
-    "previousTier": 4,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 20,
-    "name": "unbelievium ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/unbelievium_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 5500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 80,
-    "resourceDescription": "I can't believe it's not unobtainium!",
-    "workerVerb": "Mines",
-    "workerNoun": "unbelievium ore",
-    "resourceAccessible": false,
-    "resourceTier": 5,
-    "previousTier": 4,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 21,
-    "name": "lustrial ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/lustrial_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 5500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 80,
-    "resourceDescription": "Even in its unrefined form, it shines as bright as the sun.",
-    "workerVerb": "Mines",
-    "workerNoun": "lustrial ore",
-    "resourceAccessible": false,
-    "resourceTier": 5,
-    "previousTier": 4,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 22,
-    "name": "spectrus ore",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/spectrus_ore.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 5500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 80,
-    "resourceDescription": "A peculiar energy eminates from the rock...",
-    "workerVerb": "Mines",
-    "workerNoun": "spectrus ore",
-    "resourceAccessible": false,
-    "resourceTier": 5,
-    "previousTier": 4,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 23,
-    "name": "temprous ingot",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/temprus_ingot.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 19,
-      "cost": 2
-    },
-    {
-      "resourceId": 20,
-      "cost": 2
-    },
-    {
-      "resourceId": 21,
-      "cost": 2
-    },
-    {
-      "resourceId": 22,
-      "cost": 2
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 8000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 250,
-    "resourceDescription": "Could this metal hold the secret of time itself?",
-    "workerVerb": "Forges",
-    "workerNoun": "temprous ingot",
-    "resourceAccessible": false,
-    "resourceTier": 6,
-    "previousTier": 5,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 24,
-    "name": "refined temprous",
-    "resourceType": "METAL",
-    "iconPath": "../../../assets/sprites/refined_temprus.png",
-    "amount": 0,
-    "resourceConsumes": [{
-      "resourceId": 23,
-      "cost": 15
-    },
-    {
-      "resourceId": 31,
-      "cost": 30
-    }],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 15000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 350,
-    "resourceDescription": "Memories of ages past imbue the metal with seemingly endless power.",
-    "workerVerb": "Refines",
-    "workerNoun": "temprous ingot",
-    "resourceAccessible": false,
-    "resourceTier": 5,
-    "previousTier": 4,
-    "worker": {
-      "workable": false,
-      "workerCount": 0,
-      "cost": 400
-    }
-  },
-  {
-    "id": 13,
-    "name": "Stone",
-    "resourceType": "MINERAL",
-    "iconPath": "../../../assets/sprites/stone.png",
-    "amount": 0,
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 1000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 5,
-    "resourceDescription": "Hard and sturdy, well suitied to basic construction projects.",
-    "workerVerb": "Mines",
-    "workerNoun": "stone",
-    "resourceAccessible": true,
-    "resourceTier": 0,
-    "previousTier": 0,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 80
-    }
-  },
-  {
-    "id": 26,
-    "name": "Graphite",
-    "resourceType": "MINERAL",
-    "amount": 0,
-    "iconPath": "../../../assets/sprites/graphite.png",
-    "resourceConsumes": [],
-    "harvestable": true,
-    "harvestYield": 1,
-    "harvestMilliseconds": 2500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 45,
-    "resourceDescription": "A rough mineral with many uses.",
-    "workerVerb": "Mines",
-    "workerNoun": "graphite",
-    "resourceAccessible": false,
-    "resourceTier": 1,
-    "previousTier": 0,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 80
-    }
-  },
-  {
-    "id": 27,
-    "name": "Limestone",
-    "resourceType": "MINERAL",
-    "amount": 0,
-    "iconPath": "../../../assets/sprites/limestone.png",
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 3000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 55,
-    "resourceDescription": "Hardened stone with a hint of lime.",
-    "workerVerb": "Mines",
-    "workerNoun": "limestone",
-    "resourceAccessible": false,
-    "resourceTier": 2,
-    "previousTier": 1,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 80
-    }
-  },
-  {
-    "id": 28,
-    "name": "Marble",
-    "resourceType": "MINERAL",
-    "amount": 0,
-    "iconPath": "../../../assets/sprites/marble.png",
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 4000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 70,
-    "resourceDescription": "Beautiful, crystalline rock. Highly valued for construction projects.",
-    "workerVerb": "Mines",
-    "workerNoun": "marble",
-    "resourceAccessible": false,
-    "resourceTier": 3,
-    "previousTier": 2,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 80
-    }
-  },
-  {
-    "id": 29,
-    "name": "Quartz",
-    "resourceType": "MINERAL",
-    "amount": 0,
-    "iconPath": "../../../assets/sprites/quartz.png",
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 5000,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 90,
-    "resourceDescription": "A bright, shiny structure hides under the rock's rough surface.",
-    "workerVerb": "Mines",
-    "workerNoun": "qaurtz",
-    "resourceAccessible": false,
-    "resourceTier": 4,
-    "previousTier": 3,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 80
-    }
-  },
-  {
-    "id": 30,
-    "name": "Obsidian",
-    "resourceType": "MINERAL",
-    "amount": 0,
-    "iconPath": "../../../assets/sprites/obsidian.png",
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 6500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 125,
-    "resourceDescription": "Hardened rock formed in the heart of a volcano.",
-    "workerVerb": "Mines",
-    "workerNoun": "obsidian",
-    "resourceAccessible": false,
-    "resourceTier": 5,
-    "previousTier": 4,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 80
-    }
-  },
-  {
-    "id": 31,
-    "name": "Diamond",
-    "resourceType": "MINERAL",
-    "amount": 0,
-    "iconPath": "../../../assets/sprites/diamond.png",
-    "resourceConsumes": [],
-    "harvestable": false,
-    "harvestYield": 1,
-    "harvestMilliseconds": 7500,
-    "workerYield": 1,
-    "sellable": true,
-    "sellsFor": 175,
-    "resourceDescription": "An incredibly beautiful and tough resource.",
-    "workerVerb": "Mines",
-    "workerNoun": "diamond",
-    "resourceAccessible": false,
-    "resourceTier": 6,
-    "previousTier": 5,
-    "worker": {
-      "workable": true,
-      "workerCount": 0,
-      "cost": 80
-    }
+  "harvestYield": 0,
+  "harvestMilliseconds": 0,
+  "workerYield": 0,
+  "sellsFor": 0
+}, {
+  "id": 1,
+  "name": "oak",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/oak.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": true,
+  "harvestYield": 1,
+  "harvestMilliseconds": 1000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 5,
+  "resourceDescription": "Sturdy oak logs.",
+  "workerVerb": "Fells",
+  "workerNoun": "oak tree",
+  "resourceAccessible": true,
+  "resourceTier": 0,
+  "previousTier": 0,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 50
   }
-]
+}, {
+  "id": 7,
+  "name": "pine",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/pine.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 1250,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 10,
+  "resourceDescription": "Strong pine logs.",
+  "workerVerb": "Fells",
+  "workerNoun": "pine tree",
+  "resourceAccessible": false,
+  "resourceTier": 1,
+  "previousTier": 0,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 75
+  }
+}, {
+  "id": 8,
+  "name": "birch",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/birch.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 1500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 15,
+  "resourceDescription": "Sometimes it feels like it's watching you...",
+  "workerVerb": "Fells",
+  "workerNoun": "birch tree",
+  "resourceAccessible": false,
+  "resourceTier": 2,
+  "previousTier": 1,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 150
+  }
+}, {
+  "id": 9,
+  "name": "eucalyptus",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/eucalyptus.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 2000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 20,
+  "resourceDescription": "Logs as strong as their name is long.",
+  "workerVerb": "Fells",
+  "workerNoun": "eucalyptus tree",
+  "resourceAccessible": false,
+  "resourceTier": 3,
+  "previousTier": 2,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 200
+  }
+}, {
+  "id": 15,
+  "name": "willow",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/willow.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 2500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 35,
+  "resourceDescription": "The saddest tree in the forest (because you chopped down its parents).",
+  "workerVerb": "Fells",
+  "workerNoun": "willow tree",
+  "resourceAccessible": false,
+  "resourceTier": 4,
+  "previousTier": 3,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 200
+  }
+}, {
+  "id": 25,
+  "name": "teak",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/teak.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 3000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 40,
+  "resourceDescription": "Bright, thin logs; surprisingly resillient considering their appearance.",
+  "workerVerb": "Fells",
+  "workerNoun": "teak tree",
+  "resourceAccessible": false,
+  "resourceTier": 5,
+  "previousTier": 4,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 200
+  }
+}, {
+  "id": 16,
+  "name": "ent soul",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/ent_soul.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 1,
+    "cost": 10
+  }, {
+    "resourceId": 7,
+    "cost": 10
+  }, {
+    "resourceId": 8,
+    "cost": 10
+  }, {
+    "resourceId": 9,
+    "cost": 10
+  }, {
+    "resourceId": 15,
+    "cost": 10
+  }, {
+    "resourceId": 25,
+    "cost": 10
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 8000,
+  "workerYield": 1,
+  "sellable": false,
+  "sellsFor": 50,
+  "resourceDescription": "The spirit of a long-dead ent, still contained where it last took root.",
+  "workerVerb": "Releases",
+  "workerNoun": "ent spirit",
+  "resourceAccessible": false,
+  "resourceTier": 6,
+  "previousTier": 5,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 200
+  }
+}, {
+  "id": 17,
+  "name": "reanimated ent",
+  "resourceType": "WOOD",
+  "iconPath": "../../../assets/sprites/reanimated_ent.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 16,
+    "cost": 1
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 20000,
+  "workerYield": 1,
+  "sellable": false,
+  "sellsFor": 100,
+  "resourceDescription": "An ancient ent warrior, given life once more to fight for you.",
+  "workerVerb": "Reanimates",
+  "workerNoun": "ent",
+  "resourceAccessible": false,
+  "resourceTier": 7,
+  "previousTier": 6,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 200
+  }
+}, {
+  "id": 2,
+  "name": "copper ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/copper_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 1250,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 7,
+  "resourceDescription": "Can be forged into bronze along with tin.",
+  "workerVerb": "Mines",
+  "workerNoun": "copper ore",
+  "resourceAccessible": true,
+  "resourceTier": 0,
+  "previousTier": 0,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 75
+  }
+}, {
+  "id": 3,
+  "name": "tin ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/tin_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 1250,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 7,
+  "resourceDescription": "Can be forged into bronze along with copper.",
+  "workerVerb": "Mines",
+  "workerNoun": "tin ore",
+  "resourceAccessible": true,
+  "resourceTier": 0,
+  "previousTier": 0,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 75
+  }
+}, {
+  "id": 4,
+  "name": "bronze ingot",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/bronze_ingot.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 2,
+    "cost": 1
+  }, {
+    "resourceId": 3,
+    "cost": 1
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 2000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 7,
+  "resourceDescription": "Somewhat brittle ingots.",
+  "workerVerb": "Forges",
+  "workerNoun": "bronze ingot",
+  "resourceAccessible": false,
+  "resourceTier": 1,
+  "previousTier": 0,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 100
+  }
+}, {
+  "id": 5,
+  "name": "iron ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/iron_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 2000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 15,
+  "resourceDescription": "Unrefined extracts of iron.",
+  "workerVerb": "Mines",
+  "workerNoun": "iron ore",
+  "resourceAccessible": false,
+  "resourceTier": 2,
+  "previousTier": 1,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 150
+  }
+}, {
+  "id": 6,
+  "name": "iron ingot",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/iron_ingot.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 5,
+    "cost": 1
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 3000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 25,
+  "resourceDescription": "Dim but sturdy ingots.",
+  "workerVerb": "Forges",
+  "workerNoun": "iron ingot",
+  "resourceAccessible": false,
+  "resourceTier": 3,
+  "previousTier": 2,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 250
+  }
+}, {
+  "id": 10,
+  "name": "steel ingot",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/steel_ingot.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 6,
+    "cost": 2
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 4000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 40,
+  "resourceDescription": "Refined and purified iron.",
+  "workerVerb": "Forges",
+  "workerNoun": "steel ingot",
+  "resourceAccessible": false,
+  "resourceTier": 4,
+  "previousTier": 3,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 350
+  }
+}, {
+  "id": 11,
+  "name": "gold ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/gold_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 2500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 25,
+  "resourceDescription": "Unrefined extracts of gold.",
+  "workerVerb": "Mines",
+  "workerNoun": "gold",
+  "resourceAccessible": false,
+  "resourceTier": 3,
+  "previousTier": 2,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 150
+  }
+}, {
+  "id": 12,
+  "name": "gold ingot",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/gold_ingot.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 11,
+    "cost": 1
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 4000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 60,
+  "resourceDescription": "Highly valuable and malleable.",
+  "workerVerb": "Forges",
+  "workerNoun": "gold ingot",
+  "resourceAccessible": false,
+  "resourceTier": 4,
+  "previousTier": 3,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 18,
+  "name": "latinum ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/latinum_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 4500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 75,
+  "resourceDescription": "Said to be highly valued by indivudals with large ears.",
+  "workerVerb": "Mines",
+  "workerNoun": "latinum ore",
+  "resourceAccessible": false,
+  "resourceTier": 4,
+  "previousTier": 3,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 19,
+  "name": "latinum ingot",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/latinum_ingot.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 10,
+    "cost": 1
+  }, {
+    "resourceId": 12,
+    "cost": 1
+  }, {
+    "resourceId": 18,
+    "cost": 1
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 5000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 100,
+  "resourceDescription": "QUARK!!!",
+  "workerVerb": "Forges",
+  "workerNoun": "latinum ingot",
+  "resourceAccessible": false,
+  "resourceTier": 5,
+  "previousTier": 4,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 20,
+  "name": "unbelievium ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/unbelievium_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 5500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 80,
+  "resourceDescription": "I can't believe it's not unobtainium!",
+  "workerVerb": "Mines",
+  "workerNoun": "unbelievium ore",
+  "resourceAccessible": false,
+  "resourceTier": 5,
+  "previousTier": 4,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 21,
+  "name": "lustrial ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/lustrial_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 5500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 80,
+  "resourceDescription": "Even in its unrefined form, it shines as bright as the sun.",
+  "workerVerb": "Mines",
+  "workerNoun": "lustrial ore",
+  "resourceAccessible": false,
+  "resourceTier": 5,
+  "previousTier": 4,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 22,
+  "name": "spectrus ore",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/spectrus_ore.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 5500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 80,
+  "resourceDescription": "A peculiar energy eminates from the rock...",
+  "workerVerb": "Mines",
+  "workerNoun": "spectrus ore",
+  "resourceAccessible": false,
+  "resourceTier": 5,
+  "previousTier": 4,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 23,
+  "name": "temprous ingot",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/temprus_ingot.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 19,
+    "cost": 2
+  }, {
+    "resourceId": 20,
+    "cost": 2
+  }, {
+    "resourceId": 21,
+    "cost": 2
+  }, {
+    "resourceId": 22,
+    "cost": 2
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 8000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 250,
+  "resourceDescription": "Could this metal hold the secret of time itself?",
+  "workerVerb": "Forges",
+  "workerNoun": "temprous ingot",
+  "resourceAccessible": false,
+  "resourceTier": 6,
+  "previousTier": 5,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 24,
+  "name": "refined temprous",
+  "resourceType": "METAL",
+  "iconPath": "../../../assets/sprites/refined_temprus.png",
+  "amount": 0,
+  "resourceConsumes": [{
+    "resourceId": 23,
+    "cost": 15
+  }, {
+    "resourceId": 31,
+    "cost": 30
+  }],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 15000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 350,
+  "resourceDescription": "Memories of ages past imbue the metal with seemingly endless power.",
+  "workerVerb": "Refines",
+  "workerNoun": "temprous ingot",
+  "resourceAccessible": false,
+  "resourceTier": 5,
+  "previousTier": 4,
+  "worker": {
+    "workable": false,
+    "workerCount": 0,
+    "cost": 400
+  }
+}, {
+  "id": 13,
+  "name": "Stone",
+  "resourceType": "MINERAL",
+  "iconPath": "../../../assets/sprites/stone.png",
+  "amount": 0,
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 1000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 5,
+  "resourceDescription": "Hard and sturdy, well suitied to basic construction projects.",
+  "workerVerb": "Mines",
+  "workerNoun": "stone",
+  "resourceAccessible": true,
+  "resourceTier": 0,
+  "previousTier": 0,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 80
+  }
+}, {
+  "id": 26,
+  "name": "Graphite",
+  "resourceType": "MINERAL",
+  "amount": 0,
+  "iconPath": "../../../assets/sprites/graphite.png",
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 2500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 45,
+  "resourceDescription": "A rough mineral with many uses.",
+  "workerVerb": "Mines",
+  "workerNoun": "graphite",
+  "resourceAccessible": false,
+  "resourceTier": 1,
+  "previousTier": 0,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 80
+  }
+}, {
+  "id": 27,
+  "name": "Limestone",
+  "resourceType": "MINERAL",
+  "amount": 0,
+  "iconPath": "../../../assets/sprites/limestone.png",
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 3000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 55,
+  "resourceDescription": "Hardened stone with a hint of lime.",
+  "workerVerb": "Mines",
+  "workerNoun": "limestone",
+  "resourceAccessible": false,
+  "resourceTier": 2,
+  "previousTier": 1,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 80
+  }
+}, {
+  "id": 28,
+  "name": "Marble",
+  "resourceType": "MINERAL",
+  "amount": 0,
+  "iconPath": "../../../assets/sprites/marble.png",
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 4000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 70,
+  "resourceDescription": "Beautiful, crystalline rock. Highly valued for construction projects.",
+  "workerVerb": "Mines",
+  "workerNoun": "marble",
+  "resourceAccessible": false,
+  "resourceTier": 3,
+  "previousTier": 2,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 80
+  }
+}, {
+  "id": 29,
+  "name": "Quartz",
+  "resourceType": "MINERAL",
+  "amount": 0,
+  "iconPath": "../../../assets/sprites/quartz.png",
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 5000,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 90,
+  "resourceDescription": "A bright, shiny structure hides under the rock's rough surface.",
+  "workerVerb": "Mines",
+  "workerNoun": "qaurtz",
+  "resourceAccessible": false,
+  "resourceTier": 4,
+  "previousTier": 3,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 80
+  }
+}, {
+  "id": 30,
+  "name": "Obsidian",
+  "resourceType": "MINERAL",
+  "amount": 0,
+  "iconPath": "../../../assets/sprites/obsidian.png",
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 6500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 125,
+  "resourceDescription": "Hardened rock formed in the heart of a volcano.",
+  "workerVerb": "Mines",
+  "workerNoun": "obsidian",
+  "resourceAccessible": false,
+  "resourceTier": 5,
+  "previousTier": 4,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 80
+  }
+}, {
+  "id": 31,
+  "name": "Diamond",
+  "resourceType": "MINERAL",
+  "amount": 0,
+  "iconPath": "../../../assets/sprites/diamond.png",
+  "resourceConsumes": [],
+  "harvestable": false,
+  "harvestYield": 1,
+  "harvestMilliseconds": 7500,
+  "workerYield": 1,
+  "sellable": true,
+  "sellsFor": 175,
+  "resourceDescription": "An incredibly beautiful and tough resource.",
+  "workerVerb": "Mines",
+  "workerNoun": "diamond",
+  "resourceAccessible": false,
+  "resourceTier": 6,
+  "previousTier": 5,
+  "worker": {
+    "workable": true,
+    "workerCount": 0,
+    "cost": 80
+  }
+}]

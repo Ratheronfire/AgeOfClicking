@@ -1,6 +1,6 @@
 <ul class="workers">
   <mat-accordion multi="true">
-    <mat-expansion-panel expanded="true" *ngFor="let worker of getWorkers(true)">
+    <mat-expansion-panel expanded="true" *ngFor="let worker of getWorkers(true, true, true)">
       <mat-expansion-panel-header>
         <mat-panel-title>
           {{worker.resourceType | titlecase}}
@@ -11,10 +11,10 @@
 
       <button mat-raised-button [color]="canAfford(worker.id) ? 'accent' : 'disabled'" (click)="hireWorker(worker.id)">
         <mat-card-title>{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
-        <mat-card-subtitle>{{worker.cost}} Gold</mat-card-subtitle>
+        <mat-card-subtitle>{{worker.cost | number}} Gold</mat-card-subtitle>
       </button>
 
-      <div *ngFor="let resourceWorker of worker.workersByResource">
+      <div *ngFor="let resourceWorker of getAccessibleResourceWorkers(worker)">
         <mat-card *ngIf="resourceWorker.workable || !adminService.filterAccessible" matTooltip="{{getTooltipMessage(resourceWorker.resourceId)}}"
           matTooltipPosition="right">
           <mat-card-title>{{resourcesService.getResource(resourceWorker.resourceId).name | titlecase}}</mat-card-title>
