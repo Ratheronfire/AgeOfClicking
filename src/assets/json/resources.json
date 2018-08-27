@@ -575,7 +575,7 @@
   "id": 23,
   "name": "temprous ingot",
   "resourceType": "METAL",
-  "iconPath": "../../../assets/sprites/temprus_ingot.png",
+  "iconPath": "../../../assets/sprites/temprous_ingot.png",
   "amount": 0,
   "resourceConsumes": [{
     "resourceId": 19,
@@ -611,7 +611,7 @@
   "id": 24,
   "name": "refined temprous",
   "resourceType": "METAL",
-  "iconPath": "../../../assets/sprites/refined_temprus.png",
+  "iconPath": "../../../assets/sprites/refined_temprous.png",
   "amount": 0,
   "resourceConsumes": [{
     "resourceId": 23,
