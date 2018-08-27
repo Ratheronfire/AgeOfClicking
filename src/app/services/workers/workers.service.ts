@@ -72,7 +72,7 @@ export class WorkersService {
     }
   }
 
-  updateResourceWorker(id: number, newWorkerCount: number) {
+  updateResourceWorker(id: number, newResourceWorkerCount: number) {
     const resource = this.resourcesService.getResource(id);
     const worker = this.getWorker(resource.resourceType);
     const resourceWorker = worker.workersByResource.find(ws => ws.resourceId === resource.id);
@@ -81,10 +81,10 @@ export class WorkersService {
       return;
     }
 
-    const newFreeWorkers = worker.freeWorkers + resourceWorker.workerCount - newWorkerCount;
+    const newFreeWorkers = worker.freeWorkers + resourceWorker.workerCount - newResourceWorkerCount;
 
     worker.freeWorkers = newFreeWorkers;
-    resourceWorker.workerCount = newWorkerCount;
+    resourceWorker.workerCount = newResourceWorkerCount;
   }
 
   hireWorker(id: number) {

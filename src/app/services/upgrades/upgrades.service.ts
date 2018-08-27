@@ -49,6 +49,8 @@ export class UpgradesService {
         console.log(upgradeEffect.maxTier);
         if (upgradeEffect.maxTier >= 0) {
           resourcesToUpgrade = resourcesToUpgrade.filter(resource => resource.resourceTier <= upgradeEffect.maxTier);
+          workersToUpgrade = workersToUpgrade.filter(worker =>
+            this.resourcesService.getResource(worker.resourceId).resourceTier <= upgradeEffect.maxTier);
         }
       }
 
@@ -75,6 +77,7 @@ export class UpgradesService {
       for (const workerToUpgrade of workersToUpgrade) {
         switch(upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Workable: {
+            console.log(workerToUpgrade);
             workerToUpgrade.workable = !!upgradeEffect.upgradeFactor;
             break;
           }

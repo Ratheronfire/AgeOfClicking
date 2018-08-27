@@ -46,7 +46,6 @@ export class MapService {
     xmlRequest.open('GET', '../../../assets/tilemap/map.tmx', false);
     xmlRequest.send();
 
-    console.log(tileIds);
     tileIds.map(tileIndex =>
       _tiledMap.push({mapTileType: tileTypes[tileIndex - 1], tileCropDetail: {x: 0, y: 0, width: 0, height: 0}}));
       // _tiledMap.push({mapTileType: this.getTileType(tileIndex), tileCropDetail: this.getTileCropDetail(tileIndex)}));

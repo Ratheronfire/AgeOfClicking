@@ -7,6 +7,7 @@ export interface ResourceWorker {
   workerCount: number;
   workerYield: number;
 
+  sliderSetting: number;
   sliderSettingValid: boolean;
 }
 

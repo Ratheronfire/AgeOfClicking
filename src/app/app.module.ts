@@ -17,7 +17,7 @@ import { SettingsComponent } from './components/settings/settings.component';
 import { AdminDebugComponent } from './components/admin-debug/admin-debug.component';
 import { ResourceDialogComponent } from './components/resource-dialog/resource-dialog.component';
 import { UpgradeDialogComponent } from './components/upgrade-dialog/upgrade-dialog.component';
-import { SaveDialogComponent } from './components/save-dialog/save-dialog/save-dialog.component';
+import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { TouchDirective } from './directives/touch/touch.directive';
 import { CropDirective } from './directives/crop/crop.directive';
 

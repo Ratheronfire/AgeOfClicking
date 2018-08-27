@@ -559,7 +559,7 @@
   "id": 22,
   "upgradeType": "RESOURCE",
   "name": "Emblem of the Ents",
-  "description": "Imbues revives ents with far greater power. Grants an extra 75% per revived ent.",
+  "description": "Imbues revived ents with far greater power. Grants an extra 75% per revived ent.",
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
@@ -1484,16 +1484,7 @@
   }],
   "resourceCosts": [{
     "resourceId": 0,
-    "resourceCost": 5000
-  }, {
-    "resourceId": 26,
-    "resourceCost": 50
-  }, {
-    "resourceId": 27,
-    "resourceCost": 30
-  }, {
-    "resourceId": 28,
-    "resourceCost": 20
+    "resourceCost": 4000
   }],
   "purchased": false
 }, {
@@ -1514,11 +1505,17 @@
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 0,
-    "resourceCost": 25000
+    "resourceId": 28,
+    "resourceCost": 375
+  }, {
+    "resourceId": 29,
+    "resourceCost": 300
+  }, {
+    "resourceId": 30,
+    "resourceCost": 30
   }, {
     "resourceId": 31,
-    "resourceCost": 300
+    "resourceCost": 20
   }],
   "purchased": false
 }, {

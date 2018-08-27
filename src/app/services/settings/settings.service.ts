@@ -7,7 +7,7 @@ import { ResourcesService } from './../resources/resources.service';
 import { UpgradesService } from './../upgrades/upgrades.service';
 import { WorkersService } from './../workers/workers.service';
 import { SaveData, WorkerData } from '../../objects/savedata';
-import { SaveDialogComponent } from '../../components/save-dialog/save-dialog/save-dialog.component';
+import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -114,7 +114,7 @@ export class SettingsService {
           cost: worker.cost,
           workerCount: worker.workerCount,
           workersByResource: []
-        }
+        };
 
         for (const resourceWorker of worker.workersByResource) {
           workerData.workersByResource.push({
@@ -166,6 +166,9 @@ export class SettingsService {
 
           resourceWorker.workable = resourceWorkerData.workable;
           resourceWorker.workerYield = resourceWorkerData.workerYield;
+          resourceWorker.workerCount = 0;
+
+          resourceWorker.sliderSetting = resourceWorkerData.workerCount;
 
           this.workersService.updateResourceWorker(resourceWorkerData.resourceId, resourceWorkerData.workerCount);
         }
