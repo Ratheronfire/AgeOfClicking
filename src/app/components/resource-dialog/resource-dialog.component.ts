@@ -101,6 +101,7 @@ export class ResourceDialogComponent implements OnInit {
       workable: true,
       workerCount: 0,
       workerYield: 1,
+      sliderSetting: 0,
       sliderSettingValid: true
     };
   }

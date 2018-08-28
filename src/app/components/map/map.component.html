@@ -1,38 +1,29 @@
-<div class="map noselect" [ngStyle]="{ 'width.px': (adminService.clampMap ? windowWidth : getColumnCount()) * tilePixels}">
-  <mat-grid-list [cols]="(adminService.clampMap ? windowHeight : getRowCount())" gutterSize="0" rowHeight="{{tilePixels}}">
-    <mat-grid-tile *ngFor="let tile of getMap(adminService.clampMap)">
-      <mat-card *ngIf="showSelectedTileDialog && selectedTile === tile">
-        <mat-card-title>{{selectedBuilding.name}}</mat-card-title>
-        <mat-card-content>
-          {{selectedBuilding.description}}
-          <br />
-          <div *ngIf="selectedBuildingTile === undefined">
-            <h3>Costs</h3>
-            <div *ngFor="let resourceCost of selectedBuilding.resourceCosts">
-              {{resourcesService.getResource(resourceCost.resourceId).name | titlecase }}: {{resourceCost.resourceCost}}
-            </div>
-            <button mat-raised-button color="primary" [disabled]="!canAffordBuilding(selectedBuilding.tileType)" (click)="createBuilding(selectedTile, selectedBuilding.tileType)">
-              Build
-            </button>
-          </div>
-          <div *ngIf="selectedBuildingTile !== undefined">
-            <h3>Placed Building: {{selectedBuildingTile.name | titlecase}}</h3>
-            <button mat-raised-button color="warn" (click)="clearBuilding(selectedTile)">
-              Remove
-            </button>
-          </div>
-        </mat-card-content>
-      </mat-card>
+<div style="display: none">
+  <img id="map" src="../../../assets/tilemap/MapTest.png">
+  <img id="test" src="../../../assets/sprites/birch.png">
+  <img id="grass" src="../../../assets/sprites/grass.png">
+  <img id="mountain" src="../../../assets/sprites/mountain.png">
+  <img id="water" src="../../../assets/sprites/water.png">
+  <img id="wall" src="../../../assets/sprites/wall.png">
+</div>
+<canvas appNoScroll appMap width="960" height="750"></canvas>
+<br />
+<br />
 
-      <a (click)="selectTile(tile)">
-        <img class="building-img" *ngIf="tile.buildingTileType !== undefined" src={{getBuildingTileSprite(tile)}} onmousedown="return false">
-        <img class="map-img" appcrop src='{{getMapTileSprite(tile)}}' onmousedown="return false">
+<div>
+  <mat-checkbox [(ngModel)]="deleteMode" color="warn">Delete Buildings</mat-checkbox>
 
-        <div *ngIf="showSelectedTileDialog && selectedTile === tile">
-          <img class="card-tail" src="../../../assets/sprites/card_tail.png" onmousedown="return false">
-          <img class="selected-border" src="../../../assets/sprites/selected_border.png" onmousedown="return false">
+  <div *ngFor="let buildingTile of buildingTileArray">
+    <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''">
+      <mat-card-title>{{buildingTile.name}}</mat-card-title>
+      <mat-card-subtitle>{{buildingTile.description}}</mat-card-subtitle>
+      <mat-card-content>
+        <h3>Costs</h3>
+        <div *ngFor="let resourceCost of buildingTile.resourceCosts">
+          {{resourcesService.getResource(resourceCost.resourceId).name | titlecase }}: {{resourceCost.resourceCost}}
         </div>
-      </a>
-    </mat-grid-tile>
-  </mat-grid-list>
+        <b><mat-icon *ngIf="canAffordBuilding(buildingTile.tileType)" color="primary">check</mat-icon></b>
+      </mat-card-content>
+    </button>
+  </div>
 </div>

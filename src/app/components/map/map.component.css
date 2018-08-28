@@ -3,6 +3,11 @@
   z-index: 1;
 }
 
+.canvas-container {
+  width: 1000px;
+  height: 1000px;
+}
+
 .map-img {
   z-index: -2;
 }

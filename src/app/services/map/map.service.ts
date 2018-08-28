@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ResourcesService } from '../resources/resources.service';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail } from '../../objects/tile';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, TileImage } from '../../objects/tile';
 
 declare var require: any;
 const Jimp = require('jimp');
@@ -11,8 +11,8 @@ const baseTiles = require('../../../assets/json/tileTypes.json');
   providedIn: 'root'
 })
 export class MapService {
-  public mapTiles: MapTile[] = baseTiles.mapTiles;
-  public buildingTiles: BuildingTile[] = baseTiles.buildingTiles;
+  public mapTiles: Map<MapTileType, MapTile> = baseTiles.mapTiles;
+  public buildingTiles: Map<BuildingTileType, BuildingTile> = baseTiles.buildingTiles;
 
   mapWidth: number;
   mapHeight: number;
@@ -25,11 +25,14 @@ export class MapService {
   cameraX = 100;
   cameraTile: Tile;
 
+  context: CanvasRenderingContext2D;
+
   constructor(protected resourcesService: ResourcesService) {
     const _tiledMap: Tile[] = [];
-    const tileTypes = [MapTileType.Grass, MapTileType.Water, MapTileType.Mountain];
-    let _mapWidth: number, _mapHeight: number;
     let tileIds: number[];
+    let _mapWidth: number, _mapHeight: number;
+
+    const tileTypes = [MapTileType.Grass, MapTileType.Water, MapTileType.Mountain];
 
     const xmlRequest = new XMLHttpRequest();
     xmlRequest.onload = function() {
@@ -46,13 +49,29 @@ export class MapService {
     xmlRequest.open('GET', '../../../assets/tilemap/map.tmx', false);
     xmlRequest.send();
 
-    tileIds.map(tileIndex =>
-      _tiledMap.push({mapTileType: tileTypes[tileIndex - 1], tileCropDetail: {x: 0, y: 0, width: 0, height: 0}}));
-      // _tiledMap.push({mapTileType: this.getTileType(tileIndex), tileCropDetail: this.getTileCropDetail(tileIndex)}));
+    for (const tileId of tileIds) {
+      _tiledMap.push({mapTileType: tileTypes[tileId - 1],
+                     x: 16 * (_tiledMap.length % _mapWidth),
+                     y: 16 * Math.floor(_tiledMap.length / _mapWidth),
+                     tileCropDetail: {x: 0, y: 0, width: 16, height: 16}});
+    }
 
     this.tiledMap = _tiledMap;
     this.mapWidth = _mapWidth;
     this.mapHeight = _mapHeight;
+  }
+
+  loadImages() {
+    for (const tile of this.tiledMap) {
+      const mapTileImage = <HTMLImageElement> document.getElementById(tile.mapTileType.toLowerCase());
+      this.context.drawImage(mapTileImage, tile.x, tile.y, 16, 16);
+
+      if (tile.buildingTileType) {
+        console.log(tile.buildingTileType);
+        const buildingTileImage = <HTMLImageElement> document.getElementById(tile.buildingTileType.toLowerCase());
+        this.context.drawImage(buildingTileImage, tile.x, tile.y, 16, 16);
+      }
+    }
   }
 
   createBuilding(tile: Tile, buildingType: BuildingTileType): boolean {
@@ -112,38 +131,6 @@ export class MapService {
     }
 
     return submap;
-  }
-
-  getMapTileSprite(tile: Tile) {
-    return this.mapTiles[tile.mapTileType].spritePath;
-  }
-
-  getBuildingTileSprite(tile: Tile) {
-    return this.buildingTiles[tile.buildingTileType].spritePath;
-  }
-
-  canMove(newLocationX: number, newLocationY: number): boolean {
-    return newLocationX >= 0 && newLocationX < this.mapWidth &&
-           newLocationY >= 0 && newLocationY < this.mapHeight;
-  }
-
-  getCameraLocation(): number[] {
-    return [this.cameraX, this.cameraY];
-  }
-
-  setCameraLocation(xOffset: number, yOffset: number): boolean {
-    const newLocationX = this.cameraX + xOffset;
-    const newLocationY = this.cameraY + yOffset;
-
-    if (!this.canMove(newLocationX, newLocationY)) {
-      return false;
-    }
-
-    this.cameraX = newLocationX;
-    this.cameraY = newLocationY;
-    this.cameraTile = this.getTile(newLocationX, newLocationY);
-
-    return true;
   }
 
   getTileType(tileId: number): MapTileType {

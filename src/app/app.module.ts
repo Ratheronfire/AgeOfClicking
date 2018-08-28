@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ZoomableCanvasComponent } from '@durwella/zoomable-canvas';
 
 import { MaterialImportModule } from './material-import/material-import.module';
 import { PipeModule } from 'src/app/pipe/pipe.module';
@@ -20,10 +21,13 @@ import { UpgradeDialogComponent } from './components/upgrade-dialog/upgrade-dial
 import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { TouchDirective } from './directives/touch/touch.directive';
 import { CropDirective } from './directives/crop/crop.directive';
+import { MapDirective } from './directives/map/map.directive';
+import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
+    ZoomableCanvasComponent,
     ClickerMainComponent,
     MessagesComponent,
     WorkersComponent,
@@ -36,7 +40,9 @@ import { CropDirective } from './directives/crop/crop.directive';
     UpgradeDialogComponent,
     TouchDirective,
     CropDirective,
-    SaveDialogComponent
+    SaveDialogComponent,
+    MapDirective,
+    NoScrollDirective
   ],
   imports: [
     BrowserModule,
