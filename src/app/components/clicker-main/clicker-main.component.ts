@@ -5,6 +5,7 @@ import { ResourcesService } from '../../services/resources/resources.service';
 import { ResourceType, Resource } from '../../objects/resource';
 import { WorkersService } from '../../services/workers/workers.service';
 import { TooltipService } from './../../services/tooltip/tooltip.service';
+import { MapService } from './../../services/map/map.service';
 import { AdminService } from './../../services/admin/admin.service';
 
 @Component({
@@ -19,6 +20,7 @@ export class ClickerMainComponent implements OnInit {
               protected resourcesService: ResourcesService,
               protected workersService: WorkersService,
               protected tooltipService: TooltipService,
+              protected mapService: MapService,
               protected adminService: AdminService) { }
 
   ngOnInit() {
@@ -30,6 +32,10 @@ export class ClickerMainComponent implements OnInit {
 
   public getTooltipMessage(id: number): string {
     return this.tooltipService.getResourceTooltip(id);
+  }
+
+  canHarvest(id: number): boolean {
+    return this.resourcesService.canHarvest(id) && this.mapService.resourceTileUsable(id);
   }
 
   startHarvesting(id: number) {

@@ -10,7 +10,7 @@
       </mat-expansion-panel-header>
 
       <div *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)">
-        <button mat-raised-button class="resource-button" color="accent" [disabled]="resource.harvesting || !resourcesService.canHarvest(resource.id)" [id]="resource.id"
+        <button mat-raised-button class="resource-button" color="accent" [disabled]="!canHarvest(resource.id)" [id]="resource.id"
           (click)='startHarvesting(resource.id)'
           matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>

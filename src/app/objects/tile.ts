@@ -4,8 +4,21 @@ export enum MapTileType {
   Mountain = 'MOUNTAIN'
 }
 
+export enum ResourceTileType {
+  OakTree = 'OAKTREE',
+  PineTree = 'PINETREE',
+  BirchTree = 'BIRCHTREE',
+  EucalyptusTree = 'EUCALYPTUSTREE',
+  WillowTree = 'WILLOWTREE',
+  TeakTree = 'TEAKTREE',
+  DeadEnt = 'DEADENT'
+}
+
 export enum BuildingTileType {
-  Wall = 'WALL'
+  Wall = 'WALL',
+  Road = 'ROAD',
+  Home = 'HOME',
+  Bridge = 'BRIDGE'
 }
 
 export interface ResourceCost {
@@ -50,7 +63,11 @@ export interface TileCropDetail {
 
 export class Tile {
   mapTileType: MapTileType;
+  resourceTileType?: ResourceTileType;
   buildingTileType?: BuildingTileType;
+
+  buildingPath?: Tile[];
+  resourceId?: number;
 
   x: number;
   y: number;

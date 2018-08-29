@@ -38,7 +38,7 @@ export class ResourcesService {
   public canHarvest(id: number, multiplier = 1): boolean {
     const resource = this.getResource(id);
 
-    if (!resource.harvestable) {
+    if (!resource.harvestable || resource.harvesting) {
       return false;
     }
 

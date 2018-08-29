@@ -4,6 +4,7 @@ import { timer } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
 import { WorkersService } from '../workers/workers.service';
+import { MapService } from '../map/map.service';
 import { AdminService } from '../admin/admin.service';
 import { Resource, ResourceType } from '../../objects/resource';
 
@@ -21,6 +22,7 @@ export class ClickerMainService {
 
   constructor(protected resourcesService: ResourcesService,
               protected workersService: WorkersService,
+              protected mapService: MapService,
               protected adminService: AdminService) {
     const processSource = timer(1000, 1000);
     const processSubscribe = processSource.subscribe(_ => this.workersService.processWorkers());
@@ -60,13 +62,13 @@ export class ClickerMainService {
   }
 
   harvestResource(id: number) {
-    this.resourcesService.harvestResource(id);
-
     this.harvestStartDate = Date.now();
 
     if (this.shouldAnimateProgressBar(id)) {
       this.resourcesService.getResource(id).progressBarValue = 0;
     }
+
+    this.mapService.spawnResourceAnimation(id);
 
     this.stopHarvesting(id);
   }

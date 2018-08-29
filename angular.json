@@ -36,8 +36,7 @@
               "node_modules/d3-timer/dist/d3-timer.min.js",
               "node_modules/d3-transition/dist/d3-transition.min.js",
               "node_modules/d3-drag/dist/d3-drag.min.js",
-              "node_modules/d3-zoom/dist/d3-zoom.min.js",
-              "node_modules/gamejs/gamejs-2.0.2-min.js"
+              "node_modules/d3-zoom/dist/d3-zoom.min.js"
             ]
           },
           "configurations": {

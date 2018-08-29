@@ -1,11 +1,3 @@
-<div style="display: none">
-  <img id="map" src="../../../assets/tilemap/MapTest.png">
-  <img id="test" src="../../../assets/sprites/birch.png">
-  <img id="grass" src="../../../assets/sprites/grass.png">
-  <img id="mountain" src="../../../assets/sprites/mountain.png">
-  <img id="water" src="../../../assets/sprites/water.png">
-  <img id="wall" src="../../../assets/sprites/wall.png">
-</div>
 <canvas appNoScroll appMap width="960" height="750"></canvas>
 <br />
 <br />
@@ -14,7 +6,8 @@
   <mat-checkbox [(ngModel)]="deleteMode" color="warn">Delete Buildings</mat-checkbox>
 
   <div *ngFor="let buildingTile of buildingTileArray">
-    <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''">
+    <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''"
+        (click)="selectBuilding(buildingTile)">
       <mat-card-title>{{buildingTile.name}}</mat-card-title>
       <mat-card-subtitle>{{buildingTile.description}}</mat-card-subtitle>
       <mat-card-content>

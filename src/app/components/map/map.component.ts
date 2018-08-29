@@ -16,92 +16,22 @@ export class MapComponent implements OnInit, AfterViewInit {
   mapTileTypes = MapTileType;
   buildingTileTypes = BuildingTileType;
 
-  deleteMode = false;
-  selectedBuilding: BuildingTile;
-
-  tilePixels = 48;
-
-  topLeftX = 0;
-  topLeftY = 0;
-  windowWidth = 15;
-  windowHeight = 15;
-
-  canvas;
-  context: CanvasRenderingContext2D;
-  transform = d3.zoomIdentity;
-
-  width: number;
-  height: number;
-  images = [{name: 'map', x: 0, y: 0, width: 1600, height: 1600}];
-
   constructor(protected mapService: MapService,
               protected resourcesService: ResourcesService,
               protected adminService: AdminService) { }
 
   ngOnInit() {
-    this.selectedBuilding = this.buildingTiles[BuildingTileType.Wall];
   }
 
   ngAfterViewInit() {
-    this.canvas = d3.select('canvas');
-    this.context = this.canvas.node().getContext('2d');
-
-    this.width = this.canvas.property('width');
-    this.height = this.canvas.property('height');
-
-    this.canvas.call(d3.zoom()
-        .scaleExtent([1 / 2, 4])
-        .translateExtent([[0, 0], [2400, 2400]])
-        .on('zoom', this.zoomed(this)));
-
-    this.canvas.on('click', this.clickTile(this));
-
-    this.context.save();
-    this.context.clearRect(0, 0, this.width, this.height);
-    this.context.translate(this.transform.x, this.transform.y);
-    this.context.scale(this.transform.k, this.transform.k);
-    this.drawCanvas();
-    this.context.restore();
   }
 
-  zoomed(self: MapComponent) {
-    return function(d) {
-      self.transform = d3.event.transform;
-
-      self.context.save();
-      self.context.clearRect(0, 0, self.width, self.height);
-      self.context.translate(self.transform.x, self.transform.y);
-      self.context.scale(self.transform.k, self.transform.k);
-      self.drawCanvas();
-      self.context.restore();
+  selectBuilding(buildingTile: BuildingTile) {
+    if (this.selectedBuilding === buildingTile) {
+      this.selectedBuilding = undefined;
+    } else {
+      this.selectedBuilding = buildingTile;
     }
-  }
-
-  clickTile(self: MapComponent) {
-    return function(d) {
-      const coordinates = d3.mouse(this);
-      coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / 16);
-      coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / 16);
-
-      const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
-
-      if (self.deleteMode) {
-        self.clearBuilding(tile);
-      } else {
-        self.createBuilding(tile, self.selectedBuilding.tileType);
-      }
-
-      self.context.save();
-      self.context.clearRect(0, 0, self.width, self.height);
-      self.context.translate(self.transform.x, self.transform.y);
-      self.context.scale(self.transform.k, self.transform.k);
-      self.drawCanvas();
-      self.context.restore();
-    }
-  }
-
-  drawCanvas() {
-    this.mapService.loadImages();
   }
 
   canAffordBuilding(buildingType: BuildingTileType): boolean {
@@ -110,32 +40,10 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   createBuilding(tile: Tile, buildingType: BuildingTileType) {
     const buildingCreated = this.mapService.createBuilding(tile, buildingType);
-
-    this.showSelectedTileDialog = !buildingCreated;
   }
 
   clearBuilding(tile: Tile) {
     this.mapService.clearBuilding(tile);
-  }
-
-  getMap(clampToWindow: boolean): Tile[] {
-    return this.mapService.getMap(clampToWindow, this.topLeftX, this.topLeftY, this.windowWidth, this.windowHeight);
-  }
-
-  get selectedMapTile(): MapTile {
-    if (this.selectedTile === undefined) {
-      return undefined;
-    }
-
-    return this.mapService.mapTiles[this.selectedTile.mapTileType];
-  }
-
-  get selectedBuildingTile(): BuildingTile {
-    if (this.selectedTile === undefined || this.selectedTile.buildingTileType === undefined) {
-      return undefined;
-    }
-
-    return this.buildingTiles[this.selectedTile.buildingTileType];
   }
 
   get buildingTiles() {
@@ -150,6 +58,22 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     return buildingTiles;
+  }
+
+  get deleteMode(): boolean {
+    return this.mapService.deleteMode;
+  }
+
+  set deleteMode(value) {
+    this.mapService.deleteMode = value;
+  }
+
+  get selectedBuilding(): BuildingTile {
+    return this.mapService.selectedBuilding;
+  }
+
+  set selectedBuilding(value) {
+    this.mapService.selectedBuilding = value;
   }
 
   get rowCount(): number {

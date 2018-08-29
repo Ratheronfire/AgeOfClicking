@@ -78,7 +78,8 @@ export class WorkersService {
     const resourceWorker = worker.workersByResource.find(ws => ws.resourceId === resource.id);
 
     if (!resourceWorker.sliderSettingValid) {
-      return;
+      newResourceWorkerCount = worker.freeWorkers + resourceWorker.workerCount;
+      resourceWorker.sliderSetting = newResourceWorkerCount;
     }
 
     const newFreeWorkers = worker.freeWorkers + resourceWorker.workerCount - newResourceWorkerCount;

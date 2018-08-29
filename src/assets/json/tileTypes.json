@@ -28,6 +28,30 @@
       "buildableSurfaces": [
         "GRASS"
       ]
+    },
+    "ROAD": {
+      "tileType": "ROAD",
+      "name": "Road",
+      "description": "Allows access between buildings.",
+      "resourceCosts": [{
+        "resourceId": 13,
+        "resourceCost": 20
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ]
+    },
+    "BRIDGE": {
+      "tileType": "BRIDGE",
+      "name": "Bridge",
+      "description": "Allows access between islands.",
+      "resourceCosts": [{
+        "resourceId": 7,
+        "resourceCost": 40
+      }],
+      "buildableSurfaces": [
+        "WATER"
+      ]
     }
   }
 }
