@@ -1,40 +1,10 @@
-.building-img {
-  position: absolute;
-  z-index: 1;
-}
-
 .canvas-container {
   width: 1000px;
   height: 1000px;
 }
 
-.map-img {
-  z-index: -2;
-}
-
-mat-card {
-  position: absolute;
-  left: 120%;
-  z-index: 2;
-
-  width: intrinsic;
-  width: -moz-max-content;
-  width: -webkit-max-content;
-}
-
-mat-grid-tile {
-  overflow: visible;
-}
-
-.card-tail {
-  position: absolute;
-  z-index: 2;
-  right: -10px;
-  top: 14px;
-}
-
-.selected-border {
-  position: absolute;
-  z-index: 2;
-  top: -2px;
+.building-list {
+  display: flex;
+  max-width: 1000px;
+  overflow-x: scroll;
 }

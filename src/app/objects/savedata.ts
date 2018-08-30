@@ -1,3 +1,5 @@
+import { MapTileType, ResourceTileType, BuildingTileType, Tile, TileCropDetail } from './tile';
+
 export interface ResourceData {
   id: number;
   amount: number;
@@ -27,9 +29,22 @@ export interface ResourceWorkerData {
   workerYield: number;
 }
 
+export interface TileData {
+  id: number;
+
+  resourceTileType?: ResourceTileType;
+  buildingTileType?: BuildingTileType;
+
+  buildingPath?: Tile[];
+  buildingRemovable: boolean;
+
+  tileCropDetail: TileCropDetail;
+}
+
 export class SaveData {
   resources: ResourceData[];
   upgrades: UpgradeData[];
   workers: WorkerData[];
+  tiles: TileData[];
   autosaveInterval: number;
 }

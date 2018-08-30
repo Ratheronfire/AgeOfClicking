@@ -23,6 +23,7 @@ export class Resource {
   iconPath: string;
 
   amount: number;
+  amountTravelling = 0;
 
   resourceConsumes: ResourceConsume[];
 

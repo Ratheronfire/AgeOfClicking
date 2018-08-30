@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ResourcesService } from '../resources/resources.service';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTileType } from '../../objects/tile';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTileType, ResourceTile } from '../../objects/tile';
 import { ResourceAnimation } from '../../objects/resourceAnimation';
 
 declare var require: any;
@@ -12,8 +12,10 @@ const baseTiles = require('../../../assets/json/tileTypes.json');
   providedIn: 'root'
 })
 export class MapService {
-  public mapTiles: Map<MapTileType, MapTile> = baseTiles.mapTiles;
-  public buildingTiles: Map<BuildingTileType, BuildingTile> = baseTiles.buildingTiles;
+  public tileTypes = baseTiles.tileTypes;
+  public mapTiles = baseTiles.mapTiles;
+  public buildingTiles = baseTiles.buildingTiles;
+  public resourceTiles = baseTiles.resourceTiles;
 
   mapWidth: number;
   mapHeight: number;
@@ -21,24 +23,29 @@ export class MapService {
   public tiledMap: Tile[] = [];
   resourceAnimations: ResourceAnimation[] = [];
 
-  walkableMapTiles = [MapTileType.Grass];
-
   deleteMode = false;
   selectedBuilding: BuildingTile;
-
-  context: CanvasRenderingContext2D;
 
   constructor(protected resourcesService: ResourcesService) {
     const _tiledMap: Tile[] = [];
     let mapTileIds: number[], resourceTileIds: number[], buildingTileIds: number[];
     let _mapWidth: number, _mapHeight: number;
 
-    const tileTypes = {1: MapTileType.Grass, 2: MapTileType.Water, 3: MapTileType.Mountain,
-      7: ResourceTileType.OakTree, 8: ResourceTileType.PineTree, 9: ResourceTileType.BirchTree, 10: ResourceTileType.EucalyptusTree,
-      11: ResourceTileType.WillowTree, 12: ResourceTileType.TeakTree, 13: ResourceTileType.DeadEnt,
-      50: BuildingTileType.Home, 51: BuildingTileType.Wall, 52: BuildingTileType.Road, 53: BuildingTileType.Bridge
-    };
-    const resourceIds = {7: 1, 8: 7, 9: 8, 10: 9, 11: 15, 12: 25, 13: 16};
+    // const tileTypes = {1: MapTileType.Grass, 2: MapTileType.Water, 3: MapTileType.Mountain,
+    //   7: ResourceTileType.OakTree, 8: ResourceTileType.PineTree, 9: ResourceTileType.BirchTree, 10: ResourceTileType.EucalyptusTree,
+    //   11: ResourceTileType.WillowTree, 12: ResourceTileType.TeakTree, 13: ResourceTileType.DeadEnt, 14: ResourceTileType.StoneMine,
+    //   15: ResourceTileType.GraphiteMine, 16: ResourceTileType.LimestoneMine, 17: ResourceTileType.MarbleMine,
+    //   18: ResourceTileType.QuartzMine, 19: ResourceTileType.ObsidianMine, 20: ResourceTileType.DiamondMine,
+    //   21: ResourceTileType.CopperMine, 22: ResourceTileType.TinMine, 23: ResourceTileType.IronMine, 24: ResourceTileType.GoldMine,
+    //   25: ResourceTileType.LatinumMine, 26: ResourceTileType.UnbelieviumMine, 27: ResourceTileType.LustrialMine,
+    //   28: ResourceTileType.SpectrusMine, 29: ResourceTileType.CrackedForge, 30: ResourceTileType.StoneForge,
+    //   31: ResourceTileType.IronForge, 32: ResourceTileType.GoldForge, 33: ResourceTileType.LatinumForge,
+    //   34: ResourceTileType.TemprousDistillery, 71: BuildingTileType.Home, 72: BuildingTileType.Wall,
+    //   73: BuildingTileType.Road, 74: BuildingTileType.Bridge
+    // };
+    // const resourceIds = {7: [1], 8: [7], 9: [8], 10: [9], 11: [15], 12: [25], 13: [16], 14: [13], 15: [26], 16: [27],
+    //   17: [28], 18: [29], 19: [30], 20: [31], 21: [2], 22: [3], 23: [5], 24: [11], 25: [18], 26: [20], 27: [21], 28: [22],
+    //   29: [4, 5], 30: [4, 5, 6], 31: [4, 5, 6, 10, 12], 32: [4, 5, 6, 10, 12, 19], 33: [4, 5, 6, 10, 12, 19, 23], 34: [24]};
 
     const xmlRequest = new XMLHttpRequest();
     xmlRequest.onload = function() {
@@ -77,19 +84,20 @@ export class MapService {
       const buildingTileId = buildingTileIds[i];
 
       const tile: Tile = {
-        mapTileType: tileTypes[mapTileId],
+        id: _tiledMap.length,
+        mapTileType: this.tileTypes[mapTileId],
         x: 16 * (_tiledMap.length % _mapWidth),
         y: 16 * Math.floor(_tiledMap.length / _mapWidth),
-        tileCropDetail: {x: 0, y: 0, width: 16, height: 16}
+        tileCropDetail: {x: 0, y: 0, width: 16, height: 16},
+        buildingRemovable: false
       };
 
       if (resourceTileId > 0) {
-        tile.resourceTileType = tileTypes[resourceTileId];
-        tile.resourceId = resourceIds[resourceTileId];
+        tile.resourceTileType = this.tileTypes[resourceTileId];
       }
 
       if (buildingTileId > 0) {
-        tile.buildingTileType = tileTypes[buildingTileId];
+        tile.buildingTileType = this.tileTypes[buildingTileId];
       }
 
       _tiledMap.push(tile);
@@ -116,6 +124,11 @@ export class MapService {
       this.resourcesService.addResourceAmount(resourceCost.resourceId, -resourceCost.resourceCost);
     }
 
+    if (buildingTile.placesResourceTile) {
+      tile.resourceTileType = buildingTile.resourceTileType;
+    }
+
+    tile.buildingRemovable = true;
     tile.buildingTileType = buildingType;
     this.calculateResourceConnections();
 
@@ -133,20 +146,33 @@ export class MapService {
   }
 
   clearBuilding(tile: Tile) {
+    if (!tile.buildingRemovable) {
+      return;
+    }
+
+    const buildingTile = this.buildingTiles[tile.buildingTileType];
+
+    if (buildingTile.placesResourceTile) {
+      tile.resourceTileType = undefined;
+    }
+
     tile.buildingTileType = undefined;
+    this.calculateResourceConnections();
   }
 
   calculateResourceConnections() {
     const resourceTiles = this.getResourceTiles();
 
     for (const resourceTile of resourceTiles) {
+      resourceTile.buildingPath = [];
+
       const visitedTiles: Tile[] = [];
       let tileQueue: Tile[] = [];
       const nodeMap = new Map<Tile, Tile>();
       let currentNode: Tile;
 
       for (const neighbor of this.getNeighborTiles(resourceTile)) {
-        if (neighbor.buildingTileType === BuildingTileType.Road || neighbor.buildingTileType === BuildingTileType.Home) {
+        if (neighbor.buildingTileType && this.buildingTiles[neighbor.buildingTileType].resourcePathable) {
           tileQueue.push(neighbor);
         }
       }
@@ -165,13 +191,15 @@ export class MapService {
             backtrackNode = nodeMap.get(backtrackNode);
           }
 
+          buildingPath.push(backtrackNode);
+
           resourceTile.buildingPath = buildingPath.reverse();
           tileQueue = [];
         }
 
         for (const neighbor of this.getNeighborTiles(currentNode)) {
-          if (!visitedTiles.includes(neighbor) &&
-              (neighbor.buildingTileType === BuildingTileType.Road || neighbor.buildingTileType === BuildingTileType.Home)) {
+          if (!visitedTiles.includes(neighbor) && neighbor.buildingTileType &&
+            this.buildingTiles[neighbor.buildingTileType].resourcePathable) {
             nodeMap.set(neighbor, currentNode);
             tileQueue.push(neighbor);
           }
@@ -183,16 +211,15 @@ export class MapService {
   }
 
   spawnResourceAnimation(resourceId: number) {
-    const resourceTiles = this.getResourceTiles().filter(resourceTile => resourceTile.resourceId === resourceId);
-    const tile = resourceTiles[Math.floor(Math.random() * resourceTiles.length)];
+    const matchingTiles = this.getTilesForResource(resourceId).filter(tile => tile.buildingPath.length > 0);
+
+    const tile = matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
 
     this.resourceAnimations.push({
       resourceId: resourceId,
       x: tile.x + 4,
       y: tile.y + 4,
-      sourceTile: tile,
-      currentTile: tile,
-      destinationTile: tile.buildingPath[0],
+      buildingPath: tile.buildingPath.map(tile => tile),
       pathStep: 0,
       done: false
     });
@@ -242,34 +269,19 @@ export class MapService {
 
   getResourceTiles(resourceId?: number): Tile[] {
     let tiles = this.tiledMap.filter(tile => tile.resourceTileType !== undefined);
+    const matchingTypes = this.resourceTileArray.filter(tile => tile.resourceIds.includes(resourceId)).map(tile => tile.tileType);
 
     if (resourceId !== undefined) {
-      tiles = tiles.filter(tile => tile.resourceId === resourceId);
+      tiles = tiles.filter(tile => matchingTypes.includes(tile.resourceTileType));
     }
 
     return tiles;
   }
 
   resourceTileUsable(resourceId: number) {
-    const tiles = this.tiledMap.filter(tile => tile.resourceTileType !== undefined && tile.resourceId === resourceId);
+    const matchingTiles = this.getTilesForResource(resourceId);
 
-    return (tiles.length > 0 && tiles.some(tile => tile.buildingPath !== undefined));
-  }
-
-  getMap(clampToWindow: boolean, topLeftX: number, topLeftY: number, windowWidth: number, windowHeight: number): Tile[] {
-    if (!clampToWindow) {
-      return this.tiledMap;
-    }
-
-    const submap: Tile[] = [];
-
-    for (let i = topLeftY; i < topLeftY + windowHeight; i++) {
-      for (let j = topLeftX; j < topLeftX + windowWidth; j++) {
-        submap.push(this.getTile(j, i));
-      }
-    }
-
-    return submap;
+    return (matchingTiles.length > 0 && matchingTiles.some(tile => tile.buildingPath.length > 0));
   }
 
   getTileType(tileId: number): MapTileType {
@@ -285,5 +297,41 @@ export class MapService {
 
   getTileCropDetail(tileId: number): TileCropDetail {
     return {x: 0, y: 0, width: 16, height: 16};
+  }
+
+  get mapTileArray(): MapTile[] {
+    const tiles: MapTile[] = [];
+
+    for (const key in this.mapTiles) {
+      tiles.push(this.mapTiles[key]);
+    }
+
+    return tiles;
+  }
+
+  getTilesForResource(resourceId: number) {
+    const matchingTypes = this.resourceTileArray.filter(tile => tile.resourceIds.includes(resourceId)).map(tile => tile.tileType);
+
+    return this.tiledMap.filter(tile => matchingTypes.includes(tile.resourceTileType));
+  }
+
+  get buildingTileArray(): BuildingTile[] {
+    const tiles: BuildingTile[] = [];
+
+    for (const key in this.buildingTiles) {
+      tiles.push(this.buildingTiles[key]);
+    }
+
+    return tiles;
+  }
+
+  get resourceTileArray(): ResourceTile[] {
+    const tiles: ResourceTile[] = [];
+
+    for (const key in this.resourceTiles) {
+      tiles.push(this.resourceTiles[key]);
+    }
+
+    return tiles;
   }
 }

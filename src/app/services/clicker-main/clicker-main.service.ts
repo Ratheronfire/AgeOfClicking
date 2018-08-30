@@ -16,7 +16,7 @@ export class ClickerMainService {
 
   millisecondsTotal = 1000;
   harvestStartDate: number;
-  progressBarUpdateDelay = 200;
+  progressBarUpdateDelay = 125;
 
   resourceTypes = ResourceType;
 
@@ -63,6 +63,7 @@ export class ClickerMainService {
 
   harvestResource(id: number) {
     this.harvestStartDate = Date.now();
+    this.resourcesService.getResource(id).amountTravelling++;
 
     if (this.shouldAnimateProgressBar(id)) {
       this.resourcesService.getResource(id).progressBarValue = 0;

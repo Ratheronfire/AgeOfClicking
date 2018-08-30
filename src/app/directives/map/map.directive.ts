@@ -32,8 +32,6 @@ export class MapDirective implements AfterViewInit {
     this.canvas = d3.select('canvas');
     this.context = this.canvas.node().getContext('2d');
 
-    this.mapService.context = this.context;
-
     this.width = this.canvas.property('width');
     this.height = this.canvas.property('height');
 
@@ -44,19 +42,13 @@ export class MapDirective implements AfterViewInit {
 
     this.canvas.on('click', this.clickTile(this));
 
-    d3.timer(this.updateResourceAnimations(this), 50);
+    d3.timer(this.updateResourceAnimations(this), 125);
   }
 
   zoomed(self: MapDirective) {
     return function(d) {
       self.transform = d3.event.transform;
-
-      self.context.save();
-      self.context.clearRect(0, 0, self.width, self.height);
-      self.context.translate(self.transform.x, self.transform.y);
-      self.context.scale(self.transform.k, self.transform.k);
-      self.drawCanvas();
-      self.context.restore();
+      self.refreshCanvas();
     };
   }
 
@@ -74,13 +66,50 @@ export class MapDirective implements AfterViewInit {
         self.mapService.createBuilding(tile, self.mapService.selectedBuilding.tileType);
       }
 
-      self.context.save();
-      self.context.clearRect(0, 0, self.width, self.height);
-      self.context.translate(self.transform.x, self.transform.y);
-      self.context.scale(self.transform.k, self.transform.k);
-      self.drawCanvas();
-      self.context.restore();
+      self.refreshCanvas();
     };
+  }
+
+  updateResourceAnimations(self: MapDirective) {
+    return function(d) {
+      const deltaTime = Date.now() - self.lastAnimationTime;
+
+      for (const resourceAnimation of self.mapService.resourceAnimations) {
+        const currentTile = resourceAnimation.buildingPath[resourceAnimation.pathStep];
+        const destinationTile = resourceAnimation.buildingPath[resourceAnimation.pathStep + 1];
+
+        const startPos = [currentTile.x, currentTile.y];
+        const endPos = [destinationTile.x, destinationTile.y];
+
+        resourceAnimation.x += (endPos[0] - startPos[0]) * deltaTime * self.tileAnimationSpeed;
+        resourceAnimation.y += (endPos[1] - startPos[1]) * deltaTime * self.tileAnimationSpeed;
+
+        if (Math.abs(resourceAnimation.x - currentTile.x) >= 8 ||
+            Math.abs(resourceAnimation.y - currentTile.y) >= 8) {
+          resourceAnimation.pathStep++;
+
+          if (resourceAnimation.pathStep === resourceAnimation.buildingPath.length - 1) {
+            self.resourcesService.finishResourceAnimation(resourceAnimation.resourceId);
+            resourceAnimation.done = true;
+          }
+        }
+      }
+
+      self.mapService.resourceAnimations = self.mapService.resourceAnimations.filter(animation => !animation.done);
+
+      self.lastAnimationTime = Date.now();
+
+      self.refreshCanvas();
+    };
+  }
+
+  refreshCanvas() {
+    this.context.save();
+    this.context.clearRect(0, 0, this.width, this.height);
+    this.context.translate(this.transform.x, this.transform.y);
+    this.context.scale(this.transform.k, this.transform.k);
+    this.drawCanvas();
+    this.context.restore();
   }
 
   drawCanvas() {
@@ -101,46 +130,8 @@ export class MapDirective implements AfterViewInit {
 
     for (const resourceAnimation of this.mapService.resourceAnimations) {
       const resourceTileImage = <HTMLImageElement> document.getElementById(
-          this.resourcesService.getResource(resourceAnimation.resourceId).name);
+          this.resourcesService.getResource(resourceAnimation.resourceId).name.toLowerCase().replace(' ', '-'));
       this.context.drawImage(resourceTileImage, resourceAnimation.x, resourceAnimation.y, 8, 8);
     }
-  }
-
-  updateResourceAnimations(self: MapDirective) {
-    return function(d) {
-      const deltaTime = Date.now() - self.lastAnimationTime;
-
-      for (const resourceAnimation of self.mapService.resourceAnimations) {
-        const startPos = [resourceAnimation.currentTile.x, resourceAnimation.currentTile.y];
-        const endPos = [resourceAnimation.destinationTile.x, resourceAnimation.destinationTile.y];
-
-        resourceAnimation.x += (endPos[0] - startPos[0]) * deltaTime * self.tileAnimationSpeed;
-        resourceAnimation.y += (endPos[1] - startPos[1]) * deltaTime * self.tileAnimationSpeed;
-
-        if (Math.abs(resourceAnimation.x - resourceAnimation.currentTile.x) >= 8 ||
-            Math.abs(resourceAnimation.y - resourceAnimation.currentTile.y) >= 8) {
-          resourceAnimation.pathStep++;
-
-          if (resourceAnimation.pathStep === resourceAnimation.sourceTile.buildingPath.length) {
-            self.resourcesService.harvestResource(resourceAnimation.resourceId);
-            resourceAnimation.done = true;
-          }
-
-          resourceAnimation.currentTile = resourceAnimation.destinationTile;
-          resourceAnimation.destinationTile = resourceAnimation.sourceTile.buildingPath[resourceAnimation.pathStep];
-        }
-      }
-
-      self.mapService.resourceAnimations = self.mapService.resourceAnimations.filter(animation => !animation.done);
-
-      self.lastAnimationTime = Date.now();
-
-      self.context.save();
-      self.context.clearRect(0, 0, self.width, self.height);
-      self.context.translate(self.transform.x, self.transform.y);
-      self.context.scale(self.transform.k, self.transform.k);
-      self.drawCanvas();
-      self.context.restore();
-    };
   }
 }

@@ -6,9 +6,7 @@ export class ResourceAnimation {
   x: number;
   y: number;
 
-  sourceTile: Tile;
-  currentTile: Tile;
-  destinationTile: Tile;
+  buildingPath: Tile[];
   pathStep: number;
   done = false;
 }

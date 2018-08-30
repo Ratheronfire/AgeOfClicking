@@ -18,10 +18,18 @@ export class ResourcesService {
     return this.resources.find(resource => resource.id === id);
   }
 
-  public harvestResource(id: number, multiplier = 1) {
+  public finishResourceAnimation(id: number) {
     const resource = this.getResource(id);
 
-    if (!resource.harvestable || !this.canHarvest(id, multiplier)) {
+    resource.amountTravelling--;
+
+    this.harvestResource(id, 1, true);
+  }
+
+  public harvestResource(id: number, multiplier = 1, forceHarvest = false) {
+    const resource = this.getResource(id);
+
+    if (!forceHarvest && (!resource.harvestable || !this.canHarvest(id, multiplier))) {
       return;
     }
 

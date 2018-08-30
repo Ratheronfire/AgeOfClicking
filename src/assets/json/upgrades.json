@@ -88,23 +88,6 @@
   }],
   "purchased": false
 }, {
-  "id": 4,
-  "upgradeType": "RESOURCE",
-  "name": "Cracked Forge",
-  "description": "An old, weary forge. Bronze ingots are probably all this thing is capable of producing.",
-  "upgradeEffects": [{
-    "upgradeIsForWholeType": false,
-    "resourceType": "CURRENCY",
-    "resourceId": 4,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }],
-  "resourceCosts": [{
-    "resourceId": 0,
-    "resourceCost": 150
-  }],
-  "purchased": false
-}, {
   "id": 5,
   "upgradeType": "RESOURCE",
   "name": "Bronze Pickaxe",
@@ -171,32 +154,6 @@
   }, {
     "resourceId": 8,
     "resourceCost": 30
-  }],
-  "purchased": false
-}, {
-  "id": 7,
-  "upgradeType": "RESOURCE",
-  "name": "Stone Forge",
-  "description": "This forge burns hotter, allowing you to create more precious ingots.",
-  "upgradeEffects": [{
-    "upgradeIsForWholeType": false,
-    "resourceType": "CURRENCY",
-    "resourceId": 6,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }],
-  "resourceCosts": [{
-    "resourceId": 0,
-    "resourceCost": 150
-  }, {
-    "resourceId": 13,
-    "resourceCost": 50
-  }, {
-    "resourceId": 7,
-    "resourceCost": 75
-  }, {
-    "resourceId": 4,
-    "resourceCost": 20
   }],
   "purchased": false
 }, {
@@ -413,103 +370,6 @@
   }, {
     "resourceId": 30,
     "resourceCost": 250
-  }],
-  "purchased": false
-}, {
-  "id": 16,
-  "upgradeType": "RESOURCE",
-  "name": "Iron Forge",
-  "description": "This forge burns hotter, allowing you to create more precious ingots.",
-  "upgradeEffects": [{
-    "upgradeIsForWholeType": false,
-    "resourceType": "CURRENCY",
-    "resourceId": 10,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }, {
-    "upgradeIsForWholeType": false,
-    "resourceId": 12,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }],
-  "resourceCosts": [{
-    "resourceId": 6,
-    "resourceCost": 500
-  }, {
-    "resourceId": 9,
-    "resourceCost": 700
-  }, {
-    "resourceId": 28,
-    "resourceCost": 250
-  }],
-  "purchased": false
-}, {
-  "id": 17,
-  "upgradeType": "RESOURCE",
-  "name": "Gold Forge",
-  "description": "For reasons unknown to science, gold forges are particularly effective in forging latinum.",
-  "upgradeEffects": [{
-    "upgradeIsForWholeType": false,
-    "resourceType": "CURRENCY",
-    "resourceId": 19,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }],
-  "resourceCosts": [{
-    "resourceId": 12,
-    "resourceCost": 1200
-  }, {
-    "resourceId": 15,
-    "resourceCost": 1500
-  }, {
-    "resourceId": 29,
-    "resourceCost": 250
-  }],
-  "purchased": false
-}, {
-  "id": 18,
-  "upgradeType": "RESOURCE",
-  "name": "Latinum Forge",
-  "description": "A forge that burns hot enough to fuse together the world's most precious and rare metals.",
-  "upgradeEffects": [{
-    "upgradeIsForWholeType": false,
-    "resourceType": "CURRENCY",
-    "resourceId": 23,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }],
-  "resourceCosts": [{
-    "resourceId": 19,
-    "resourceCost": 2500
-  }, {
-    "resourceId": 25,
-    "resourceCost": 1500
-  }, {
-    "resourceId": 30,
-    "resourceCost": 700
-  }],
-  "purchased": false
-}, {
-  "id": 19,
-  "upgradeType": "RESOURCE",
-  "name": "Temprous Distillery",
-  "description": "With this device, all impurities can be removed from temprous ingots, unlocking their limitless potential.",
-  "upgradeEffects": [{
-    "upgradeIsForWholeType": false,
-    "resourceType": "CURRENCY",
-    "resourceId": 24,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }],
-  "resourceCosts": [{
-    "resourceId": 23,
-    "resourceCost": 5000
-  }, {
-    "resourceId": 16,
-    "resourceCost": 500
-  }, {
-    "resourceId": 31,
-    "resourceCost": 1200
   }],
   "purchased": false
 }, {

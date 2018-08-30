@@ -50,14 +50,14 @@ export class MapComponent implements OnInit, AfterViewInit {
     return this.mapService.buildingTiles;
   }
 
-  get buildingTileArray(): BuildingTile[] {
-    const buildingTiles: BuildingTile[] = [];
+  getBuildingTileArray(filterByPlaceable: boolean): BuildingTile[] {
+    let tiles = this.mapService.buildingTileArray;
 
-    for (const key in this.buildingTiles) {
-      buildingTiles.push(this.buildingTiles[key]);
+    if (filterByPlaceable) {
+      tiles = tiles.filter(tile => tile.placeable);
     }
 
-    return buildingTiles;
+    return tiles;
   }
 
   get deleteMode(): boolean {

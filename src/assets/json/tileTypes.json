@@ -1,4 +1,41 @@
 {
+  "tileTypes": {
+    "1": "GRASS",
+    "2": "WATER",
+    "3": "MOUNTAIN",
+    "7": "OAKTREE",
+    "8": "PINETREE",
+    "9": "BIRCHTREE",
+    "10": "EUCALYPTUSTREE",
+    "11": "WILLOWTREE",
+    "12": "TEAKTREE",
+    "13": "DEADENT",
+    "14": "STONEMINE",
+    "15": "GRAPHITEMINE",
+    "16": "LIMESTONEMINE",
+    "17": "MARBLEMINE",
+    "18": "QUARTZMINE",
+    "19": "OBSIDIANMINE",
+    "20": "DIAMONDMINE",
+    "21": "COPPERMINE",
+    "22": "TINMINE",
+    "23": "IRONMINE",
+    "24": "GOLDMINE",
+    "25": "LATINUMMINE",
+    "26": "UNBELIEVIUMMINE",
+    "27": "LUSTRIALMINE",
+    "28": "SPECTRUSMINE",
+    "29": "CRACKEDFORGE",
+    "30": "STONEFORGE",
+    "31": "IRONFORGE",
+    "32": "GOLDFORGE",
+    "33": "LATINUMFORGE",
+    "34": "TEMPROUSDISTILLERY",
+    "71": "HOME",
+    "72": "WALL",
+    "73": "ROAD",
+    "74": "BRIDGE"
+  },
   "mapTiles": {
     "GRASS": {
       "tileType": "GRASS",
@@ -17,41 +54,355 @@
     }
   },
   "buildingTiles": {
+    "HOME": {
+      "tileType": "HOME",
+      "name": "Home",
+      "description": "",
+      "placeable": false,
+      "resourceCosts": [],
+      "buildableSurfaces": [],
+      "resourcePathable": true
+    },
     "WALL": {
       "tileType": "WALL",
       "name": "Wall",
       "description": "Keeps invaders out.",
+      "placeable": true,
       "resourceCosts": [{
         "resourceId": 1,
         "resourceCost": 20
       }],
       "buildableSurfaces": [
         "GRASS"
-      ]
+      ],
+      "resourcePathable": false
     },
     "ROAD": {
       "tileType": "ROAD",
       "name": "Road",
       "description": "Allows access between buildings.",
+      "placeable": true,
       "resourceCosts": [{
         "resourceId": 13,
         "resourceCost": 20
       }],
       "buildableSurfaces": [
         "GRASS"
-      ]
+      ],
+      "resourcePathable": true
     },
     "BRIDGE": {
       "tileType": "BRIDGE",
       "name": "Bridge",
       "description": "Allows access between islands.",
+      "placeable": true,
       "resourceCosts": [{
         "resourceId": 7,
         "resourceCost": 40
       }],
       "buildableSurfaces": [
         "WATER"
-      ]
+      ],
+      "resourcePathable": true
+    },
+    "CRACKEDFORGE": {
+      "tileType": "CRACKEDFORGE",
+      "name": "Cracked Forge",
+      "description": "An old, weary forge. Bronze ingots are probably all this thing is capable of producing.",
+      "placeable": true,
+      "resourceCosts": [{
+        "resourceId": 0,
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "CRACKEDFORGE",
+      "resourcePathable": true
+    },
+    "STONEFORGE": {
+      "tileType": "STONEFORGE",
+      "name": "Stone Forge",
+      "description": "This forge burns hotter, allowing you to create more precious ingots.",
+      "placeable": true,
+      "resourceCosts": [{
+        "resourceId": 0,
+        "resourceCost": 150
+      }, {
+        "resourceId": 13,
+        "resourceCost": 50
+      }, {
+        "resourceId": 7,
+        "resourceCost": 75
+      }, {
+        "resourceId": 4,
+        "resourceCost": 20
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "STONEFORGE",
+      "resourcePathable": true
+    },
+    "IRONFORGE": {
+      "tileType": "IRONFORGE",
+      "name": "Iron Forge",
+      "description": "This forge burns hotter, allowing you to create more precious ingots.",
+      "placeable": true,
+      "resourceCosts": [{
+        "resourceId": 6,
+        "resourceCost": 500
+      }, {
+        "resourceId": 9,
+        "resourceCost": 700
+      }, {
+        "resourceId": 28,
+        "resourceCost": 250
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "IRONFORGE",
+      "resourcePathable": true
+    },
+    "GOLDFORGE": {
+      "tileType": "GOLDFORGE",
+      "name": "Gold Forge",
+      "description": "For reasons unknown to science, gold forges are particularly effective in forging latinum.",
+      "placeable": true,
+      "resourceCosts": [{
+        "resourceId": 12,
+        "resourceCost": 1200
+      }, {
+        "resourceId": 15,
+        "resourceCost": 1500
+      }, {
+        "resourceId": 29,
+        "resourceCost": 250
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "GOLDFORGE",
+      "resourcePathable": true
+    },
+    "LATINUMFORGE": {
+      "tileType": "LATINUMFORGE",
+      "name": "Latinum Forge",
+      "description": "A forge that burns hot enough to fuse together the world's most precious and rare metals.",
+      "placeable": true,
+      "resourceCosts": [{
+        "resourceId": 19,
+        "resourceCost": 2500
+      }, {
+        "resourceId": 25,
+        "resourceCost": 1500
+      }, {
+        "resourceId": 30,
+        "resourceCost": 700
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "LATINUMFORGE",
+      "resourcePathable": true
+    },
+    "TEMPROUSDISTILLERY": {
+      "tileType": "TEMPROUSDISTILLERY",
+      "name": "Temprous Distillery",
+      "description": "With this device, all impurities can be removed from temprous ingots, unlocking their limitless potential.",
+      "placeable": true,
+      "resourceCosts": [{
+        "resourceId": 23,
+        "resourceCost": 5000
+      }, {
+        "resourceId": 16,
+        "resourceCost": 500
+      }, {
+        "resourceId": 31,
+        "resourceCost": 1200
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "TEMPROUSDISTILLERY",
+      "resourcePathable": true
+    }
+  },
+  "resourceTiles": {
+    "OAKTREE": {
+      "tileType": "OAKTREE",
+      "name": "OakTree",
+      "placeable": false,
+      "resourceIds": [1]
+    },
+    "PINETREE": {
+      "tileType": "PINETREE",
+      "name": "PineTree",
+      "placeable": false,
+      "resourceIds": [7]
+    },
+    "BIRCHTREE": {
+      "tileType": "BIRCHTREE",
+      "name": "BirchTree",
+      "placeable": false,
+      "resourceIds": [8]
+    },
+    "EUCALYPTUSTREE": {
+      "tileType": "EUCALYPTUSTREE",
+      "name": "EucalptusTree",
+      "placeable": false,
+      "resourceIds": [9]
+    },
+    "WILLOWTREE": {
+      "tileType": "WILLOWTREE",
+      "name": "WillowTree",
+      "placeable": false,
+      "resourceIds": [15]
+    },
+    "TEAKTREE": {
+      "tileType": "TEAKTREE",
+      "name": "TeakTree",
+      "placeable": false,
+      "resourceIds": [25]
+    },
+    "DEADENT": {
+      "tileType": "DEADENT",
+      "name": "DeadEnt",
+      "placeable": false,
+      "resourceIds": [16, 17]
+    },
+    "STONEMINE": {
+      "tileType": "STONEMINE",
+      "name": "StoneMine",
+      "placeable": false,
+      "resourceIds": [13]
+    },
+    "GRAPHITEMINE": {
+      "tileType": "GRAPHITEMINE",
+      "name": "GraphiteMine",
+      "placeable": false,
+      "resourceIds": [26]
+    },
+    "LIMESTONEMINE": {
+      "tileType": "LIMESTONEMINE",
+      "name": "LimestoneMine",
+      "placeable": false,
+      "resourceIds": [27]
+    },
+    "MARBLEMINE": {
+      "tileType": "MARBLEMINE",
+      "name": "MarbleMine",
+      "placeable": false,
+      "resourceIds": [28]
+    },
+    "QUARTZMINE": {
+      "tileType": "QUARTZMINE",
+      "name": "QuartzMine",
+      "placeable": false,
+      "resourceIds": [29]
+    },
+    "OBSIDIANMINE": {
+      "tileType": "OBSIDIANMINE",
+      "name": "ObsidianMine",
+      "placeable": false,
+      "resourceIds": [30]
+    },
+    "DIAMONDMINE": {
+      "tileType": "DIAMONDMINE",
+      "name": "DiamondMine",
+      "placeable": false,
+      "resourceIds": [31]
+    },
+    "COPPERMINE": {
+      "tileType": "COPPERMINE",
+      "name": "CopperMine",
+      "placeable": false,
+      "resourceIds": [2]
+    },
+    "TINMINE": {
+      "tileType": "TINMINE",
+      "name": "TinMine",
+      "placeable": false,
+      "resourceIds": [3]
+    },
+    "IRONMINE": {
+      "tileType": "IRONMINE",
+      "name": "IronMine",
+      "placeable": false,
+      "resourceIds": [5]
+    },
+    "GOLDMINE": {
+      "tileType": "GOLDMINE",
+      "name": "GoldMine",
+      "placeable": false,
+      "resourceIds": [11]
+    },
+    "LATINUMMINE": {
+      "tileType": "LATINUMMINE",
+      "name": "LatinumMine",
+      "placeable": false,
+      "resourceIds": [18]
+    },
+    "UNBELIEVIUMMINE": {
+      "tileType": "UNBELIEVIUMMINE",
+      "name": "UnbelieviumMine",
+      "placeable": false,
+      "resourceIds": [20]
+    },
+    "LUSTRIALMINE": {
+      "tileType": "LUSTRIALMINE",
+      "name": "LustrialMine",
+      "placeable": false,
+      "resourceIds": [21]
+    },
+    "SPECTRUSMINE": {
+      "tileType": "SPECTRUSMINE",
+      "name": "SpectrusMine",
+      "placeable": false,
+      "resourceIds": [22]
+    },
+    "CRACKEDFORGE": {
+      "tileType": "CRACKEDFORGE",
+      "name": "CrackedForge",
+      "placeable": true,
+      "resourceIds": [4]
+    },
+    "STONEFORGE": {
+      "tileType": "STONEFORGE",
+      "name": "StoneForge",
+      "placeable": true,
+      "resourceIds": [4, 6]
+    },
+    "IRONFORGE": {
+      "tileType": "IRONFORGE",
+      "name": "IronForge",
+      "placeable": true,
+      "resourceIds": [4, 6, 10, 12]
+    },
+    "GOLDFORGE": {
+      "tileType": "GOLDFORGE",
+      "name": "GoldForge",
+      "placeable": true,
+      "resourceIds": [4, 6, 10, 12, 19]
+    },
+    "LATINUMFORGE": {
+      "tileType": "LATINUMFORGE",
+      "name": "LatinumForge",
+      "placeable": true,
+      "resourceIds": [4, 6, 10, 12, 19, 23]
+    },
+    "TEMPROUSDISTILLERY": {
+      "tileType": "TEMPROUSDISTILLERY",
+      "name": "TemprousDistillery",
+      "placeable": true,
+      "resourceIds": [24]
     }
   }
 }

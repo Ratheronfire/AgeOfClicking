@@ -11,14 +11,41 @@ export enum ResourceTileType {
   EucalyptusTree = 'EUCALYPTUSTREE',
   WillowTree = 'WILLOWTREE',
   TeakTree = 'TEAKTREE',
-  DeadEnt = 'DEADENT'
+  DeadEnt = 'DEADENT',
+  StoneMine = 'STONEMINE',
+  GraphiteMine = 'GRAPHITEMINE',
+  LimestoneMine = 'LIMESTONEMINE',
+  MarbleMine = 'MARBLEMINE',
+  QuartzMine = 'QUARTZMINE',
+  ObsidianMine = 'OBSIDIANMINE',
+  DiamondMine = 'DIAMONDMINE',
+  CopperMine = 'COPPERMINE',
+  TinMine = 'TINMINE',
+  IronMine = 'IRONMINE',
+  GoldMine = 'GOLDMINE',
+  LatinumMine = 'LATINUMMINE',
+  UnbelieviumMine = 'UNBELIEVIUMMINE',
+  LustrialMine = 'LUSTRIALMINE',
+  SpectrusMine = 'SPECTRUSMINE',
+  CrackedForge = 'CRACKEDFORGE',
+  StoneForge = 'STONEFORGE',
+  IronForge = 'IRONFORGE',
+  GoldForge = 'GOLDFORGE',
+  LatinumForge = 'LATINUMFORGE',
+  TemprousDistillery = 'TEMPROUSDISTILLERY'
 }
 
 export enum BuildingTileType {
   Wall = 'WALL',
   Road = 'ROAD',
   Home = 'HOME',
-  Bridge = 'BRIDGE'
+  Bridge = 'BRIDGE',
+  CrackedForge = 'CRACKEDFORGE',
+  StoneForge = 'STONEFORGE',
+  IronForge = 'IRONFORGE',
+  GoldForge = 'GOLDFORGE',
+  LatinumForge = 'LATINUMFORGE',
+  TemprousDistillery = 'TEMPROUSDISTILLERY'
 }
 
 export interface ResourceCost {
@@ -39,9 +66,24 @@ export interface BuildingTile {
 
   name: string;
   description: string;
+  placeable: boolean;
 
   resourceCosts: ResourceCost[];
   buildableSurfaces: MapTileType[];
+
+  placesResourceTile: boolean;
+  resourceTileType?: ResourceTileType;
+
+  resourcePathable: boolean;
+}
+
+export interface ResourceTile {
+  tileType: ResourceTileType;
+
+  name: string;
+  placeable: boolean;
+
+  resourceIds: number[];
 }
 
 export interface TileImage {
@@ -62,12 +104,14 @@ export interface TileCropDetail {
 }
 
 export class Tile {
+  id: number;
+
   mapTileType: MapTileType;
   resourceTileType?: ResourceTileType;
   buildingTileType?: BuildingTileType;
 
   buildingPath?: Tile[];
-  resourceId?: number;
+  buildingRemovable: boolean;
 
   x: number;
   y: number;

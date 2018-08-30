@@ -2,10 +2,9 @@
 <br />
 <br />
 
-<div>
-  <mat-checkbox [(ngModel)]="deleteMode" color="warn">Delete Buildings</mat-checkbox>
-
-  <div *ngFor="let buildingTile of buildingTileArray">
+<mat-checkbox [(ngModel)]="deleteMode" color="warn">Delete Buildings</mat-checkbox>
+<div class="building-list">
+  <div *ngFor="let buildingTile of getBuildingTileArray(true)">
     <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''"
         (click)="selectBuilding(buildingTile)">
       <mat-card-title>{{buildingTile.name}}</mat-card-title>

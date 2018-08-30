@@ -33,6 +33,12 @@ export class UpgradesService {
       this.resourcesService.addResourceAmount(resourceCost.resourceId, -resourceCost.resourceCost);
     }
 
+    this.applyUpgrade(upgrade);
+
+    upgrade.purchased = true;
+  }
+
+  public applyUpgrade(upgrade: Upgrade) {
     for (const upgradeEffect of upgrade.upgradeEffects) {
       if (upgradeEffect.upgradeVariable === UpgradeVariable.WorkerCost) {
         this.workersService.getWorker(upgradeEffect.resourceType).cost *= upgradeEffect.upgradeFactor;
@@ -77,7 +83,6 @@ export class UpgradesService {
       for (const workerToUpgrade of workersToUpgrade) {
         switch(upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Workable: {
-            console.log(workerToUpgrade);
             workerToUpgrade.workable = !!upgradeEffect.upgradeFactor;
             break;
           }
@@ -91,8 +96,6 @@ export class UpgradesService {
         }
       }
     }
-
-    upgrade.purchased = true;
   }
 
   public canAffordUpgrade(id: number): boolean {

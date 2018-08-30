@@ -56,6 +56,16 @@
   border-radius: 0 4px 4px 0;
 }
 
+.button-container {
+  position: relative;
+}
+
+.travelling-count {
+  position: absolute;
+  top: 22px;
+  right: 3px;
+}
+
 .resource-button {
   background-color: #eee;
   border: none;

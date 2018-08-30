@@ -18,6 +18,7 @@ export class ResourceDialogComponent implements OnInit {
     name: '',
     resourceType: ResourceType.Currency,
     amount: 0,
+    amountTravelling: 0,
     iconPath: '',
     resourceConsumes: [],
     progressBarValue: 0,

@@ -6,7 +6,8 @@ import { timer, Observable, Subscription } from 'rxjs';
 import { ResourcesService } from './../resources/resources.service';
 import { UpgradesService } from './../upgrades/upgrades.service';
 import { WorkersService } from './../workers/workers.service';
-import { SaveData, WorkerData } from '../../objects/savedata';
+import { MapService } from './../map/map.service';
+import { SaveData, WorkerData, TileData } from '../../objects/savedata';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 
 @Injectable({
@@ -21,6 +22,7 @@ export class SettingsService {
   constructor(protected resourcesService: ResourcesService,
               protected upgradesService: UpgradesService,
               protected workersService: WorkersService,
+              protected mapService: MapService,
               protected snackbar: MatSnackBar,
               public dialog: MatDialog) {
     this.loadGame();
@@ -86,6 +88,7 @@ export class SettingsService {
       resources: [],
       upgrades: [],
       workers: [],
+      tiles: [],
       autosaveInterval: this.autosaveInterval
     };
 
@@ -101,34 +104,56 @@ export class SettingsService {
       });
     }
 
-      for (const upgrade of this.upgradesService.upgrades) {
-        saveData.upgrades.push({
-          id: upgrade.id,
-          purchased: upgrade.purchased
+    for (const upgrade of this.upgradesService.upgrades) {
+      saveData.upgrades.push({
+        id: upgrade.id,
+        purchased: upgrade.purchased
+      });
+    }
+
+    for (const worker of this.workersService.workers) {
+      const workerData: WorkerData = {
+        id: worker.id,
+        cost: worker.cost,
+        workerCount: worker.workerCount,
+        workersByResource: []
+      };
+
+      for (const resourceWorker of worker.workersByResource) {
+        workerData.workersByResource.push({
+          resourceId: resourceWorker.resourceId,
+          workable: resourceWorker.workable,
+          workerCount: resourceWorker.workerCount,
+          workerYield: resourceWorker.workerYield
         });
       }
 
-      for (const worker of this.workersService.workers) {
-        const workerData: WorkerData = {
-          id: worker.id,
-          cost: worker.cost,
-          workerCount: worker.workerCount,
-          workersByResource: []
-        };
+      saveData.workers.push(workerData);
+    }
 
-        for (const resourceWorker of worker.workersByResource) {
-          workerData.workersByResource.push({
-            resourceId: resourceWorker.resourceId,
-            workable: resourceWorker.workable,
-            workerCount: resourceWorker.workerCount,
-            workerYield: resourceWorker.workerYield
-          });
-        }
-
-        saveData.workers.push(workerData);
+    for (const tile of this.mapService.tiledMap) {
+      if (tile.buildingTileType === undefined) {
+        continue;
       }
 
-    return  btoa(JSON.stringify(saveData));
+      const tileData: TileData = {
+        id: tile.id,
+        buildingPath: tile.buildingPath,
+        buildingRemovable: tile.buildingRemovable,
+        tileCropDetail: tile.tileCropDetail
+      }
+
+      if (tile.resourceTileType !== undefined) {
+        tileData.resourceTileType = tile.resourceTileType;
+      }
+      if (tile.buildingTileType !== undefined) {
+        tileData.buildingTileType = tile.buildingTileType;
+      }
+
+      saveData.tiles.push(tileData);
+    }
+
+    return btoa(JSON.stringify(saveData));
   }
 
   importSave(saveDataString: string): boolean {
@@ -136,6 +161,7 @@ export class SettingsService {
 
     try {
       const saveData: SaveData = JSON.parse(atob(saveDataString));
+      console.log(saveData);
 
       for (const resourceData of saveData.resources) {
         const resource = this.resourcesService.getResource(resourceData.id);
@@ -151,6 +177,7 @@ export class SettingsService {
       for (const upgradeData of saveData.upgrades) {
         const upgrade = this.upgradesService.getUpgrade(upgradeData.id);
 
+        this.upgradesService.applyUpgrade(upgrade);
         upgrade.purchased = upgradeData.purchased;
       }
 
@@ -178,7 +205,20 @@ export class SettingsService {
         }
       }
 
+      for (const tileData of saveData.tiles) {
+        const tile = this.mapService.tiledMap.find(tile => tile.id === tileData.id);
+
+        tile.resourceTileType = tileData.resourceTileType;
+        tile.buildingTileType = tileData.buildingTileType;
+
+        tile.buildingPath = tileData.buildingPath;
+        tile.buildingRemovable = tileData.buildingRemovable;
+
+        tile.tileCropDetail = tileData.tileCropDetail;
+      }
+
       this.autosaveInterval = saveData.autosaveInterval;
+      this.mapService.calculateResourceConnections();
 
       return true;
     } catch (error) {
