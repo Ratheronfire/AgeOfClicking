@@ -161,60 +161,79 @@ export class SettingsService {
 
     try {
       const saveData: SaveData = JSON.parse(atob(saveDataString));
-      console.log(saveData);
 
-      for (const resourceData of saveData.resources) {
-        const resource = this.resourcesService.getResource(resourceData.id);
+      if (saveData.resources) {
+        for (const resourceData of saveData.resources) {
+          const resource = this.resourcesService.getResource(resourceData.id);
 
-        resource.amount = resourceData.amount;
-        resource.harvestable = resourceData.harvestable;
-        resource.harvestYield = resourceData.harvestYield;
-        resource.sellable = resourceData.sellable;
-        resource.sellsFor = resourceData.sellsFor;
-        resource.resourceAccessible = resourceData.resourceAccessible;
-      }
+          if (resource === undefined) {
+            continue;
+          }
 
-      for (const upgradeData of saveData.upgrades) {
-        const upgrade = this.upgradesService.getUpgrade(upgradeData.id);
-
-        this.upgradesService.applyUpgrade(upgrade);
-        upgrade.purchased = upgradeData.purchased;
-      }
-
-      for (const workerData of saveData.workers) {
-        const worker = this.workersService.getWorker(workerData.id);
-
-        worker.cost = workerData.cost;
-        worker.workerCount = workerData.workerCount;
-        worker.freeWorkers = workerData.workerCount;
-
-        for (const resourceWorkerData of workerData.workersByResource) {
-          const resourceWorker = this.workersService.getResourceWorker(resourceWorkerData.resourceId);
-
-          resourceWorker.workable = resourceWorkerData.workable;
-          resourceWorker.workerYield = resourceWorkerData.workerYield;
-          resourceWorker.workerCount = 0;
-
-          resourceWorker.sliderSetting = resourceWorkerData.workerCount;
-
-          this.workersService.updateResourceWorker(resourceWorkerData.resourceId, resourceWorkerData.workerCount);
-        }
-
-        if (worker.freeWorkers < 0) {
-          throw new Error('Invalid worker settings.');
+          resource.amount = resourceData.amount;
+          resource.harvestable = resourceData.harvestable;
+          resource.harvestYield = resourceData.harvestYield;
+          resource.sellable = resourceData.sellable;
+          resource.sellsFor = resourceData.sellsFor;
+          resource.resourceAccessible = resourceData.resourceAccessible;
         }
       }
 
-      for (const tileData of saveData.tiles) {
-        const tile = this.mapService.tiledMap.find(tile => tile.id === tileData.id);
+      if (saveData.upgrades) {
+        for (const upgradeData of saveData.upgrades) {
+          const upgrade = this.upgradesService.getUpgrade(upgradeData.id);
 
-        tile.resourceTileType = tileData.resourceTileType;
-        tile.buildingTileType = tileData.buildingTileType;
+          if (upgrade === undefined) {
+            continue;
+          }
 
-        tile.buildingPath = tileData.buildingPath;
-        tile.buildingRemovable = tileData.buildingRemovable;
+          this.upgradesService.applyUpgrade(upgrade);
+          upgrade.purchased = upgradeData.purchased;
+        }
+      }
 
-        tile.tileCropDetail = tileData.tileCropDetail;
+      if (saveData.workers) {
+        for (const workerData of saveData.workers) {
+          const worker = this.workersService.getWorker(workerData.id);
+
+          worker.cost = workerData.cost;
+          worker.workerCount = workerData.workerCount;
+          worker.freeWorkers = workerData.workerCount;
+
+          for (const resourceWorkerData of workerData.workersByResource) {
+            const resourceWorker = this.workersService.getResourceWorker(resourceWorkerData.resourceId);
+
+            resourceWorker.workable = resourceWorkerData.workable;
+            resourceWorker.workerYield = resourceWorkerData.workerYield;
+            resourceWorker.workerCount = 0;
+
+            resourceWorker.sliderSetting = resourceWorkerData.workerCount;
+
+            this.workersService.updateResourceWorker(resourceWorkerData.resourceId, resourceWorkerData.workerCount);
+          }
+
+          if (worker.freeWorkers < 0) {
+            throw new Error('Invalid worker settings.');
+          }
+        }
+      }
+
+      if (saveData.tiles) {
+        for (const tileData of saveData.tiles) {
+          const tile = this.mapService.tiledMap.find(tile => tile.id === tileData.id);
+
+          if (tile === undefined) {
+            continue;
+          }
+
+          tile.resourceTileType = tileData.resourceTileType;
+          tile.buildingTileType = tileData.buildingTileType;
+
+          tile.buildingPath = tileData.buildingPath;
+          tile.buildingRemovable = tileData.buildingRemovable;
+
+          tile.tileCropDetail = tileData.tileCropDetail;
+        }
       }
 
       this.autosaveInterval = saveData.autosaveInterval;

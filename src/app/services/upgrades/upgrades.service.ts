@@ -52,7 +52,6 @@ export class UpgradesService {
         resourcesToUpgrade = this.resourcesService.resourcesOfType(upgradeEffect.resourceType, false, false);
         workersToUpgrade = this.workersService.getWorker(upgradeEffect.resourceType).workersByResource;
 
-        console.log(upgradeEffect.maxTier);
         if (upgradeEffect.maxTier >= 0) {
           resourcesToUpgrade = resourcesToUpgrade.filter(resource => resource.resourceTier <= upgradeEffect.maxTier);
           workersToUpgrade = workersToUpgrade.filter(worker =>
