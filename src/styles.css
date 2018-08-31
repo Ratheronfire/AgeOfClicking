@@ -1,6 +1,6 @@
 /* You can add global styles to this file, and also import other style files */
-@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 
+@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 .hidden {
   visibility: hidden;
 }
@@ -10,11 +10,15 @@
 }
 
 .noselect {
-    -webkit-touch-callout: none; /* iOS Safari */
-      -webkit-user-select: none; /* Safari */
-       -khtml-user-select: none; /* Konqueror HTML */
-         -moz-user-select: none; /* Firefox */
-          -ms-user-select: none; /* Internet Explorer/Edge */
-              user-select: none; /* Non-prefixed version, currently
-                                    supported by Chrome and Opera */
-  }
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.mat-badge-medium.mat-badge-above .mat-badge-content.mat-badge-active {
+  left: 480px;
+  top: 0;
+}

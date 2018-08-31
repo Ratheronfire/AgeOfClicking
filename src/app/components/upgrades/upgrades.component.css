@@ -3,7 +3,7 @@
   margin: 0 0 2em 0;
   list-style-type: none;
   padding: 0;
-  width: 25em;
+  /* width: 25em; */
 }
 
 .upgrades mat-expansion-panel {
@@ -66,14 +66,24 @@ button {
   font-family: Arial;
 }
 
-.harvest-progress {
-  display: flex;
-  align-content: center;
-  align-items: center;
-  
-  height: 100%;
-  top: 0px;
-  
-  position: absolute;
-  opacity: 0.5;
+.upgrades {
+  text-align: center;
+}
+
+.upgrade {
+  display: inline-block;
+  max-width: 300px;
+}
+
+.resource-list {
+  text-align: center;
+}
+
+.resource-list div {
+  display: inline-block;
+}
+
+.resource-list img {
+  width: 16px;
+  height: 16px;
 }

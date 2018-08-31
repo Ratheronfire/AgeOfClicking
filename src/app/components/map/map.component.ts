@@ -4,6 +4,7 @@ import { MapTileType, Tile, BuildingTileType, MapTile, BuildingTile } from '../.
 import { MapService } from '../../services/map/map.service';
 import { AdminService } from '../../services/admin/admin.service';
 import { ResourcesService } from '../../services/resources/resources.service';
+import { Resource } from '../../objects/resource';
 
 declare var d3: any;
 
@@ -58,6 +59,10 @@ export class MapComponent implements OnInit, AfterViewInit {
     }
 
     return tiles;
+  }
+
+  getResource(resourceId: number): Resource {
+    return this.resourcesService.getResource(resourceId);
   }
 
   get deleteMode(): boolean {

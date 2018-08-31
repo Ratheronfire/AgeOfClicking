@@ -1,10 +1,23 @@
-.canvas-container {
-  width: 1000px;
-  height: 1000px;
-}
-
 .building-list {
   display: flex;
   max-width: 1000px;
   overflow-x: scroll;
+  height: 230px;
+}
+
+.resource-list {
+  text-align: center;
+}
+
+.resource-list div {
+  display: inline-block;
+}
+
+.resource-list img {
+  width: 16px;
+  height: 16px;
+}
+
+button {
+  height: 180px;
 }

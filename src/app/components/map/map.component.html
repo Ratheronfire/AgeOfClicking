@@ -5,16 +5,18 @@
 <mat-checkbox [(ngModel)]="deleteMode" color="warn">Delete Buildings</mat-checkbox>
 <div class="building-list">
   <div *ngFor="let buildingTile of getBuildingTileArray(true)">
-    <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''"
-        (click)="selectBuilding(buildingTile)">
+    <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''" (click)="selectBuilding(buildingTile)">
       <mat-card-title>{{buildingTile.name}}</mat-card-title>
       <mat-card-subtitle>{{buildingTile.description}}</mat-card-subtitle>
       <mat-card-content>
         <h3>Costs</h3>
-        <div *ngFor="let resourceCost of buildingTile.resourceCosts">
-          {{resourcesService.getResource(resourceCost.resourceId).name | titlecase }}: {{resourceCost.resourceCost}}
+        <div class="resource-list">
+          <b><mat-icon *ngIf="canAffordBuilding(buildingTile.tileType)" color="primary">check</mat-icon>
+          </b>
+          <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}" matTooltipPosition="below">
+            <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}"> {{resourceCost.resourceCost}}
+          </div>
         </div>
-        <b><mat-icon *ngIf="canAffordBuilding(buildingTile.tileType)" color="primary">check</mat-icon></b>
       </mat-card-content>
     </button>
   </div>

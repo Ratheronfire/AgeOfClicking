@@ -107,6 +107,23 @@ export class UpgradesService {
     return true;
   }
 
+  public getUpgrades(filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
+    let upgrades = this.upgrades;
+
+    if (filterByPurchased) {
+      upgrades = upgrades.filter(upgrade => upgrade.purchased);
+    }
+    if (filterByUnpurchased) {
+      upgrades = upgrades.filter(upgrade => !upgrade.purchased);
+    }
+    if (filterByAccessible) {
+      upgrades = upgrades.filter(upgrade => upgrade.resourceCosts.every(
+      rc => this.resourcesService.getResource(rc.resourceId).resourceAccessible));
+    }
+
+    return upgrades;
+    }
+
   public upgradesOfType(upgradeType: UpgradeType,
                         filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
     let upgrades = this.upgrades.filter(upgrade => upgrade.upgradeType === upgradeType);

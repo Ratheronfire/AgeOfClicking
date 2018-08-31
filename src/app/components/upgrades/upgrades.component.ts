@@ -26,6 +26,10 @@ export class UpgradesComponent implements OnInit {
     return this.upgradesService.canAffordUpgrade(id);
   }
 
+  getUpgrades(filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
+    return this.upgradesService.getUpgrades(filterByPurchased, filterByUnpurchased, filterByAccessible);
+  }
+
   upgradesOfType(upgradeType: string, filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
     return this.upgradesService.upgradesOfType(this.upgradeTypes[upgradeType], filterByPurchased, filterByUnpurchased, filterByAccessible);
   }
@@ -48,5 +52,9 @@ export class UpgradesComponent implements OnInit {
 
   editUpgrade(id: number) {
     this.adminService.openUpgradeDialog(id);
+  }
+
+  getResource(resourceId: number) {
+    return this.resourcesService.getResource(resourceId);
   }
 }
