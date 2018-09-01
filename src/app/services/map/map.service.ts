@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 
+import { Resource } from '../../objects/resource';
 import { ResourcesService } from '../resources/resources.service';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTileType, ResourceTile } from '../../objects/tile';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
 import { ResourceAnimation } from '../../objects/resourceAnimation';
 
 declare var require: any;
@@ -168,6 +169,10 @@ export class MapService {
   calculateResourceConnections() {
     const resourceTiles = this.getResourceTiles();
 
+    for (const resource of this.resourcesService.resources) {
+      resource.pathAvailable = false;
+    }
+
     for (const resourceTile of resourceTiles) {
       resourceTile.buildingPath = [];
 
@@ -197,8 +202,13 @@ export class MapService {
           }
 
           buildingPath.push(backtrackNode);
-
           resourceTile.buildingPath = buildingPath.reverse();
+
+          const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
+          for (const resource of resources) {
+            resource.pathAvailable = true;
+          }
+
           tileQueue = [];
         }
 
@@ -215,16 +225,21 @@ export class MapService {
     }
   }
 
-  spawnResourceAnimation(resourceId: number) {
-    const matchingTiles = this.getTilesForResource(resourceId).filter(tile => tile.buildingPath.length > 0);
+  spawnResourceAnimation(resourceId: number, multiplier: number = 1, spawnedByPlayer: boolean) {
+    const matchingTiles = this.getTilesForResource(resourceId).filter(_tile => _tile.buildingPath.length > 0);
 
     const tile = matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
+    if (tile === undefined) {
+      return;
+    }
 
     this.resourceAnimations.push({
       resourceId: resourceId,
+      multiplier: multiplier,
+      spawnedByPlayer: spawnedByPlayer,
       x: tile.x + 4,
       y: tile.y + 4,
-      buildingPath: tile.buildingPath.map(tile => tile),
+      buildingPath: tile.buildingPath.map(_tile => _tile),
       pathStep: 0,
       done: false
     });
@@ -281,12 +296,6 @@ export class MapService {
     }
 
     return tiles;
-  }
-
-  resourceTileUsable(resourceId: number) {
-    const matchingTiles = this.getTilesForResource(resourceId);
-
-    return (matchingTiles.length > 0 && matchingTiles.some(tile => tile.buildingPath.length > 0));
   }
 
   getTileType(tileId: number): MapTileType {

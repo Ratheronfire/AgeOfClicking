@@ -30,6 +30,7 @@ export class Resource {
   harvestable: boolean;
   harvestYield?: number;
   harvestMilliseconds?: number;
+  pathAvailable: boolean;
 
   harvestStartDate = Date.now();
   harvesting = false;

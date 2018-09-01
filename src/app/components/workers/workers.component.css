@@ -92,6 +92,12 @@
   border-radius: 0 4px 4px 0;
 }
 
+.path-broken-warn {
+  position: absolute;
+  top: 5px;
+  right: 85px;
+}
+
 button {
   background-color: #eee;
   border: none;

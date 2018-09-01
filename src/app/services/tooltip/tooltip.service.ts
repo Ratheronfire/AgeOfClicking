@@ -42,8 +42,9 @@ export class TooltipService {
       tooltip += '.';
   }
 
-    tooltip += `\n${Math.floor(100 * resource.harvestYield / resource.harvestMilliseconds * 1000) / 100} harvested per second;` +
-               ` ${Math.floor(100 * worker.workerYield * worker.workerCount) / 100} per second from workers.`;
+    tooltip += `\n${Math.floor(resource.harvestYield * 100) / 100} harvested per click ` +
+               `(${Math.floor(resource.harvestMilliseconds) / 1000} seconds per harvest).` +
+               `\n${Math.floor(100 * worker.workerYield * worker.workerCount) / 100} per second from workers.`;
 
      return tooltip;
   }

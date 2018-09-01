@@ -18,10 +18,12 @@ export class ResourcesService {
     return this.resources.find(resource => resource.id === id);
   }
 
-  public finishResourceAnimation(id: number) {
+  public finishResourceAnimation(id: number, spawnedByPlayer: boolean) {
     const resource = this.getResource(id);
 
-    resource.amountTravelling--;
+    if (spawnedByPlayer) {
+      resource.amountTravelling--;
+    }
 
     this.harvestResource(id, 1, true);
   }
@@ -46,7 +48,7 @@ export class ResourcesService {
   public canHarvest(id: number, multiplier = 1): boolean {
     const resource = this.getResource(id);
 
-    if (!resource.harvestable || resource.harvesting) {
+    if (!resource.harvestable || resource.harvesting || !resource.pathAvailable) {
       return false;
     }
 

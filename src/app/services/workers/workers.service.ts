@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { ResourceType } from '../../objects/resource';
 import { ResourcesService } from '../resources/resources.service';
 import { Worker, ResourceWorker } from '../../objects/worker';
+import { MapService } from './../map/map.service';
 import { MessagesService } from '../messages/messages.service';
 
 declare var require: any;
@@ -15,6 +16,7 @@ export class WorkersService {
   public workers: Worker[] = baseWorkers;
 
   constructor(protected resourcesService: ResourcesService,
+              protected mapService: MapService,
               protected messagesService: MessagesService) { }
 
   public getWorkers(filterByAccessible: boolean, filterByWorkable: boolean, filterByHarvestable: boolean) {
@@ -67,7 +69,7 @@ export class WorkersService {
           continue;
         }
 
-        this.resourcesService.harvestResource(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount);
+        this.mapService.spawnResourceAnimation(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
       }
     }
   }

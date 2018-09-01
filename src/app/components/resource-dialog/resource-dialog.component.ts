@@ -22,6 +22,7 @@ export class ResourceDialogComponent implements OnInit {
     iconPath: '',
     resourceConsumes: [],
     progressBarValue: 0,
+    pathAvailable: false,
     harvestable: true,
     harvesting: false,
     harvestStartDate: Date.now(),

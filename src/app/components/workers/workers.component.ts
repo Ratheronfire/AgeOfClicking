@@ -60,4 +60,12 @@ export class WorkersComponent implements OnInit {
   updateResourceWorker(event: any) {
     this.workersService.updateResourceWorker(+event.source._elementRef.nativeElement.id, +event.value);
   }
+
+  pathAvailable(id): boolean {
+    return this.getResource(id).pathAvailable;
+  }
+
+  getResource(id): Resource {
+    return this.resourcesService.getResource(id);
+  }
 }

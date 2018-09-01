@@ -93,7 +93,7 @@ export class MapDirective implements AfterViewInit {
           resourceAnimation.pathStep++;
 
           if (resourceAnimation.pathStep === resourceAnimation.buildingPath.length - 1) {
-            self.resourcesService.finishResourceAnimation(resourceAnimation.resourceId);
+            self.resourcesService.finishResourceAnimation(resourceAnimation.resourceId, resourceAnimation.spawnedByPlayer);
             resourceAnimation.done = true;
           }
         }
@@ -118,10 +118,10 @@ export class MapDirective implements AfterViewInit {
 
   drawCanvas() {
     let tilesDrawn = 0;
-    const upperLeftPixel = [(-this.transform.x - this.tilePixelSize * 4) / this.transform.k,
-                            (-this.transform.y - this.tilePixelSize * 4) / this.transform.k];
-    const lowerRightPixel = [upperLeftPixel[0] + (this.canvasPixelWidth + this.tilePixelSize * 4) / this.transform.k,
-                             upperLeftPixel[1] + (this.canvasPixelHeight + this.tilePixelSize * 4) / this.transform.k];
+    const upperLeftPixel = [(-this.transform.x - this.tilePixelSize * 5) / this.transform.k,
+                            (-this.transform.y - this.tilePixelSize * 5) / this.transform.k];
+    const lowerRightPixel = [upperLeftPixel[0] + (this.canvasPixelWidth + this.tilePixelSize * 5) / this.transform.k,
+                             upperLeftPixel[1] + (this.canvasPixelHeight + this.tilePixelSize * 5) / this.transform.k];
 
     for (const tile of this.mapService.tiledMap) {
       if (tile.x < upperLeftPixel[0] || tile.x > lowerRightPixel[0] ||

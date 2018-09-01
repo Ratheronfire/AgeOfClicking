@@ -35,7 +35,7 @@ export class ClickerMainComponent implements OnInit {
   }
 
   canHarvest(id: number): boolean {
-    return this.resourcesService.canHarvest(id) && this.mapService.resourceTileUsable(id);
+    return this.resourcesService.canHarvest(id);
   }
 
   startHarvesting(id: number) {

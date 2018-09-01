@@ -69,7 +69,7 @@ export class ClickerMainService {
       this.resourcesService.getResource(id).progressBarValue = 0;
     }
 
-    this.mapService.spawnResourceAnimation(id);
+    this.mapService.spawnResourceAnimation(id, 1, true);
 
     this.stopHarvesting(id);
   }
