@@ -27,6 +27,19 @@
   <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
+        <mat-icon color="primary">map</mat-icon>
+        Map
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <mat-checkbox [(ngModel)]="mapDetailMode">Detail Mode</mat-checkbox>
+    <br />
+    <mat-checkbox [(ngModel)]="mapLowFramerate">Limit Framerate</mat-checkbox>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
         <mat-icon color="primary">bug_report</mat-icon>
         Debug
       </mat-panel-title>

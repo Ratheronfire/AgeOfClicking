@@ -45,6 +45,9 @@ export interface TileData {
 export interface SettingsData {
   autosaveInterval: number;
   debugMode: boolean;
+
+  mapDetailMode: boolean;
+  mapLowFramerate: boolean;
 }
 
 export class SaveData {

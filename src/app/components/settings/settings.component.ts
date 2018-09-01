@@ -48,7 +48,27 @@ export class SettingsComponent implements OnInit {
     this.settingsService.autosaveInterval = value;
   }
 
+  get debugMode(): boolean {
+    return this.settingsService.debugMode;
+  }
+
   set debugMode(value: boolean) {
     this.settingsService.debugMode = value;
+  }
+
+  get mapDetailMode(): boolean {
+    return this.settingsService.mapDetailMode;
+  }
+
+  set mapDetailMode(value: boolean) {
+    this.settingsService.mapDetailMode = value;
+  }
+
+  get mapLowFramerate(): boolean {
+    return this.settingsService.mapLowFramerate;
+  }
+
+  set mapLowFramerate(value: boolean) {
+    this.settingsService.mapLowFramerate = value;
   }
 }

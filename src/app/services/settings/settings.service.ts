@@ -19,6 +19,9 @@ export class SettingsService {
   autosaveInterval = 900000;
   debugMode = false;
 
+  mapDetailMode = true;
+  mapLowFramerate = false;
+
   autosaveSource: Observable<number>;
   autosaveSubscribe: Subscription;
 
@@ -94,7 +97,9 @@ export class SettingsService {
       tiles: [],
       settings: {
         autosaveInterval: this.autosaveInterval,
-        debugMode: this.debugMode
+        debugMode: this.debugMode,
+        mapDetailMode: this.mapDetailMode,
+        mapLowFramerate: this.mapLowFramerate
       },
       gameVersion: this.gameVersion
     };
@@ -161,6 +166,7 @@ export class SettingsService {
       saveData.tiles.push(tileData);
     }
 
+    console.log(saveData);
     return btoa(JSON.stringify(saveData));
   }
 
@@ -250,6 +256,10 @@ export class SettingsService {
 
       this.autosaveInterval = saveData.settings.autosaveInterval;
       this.debugMode = saveData.settings.debugMode;
+
+      this.mapDetailMode = saveData.settings.mapDetailMode;
+      this.mapLowFramerate = saveData.settings.mapLowFramerate;
+
       this.mapService.calculateResourceConnections();
 
       return true;

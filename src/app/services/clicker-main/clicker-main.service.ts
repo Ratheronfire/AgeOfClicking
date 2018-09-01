@@ -63,13 +63,14 @@ export class ClickerMainService {
 
   harvestResource(id: number) {
     this.harvestStartDate = Date.now();
-    this.resourcesService.getResource(id).amountTravelling++;
+    const resource = this.resourcesService.getResource(id);
+    resource.amountTravelling++;
 
     if (this.shouldAnimateProgressBar(id)) {
-      this.resourcesService.getResource(id).progressBarValue = 0;
+      resource.progressBarValue = 0;
     }
 
-    this.mapService.spawnResourceAnimation(id, 1, true);
+    this.mapService.spawnResourceAnimation(id, resource.harvestYield, true);
 
     this.stopHarvesting(id);
   }

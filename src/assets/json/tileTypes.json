@@ -238,169 +238,169 @@
   "resourceTiles": {
     "OAKTREE": {
       "tileType": "OAKTREE",
-      "name": "OakTree",
+      "name": "Oak Tree",
       "placeable": false,
       "resourceIds": [1]
     },
     "PINETREE": {
       "tileType": "PINETREE",
-      "name": "PineTree",
+      "name": "Pine Tree",
       "placeable": false,
       "resourceIds": [7]
     },
     "BIRCHTREE": {
       "tileType": "BIRCHTREE",
-      "name": "BirchTree",
+      "name": "Birch Tree",
       "placeable": false,
       "resourceIds": [8]
     },
     "EUCALYPTUSTREE": {
       "tileType": "EUCALYPTUSTREE",
-      "name": "EucalptusTree",
+      "name": "Eucalptus Tree",
       "placeable": false,
       "resourceIds": [9]
     },
     "WILLOWTREE": {
       "tileType": "WILLOWTREE",
-      "name": "WillowTree",
+      "name": "Willow Tree",
       "placeable": false,
       "resourceIds": [15]
     },
     "TEAKTREE": {
       "tileType": "TEAKTREE",
-      "name": "TeakTree",
+      "name": "Teak Tree",
       "placeable": false,
       "resourceIds": [25]
     },
     "DEADENT": {
       "tileType": "DEADENT",
-      "name": "DeadEnt",
+      "name": "Dead Ent",
       "placeable": false,
       "resourceIds": [16, 17]
     },
     "STONEMINE": {
       "tileType": "STONEMINE",
-      "name": "StoneMine",
+      "name": "Stone Mine",
       "placeable": false,
       "resourceIds": [13]
     },
     "GRAPHITEMINE": {
       "tileType": "GRAPHITEMINE",
-      "name": "GraphiteMine",
+      "name": "Graphite Mine",
       "placeable": false,
       "resourceIds": [26]
     },
     "LIMESTONEMINE": {
       "tileType": "LIMESTONEMINE",
-      "name": "LimestoneMine",
+      "name": "Limestone Mine",
       "placeable": false,
       "resourceIds": [27]
     },
     "MARBLEMINE": {
       "tileType": "MARBLEMINE",
-      "name": "MarbleMine",
+      "name": "Marble Mine",
       "placeable": false,
       "resourceIds": [28]
     },
     "QUARTZMINE": {
       "tileType": "QUARTZMINE",
-      "name": "QuartzMine",
+      "name": "Quartz Mine",
       "placeable": false,
       "resourceIds": [29]
     },
     "OBSIDIANMINE": {
       "tileType": "OBSIDIANMINE",
-      "name": "ObsidianMine",
+      "name": "Obsidian Mine",
       "placeable": false,
       "resourceIds": [30]
     },
     "DIAMONDMINE": {
       "tileType": "DIAMONDMINE",
-      "name": "DiamondMine",
+      "name": "Diamond Mine",
       "placeable": false,
       "resourceIds": [31]
     },
     "COPPERMINE": {
       "tileType": "COPPERMINE",
-      "name": "CopperMine",
+      "name": "Copper Mine",
       "placeable": false,
       "resourceIds": [2]
     },
     "TINMINE": {
       "tileType": "TINMINE",
-      "name": "TinMine",
+      "name": "Tin Mine",
       "placeable": false,
       "resourceIds": [3]
     },
     "IRONMINE": {
       "tileType": "IRONMINE",
-      "name": "IronMine",
+      "name": "Iron Mine",
       "placeable": false,
       "resourceIds": [5]
     },
     "GOLDMINE": {
       "tileType": "GOLDMINE",
-      "name": "GoldMine",
+      "name": "Gold Mine",
       "placeable": false,
       "resourceIds": [11]
     },
     "LATINUMMINE": {
       "tileType": "LATINUMMINE",
-      "name": "LatinumMine",
+      "name": "Latinum Mine",
       "placeable": false,
       "resourceIds": [18]
     },
     "UNBELIEVIUMMINE": {
       "tileType": "UNBELIEVIUMMINE",
-      "name": "UnbelieviumMine",
+      "name": "Unbelievium Mine",
       "placeable": false,
       "resourceIds": [20]
     },
     "LUSTRIALMINE": {
       "tileType": "LUSTRIALMINE",
-      "name": "LustrialMine",
+      "name": "Lustrial Mine",
       "placeable": false,
       "resourceIds": [21]
     },
     "SPECTRUSMINE": {
       "tileType": "SPECTRUSMINE",
-      "name": "SpectrusMine",
+      "name": "Spectrus Mine",
       "placeable": false,
       "resourceIds": [22]
     },
     "CRACKEDFORGE": {
       "tileType": "CRACKEDFORGE",
-      "name": "CrackedForge",
+      "name": "Cracked Forge",
       "placeable": true,
       "resourceIds": [4]
     },
     "STONEFORGE": {
       "tileType": "STONEFORGE",
-      "name": "StoneForge",
+      "name": "Stone Forge",
       "placeable": true,
       "resourceIds": [4, 6]
     },
     "IRONFORGE": {
       "tileType": "IRONFORGE",
-      "name": "IronForge",
+      "name": "Iron Forge",
       "placeable": true,
       "resourceIds": [4, 6, 10, 12]
     },
     "GOLDFORGE": {
       "tileType": "GOLDFORGE",
-      "name": "GoldForge",
+      "name": "Gold Forge",
       "placeable": true,
       "resourceIds": [4, 6, 10, 12, 19]
     },
     "LATINUMFORGE": {
       "tileType": "LATINUMFORGE",
-      "name": "LatinumForge",
+      "name": "Latinum Forge",
       "placeable": true,
       "resourceIds": [4, 6, 10, 12, 19, 23]
     },
     "TEMPROUSDISTILLERY": {
       "tileType": "TEMPROUSDISTILLERY",
-      "name": "TemprousDistillery",
+      "name": "Temprous Distillery",
       "placeable": true,
       "resourceIds": [24]
     }

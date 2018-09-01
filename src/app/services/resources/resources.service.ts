@@ -18,14 +18,14 @@ export class ResourcesService {
     return this.resources.find(resource => resource.id === id);
   }
 
-  public finishResourceAnimation(id: number, spawnedByPlayer: boolean) {
+  public finishResourceAnimation(id: number, multiplier = 1, spawnedByPlayer: boolean) {
     const resource = this.getResource(id);
 
     if (spawnedByPlayer) {
       resource.amountTravelling--;
     }
 
-    this.harvestResource(id, 1, true);
+    this.harvestResource(id, multiplier, true);
   }
 
   public harvestResource(id: number, multiplier = 1, forceHarvest = false) {
@@ -42,7 +42,7 @@ export class ResourcesService {
     this.resources.filter(r => r.previousTier === resource.resourceTier && r.resourceType === resource.resourceType)
       .map(r => r.resourceAccessible = true);
 
-    this.addResourceAmount(resource.id, resource.harvestYield * multiplier);
+    this.addResourceAmount(resource.id, multiplier);
   }
 
   public canHarvest(id: number, multiplier = 1): boolean {
