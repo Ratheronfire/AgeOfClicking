@@ -5,6 +5,7 @@ export interface ResourceData {
   amount: number;
   harvestable: boolean;
   harvestYield: number;
+  harvestMilliseconds: number;
   sellable: boolean;
   sellsFor: number;
   resourceAccessible: boolean;
@@ -41,10 +42,18 @@ export interface TileData {
   tileCropDetail: TileCropDetail;
 }
 
+export interface SettingsData {
+  autosaveInterval: number;
+  debugMode: boolean;
+}
+
 export class SaveData {
   resources: ResourceData[];
   upgrades: UpgradeData[];
   workers: WorkerData[];
   tiles: TileData[];
-  autosaveInterval: number;
+
+  settings: SettingsData;
+
+  gameVersion: string;
 }

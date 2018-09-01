@@ -18,7 +18,7 @@
         <mat-card *ngIf="resourceWorker.workable || !adminService.filterAccessible" matTooltip="{{getTooltipMessage(resourceWorker.resourceId)}}"
           matTooltipPosition="right">
           <mat-card-title>{{resourcesService.getResource(resourceWorker.resourceId).name | titlecase}}</mat-card-title>
-          <mat-card-subtitle>{{resourceWorker.workerCount}} Workers ({{resourceWorker.sliderSetting}})</mat-card-subtitle>
+          <mat-card-subtitle>{{resourceWorker.workerCount}} Workers</mat-card-subtitle>
           <mat-slider [color]="resourceWorker.sliderSettingValid ? 'accent' : 'warn'" [id]="resourceWorker.resourceId" [max]="worker.workerCount"
              [tickInterval]="1" [thumbLabel]="true" [(ngModel)]="resourceWorker.sliderSetting" (input)="checkSliderValue($event)" (change)="updateResourceWorker($event)">
           </mat-slider>

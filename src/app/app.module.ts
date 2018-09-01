@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ZoomableCanvasComponent } from '@durwella/zoomable-canvas';
 
 import { MaterialImportModule } from './material-import/material-import.module';
@@ -48,7 +48,7 @@ import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
     BrowserModule,
     FormsModule,
     ReactiveFormsModule,
-    BrowserAnimationsModule,
+    NoopAnimationsModule,
     MaterialImportModule,
     PipeModule
   ],

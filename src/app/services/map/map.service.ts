@@ -16,6 +16,9 @@ export class MapService {
   public mapTiles = baseTiles.mapTiles;
   public buildingTiles = baseTiles.buildingTiles;
   public resourceTiles = baseTiles.resourceTiles;
+  public mapTileArray: MapTile[] = [];
+  public buildingTileArray: BuildingTile[] = [];
+  public resourceTileArray: ResourceTile[] = [];
 
   mapWidth: number;
   mapHeight: number;
@@ -31,21 +34,23 @@ export class MapService {
     let mapTileIds: number[], resourceTileIds: number[], buildingTileIds: number[];
     let _mapWidth: number, _mapHeight: number;
 
-    // const tileTypes = {1: MapTileType.Grass, 2: MapTileType.Water, 3: MapTileType.Mountain,
-    //   7: ResourceTileType.OakTree, 8: ResourceTileType.PineTree, 9: ResourceTileType.BirchTree, 10: ResourceTileType.EucalyptusTree,
-    //   11: ResourceTileType.WillowTree, 12: ResourceTileType.TeakTree, 13: ResourceTileType.DeadEnt, 14: ResourceTileType.StoneMine,
-    //   15: ResourceTileType.GraphiteMine, 16: ResourceTileType.LimestoneMine, 17: ResourceTileType.MarbleMine,
-    //   18: ResourceTileType.QuartzMine, 19: ResourceTileType.ObsidianMine, 20: ResourceTileType.DiamondMine,
-    //   21: ResourceTileType.CopperMine, 22: ResourceTileType.TinMine, 23: ResourceTileType.IronMine, 24: ResourceTileType.GoldMine,
-    //   25: ResourceTileType.LatinumMine, 26: ResourceTileType.UnbelieviumMine, 27: ResourceTileType.LustrialMine,
-    //   28: ResourceTileType.SpectrusMine, 29: ResourceTileType.CrackedForge, 30: ResourceTileType.StoneForge,
-    //   31: ResourceTileType.IronForge, 32: ResourceTileType.GoldForge, 33: ResourceTileType.LatinumForge,
-    //   34: ResourceTileType.TemprousDistillery, 71: BuildingTileType.Home, 72: BuildingTileType.Wall,
-    //   73: BuildingTileType.Road, 74: BuildingTileType.Bridge
-    // };
-    // const resourceIds = {7: [1], 8: [7], 9: [8], 10: [9], 11: [15], 12: [25], 13: [16], 14: [13], 15: [26], 16: [27],
-    //   17: [28], 18: [29], 19: [30], 20: [31], 21: [2], 22: [3], 23: [5], 24: [11], 25: [18], 26: [20], 27: [21], 28: [22],
-    //   29: [4, 5], 30: [4, 5, 6], 31: [4, 5, 6, 10, 12], 32: [4, 5, 6, 10, 12, 19], 33: [4, 5, 6, 10, 12, 19, 23], 34: [24]};
+    for (const key in this.mapTiles) {
+      if (this.mapTiles.hasOwnProperty(key)) {
+        this.mapTileArray.push(this.mapTiles[key]);
+      }
+    }
+
+    for (const key in this.buildingTiles) {
+      if (this.buildingTiles.hasOwnProperty(key)) {
+        this.buildingTileArray.push(this.buildingTiles[key]);
+      }
+    }
+
+    for (const key in this.resourceTiles) {
+      if (this.resourceTiles.hasOwnProperty(key)) {
+        this.resourceTileArray.push(this.resourceTiles[key]);
+      }
+    }
 
     const xmlRequest = new XMLHttpRequest();
     xmlRequest.onload = function() {
@@ -299,39 +304,9 @@ export class MapService {
     return {x: 0, y: 0, width: 16, height: 16};
   }
 
-  get mapTileArray(): MapTile[] {
-    const tiles: MapTile[] = [];
-
-    for (const key in this.mapTiles) {
-      tiles.push(this.mapTiles[key]);
-    }
-
-    return tiles;
-  }
-
   getTilesForResource(resourceId: number) {
     const matchingTypes = this.resourceTileArray.filter(tile => tile.resourceIds.includes(resourceId)).map(tile => tile.tileType);
 
     return this.tiledMap.filter(tile => matchingTypes.includes(tile.resourceTileType));
-  }
-
-  get buildingTileArray(): BuildingTile[] {
-    const tiles: BuildingTile[] = [];
-
-    for (const key in this.buildingTiles) {
-      tiles.push(this.buildingTiles[key]);
-    }
-
-    return tiles;
-  }
-
-  get resourceTileArray(): ResourceTile[] {
-    const tiles: ResourceTile[] = [];
-
-    for (const key in this.resourceTiles) {
-      tiles.push(this.resourceTiles[key]);
-    }
-
-    return tiles;
   }
 }

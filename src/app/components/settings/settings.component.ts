@@ -47,4 +47,8 @@ export class SettingsComponent implements OnInit {
   set autosaveInterval(value: number) {
     this.settingsService.autosaveInterval = value;
   }
+
+  set debugMode(value: boolean) {
+    this.settingsService.debugMode = value;
+  }
 }

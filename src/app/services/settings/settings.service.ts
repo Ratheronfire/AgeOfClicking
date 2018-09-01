@@ -14,7 +14,10 @@ import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.co
   providedIn: 'root'
 })
 export class SettingsService {
+  gameVersion = '1.2';
+
   autosaveInterval = 900000;
+  debugMode = false;
 
   autosaveSource: Observable<number>;
   autosaveSubscribe: Subscription;
@@ -89,7 +92,11 @@ export class SettingsService {
       upgrades: [],
       workers: [],
       tiles: [],
-      autosaveInterval: this.autosaveInterval
+      settings: {
+        autosaveInterval: this.autosaveInterval,
+        debugMode: this.debugMode
+      },
+      gameVersion: this.gameVersion
     };
 
     for (const resource of this.resourcesService.resources) {
@@ -98,6 +105,7 @@ export class SettingsService {
         amount: resource.amount,
         harvestable: resource.harvestable,
         harvestYield: resource.harvestYield,
+        harvestMilliseconds: resource.harvestMilliseconds,
         sellable: resource.sellable,
         sellsFor: resource.sellsFor,
         resourceAccessible: resource.resourceAccessible
@@ -162,6 +170,10 @@ export class SettingsService {
     try {
       const saveData: SaveData = JSON.parse(atob(saveDataString));
 
+      if (saveData.gameVersion !== this.gameVersion) {
+        throw new Error('Save is from a different version of the game.');
+      }
+
       if (saveData.resources) {
         for (const resourceData of saveData.resources) {
           const resource = this.resourcesService.getResource(resourceData.id);
@@ -173,6 +185,7 @@ export class SettingsService {
           resource.amount = resourceData.amount;
           resource.harvestable = resourceData.harvestable;
           resource.harvestYield = resourceData.harvestYield;
+          resource.harvestMilliseconds = resourceData.harvestMilliseconds;
           resource.sellable = resourceData.sellable;
           resource.sellsFor = resourceData.sellsFor;
           resource.resourceAccessible = resourceData.resourceAccessible;
@@ -187,7 +200,6 @@ export class SettingsService {
             continue;
           }
 
-          this.upgradesService.applyUpgrade(upgrade);
           upgrade.purchased = upgradeData.purchased;
         }
       }
@@ -236,7 +248,8 @@ export class SettingsService {
         }
       }
 
-      this.autosaveInterval = saveData.autosaveInterval;
+      this.autosaveInterval = saveData.settings.autosaveInterval;
+      this.debugMode = saveData.settings.debugMode;
       this.mapService.calculateResourceConnections();
 
       return true;

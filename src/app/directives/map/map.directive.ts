@@ -19,9 +19,13 @@ export class MapDirective implements AfterViewInit {
   lastAnimationTime = Date.now();
   tileAnimationSpeed = 0.003;
 
-  width: number;
-  height: number;
-  images = [{name: 'map', x: 0, y: 0, width: 1600, height: 1600}];
+  tilePixelSize = 16;
+  gridWidth = 150;
+  gridHeight = 150;
+  canvasPixelWidth: number;
+  canvasPixelHeight: number;
+
+  images = [{name: 'map', x: 0, y: 0, width: this.gridWidth * this.tilePixelSize, height: this.gridHeight * this.tilePixelSize}];
 
   constructor(protected element: ElementRef,
               protected renderer: Renderer2,
@@ -32,17 +36,17 @@ export class MapDirective implements AfterViewInit {
     this.canvas = d3.select('canvas');
     this.context = this.canvas.node().getContext('2d');
 
-    this.width = this.canvas.property('width');
-    this.height = this.canvas.property('height');
+    this.canvasPixelWidth = this.canvas.property('width');
+    this.canvasPixelHeight = this.canvas.property('height');
 
     this.canvas.call(d3.zoom()
-        .scaleExtent([1 / 3, 4])
-        .translateExtent([[0, 0], [2400, 2400]])
+        .scaleExtent([2 / 3, 5])
+        .translateExtent([[0, 0], [this.gridWidth * this.tilePixelSize, this.gridHeight * this.tilePixelSize]])
         .on('zoom', this.zoomed(this)));
 
     this.canvas.on('click', this.clickTile(this));
 
-    d3.timer(this.updateResourceAnimations(this), 125);
+    d3.interval(this.updateResourceAnimations(this), 25);
   }
 
   zoomed(self: MapDirective) {
@@ -55,8 +59,8 @@ export class MapDirective implements AfterViewInit {
   clickTile(self: MapDirective) {
     return function(d) {
       const coordinates = d3.mouse(this);
-      coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / 16);
-      coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / 16);
+      coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / self.tilePixelSize);
+      coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / self.tilePixelSize);
 
       const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
 
@@ -84,8 +88,8 @@ export class MapDirective implements AfterViewInit {
         resourceAnimation.x += (endPos[0] - startPos[0]) * deltaTime * self.tileAnimationSpeed;
         resourceAnimation.y += (endPos[1] - startPos[1]) * deltaTime * self.tileAnimationSpeed;
 
-        if (Math.abs(resourceAnimation.x - currentTile.x) >= 8 ||
-            Math.abs(resourceAnimation.y - currentTile.y) >= 8) {
+        if (Math.abs(resourceAnimation.x - currentTile.x) >= self.tilePixelSize / 2 ||
+            Math.abs(resourceAnimation.y - currentTile.y) >= self.tilePixelSize / 2) {
           resourceAnimation.pathStep++;
 
           if (resourceAnimation.pathStep === resourceAnimation.buildingPath.length - 1) {
@@ -105,7 +109,7 @@ export class MapDirective implements AfterViewInit {
 
   refreshCanvas() {
     this.context.save();
-    this.context.clearRect(0, 0, this.width, this.height);
+    this.context.clearRect(0, 0, this.canvasPixelWidth, this.canvasPixelHeight);
     this.context.translate(this.transform.x, this.transform.y);
     this.context.scale(this.transform.k, this.transform.k);
     this.drawCanvas();
@@ -113,25 +117,38 @@ export class MapDirective implements AfterViewInit {
   }
 
   drawCanvas() {
+    let tilesDrawn = 0;
+    const upperLeftPixel = [(-this.transform.x - this.tilePixelSize * 4) / this.transform.k,
+                            (-this.transform.y - this.tilePixelSize * 4) / this.transform.k];
+    const lowerRightPixel = [upperLeftPixel[0] + (this.canvasPixelWidth + this.tilePixelSize * 4) / this.transform.k,
+                             upperLeftPixel[1] + (this.canvasPixelHeight + this.tilePixelSize * 4) / this.transform.k];
+
     for (const tile of this.mapService.tiledMap) {
+      if (tile.x < upperLeftPixel[0] || tile.x > lowerRightPixel[0] ||
+          tile.y < upperLeftPixel[1] || tile.y > lowerRightPixel[1]) {
+        continue;
+      }
+
       const mapTileImage = <HTMLImageElement> document.getElementById(tile.mapTileType.toLowerCase());
-      this.context.drawImage(mapTileImage, tile.x, tile.y, 16, 16);
+      this.context.drawImage(mapTileImage, tile.x, tile.y, this.tilePixelSize, this.tilePixelSize);
 
       if (tile.resourceTileType) {
         const resourceTileImage = <HTMLImageElement> document.getElementById(tile.resourceTileType.toLowerCase());
-        this.context.drawImage(resourceTileImage, tile.x, tile.y, 16, 16);
+        this.context.drawImage(resourceTileImage, tile.x, tile.y, this.tilePixelSize, this.tilePixelSize);
       }
 
       if (tile.buildingTileType) {
         const buildingTileImage = <HTMLImageElement> document.getElementById(tile.buildingTileType.toLowerCase());
-        this.context.drawImage(buildingTileImage, tile.x, tile.y, 16, 16);
+        this.context.drawImage(buildingTileImage, tile.x, tile.y, this.tilePixelSize, this.tilePixelSize);
       }
+
+      tilesDrawn++;
     }
 
     for (const resourceAnimation of this.mapService.resourceAnimations) {
       const resourceTileImage = <HTMLImageElement> document.getElementById(
           this.resourcesService.getResource(resourceAnimation.resourceId).name.toLowerCase().replace(' ', '-'));
-      this.context.drawImage(resourceTileImage, resourceAnimation.x, resourceAnimation.y, 8, 8);
+      this.context.drawImage(resourceTileImage, resourceAnimation.x, resourceAnimation.y, this.tilePixelSize / 2, this.tilePixelSize / 2);
     }
   }
 }
