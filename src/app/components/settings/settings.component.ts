@@ -71,4 +71,28 @@ export class SettingsComponent implements OnInit {
   set mapLowFramerate(value: boolean) {
     this.settingsService.mapLowFramerate = value;
   }
+
+  get resourceDetailColor(): string {
+    return this.settingsService.resourceDetailColor;
+  }
+
+  set resourceDetailColor(value: string) {
+    this.settingsService.resourceDetailColor = value;
+  }
+
+  get harvestDetailColor(): string {
+    return this.settingsService.harvestDetailColor;
+  }
+
+  set harvestDetailColor(value: string) {
+    this.settingsService.harvestDetailColor = value;
+  }
+
+  get workerDetailColor(): string {
+    return this.settingsService.workerDetailColor;
+  }
+
+  set workerDetailColor(value: string) {
+    this.settingsService.workerDetailColor = value;
+  }
 }

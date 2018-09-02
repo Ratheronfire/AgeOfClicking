@@ -29,6 +29,7 @@
     "d3-zoom": "^1.7.3",
     "hammerjs": "^2.0.8",
     "jimp": "^0.3.5",
+    "ngx-color-picker": "^6.6.0",
     "rxjs": "^6.0.0",
     "zone.js": "~0.8.26"
   },

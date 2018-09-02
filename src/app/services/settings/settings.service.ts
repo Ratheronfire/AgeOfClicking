@@ -25,6 +25,10 @@ export class SettingsService {
   autosaveSource: Observable<number>;
   autosaveSubscribe: Subscription;
 
+  resourceDetailColor = '#000000';
+  harvestDetailColor = '#a4ff89';
+  workerDetailColor = '#ae89ff';
+
   constructor(protected resourcesService: ResourcesService,
               protected upgradesService: UpgradesService,
               protected workersService: WorkersService,
@@ -99,7 +103,10 @@ export class SettingsService {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
         mapDetailMode: this.mapDetailMode,
-        mapLowFramerate: this.mapLowFramerate
+        mapLowFramerate: this.mapLowFramerate,
+        resourceDetailColor: this.resourceDetailColor,
+        harvestDetailColor: this.harvestDetailColor,
+        workerDetailColor: this.workerDetailColor
       },
       gameVersion: this.gameVersion
     };
@@ -180,7 +187,7 @@ export class SettingsService {
         throw new Error('Save is from a different version of the game.');
       }
 
-      if (saveData.resources) {
+      if (saveData.resources !== undefined) {
         for (const resourceData of saveData.resources) {
           const resource = this.resourcesService.getResource(resourceData.id);
 
@@ -198,7 +205,7 @@ export class SettingsService {
         }
       }
 
-      if (saveData.upgrades) {
+      if (saveData.upgrades !== undefined) {
         for (const upgradeData of saveData.upgrades) {
           const upgrade = this.upgradesService.getUpgrade(upgradeData.id);
 
@@ -210,7 +217,7 @@ export class SettingsService {
         }
       }
 
-      if (saveData.workers) {
+      if (saveData.workers !== undefined) {
         for (const workerData of saveData.workers) {
           const worker = this.workersService.getWorker(workerData.id);
 
@@ -236,9 +243,9 @@ export class SettingsService {
         }
       }
 
-      if (saveData.tiles) {
+      if (saveData.tiles !== undefined) {
         for (const tileData of saveData.tiles) {
-          const tile = this.mapService.tiledMap.find(tile => tile.id === tileData.id);
+          const tile = this.mapService.tiledMap.find(_tile => _tile.id === tileData.id);
 
           if (tile === undefined) {
             continue;
@@ -254,11 +261,17 @@ export class SettingsService {
         }
       }
 
-      this.autosaveInterval = saveData.settings.autosaveInterval;
-      this.debugMode = saveData.settings.debugMode;
+      if (saveData.settings !== undefined) {
+        this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
+        this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
 
-      this.mapDetailMode = saveData.settings.mapDetailMode;
-      this.mapLowFramerate = saveData.settings.mapLowFramerate;
+        this.mapDetailMode = saveData.settings.mapDetailMode ? saveData.settings.mapDetailMode : true;
+        this.mapLowFramerate = saveData.settings.mapLowFramerate ? saveData.settings.mapLowFramerate : false;
+
+        this.resourceDetailColor = saveData.settings.resourceDetailColor ? saveData.settings.resourceDetailColor : '#000000';
+        this.harvestDetailColor = saveData.settings.harvestDetailColor ? saveData.settings.harvestDetailColor : '#a4ff89';
+        this.workerDetailColor = saveData.settings.workerDetailColor ? saveData.settings.workerDetailColor : '#ae89ff';
+      }
 
       this.mapService.calculateResourceConnections();
 

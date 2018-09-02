@@ -35,6 +35,20 @@
     <mat-checkbox [(ngModel)]="mapDetailMode">Detail Mode</mat-checkbox>
     <br />
     <mat-checkbox [(ngModel)]="mapLowFramerate">Limit Framerate</mat-checkbox>
+    <br />
+    <br />
+
+    <mat-form-field>
+      <input class="color-input" matInput placeholder="Resource Name Color" [(colorPicker)]="resourceDetailColor" [style.background]="resourceDetailColor" [value]="resourceDetailColor"/>
+    </mat-form-field>
+    
+    <mat-form-field>
+      <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="harvestDetailColor" [style.background]="harvestDetailColor" [value]="harvestDetailColor"/>
+    </mat-form-field>
+    
+    <mat-form-field>
+      <input class="color-input" matInput placeholder="Worker Harvest Color" [(colorPicker)]="workerDetailColor" [style.background]="workerDetailColor" [value]="workerDetailColor"/>
+    </mat-form-field>
   </mat-expansion-panel>
 
   <mat-expansion-panel expanded="true">

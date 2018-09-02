@@ -48,6 +48,10 @@ export interface SettingsData {
 
   mapDetailMode: boolean;
   mapLowFramerate: boolean;
+
+  resourceDetailColor: string;
+  harvestDetailColor: string;
+  workerDetailColor: string;
 }
 
 export class SaveData {

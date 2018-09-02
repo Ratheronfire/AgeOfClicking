@@ -6,6 +6,7 @@ import { ZoomableCanvasComponent } from '@durwella/zoomable-canvas';
 
 import { MaterialImportModule } from './material-import/material-import.module';
 import { PipeModule } from 'src/app/pipe/pipe.module';
+import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppComponent } from './app.component';
 import { ClickerMainComponent } from './components/clicker-main/clicker-main.component';
@@ -50,7 +51,8 @@ import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialImportModule,
-    PipeModule
+    PipeModule,
+    ColorPickerModule
   ],
   entryComponents: [
     ResourceDialogComponent,

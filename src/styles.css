@@ -22,3 +22,15 @@
   left: 480px;
   top: 0;
 }
+
+mat-tab-group .mat-tab-body-wrapper {
+  overflow: visible;
+}
+
+mat-tab-body#mat-tab-content-0-4 {
+  overflow: visible;
+}
+
+mat-tab-body#mat-tab-content-0-4 div {
+  overflow: visible;
+}

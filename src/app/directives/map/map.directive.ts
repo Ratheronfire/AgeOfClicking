@@ -41,7 +41,7 @@ export class MapDirective implements AfterViewInit {
     this.canvas = d3.select('canvas');
     this.context = this.canvas.node().getContext('2d');
 
-    this.context.font = '4px Arial';
+    this.context.font = 'bold 4px Arial';
 
     this.canvasPixelWidth = this.canvas.property('width');
     this.canvasPixelHeight = this.canvas.property('height');
@@ -167,7 +167,7 @@ export class MapDirective implements AfterViewInit {
         continue;
       }
 
-      this.context.fillStyle = resourceAnimation.spawnedByPlayer ? 'yellow' : 'blue';
+      this.context.fillStyle = resourceAnimation.spawnedByPlayer ? this.settingsService.harvestDetailColor : this.settingsService.workerDetailColor;
 
       this.context.fillText(Math.floor(resourceAnimation.multiplier).toString(),
         resourceAnimation.x + this.tilePixelSize / 2, resourceAnimation.y + this.tilePixelSize / 2);
@@ -178,7 +178,7 @@ export class MapDirective implements AfterViewInit {
     }
 
     for (const tile of this.mapService.getResourceTiles()) {
-      this.context.fillStyle = 'black';
+      this.context.fillStyle = this.settingsService.resourceDetailColor;
       const resourceTile: ResourceTile = this.mapService.resourceTiles[tile.resourceTileType];
       this.context.fillText(resourceTile.name, tile.x + this.tilePixelSize / 2, tile.y - this.tilePixelSize / 4);
     }
