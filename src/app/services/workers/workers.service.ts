@@ -1,5 +1,7 @@
 import { Injectable } from '@angular/core';
 
+import { timer } from 'rxjs';
+
 import { ResourceType } from '../../objects/resource';
 import { ResourcesService } from '../resources/resources.service';
 import { Worker, ResourceWorker } from '../../objects/worker';
@@ -17,7 +19,10 @@ export class WorkersService {
 
   constructor(protected resourcesService: ResourcesService,
               protected mapService: MapService,
-              protected messagesService: MessagesService) { }
+              protected messagesService: MessagesService) {
+    const processSource = timer(1000, 1000);
+    const processSubscribe = processSource.subscribe(_ => this.processWorkers());
+  }
 
   public getWorkers(filterByAccessible: boolean, filterByWorkable: boolean, filterByHarvestable: boolean) {
     let workers = this.workers;

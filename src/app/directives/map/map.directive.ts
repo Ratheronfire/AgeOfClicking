@@ -1,8 +1,10 @@
 import { Directive, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 
+import { Entity } from '../../objects/entity';
 import { ResourceTile } from '../../objects/tile';
 import { ResourcesService } from './../../services/resources/resources.service';
 import { SettingsService } from './../../services/settings/settings.service';
+import { EnemyService } from '../../services/enemy/enemy.service';
 import { MapService } from './../../services/map/map.service';
 
 declare var d3: any;
@@ -15,8 +17,9 @@ export class MapDirective implements AfterViewInit {
   context: CanvasRenderingContext2D;
   transform = d3.zoomIdentity;
 
-  lastAnimationTime = Date.now();
+  lastAnimationTime = 0;
   tileAnimationSpeed = 0.003;
+  enemyAnimationSpeed = 0.006;
 
   refreshTimer;
   lowFramerateActive = false;
@@ -35,6 +38,7 @@ export class MapDirective implements AfterViewInit {
               protected renderer: Renderer2,
               protected resourcesService: ResourcesService,
               protected settingsService: SettingsService,
+              protected enemyService: EnemyService,
               protected mapService: MapService) { }
 
   ngAfterViewInit() {
@@ -53,18 +57,18 @@ export class MapDirective implements AfterViewInit {
 
     this.canvas.on('click', this.clickTile(this));
 
-    this.refreshTimer = d3.interval(this.updateResourceAnimations(this), 25);
+    this.refreshTimer = d3.interval(this.updateEntities(this), 25);
   }
 
   zoomed(self: MapDirective) {
-    return function(d) {
+    return function(elapsed) {
       self.transform = d3.event.transform;
       self.refreshCanvas();
     };
   }
 
   clickTile(self: MapDirective) {
-    return function(d) {
+    return function(elapsed) {
       const coordinates = d3.mouse(this);
       coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / self.tilePixelSize);
       coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / self.tilePixelSize);
@@ -81,46 +85,63 @@ export class MapDirective implements AfterViewInit {
     };
   }
 
-  updateResourceAnimations(self: MapDirective) {
-    return function(d) {
+  updateEntities(self: MapDirective) {
+    return function(elapsed) {
       if (self.lowFramerateActive !== self.settingsService.mapLowFramerate) {
         self.lowFramerateActive = self.settingsService.mapLowFramerate;
 
         self.refreshTimer.stop();
-        self.refreshTimer = d3.interval(self.updateResourceAnimations(self),
+        self.refreshTimer = d3.interval(self.updateEntities(self),
           self.lowFramerateActive ? self.lowFramerate : self.highFramerate);
       }
 
-      const deltaTime = Date.now() - self.lastAnimationTime;
+      let deltaTime = elapsed - self.lastAnimationTime;
+      if (deltaTime < 0) {
+        deltaTime = 0;
+      }
 
       for (const resourceAnimation of self.mapService.resourceAnimations) {
-        const currentTile = resourceAnimation.buildingPath[resourceAnimation.pathStep];
-        const destinationTile = resourceAnimation.buildingPath[resourceAnimation.pathStep + 1];
+        self.updateEntityPosition(resourceAnimation, self.tileAnimationSpeed, deltaTime);
 
-        const startPos = [currentTile.x, currentTile.y];
-        const endPos = [destinationTile.x, destinationTile.y];
-
-        resourceAnimation.x += (endPos[0] - startPos[0]) * deltaTime * self.tileAnimationSpeed;
-        resourceAnimation.y += (endPos[1] - startPos[1]) * deltaTime * self.tileAnimationSpeed;
-
-        if (Math.abs(resourceAnimation.x - currentTile.x) >= self.tilePixelSize / 2 ||
-            Math.abs(resourceAnimation.y - currentTile.y) >= self.tilePixelSize / 2) {
-          resourceAnimation.pathStep++;
-
-          if (resourceAnimation.pathStep === resourceAnimation.buildingPath.length - 1) {
-            self.resourcesService.finishResourceAnimation(
-              resourceAnimation.resourceId, resourceAnimation.multiplier, resourceAnimation.spawnedByPlayer);
-            resourceAnimation.done = true;
-          }
+        if (resourceAnimation.pathingDone) {
+          self.resourcesService.finishResourceAnimation(
+            resourceAnimation.resourceId, resourceAnimation.multiplier, resourceAnimation.spawnedByPlayer);
         }
       }
 
-      self.mapService.resourceAnimations = self.mapService.resourceAnimations.filter(animation => !animation.done);
+      self.mapService.resourceAnimations = self.mapService.resourceAnimations.filter(animation => !animation.pathingDone);
 
-      self.lastAnimationTime = Date.now();
+      for (const enemy of self.enemyService.enemies) {
+        self.updateEntityPosition(enemy, self.enemyAnimationSpeed, deltaTime);
+      }
+
+      self.lastAnimationTime = elapsed;
 
       self.refreshCanvas();
     };
+  }
+
+  updateEntityPosition(entity: Entity, animationSpeed: number, deltaTime: number) {
+    if (entity.tilePath === undefined || entity.pathStep >= entity.tilePath.length - 1) {
+      return;
+    }
+
+    const currentTile = entity.tilePath[entity.pathStep];
+    const destinationTile = entity.tilePath[entity.pathStep + 1];
+
+    entity.x += (destinationTile.x - currentTile.x) * deltaTime * animationSpeed;
+    entity.y += (destinationTile.y - currentTile.y) * deltaTime * animationSpeed;
+
+    const xOffset = Math.abs(entity.x - currentTile.x);
+    const yOffset = Math.abs(entity.y - currentTile.y);
+
+    if (xOffset >= this.tilePixelSize || yOffset >= this.tilePixelSize) {
+      entity.pathStep++;
+
+      if (entity.pathStep === entity.tilePath.length - 1) {
+          entity.pathingDone = true;
+      }
+    }
   }
 
   refreshCanvas() {
@@ -167,10 +188,31 @@ export class MapDirective implements AfterViewInit {
         continue;
       }
 
-      this.context.fillStyle = resourceAnimation.spawnedByPlayer ? this.settingsService.harvestDetailColor : this.settingsService.workerDetailColor;
+      // if (resourceAnimation.pathStep < resourceAnimation.tilePath.length - 1) {
+      //   this.context.beginPath();
+      //   this.context.moveTo(resourceAnimation.x, resourceAnimation.y);
+      //   this.context.lineTo(resourceAnimation.tilePath[resourceAnimation.pathStep + 1].x,
+      //                       resourceAnimation.tilePath[resourceAnimation.pathStep + 1].y);
+      //   this.context.stroke();
+      // }
+
+      this.context.fillStyle = resourceAnimation.spawnedByPlayer ?
+        this.settingsService.harvestDetailColor : this.settingsService.workerDetailColor;
 
       this.context.fillText(Math.floor(resourceAnimation.multiplier).toString(),
         resourceAnimation.x + this.tilePixelSize / 2, resourceAnimation.y + this.tilePixelSize / 2);
+    }
+
+    for (const enemy of this.enemyService.enemies) {
+      const enemyTileImage = <HTMLImageElement> document.getElementById(enemy.name.toLowerCase().replace(' ', '-'));
+      this.context.drawImage(enemyTileImage, enemy.x, enemy.y, this.tilePixelSize, this.tilePixelSize);
+
+      if (enemy.pathStep < enemy.tilePath.length - 1) {
+        this.context.beginPath();
+        this.context.moveTo(enemy.x, enemy.y);
+        this.context.lineTo(enemy.tilePath[enemy.pathStep + 1].x, enemy.tilePath[enemy.pathStep + 1].y);
+        this.context.stroke();
+      }
     }
 
     if (!this.settingsService.mapDetailMode) {

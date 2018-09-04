@@ -10,11 +10,14 @@
       </mat-expansion-panel-header>
 
       <div class='button-container' *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)">
-        <button mat-raised-button class="resource-button" color="accent" [disabled]="!canHarvest(resource.id)" [id]="resource.id"
-          (click)='startHarvesting(resource.id)' matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
+        <button mat-raised-button class="resource-button" [ngClass]="{'warn': resource.resourceBeingStolen}"
+          [disabled]="!canHarvest(resource.id)" [id]="resource.id" (click)='startHarvesting(resource.id)'
+          matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
+
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
           <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
           <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [mode]="progressBarMode" [value]="resource.progressBarValue"></mat-progress-bar>
+          
           <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
           <div class='travelling-count' *ngIf="resource.amountTravelling > 0">{{resource.amountTravelling}} Travelling</div>
         </button>

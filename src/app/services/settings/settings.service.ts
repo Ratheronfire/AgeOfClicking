@@ -9,6 +9,7 @@ import { WorkersService } from './../workers/workers.service';
 import { MapService } from './../map/map.service';
 import { SaveData, WorkerData, TileData } from '../../objects/savedata';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
+import { BuildingTileType } from '../../objects/tile';
 
 @Injectable({
   providedIn: 'root'
@@ -152,13 +153,12 @@ export class SettingsService {
     }
 
     for (const tile of this.mapService.tiledMap) {
-      if (tile.buildingTileType === undefined) {
+      if (tile.buildingTileType === undefined && tile.buildingTileType !== BuildingTileType.EnemyPortal) {
         continue;
       }
 
       const tileData: TileData = {
         id: tile.id,
-        buildingPath: tile.buildingPath,
         buildingRemovable: tile.buildingRemovable,
         tileCropDetail: tile.tileCropDetail
       }
@@ -254,7 +254,6 @@ export class SettingsService {
           tile.resourceTileType = tileData.resourceTileType;
           tile.buildingTileType = tileData.buildingTileType;
 
-          tile.buildingPath = tileData.buildingPath;
           tile.buildingRemovable = tileData.buildingRemovable;
 
           tile.tileCropDetail = tileData.tileCropDetail;

@@ -36,7 +36,6 @@ export interface TileData {
   resourceTileType?: ResourceTileType;
   buildingTileType?: BuildingTileType;
 
-  buildingPath?: Tile[];
   buildingRemovable: boolean;
 
   tileCropDetail: TileCropDetail;

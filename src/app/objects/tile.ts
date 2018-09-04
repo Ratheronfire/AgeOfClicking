@@ -45,7 +45,8 @@ export enum BuildingTileType {
   IronForge = 'IRONFORGE',
   GoldForge = 'GOLDFORGE',
   LatinumForge = 'LATINUMFORGE',
-  TemprousDistillery = 'TEMPROUSDISTILLERY'
+  TemprousDistillery = 'TEMPROUSDISTILLERY',
+  EnemyPortal = 'ENEMYPORTAL'
 }
 
 export interface ResourceCost {
@@ -112,6 +113,8 @@ export class Tile {
 
   buildingPath?: Tile[];
   buildingRemovable: boolean;
+
+  health: number;
 
   x: number;
   y: number;

@@ -17,6 +17,7 @@ export class ClickerMainService {
   millisecondsTotal = 1000;
   harvestStartDate: number;
   progressBarUpdateDelay = 125;
+  timeElapsed: 0;
 
   resourceTypes = ResourceType;
 
@@ -24,16 +25,13 @@ export class ClickerMainService {
               protected workersService: WorkersService,
               protected mapService: MapService,
               protected adminService: AdminService) {
-    const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.workersService.processWorkers());
-
     const progressBarTimer = timer(0, this.progressBarUpdateDelay);
-    progressBarTimer.subscribe(_ => this.updateProgressBars());
+    progressBarTimer.subscribe(iteration => this.updateProgressBars(iteration));
   }
 
   startHarvesting(id: number) {
     const resource = this.resourcesService.getResource(id);
-    resource.harvestStartDate = Date.now();
+    resource.harvestStartDate = this.timeElapsed;
 
     if (!this.resourcesService.canHarvest(id)) {
       return;
@@ -51,10 +49,13 @@ export class ClickerMainService {
     resource.harvesting = false;
   }
 
-  updateProgressBars() {
+  updateProgressBars(iteration) {
     for (const resource of this.resourcesService.resources.filter(_resource => _resource.harvesting)) {
-      resource.progressBarValue = Math.floor((Date.now() - resource.harvestStartDate) / resource.harvestMilliseconds * 100);
+      const millisecondsElapsed = (iteration - resource.harvestStartDate - 1) * this.progressBarUpdateDelay;
+      resource.progressBarValue = Math.floor(millisecondsElapsed / resource.harvestMilliseconds * 100);
     }
+
+    this.timeElapsed = iteration;
   }
 
   shouldAnimateProgressBar(id: number): boolean {

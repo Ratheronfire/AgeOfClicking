@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Resource } from '../../objects/resource';
 import { ResourcesService } from '../resources/resources.service';
 import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
-import { ResourceAnimation } from '../../objects/resourceAnimation';
+import { ResourceAnimation } from '../../objects/entity';
 
 declare var require: any;
 const Jimp = require('jimp');
@@ -14,12 +14,16 @@ const baseTiles = require('../../../assets/json/tileTypes.json');
 })
 export class MapService {
   public tileTypes = baseTiles.tileTypes;
+
   public mapTiles = baseTiles.mapTiles;
   public buildingTiles = baseTiles.buildingTiles;
   public resourceTiles = baseTiles.resourceTiles;
+
   public mapTileArray: MapTile[] = [];
   public buildingTileArray: BuildingTile[] = [];
   public resourceTileArray: ResourceTile[] = [];
+
+  public enemySpawnTiles: Tile[] = [];
 
   mapWidth: number;
   mapHeight: number;
@@ -32,7 +36,7 @@ export class MapService {
 
   constructor(protected resourcesService: ResourcesService) {
     const _tiledMap: Tile[] = [];
-    let mapTileIds: number[], resourceTileIds: number[], buildingTileIds: number[];
+    let mapTileIds: number[], resourceTileIds: number[], buildingTileIds: number[], flagTileIds: number[];
     let _mapWidth: number, _mapHeight: number;
 
     for (const key in this.mapTiles) {
@@ -57,7 +61,7 @@ export class MapService {
     xmlRequest.onload = function() {
       const xmlDoc = new DOMParser().parseFromString(xmlRequest.responseText, 'text/xml');
       const layers = xmlDoc.getElementsByTagName('layer');
-      let mapLayer: Element, resourceLayer: Element, buildingLayer: Element;
+      let mapLayer: Element, resourceLayer: Element, buildingLayer: Element, flagLayer: Element;
 
       for (let i = 0; i < layers.length; i++) {
         switch (layers[i].attributes['name'].value) {
@@ -70,6 +74,9 @@ export class MapService {
           case 'Building Layer':
             buildingLayer = layers[i];
             break;
+          case 'Flag Layer':
+            flagLayer = layers[i];
+            break;
         }
       }
 
@@ -79,6 +86,7 @@ export class MapService {
       mapTileIds = mapLayer.textContent.split(',').map(tileId => +tileId);
       resourceTileIds = resourceLayer.textContent.split(',').map(tileId => +tileId);
       buildingTileIds = buildingLayer.textContent.split(',').map(tileId => +tileId);
+      flagTileIds = flagLayer.textContent.split(',').map(tileId => +tileId);
     };
 
     xmlRequest.open('GET', '../../../assets/tilemap/map.tmx', false);
@@ -88,10 +96,12 @@ export class MapService {
       const mapTileId = mapTileIds[i];
       const resourceTileId = resourceTileIds[i];
       const buildingTileId = buildingTileIds[i];
+      const flagTileId = flagTileIds[i];
 
       const tile: Tile = {
         id: _tiledMap.length,
         mapTileType: this.tileTypes[mapTileId],
+        health: 50,
         x: 16 * (_tiledMap.length % _mapWidth),
         y: 16 * Math.floor(_tiledMap.length / _mapWidth),
         tileCropDetail: {x: 0, y: 0, width: 16, height: 16},
@@ -104,6 +114,11 @@ export class MapService {
 
       if (buildingTileId > 0) {
         tile.buildingTileType = this.tileTypes[buildingTileId];
+      }
+
+      const flagTileType = this.tileTypes[flagTileId];
+      if (flagTileType === BuildingTileType.EnemyPortal) {
+        this.enemySpawnTiles.push(tile);
       }
 
       _tiledMap.push(tile);
@@ -173,56 +188,68 @@ export class MapService {
       resource.pathAvailable = false;
     }
 
+    const homeTile = this.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+
     for (const resourceTile of resourceTiles) {
       resourceTile.buildingPath = [];
 
-      const visitedTiles: Tile[] = [];
-      let tileQueue: Tile[] = [];
-      const nodeMap = new Map<Tile, Tile>();
-      let currentNode: Tile;
+      resourceTile.buildingPath = this.findPath(resourceTile, homeTile, true, true);
 
-      for (const neighbor of this.getNeighborTiles(resourceTile)) {
-        if (neighbor.buildingTileType && this.buildingTiles[neighbor.buildingTileType].resourcePathable) {
+      const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
+      for (const resource of resources) {
+        resource.pathAvailable = true;
+      }
+    }
+  }
+
+  findPath(startTile: Tile, targetTile: Tile, onlyPathable: boolean, onlyWalkable: boolean): Tile[] {
+    const visitedTiles: Tile[] = [];
+
+    let tileQueue: Tile[] = [];
+    const tileDistances = this.tiledMap.map(_ => this.tiledMap.length + 1);
+    const nodeMap = new Map<Tile, Tile>();
+
+    let currentNode: Tile;
+
+    tileDistances[startTile.id] = 0;
+
+    tileQueue.push(startTile);
+
+    while (tileQueue.length) {
+      currentNode = tileQueue.sort((a, b) => tileDistances[a.id] - tileDistances[b.id])[0];
+      tileQueue = tileQueue.filter(tile => tile !== currentNode);
+
+      if (currentNode === targetTile) {
+        const buildingPath: Tile[] = [];
+
+        let backtrackNode = currentNode;
+        while (backtrackNode !== startTile) {
+          buildingPath.push(backtrackNode);
+          backtrackNode = nodeMap.get(backtrackNode);
+        }
+
+        buildingPath.push(backtrackNode);
+        return buildingPath.reverse();
+      }
+
+      const neighborDistance = tileDistances[currentNode.id] + 1;
+
+      for (const neighbor of this.getNeighborTiles(currentNode)) {
+        const pathable = neighbor.buildingTileType && this.buildingTiles[neighbor.buildingTileType].resourcePathable;
+        const walkable = this.mapTiles[neighbor.mapTileType].walkable || pathable;
+
+        if (!visitedTiles.includes(neighbor) && (!onlyPathable || pathable) && (!onlyWalkable || walkable) &&
+            tileDistances[neighbor.id] > neighborDistance) {
+          nodeMap.set(neighbor, currentNode);
+          tileDistances[neighbor.id] = neighborDistance;
           tileQueue.push(neighbor);
         }
       }
 
-      tileQueue.push(resourceTile);
-
-      while (tileQueue.length) {
-        currentNode = tileQueue.pop();
-
-        if (currentNode.buildingTileType === BuildingTileType.Home) {
-          const buildingPath: Tile[] = [];
-          let backtrackNode = currentNode;
-
-          while (backtrackNode !== resourceTile) {
-            buildingPath.push(backtrackNode);
-            backtrackNode = nodeMap.get(backtrackNode);
-          }
-
-          buildingPath.push(backtrackNode);
-          resourceTile.buildingPath = buildingPath.reverse();
-
-          const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
-          for (const resource of resources) {
-            resource.pathAvailable = true;
-          }
-
-          tileQueue = [];
-        }
-
-        for (const neighbor of this.getNeighborTiles(currentNode)) {
-          if (!visitedTiles.includes(neighbor) && neighbor.buildingTileType &&
-            this.buildingTiles[neighbor.buildingTileType].resourcePathable) {
-            nodeMap.set(neighbor, currentNode);
-            tileQueue.push(neighbor);
-          }
-        }
-
-        visitedTiles.push(currentNode);
-      }
+      visitedTiles.push(currentNode);
     }
+
+    return [];
   }
 
   spawnResourceAnimation(resourceId: number, multiplier: number = 1, spawnedByPlayer: boolean) {
@@ -234,14 +261,18 @@ export class MapService {
     }
 
     this.resourceAnimations.push({
+      name: '',
       resourceId: resourceId,
       multiplier: multiplier,
       spawnedByPlayer: spawnedByPlayer,
       x: tile.x + 4,
       y: tile.y + 4,
-      buildingPath: tile.buildingPath.map(_tile => _tile),
+      currentTile: tile,
+      tilePath: tile.buildingPath.map(_tile => _tile),
       pathStep: 0,
-      done: false
+      pathingDone: false,
+      health: -1,
+      maxHealth: -1
     });
   }
 
@@ -285,6 +316,10 @@ export class MapService {
 
   getTile(x: number, y: number) {
     return this.tiledMap[x + y * this.mapWidth];
+  }
+
+  clampTileCoordinates(x: number, y: number) {
+    return [Math.floor(x / 16) * 16, Math.floor(y / 16) * 16];
   }
 
   getResourceTiles(resourceId?: number): Tile[] {

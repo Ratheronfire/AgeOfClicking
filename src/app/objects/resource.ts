@@ -50,4 +50,6 @@ export class Resource {
   previousTier: number;
 
   worker: Worker;
+
+  resourceBeingStolen: boolean;
 }

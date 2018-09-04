@@ -1,0 +1,15 @@
+[
+  {
+    "name": "Base Enemy",
+    "health": 15,
+    "maxHealth": 15,
+    "targetableBuildingTypes": [
+      "HOME", "CRACKEDFORGE"
+    ],
+    "attack": 5,
+    "defense": 1,
+    "resourcesToSteal": [1, 2],
+    "stealMax": 25,
+    "resourceCapacity": 200
+  }
+]

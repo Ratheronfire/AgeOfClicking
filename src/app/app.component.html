@@ -3,8 +3,9 @@
 <app-clicker-main class="main-pane"></app-clicker-main>
 
 <mat-tab-group class="tab-group" dynamicHeight [matBadge]="affordableUpgradeCount" [matBadgeHidden]="affordableUpgradeCount <= 0" matBadgePosition="before" matBadgeColor="accent">
-  <mat-tab label="Explore">
+  <mat-tab label="Map">
     <app-map></app-map>
+    <app-enemy></app-enemy>
   </mat-tab>
   <mat-tab label="Workers">
     <app-workers></app-workers>
