@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { Resource } from '../../objects/resource';
 import { ResourcesService } from '../resources/resources.service';
 import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
-import { ResourceAnimation } from '../../objects/entity';
+import { ResourceAnimation, Projectile, Entity } from '../../objects/entity';
 
 declare var require: any;
 const Jimp = require('jimp');
@@ -30,9 +29,24 @@ export class MapService {
 
   public tiledMap: Tile[] = [];
   resourceAnimations: ResourceAnimation[] = [];
+  projectiles: Projectile[] = [];
 
   deleteMode = false;
-  selectedBuilding: BuildingTile;
+  selectedBuilding: BuildingTile = this.buildingTiles[BuildingTileType.Road];
+
+  lastAnimationTime = 0;
+  tileAnimationSpeed = 0.003;
+  enemyAnimationSpeed = 0.003;
+  projectileAnimationSpeed = 0.003;
+
+  highFramerate = 25;
+  lowFramerate = 125;
+
+  tilePixelSize = 16;
+  gridWidth = 150;
+  gridHeight = 150;
+  canvasPixelWidth: number;
+  canvasPixelHeight: number;
 
   constructor(protected resourcesService: ResourcesService) {
     const _tiledMap: Tile[] = [];
@@ -273,6 +287,23 @@ export class MapService {
       pathingDone: false,
       health: -1,
       maxHealth: -1
+    });
+  }
+
+  spawnProjectile(owner: Entity, target: Entity) {
+    this.projectiles.push({
+      name: 'Arrow',
+      x: owner.x,
+      y: owner.y,
+      currentTile: owner.currentTile,
+      tilePath: [],
+      pathStep: -1,
+      pathingDone: true,
+      health: 1,
+      maxHealth: 1,
+      owner: owner,
+      target: target,
+      rotation: 0
     });
   }
 

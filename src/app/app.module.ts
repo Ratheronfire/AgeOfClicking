@@ -24,7 +24,8 @@ import { TouchDirective } from './directives/touch/touch.directive';
 import { CropDirective } from './directives/crop/crop.directive';
 import { MapDirective } from './directives/map/map.directive';
 import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
-import { EnemyComponent } from './components/enemy/enemy/enemy.component';
+import { EnemyComponent } from './components/enemy/enemy.component';
+import { FighterComponent } from './components/fighter/fighter.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +46,8 @@ import { EnemyComponent } from './components/enemy/enemy/enemy.component';
     SaveDialogComponent,
     MapDirective,
     NoScrollDirective,
-    EnemyComponent
+    EnemyComponent,
+    FighterComponent
   ],
   imports: [
     BrowserModule,

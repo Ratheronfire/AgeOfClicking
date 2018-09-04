@@ -13,11 +13,6 @@
   "resourceAccessible": true,
   "resourceTier": 0,
   "previousTier": 0,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 0
-  },
   "harvestYield": 0,
   "harvestMilliseconds": 0,
   "workerYield": 0,
@@ -40,12 +35,7 @@
   "workerNoun": "oak tree",
   "resourceAccessible": true,
   "resourceTier": 0,
-  "previousTier": 0,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 50
-  }
+  "previousTier": 0
 }, {
   "id": 7,
   "name": "pine",
@@ -64,12 +54,7 @@
   "workerNoun": "pine tree",
   "resourceAccessible": false,
   "resourceTier": 1,
-  "previousTier": 0,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 75
-  }
+  "previousTier": 0
 }, {
   "id": 8,
   "name": "birch",
@@ -88,12 +73,7 @@
   "workerNoun": "birch tree",
   "resourceAccessible": false,
   "resourceTier": 2,
-  "previousTier": 1,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 150
-  }
+  "previousTier": 1
 }, {
   "id": 9,
   "name": "eucalyptus",
@@ -112,12 +92,7 @@
   "workerNoun": "eucalyptus tree",
   "resourceAccessible": false,
   "resourceTier": 3,
-  "previousTier": 2,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 200
-  }
+  "previousTier": 2
 }, {
   "id": 15,
   "name": "willow",
@@ -136,12 +111,7 @@
   "workerNoun": "willow tree",
   "resourceAccessible": false,
   "resourceTier": 4,
-  "previousTier": 3,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 200
-  }
+  "previousTier": 3
 }, {
   "id": 25,
   "name": "teak",
@@ -160,12 +130,7 @@
   "workerNoun": "teak tree",
   "resourceAccessible": false,
   "resourceTier": 5,
-  "previousTier": 4,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 200
-  }
+  "previousTier": 4
 }, {
   "id": 16,
   "name": "ent soul",
@@ -202,12 +167,7 @@
   "workerNoun": "ent spirit",
   "resourceAccessible": false,
   "resourceTier": 6,
-  "previousTier": 5,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 200
-  }
+  "previousTier": 5
 }, {
   "id": 17,
   "name": "reanimated ent",
@@ -229,12 +189,7 @@
   "workerNoun": "ent",
   "resourceAccessible": false,
   "resourceTier": 7,
-  "previousTier": 6,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 200
-  }
+  "previousTier": 6
 }, {
   "id": 2,
   "name": "copper ore",
@@ -253,12 +208,7 @@
   "workerNoun": "copper ore",
   "resourceAccessible": true,
   "resourceTier": 0,
-  "previousTier": 0,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 75
-  }
+  "previousTier": 0
 }, {
   "id": 3,
   "name": "tin ore",
@@ -277,12 +227,7 @@
   "workerNoun": "tin ore",
   "resourceAccessible": true,
   "resourceTier": 0,
-  "previousTier": 0,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 75
-  }
+  "previousTier": 0
 }, {
   "id": 4,
   "name": "bronze ingot",
@@ -307,12 +252,7 @@
   "workerNoun": "bronze ingot",
   "resourceAccessible": false,
   "resourceTier": 1,
-  "previousTier": 0,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 100
-  }
+  "previousTier": 0
 }, {
   "id": 5,
   "name": "iron ore",
@@ -331,12 +271,7 @@
   "workerNoun": "iron ore",
   "resourceAccessible": false,
   "resourceTier": 2,
-  "previousTier": 1,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 150
-  }
+  "previousTier": 1
 }, {
   "id": 6,
   "name": "iron ingot",
@@ -358,12 +293,7 @@
   "workerNoun": "iron ingot",
   "resourceAccessible": false,
   "resourceTier": 3,
-  "previousTier": 2,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 250
-  }
+  "previousTier": 2
 }, {
   "id": 10,
   "name": "steel ingot",
@@ -385,12 +315,7 @@
   "workerNoun": "steel ingot",
   "resourceAccessible": false,
   "resourceTier": 4,
-  "previousTier": 3,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 350
-  }
+  "previousTier": 3
 }, {
   "id": 11,
   "name": "gold ore",
@@ -409,12 +334,7 @@
   "workerNoun": "gold",
   "resourceAccessible": false,
   "resourceTier": 3,
-  "previousTier": 2,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 150
-  }
+  "previousTier": 2
 }, {
   "id": 12,
   "name": "gold ingot",
@@ -436,12 +356,7 @@
   "workerNoun": "gold ingot",
   "resourceAccessible": false,
   "resourceTier": 4,
-  "previousTier": 3,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 3
 }, {
   "id": 18,
   "name": "latinum ore",
@@ -460,12 +375,7 @@
   "workerNoun": "latinum ore",
   "resourceAccessible": false,
   "resourceTier": 4,
-  "previousTier": 3,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 3
 }, {
   "id": 19,
   "name": "latinum ingot",
@@ -493,12 +403,7 @@
   "workerNoun": "latinum ingot",
   "resourceAccessible": false,
   "resourceTier": 5,
-  "previousTier": 4,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 4
 }, {
   "id": 20,
   "name": "unbelievium ore",
@@ -517,12 +422,7 @@
   "workerNoun": "unbelievium ore",
   "resourceAccessible": false,
   "resourceTier": 5,
-  "previousTier": 4,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 4
 }, {
   "id": 21,
   "name": "lustrial ore",
@@ -541,12 +441,7 @@
   "workerNoun": "lustrial ore",
   "resourceAccessible": false,
   "resourceTier": 5,
-  "previousTier": 4,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 4
 }, {
   "id": 22,
   "name": "spectrus ore",
@@ -565,12 +460,7 @@
   "workerNoun": "spectrus ore",
   "resourceAccessible": false,
   "resourceTier": 5,
-  "previousTier": 4,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 4
 }, {
   "id": 23,
   "name": "temprous ingot",
@@ -601,12 +491,7 @@
   "workerNoun": "temprous ingot",
   "resourceAccessible": false,
   "resourceTier": 6,
-  "previousTier": 5,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 5
 }, {
   "id": 24,
   "name": "refined temprous",
@@ -631,12 +516,7 @@
   "workerNoun": "temprous ingot",
   "resourceAccessible": false,
   "resourceTier": 5,
-  "previousTier": 4,
-  "worker": {
-    "workable": false,
-    "workerCount": 0,
-    "cost": 400
-  }
+  "previousTier": 4
 }, {
   "id": 13,
   "name": "Stone",
@@ -655,12 +535,7 @@
   "workerNoun": "stone",
   "resourceAccessible": true,
   "resourceTier": 0,
-  "previousTier": 0,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 80
-  }
+  "previousTier": 0
 }, {
   "id": 26,
   "name": "Graphite",
@@ -679,12 +554,7 @@
   "workerNoun": "graphite",
   "resourceAccessible": false,
   "resourceTier": 1,
-  "previousTier": 0,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 80
-  }
+  "previousTier": 0
 }, {
   "id": 27,
   "name": "Limestone",
@@ -703,12 +573,7 @@
   "workerNoun": "limestone",
   "resourceAccessible": false,
   "resourceTier": 2,
-  "previousTier": 1,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 80
-  }
+  "previousTier": 1
 }, {
   "id": 28,
   "name": "Marble",
@@ -727,12 +592,7 @@
   "workerNoun": "marble",
   "resourceAccessible": false,
   "resourceTier": 3,
-  "previousTier": 2,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 80
-  }
+  "previousTier": 2
 }, {
   "id": 29,
   "name": "Quartz",
@@ -751,12 +611,7 @@
   "workerNoun": "qaurtz",
   "resourceAccessible": false,
   "resourceTier": 4,
-  "previousTier": 3,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 80
-  }
+  "previousTier": 3
 }, {
   "id": 30,
   "name": "Obsidian",
@@ -775,12 +630,7 @@
   "workerNoun": "obsidian",
   "resourceAccessible": false,
   "resourceTier": 5,
-  "previousTier": 4,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 80
-  }
+  "previousTier": 4
 }, {
   "id": 31,
   "name": "Diamond",
@@ -799,10 +649,5 @@
   "workerNoun": "diamond",
   "resourceAccessible": false,
   "resourceTier": 6,
-  "previousTier": 5,
-  "worker": {
-    "workable": true,
-    "workerCount": 0,
-    "cost": 80
-  }
+  "previousTier": 5
 }]

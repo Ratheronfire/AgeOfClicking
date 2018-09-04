@@ -1,0 +1,12 @@
+[
+  {
+    "name": "Sentry",
+    "health": 15,
+    "maxHealth": 15,
+    "cost": 50,
+    "attack": 5,
+    "defense": 5,
+    "movable": false,
+    "attackRange": 3
+  }
+]

@@ -6,6 +6,7 @@ import { ResourceType, Resource } from '../../objects/resource';
 import { WorkersService } from '../../services/workers/workers.service';
 import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { MapService } from './../../services/map/map.service';
+import { EnemyService } from './../../services/enemy/enemy.service';
 import { AdminService } from './../../services/admin/admin.service';
 
 @Component({
@@ -21,6 +22,7 @@ export class ClickerMainComponent implements OnInit {
               protected workersService: WorkersService,
               protected tooltipService: TooltipService,
               protected mapService: MapService,
+              protected enemyService: EnemyService,
               protected adminService: AdminService) { }
 
   ngOnInit() {
@@ -44,6 +46,10 @@ export class ClickerMainComponent implements OnInit {
 
   stopHarvesting(id: number) {
     this.clickerMainService.stopHarvesting(id);
+  }
+
+  resourceIsBeingStolen(id: number): boolean {
+    return this.enemyService.resourceIsBeingStolen(id);
   }
 
   shouldAnimateProgressBar(id: number): boolean {

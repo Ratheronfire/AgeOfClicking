@@ -65,6 +65,62 @@
     ]
   },
   {
+    "id": 2,
+    "cost": 1350,
+    "resourceType": "MINERAL",
+    "workerCount": 0,
+    "freeWorkers": 0,
+    "workersByResource": [
+      {
+        "resourceId": 13,
+        "workable": true,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },{
+        "resourceId": 26,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },{
+        "resourceId": 27,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 28,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 29,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 30,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      },
+      {
+        "resourceId": 31,
+        "workable": false,
+        "workerCount": 0,
+        "workerYield": 1,
+        "sliderSettingValid": true
+      }
+    ]
+  },
+  {
     "id": 1,
     "cost": 2000,
     "resourceType": "METAL",
@@ -171,62 +227,6 @@
       },
       {
         "resourceId": 24,
-        "workable": false,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      }
-    ]
-  },
-  {
-    "id": 2,
-    "cost": 1350,
-    "resourceType": "MINERAL",
-    "workerCount": 0,
-    "freeWorkers": 0,
-    "workersByResource": [
-      {
-        "resourceId": 13,
-        "workable": false,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },{
-        "resourceId": 26,
-        "workable": false,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },{
-        "resourceId": 27,
-        "workable": false,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      {
-        "resourceId": 28,
-        "workable": false,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      {
-        "resourceId": 29,
-        "workable": false,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      {
-        "resourceId": 30,
-        "workable": false,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      {
-        "resourceId": 31,
         "workable": false,
         "workerCount": 0,
         "workerYield": 1,

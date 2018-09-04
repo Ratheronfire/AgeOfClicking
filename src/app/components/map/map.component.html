@@ -1,8 +1,7 @@
-<canvas appNoScroll appMap width="960" height="750"></canvas>
-<br />
-<br />
+<canvas class="noselect" appNoScroll appMap width="960" height="750" oncontextmenu="return false"></canvas>
 
-<mat-checkbox [(ngModel)]="deleteMode" color="warn">Delete Buildings</mat-checkbox>
+<h3>Buildings (Click & drag to place, Ctrl + click to delete)</h3>
+
 <div class="building-list">
   <div *ngFor="let buildingTile of getBuildingTileArray(true)">
     <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''" (click)="selectBuilding(buildingTile)">

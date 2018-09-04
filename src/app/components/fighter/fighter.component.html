@@ -1,0 +1,18 @@
+<h3>Fighters (Shift + Click to place)</h3>
+
+<div class="fighter-list">
+  <div *ngFor="let fighterType of fighterTypes">
+    <button mat-raised-button [color]="selectedFighterType === fighterType ? 'accent' : ''" (click)="selectFigherType(fighterType)">
+      <mat-card-title>{{fighterType.name}}</mat-card-title>
+      <mat-card-content>
+        <h3>Cost</h3>
+        <div class="fighter-cost">
+          <b><mat-icon *ngIf="canAffordFighter(fighterType)" color="primary">check</mat-icon></b>
+          <div matTooltip="{{fighterType.cost}} {{getResource(0).name | titlecase}}" matTooltipPosition="below">
+            <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}"> {{fighterType.cost}}
+          </div>
+        </div>
+      </mat-card-content>
+    </button>
+  </div>
+</div>

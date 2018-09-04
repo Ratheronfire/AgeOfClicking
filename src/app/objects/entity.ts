@@ -23,12 +23,32 @@ export class Enemy extends Entity {
 
   attack: number;
   defense: number;
+  attackRange: number;
 
   resourcesToSteal: number[];
   resourcesHeld: number[];
   totalHeld: number;
   stealMax: number;
   resourceCapacity: number;
+}
+
+export class Fighter extends Entity {
+  targetEnemy: Enemy;
+
+  cost: number;
+
+  attack: number;
+  defense: number;
+
+  moveable: boolean;
+  attackRange: number;
+}
+
+export class Projectile extends Entity {
+  owner: Entity;
+  target: Entity;
+
+  rotation: number;
 }
 
 export class ResourceAnimation extends Entity {

@@ -1,0 +1,23 @@
+.fighter-list {
+  display: flex;
+  max-width: 1000px;
+  overflow-x: scroll;
+  height: 230px;
+}
+
+.fighter-cost {
+  text-align: center;
+}
+
+.fighter-cost div {
+  display: inline-block;
+}
+
+.fighter-cost img {
+  width: 16px;
+  height: 16px;
+}
+
+button {
+  height: 180px;
+}

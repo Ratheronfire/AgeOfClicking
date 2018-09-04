@@ -1,4 +1,4 @@
-import { EnemyService } from './../../../services/enemy/enemy.service';
+import { EnemyService } from '../../services/enemy/enemy.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({

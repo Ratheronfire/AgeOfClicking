@@ -22,7 +22,7 @@ export class EnemyService {
               protected mapService: MapService) {
     this.openPortal(this.mapService.enemySpawnTiles[0]);
 
-    const spawnSource = timer(5000, 5000);
+    const spawnSource = timer(45000, 45000);
     const spawnSubscribe = spawnSource.subscribe(_ => this.spawnEnemy());
 
     const processSource = timer(1000, 1000);
@@ -91,6 +91,7 @@ export class EnemyService {
       pathingDone: false,
       health: enemyType.health,
       maxHealth: enemyType.maxHealth,
+      attackRange: enemyType.attackRange,
       targetableBuildingTypes: enemyType.targetableBuildingTypes,
       targets: [],
       targetIndex: 0,
@@ -137,7 +138,11 @@ export class EnemyService {
           const resourceIndex = Math.floor(Math.random() * enemy.resourcesToSteal.length);
           const resourceToSteal = this.resourcesService.getResource(enemy.resourcesToSteal[resourceIndex]);
 
-          const amountToSteal = Math.random() * enemy.stealMax;
+          let amountToSteal = Math.random() * enemy.stealMax;
+          if (amountToSteal > resourceToSteal.amount) {
+            amountToSteal = resourceToSteal.amount;
+          }
+
           enemy.resourcesHeld[resourceToSteal.id] += amountToSteal;
           enemy.totalHeld += amountToSteal;
 
@@ -164,5 +169,12 @@ export class EnemyService {
     if (enemy.targets) {
       this.pickTarget(enemy);
     }
+  }
+
+  resourceIsBeingStolen(id: number): boolean {
+    const activeEnemies = this.enemies.filter(
+      enemy => enemy.pathingDone && enemy.targets[enemy.targetIndex].buildingTileType === BuildingTileType.Home);
+
+    return activeEnemies.some(enemy => id in enemy.resourcesToSteal);
   }
 }
