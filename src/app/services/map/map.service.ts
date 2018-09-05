@@ -205,9 +205,11 @@ export class MapService {
     const homeTile = this.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
 
     for (const resourceTile of resourceTiles) {
-      resourceTile.buildingPath = [];
-
       resourceTile.buildingPath = this.findPath(resourceTile, homeTile, true, true);
+
+      if (!resourceTile.buildingPath.length) {
+        continue;
+      }
 
       const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
       for (const resource of resources) {
@@ -268,6 +270,12 @@ export class MapService {
 
   spawnResourceAnimation(resourceId: number, multiplier: number = 1, spawnedByPlayer: boolean) {
     const matchingTiles = this.getTilesForResource(resourceId).filter(_tile => _tile.buildingPath.length > 0);
+
+    if (!this.resourcesService.canAffordResource(resourceId, multiplier)) {
+      return;
+    }
+
+    this.resourcesService.decuctResourceConsumes(resourceId, multiplier);
 
     const tile = matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
     if (tile === undefined) {

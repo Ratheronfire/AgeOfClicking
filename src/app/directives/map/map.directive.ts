@@ -87,7 +87,7 @@ export class MapDirective implements AfterViewInit {
       } else if (!fighterMode && !deleteMode && self.mapService.selectedBuilding !== undefined) {
         self.mapService.createBuilding(tile, self.mapService.selectedBuilding.tileType);
       } else if (fighterMode && d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType !== undefined) {
-        self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
+        // self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
       }
 
       self.refreshCanvas();

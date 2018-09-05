@@ -39,6 +39,13 @@ export class WorkersComponent implements OnInit {
     return this.workersService.canAfford(id);
   }
 
+  shouldShowResource(id: number): boolean {
+    const resource = this.resourcesService.getResource(id);
+    const resourceWorker = this.workersService.getResourceWorker(id);
+
+    return (resourceWorker.workable && resource.harvestable) || !this.adminService.filterAccessible;
+  }
+
   getTooltipMessage(id: number): string {
     return this.tooltipService.getWorkerTooltip(id);
   }

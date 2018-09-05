@@ -515,8 +515,8 @@
   "workerVerb": "Refines",
   "workerNoun": "temprous ingot",
   "resourceAccessible": false,
-  "resourceTier": 5,
-  "previousTier": 4
+  "resourceTier": 7,
+  "previousTier": 6
 }, {
   "id": 13,
   "name": "Stone",

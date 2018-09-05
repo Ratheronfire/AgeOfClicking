@@ -22,11 +22,11 @@ export class EnemyService {
               protected mapService: MapService) {
     this.openPortal(this.mapService.enemySpawnTiles[0]);
 
-    const spawnSource = timer(45000, 45000);
-    const spawnSubscribe = spawnSource.subscribe(_ => this.spawnEnemy());
+    // const spawnSource = timer(45000, 45000);
+    // const spawnSubscribe = spawnSource.subscribe(_ => this.spawnEnemy());
 
-    const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.processEnemies());
+    // const processSource = timer(1000, 1000);
+    // const processSubscribe = processSource.subscribe(_ => this.processEnemies());
   }
 
   pickTarget(enemy: Enemy) {

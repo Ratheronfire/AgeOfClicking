@@ -9,10 +9,10 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div class='button-container' *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)">
-        <button mat-raised-button class="resource-button" [ngClass]="{'warn': resourceIsBeingStolen(resource.id)}"
-          [disabled]="!canHarvest(resource.id)" [id]="resource.id" (click)='startHarvesting(resource.id)'
+      <div class='button-container' *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)"
           matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
+        <button mat-raised-button class="resource-button" [ngClass]="{'warn': resourceIsBeingStolen(resource.id)}"
+            [disabled]="!canHarvest(resource.id, resource.harvestYield)" [id]="resource.id" (click)='startHarvesting(resource.id)'>
 
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
           <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>

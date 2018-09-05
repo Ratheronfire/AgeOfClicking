@@ -46,7 +46,7 @@ export class WorkersService {
 
   public getWorker(idOrResourceType: number | string | ResourceType) {
     return typeof idOrResourceType === 'number' ?
-      this.workers[idOrResourceType] :
+      this.workers.find(worker => worker.id === idOrResourceType) :
       this.workers.find(worker => worker.resourceType === idOrResourceType);
   }
 

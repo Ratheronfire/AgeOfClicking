@@ -36,8 +36,8 @@ export class ClickerMainComponent implements OnInit {
     return this.tooltipService.getResourceTooltip(id);
   }
 
-  canHarvest(id: number): boolean {
-    return this.resourcesService.canHarvest(id);
+  canHarvest(id: number, multiplier: number): boolean {
+    return this.resourcesService.canHarvest(id, multiplier);
   }
 
   startHarvesting(id: number) {

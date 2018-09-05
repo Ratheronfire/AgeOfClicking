@@ -368,7 +368,7 @@
     "resourceId": 25,
     "resourceCost": 800
   }, {
-    "resourceId": 30,
+    "resourceId": 29,
     "resourceCost": 250
   }],
   "purchased": false
@@ -1389,7 +1389,7 @@
     "resourceId": 30,
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1,
-    "maxTier": 4
+    "maxTier": 5
   }],
   "resourceCosts": [{
     "resourceId": 0,

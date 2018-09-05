@@ -412,7 +412,7 @@
       "tileType": "TEMPROUSDISTILLERY",
       "name": "Temprous Distillery",
       "placeable": true,
-      "resourceIds": [24]
+      "resourceIds": [4, 6, 10, 12, 19, 23, 24]
     }
   }
 }
