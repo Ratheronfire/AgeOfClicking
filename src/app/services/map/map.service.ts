@@ -42,6 +42,9 @@ export class MapService {
   highFramerate = 25;
   lowFramerate = 125;
 
+  canvasWidth = 750;
+  canvasHeight = 750;
+
   tilePixelSize = 16;
   gridWidth = 150;
   gridHeight = 150;

@@ -37,7 +37,9 @@ export class ClickerMainComponent implements OnInit {
   }
 
   canHarvest(id: number, multiplier: number): boolean {
-    return this.resourcesService.canHarvest(id, multiplier);
+    const resource = this.resourcesService.getResource(id);
+
+    return !resource.harvesting && this.resourcesService.canHarvest(id, multiplier);
   }
 
   startHarvesting(id: number) {

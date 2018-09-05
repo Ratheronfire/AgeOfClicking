@@ -102,6 +102,7 @@ export class ResourceDialogComponent implements OnInit {
     this.resourceWorker = {
       resourceId: resourceId,
       workable: true,
+      recurringCost: 0,
       workerCount: 0,
       workerYield: 1,
       sliderSetting: 0,

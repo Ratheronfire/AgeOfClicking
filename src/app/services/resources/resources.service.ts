@@ -49,7 +49,7 @@ export class ResourcesService {
   public canHarvest(id: number, multiplier = 1): boolean {
     const resource = this.getResource(id);
 
-    if (!resource.harvestable || resource.harvesting || !resource.pathAvailable) {
+    if (!resource.harvestable || !resource.pathAvailable) {
       return false;
     }
 

@@ -61,6 +61,14 @@ export class MapComponent implements OnInit, AfterViewInit {
     return this.resourcesService.getResource(resourceId);
   }
 
+  get canvasWidth(): number {
+    return this.mapService.canvasWidth;
+  }
+
+  get canvasHeight(): number {
+    return this.mapService.canvasHeight;
+  }
+
   get deleteMode(): boolean {
     return this.mapService.deleteMode;
   }

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { Resource, ResourceType } from '../../objects/resource';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { Worker } from '../../objects/worker';
+import { Worker, ResourceWorker } from '../../objects/worker';
 import { WorkersService } from '../../services/workers/workers.service';
 import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { AdminService } from '../../services/admin/admin.service';
@@ -58,18 +58,25 @@ export class WorkersComponent implements OnInit {
     this.workersService.hireWorker(id);
   }
 
-  checkSliderValue(event: any) {
-    const resource = this.resourcesService.getResource(+event.source._elementRef.nativeElement.id);
+  checkSliderValue(eventOrId: any | ResourceWorker) {
+    const id = typeof(eventOrId) === 'number' ? eventOrId : +eventOrId.source._elementRef.nativeElement.id;
+
+    const resource = this.resourcesService.getResource(id);
     const worker = this.getWorker(resource.resourceType);
     const resourceWorker = worker.workersByResource.find(ws => ws.resourceId === resource.id);
 
-    const newValue = +event.value;
+    const newValue = typeof(eventOrId) === 'number' ? resourceWorker.sliderSetting : +eventOrId.value;
 
     resourceWorker.sliderSettingValid = worker.freeWorkers + resourceWorker.workerCount - newValue >= 0;
   }
 
-  updateResourceWorker(event: any) {
-    this.workersService.updateResourceWorker(+event.source._elementRef.nativeElement.id, +event.value);
+  updateResourceWorker(eventOrId: any | number, value = -1) {
+    const id = typeof(eventOrId) === 'number' ? eventOrId : +eventOrId.source._elementRef.nativeElement.id;
+    if (value === -1) {
+      value = +eventOrId.value;
+    }
+
+    this.workersService.updateResourceWorker(id, value);
   }
 
   pathAvailable(id): boolean {

@@ -19,9 +19,12 @@
         *ngIf="shouldShowResource(resourceWorker.resourceId)" matTooltip="{{getTooltipMessage(resourceWorker.resourceId)}}" matTooltipPosition="right">
           <mat-card-title>{{getResource(resourceWorker.resourceId).name | titlecase}}</mat-card-title>
           <div class="path-broken-warn" *ngIf="!pathAvailable(resourceWorker.resourceId)">(Path Broken)</div>
-          <mat-card-subtitle>{{resourceWorker.workerCount}} Workers</mat-card-subtitle>
+          <mat-card-subtitle>
+            Workers: <input class="worker-input" type="number" min="0" [max]="worker.workerCount"
+              [(ngModel)]="resourceWorker.sliderSetting" (input)="checkSliderValue(resourceWorker.resourceId)" (change)="updateResourceWorker(resourceWorker.resourceId, resourceWorker.sliderSetting)"/>
+          </mat-card-subtitle>
           <mat-slider [color]="resourceWorker.sliderSettingValid ? 'accent' : 'warn'" [id]="resourceWorker.resourceId" [max]="worker.workerCount"
-              [disabled]="!pathAvailable(resourceWorker.resourceId)" [tickInterval]="1" [thumbLabel]="true" [(ngModel)]="resourceWorker.sliderSetting"
+              [disabled]="!pathAvailable(resourceWorker.resourceId)" [tickInterval]="1" [(ngModel)]="resourceWorker.sliderSetting"
               (input)="checkSliderValue($event)" (change)="updateResourceWorker($event)">
           </mat-slider>
         </mat-card>

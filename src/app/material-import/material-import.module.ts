@@ -19,6 +19,8 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 const modules = [
   MatButtonModule,
@@ -40,7 +42,9 @@ const modules = [
   MatStepperModule,
   MatSnackBarModule,
   MatBadgeModule,
-  MatButtonToggleModule
+  MatButtonToggleModule,
+  MatSidenavModule,
+  MatToolbarModule
 ];
 
 @NgModule({

@@ -85,7 +85,9 @@ export class TooltipService {
 
       for (const _worker of this.workersService.workers) {
         for (const rw of _worker.workersByResource) {
-          totalCost += rw.recurringCost * rw.workerCount;
+          if (this.resourcesService.canHarvest(rw.resourceId) && this.workersService.canAffordToHarvest(rw.resourceId)) {
+            totalCost += rw.recurringCost * rw.workerCount;
+          }
         }
       }
 

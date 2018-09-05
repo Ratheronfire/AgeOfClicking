@@ -146,7 +146,7 @@ export class MapDirective implements AfterViewInit {
         const magnitude = Math.sqrt(xDistance ** 2 + yDistance ** 2);
 
         if (magnitude < self.mapService.tilePixelSize) {
-          projectile.target.health -= projectile.owner.attack;
+          // projectile.target.health -= projectile.owner.attack;
           self.mapService.projectiles = self.mapService.projectiles.filter(_projectile => _projectile !== projectile);
         }
 

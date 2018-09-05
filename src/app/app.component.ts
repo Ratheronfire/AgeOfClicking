@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
+import { MediaMatcher } from '@angular/cdk/layout';
 
 import { UpgradesService } from './services/upgrades/upgrades.service';
 import { SettingsService } from './services/settings/settings.service';
@@ -9,8 +10,18 @@ import { SettingsService } from './services/settings/settings.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  hideResourceList = false;
+  mobileQuery: MediaQueryList;
+
+  private _mobileQueryListener: () => void;
+
   constructor(protected upgradesService: UpgradesService,
-              protected settingsService: SettingsService) {
+              protected settingsService: SettingsService,
+              protected changeDetectorRef: ChangeDetectorRef,
+              protected media: MediaMatcher) {
+    this.mobileQuery = media.matchMedia('(max-width: 600px)');
+    this._mobileQueryListener = () => changeDetectorRef.detectChanges();
+    this.mobileQuery.addListener(this._mobileQueryListener);
   }
 
   get affordableUpgradeCount(): number {

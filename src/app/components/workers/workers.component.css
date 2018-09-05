@@ -37,6 +37,7 @@
   height: 3.6em;
   width: 100%;
   border-radius: 4px;
+  background: antiquewhite;
 }
 
 .workers button {
@@ -75,8 +76,17 @@
   background-color: blanchedalmond;
 }
 
-.resource-disabled {
-  background: darkgray;
+mat-card.mat-card.resource-disabled {
+  background: indianred;
+}
+
+.worker-input {
+  width: 50px;
+  border: none;
+}
+
+.mat-card-subtitle {
+  z-index: 1;
 }
 
 .workers .badge {
@@ -99,7 +109,7 @@
 .path-broken-warn {
   position: absolute;
   top: 5px;
-  right: 85px;
+  right: 125px;
 }
 
 button {

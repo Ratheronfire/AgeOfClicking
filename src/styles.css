@@ -19,7 +19,17 @@
 }
 
 .mat-badge-medium.mat-badge-above .mat-badge-content.mat-badge-active {
-  left: 480px;
+  left: 320px;
+  top: 0;
+}
+
+.mat-badge-medium.mat-badge-above .mat-badge-content.mat-badge-active {
+  left: 320px;
+  top: 0;
+}
+
+.game-is-mobile .mat-badge-medium.mat-badge-above .mat-badge-content.mat-badge-active {
+  left: 181px;
   top: 0;
 }
 
