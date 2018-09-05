@@ -36,7 +36,11 @@ export class WorkersComponent implements OnInit {
   }
 
   canAfford(id: number): boolean {
-    return this.workersService.canAfford(id);
+    return this.workersService.canAffordWorker(id);
+  }
+
+  canHarvest(resourceId: number): boolean {
+    return this.resourcesService.canHarvest(resourceId) && this.workersService.canAffordToHarvest(resourceId);
   }
 
   shouldShowResource(id: number): boolean {

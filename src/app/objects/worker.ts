@@ -4,6 +4,7 @@ export interface ResourceWorker {
   resourceId: number;
   workable: boolean;
 
+  recurringCost: number;
   workerCount: number;
   workerYield: number;
 

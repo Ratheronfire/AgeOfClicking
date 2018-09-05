@@ -15,8 +15,8 @@
       </button>
 
       <div *ngFor="let resourceWorker of getAccessibleResourceWorkers(worker)">
-        <mat-card *ngIf="shouldShowResource(resourceWorker.resourceId)" matTooltip="{{getTooltipMessage(resourceWorker.resourceId)}}"
-          matTooltipPosition="right">
+        <mat-card [ngClass]="{'resource-disabled': !canHarvest(resourceWorker.resourceId)}"
+        *ngIf="shouldShowResource(resourceWorker.resourceId)" matTooltip="{{getTooltipMessage(resourceWorker.resourceId)}}" matTooltipPosition="right">
           <mat-card-title>{{getResource(resourceWorker.resourceId).name | titlecase}}</mat-card-title>
           <div class="path-broken-warn" *ngIf="!pathAvailable(resourceWorker.resourceId)">(Path Broken)</div>
           <mat-card-subtitle>{{resourceWorker.workerCount}} Workers</mat-card-subtitle>

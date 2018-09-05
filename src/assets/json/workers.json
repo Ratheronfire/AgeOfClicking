@@ -9,6 +9,7 @@
       {
         "resourceId": 1,
         "workable": true,
+        "recurringCost": 15,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -16,6 +17,7 @@
       {
         "resourceId": 7,
         "workable": false,
+        "recurringCost": 20,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -23,6 +25,7 @@
       {
         "resourceId": 8,
         "workable": false,
+        "recurringCost": 25,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -30,6 +33,7 @@
       {
         "resourceId": 9,
         "workable": false,
+        "recurringCost": 35,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -37,6 +41,7 @@
       {
         "resourceId": 15,
         "workable": false,
+        "recurringCost": 40,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -44,6 +49,7 @@
       {
         "resourceId": 25,
         "workable": false,
+        "recurringCost": 45,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -51,6 +57,7 @@
       {
         "resourceId": 16,
         "workable": false,
+        "recurringCost": 500,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -58,6 +65,7 @@
       {
         "resourceId": 17,
         "workable": false,
+        "recurringCost": 1000,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -74,18 +82,21 @@
       {
         "resourceId": 13,
         "workable": true,
+        "recurringCost": 15,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },{
         "resourceId": 26,
         "workable": false,
+        "recurringCost": 25,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },{
         "resourceId": 27,
         "workable": false,
+        "recurringCost": 35,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -93,6 +104,7 @@
       {
         "resourceId": 28,
         "workable": false,
+        "recurringCost": 50,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -100,6 +112,7 @@
       {
         "resourceId": 29,
         "workable": false,
+        "recurringCost": 85,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -107,6 +120,7 @@
       {
         "resourceId": 30,
         "workable": false,
+        "recurringCost": 130,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -114,6 +128,7 @@
       {
         "resourceId": 31,
         "workable": false,
+        "recurringCost": 200,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -130,6 +145,7 @@
       {
         "resourceId": 2,
         "workable": false,
+        "recurringCost": 30,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -137,6 +153,7 @@
       {
         "resourceId": 3,
         "workable": false,
+        "recurringCost": 30,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -144,6 +161,7 @@
       {
         "resourceId": 4,
         "workable": false,
+        "recurringCost": 40,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -151,6 +169,7 @@
       {
         "resourceId": 5,
         "workable": false,
+        "recurringCost": 30,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -158,6 +177,7 @@
       {
         "resourceId": 6,
         "workable": false,
+        "recurringCost": 55,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -165,6 +185,7 @@
       {
         "resourceId": 10,
         "workable": false,
+        "recurringCost": 75,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -172,6 +193,7 @@
       {
         "resourceId": 11,
         "workable": false,
+        "recurringCost": 55,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -179,6 +201,7 @@
       {
         "resourceId": 12,
         "workable": false,
+        "recurringCost": 90,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -186,6 +209,7 @@
       {
         "resourceId": 18,
         "workable": false,
+        "recurringCost": 65,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -193,6 +217,7 @@
       {
         "resourceId": 19,
         "workable": false,
+        "recurringCost": 110,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -200,6 +225,7 @@
       {
         "resourceId": 20,
         "workable": false,
+        "recurringCost": 300,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -207,6 +233,7 @@
       {
         "resourceId": 21,
         "workable": false,
+        "recurringCost": 300,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -214,6 +241,7 @@
       {
         "resourceId": 22,
         "workable": false,
+        "recurringCost": 300,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -221,6 +249,7 @@
       {
         "resourceId": 23,
         "workable": false,
+        "recurringCost": 1200,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
@@ -228,6 +257,7 @@
       {
         "resourceId": 24,
         "workable": false,
+        "recurringCost": 3250,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true

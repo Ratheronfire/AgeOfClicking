@@ -75,6 +75,10 @@
   background-color: blanchedalmond;
 }
 
+.resource-disabled {
+  background: darkgray;
+}
+
 .workers .badge {
   display: inline-block;
   font-size: small;

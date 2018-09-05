@@ -61,18 +61,26 @@ export class WorkersService {
     return worker.workersByResource.find(rw => rw.resourceId === resourceId);
   }
 
-  canAfford(id: number): boolean {
+  canAffordWorker(id: number): boolean {
     const worker = this.getWorker(id);
 
     return worker.cost <= this.resourcesService.getResource(0).amount;
   }
 
+  canAffordToHarvest(resourceId: number): boolean {
+    const resourceWorker = this.getResourceWorker(resourceId);
+
+    return this.resourcesService.getResource(0).amount >= resourceWorker.recurringCost;
+  }
+
   processWorkers() {
     for (const worker of this.workers) {
       for (const resourceWorker of worker.workersByResource) {
-        if (resourceWorker.workerCount === 0) {
+        if (resourceWorker.workerCount === 0 || !this.canAffordToHarvest(resourceWorker.resourceId)) {
           continue;
         }
+
+        this.resourcesService.addResourceAmount(0, -resourceWorker.recurringCost);
 
         this.mapService.spawnResourceAnimation(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
       }
@@ -96,7 +104,7 @@ export class WorkersService {
   }
 
   hireWorker(id: number) {
-    if (!this.canAfford(id)) {
+    if (!this.canAffordWorker(id)) {
       return;
     }
 

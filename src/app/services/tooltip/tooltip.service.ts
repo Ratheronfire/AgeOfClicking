@@ -81,6 +81,16 @@ export class TooltipService {
     let tooltip = `${resource.resourceDescription}`;
 
     if (resourceId === 0) {
+      let totalCost = 0;
+
+      for (const worker of this.workersService.workers) {
+        for (const rw of worker.workersByResource) {
+          totalCost += rw.recurringCost * rw.workerCount;
+        }
+      }
+
+      tooltip += `\n${totalCost} spent on workers per second.`;
+
       return tooltip;
     }
 
@@ -124,6 +134,7 @@ export class TooltipService {
     const resourceWorker = this.workersService.getResourceWorker(resourceId);
 
     return `${resource.workerVerb} ${Math.floor(resourceWorker.workerYield * 100) / 100} ` +
-      `${resource.workerNoun}${resourceWorker.workerYield === 1 ? '' : 's'} per second.`;
+      `${resource.workerNoun}${resourceWorker.workerYield === 1 ? '' : 's'} per second.\n` +
+      `Total cost: ${resourceWorker.recurringCost * resourceWorker.workerCount} gold per second.`;
   }
 }
