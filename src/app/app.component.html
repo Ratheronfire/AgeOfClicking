@@ -1,13 +1,13 @@
-<h1>Age of Clicking</h1>
+<h1>Age of Clicking - Version {{settingsService.ersion}}</h1>
 
-<app-clicker-main class="main-pane"></app-clicker-main>
+<div class="main-pane">
+  <app-clicker-main class="resource-list"></app-clicker-main>
+  <app-map class="map"></app-map>
+</div>
+<!-- <app-enemy></app-enemy> -->
+<!-- <app-fighter></app-fighter> -->
 
 <mat-tab-group class="tab-group" dynamicHeight [matBadge]="affordableUpgradeCount" [matBadgeHidden]="affordableUpgradeCount <= 0" matBadgePosition="before" matBadgeColor="accent">
-  <mat-tab label="Map">
-    <app-map></app-map>
-    <!-- <app-enemy></app-enemy> -->
-    <!-- <app-fighter></app-fighter> -->
-  </mat-tab>
   <mat-tab label="Workers">
     <app-workers></app-workers>
   </mat-tab>
@@ -20,10 +20,8 @@
   <mat-tab label="Settings">
     <app-settings></app-settings>
   </mat-tab>
-</mat-tab-group>
-
-<mat-card class="debug-pane" *ngIf="debugMode">
-  <h1>Admin Dashboard</h1>
+  <mat-tab label="Debug" *ngIf="debugMode">
   <app-admin-debug></app-admin-debug>
   <app-messages></app-messages>
-</mat-card>
+  </mat-tab>
+</mat-tab-group>

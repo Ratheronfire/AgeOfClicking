@@ -68,11 +68,15 @@ export class ResourcesService {
     return true;
   }
 
-  public resourcesOfType(resourceType: ResourceType, filterByWorkable: boolean, filterByAccessible: boolean): Resource[] {
+  public resourcesOfType(resourceType: ResourceType,
+      filterByWorkable: boolean, filterBySellable: boolean, filterByAccessible: boolean): Resource[] {
     let resources = this.resources.filter(resource => resource.resourceType === resourceType);
 
     if (filterByWorkable) {
       resources = resources.filter(resource => resource.worker.workable);
+    }
+    if (filterBySellable) {
+      resources = resources.filter(resource => resource.sellable);
     }
     if (filterByAccessible) {
       resources = resources.filter(resource => resource.resourceAccessible);

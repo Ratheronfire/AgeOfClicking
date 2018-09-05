@@ -1,24 +1,36 @@
+Amount to sell:<mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="sellAmount">
+  <mat-button-toggle value="1" checked="true">
+    1x
+  </mat-button-toggle>
+  <mat-button-toggle value="10">
+    10x
+  </mat-button-toggle>
+  <mat-button-toggle value="100">
+    100x
+  </mat-button-toggle>
+  <mat-button-toggle value="1000">
+    1000x
+  </mat-button-toggle>
+  <mat-button-toggle value="-1">
+    All
+  </mat-button-toggle>
+</mat-button-toggle-group>
+
 <ul class="store">
   <mat-accordion multi="true">
-      <mat-expansion-panel expanded="true" *ngFor="let resourceType of resourceTypes | enumToArray">
-        <mat-expansion-panel-header>
-          <mat-panel-title>
-            {{resourceType}}
-          </mat-panel-title>
-          <mat-panel-description>
-          </mat-panel-description>
-        </mat-expansion-panel-header>
+    <mat-expansion-panel expanded="true" *ngFor="let resourceType of sellableTypes">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          {{resourceType | titlecase}}
+        </mat-panel-title>
+        <mat-panel-description>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
 
-        <mat-card *ngFor="let resource of resourcesOfType(resourceType, true, adminService.filterAccessible)"
-          matTooltip="Sells for {{resource.sellsFor}} gold." matTooltipPosition="right">
-          {{resource.name | titlecase }}
-          <span class="right">
-              <button mat-flat-button color='accent' [disabled]='!canSellResource(resource.id, 1)' (click)='sellResource(resource.id, 1)'>1x</button>
-              <button mat-flat-button color='accent' [disabled]='!canSellResource(resource.id, 10)' (click)='sellResource(resource.id, 10)'>10x</button>
-              <button mat-flat-button color='accent' [disabled]='!canSellResource(resource.id, 100)' (click)='sellResource(resource.id, 100)'>100x</button>
-              <button mat-flat-button color='accent' [disabled]='!canSellResource(resource.id, -1)' (click)='sellResource(resource.id, -1)'>All</button>
-            </span>
-        </mat-card>
-      </mat-expansion-panel>
-    </mat-accordion>
+      <button class="full-width" color='accent' mat-flat-button *ngFor="let resource of resourcesOfType(resourceType, true, adminService.filterAccessible)"
+        (click)="sellResource(resource.id)" [disabled]="!canSellResource(resource.id)">
+        {{resource.name | titlecase }} - {{resource.sellsFor * (+sellAmount === -1 ? resource.amount : sellAmount) | number:'0.0-2'}} Gold
+      </button>
+    </mat-expansion-panel>
+  </mat-accordion>
 </ul>

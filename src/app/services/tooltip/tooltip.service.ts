@@ -83,8 +83,8 @@ export class TooltipService {
     if (resourceId === 0) {
       let totalCost = 0;
 
-      for (const worker of this.workersService.workers) {
-        for (const rw of worker.workersByResource) {
+      for (const _worker of this.workersService.workers) {
+        for (const rw of _worker.workersByResource) {
           totalCost += rw.recurringCost * rw.workerCount;
         }
       }

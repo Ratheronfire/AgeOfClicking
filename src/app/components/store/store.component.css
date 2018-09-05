@@ -96,3 +96,7 @@ button.delete {
   background-color: gray !important;
   color: white;
 }
+
+.full-width {
+  width: 100%;
+}

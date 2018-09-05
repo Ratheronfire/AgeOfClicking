@@ -38,6 +38,14 @@ nav a.active {
   float: left;
 }
 
+.resource-list {
+  float: left;
+}
+
+.map {
+  float: right;
+}
+
 .tab-group {
   margin-left: 15px;
 }

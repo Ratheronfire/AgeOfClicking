@@ -12,25 +12,28 @@ import { AdminService } from '../../services/admin/admin.service';
 })
 export class StoreComponent implements OnInit {
   resourceTypes = ResourceType;
+  sellableTypes = [ResourceType.Wood, ResourceType.Mineral, ResourceType.Metal];
+  sellAmount = 1;
 
   constructor(private resourcesService: ResourcesService,
               private storeService: StoreService,
-              private adminService: AdminService) { }
+              private adminService: AdminService) {
+  }
 
   ngOnInit() {
   }
 
-  canSellResource(id: number, amount: number) {
-    return this.storeService.canSellResource(id, amount);
+  canSellResource(id: number) {
+    return this.storeService.canSellResource(id, this.sellAmount);
   }
 
-  resourcesOfType(resourceType: string, filterBySellable: boolean, filterByAccessible): Resource[] {
-    return this.storeService.resourcesOfType(this.resourceTypes[resourceType], filterBySellable, filterByAccessible);
+  resourcesOfType(resourceType: ResourceType, filterBySellable: boolean, filterByAccessible): Resource[] {
+    return this.storeService.resourcesOfType(resourceType, filterBySellable, filterByAccessible);
   }
 
-  sellResource(id: number, amount: number) {
+  sellResource(id: number) {
     const resource = this.resourcesService.getResource(id);
 
-    this.storeService.sellResource(id, amount);
+    this.storeService.sellResource(id, this.sellAmount);
   }
 }

@@ -9,8 +9,6 @@ import { SettingsService } from './services/settings/settings.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'clicker-game';
-
   constructor(protected upgradesService: UpgradesService,
               protected settingsService: SettingsService) {
   }

@@ -29,7 +29,7 @@ export class ClickerMainComponent implements OnInit {
   }
 
   resourcesOfType(resourceType: string, filterByAccessible: boolean): Resource[] {
-    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], false, filterByAccessible);
+    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], false, false, filterByAccessible);
   }
 
   public getTooltipMessage(id: number): string {

@@ -1,37 +1,40 @@
 <h2>Debug</h2>
 
-<mat-checkbox class="filterAccessible" checked="true" [(ngModel)]="adminService.filterAccessible">Hide Inaccessible Upgrades</mat-checkbox>
+<mat-checkbox class="filterAccessible" checked="true" [(ngModel)]="adminService.filterAccessible">Hide Inaccessible
+  Upgrades</mat-checkbox>
 <br />
 <mat-checkbox class="filterAccessible" checked="false" [(ngModel)]="adminService.editMode">Edit Mode</mat-checkbox>
+<br />
 
 <mat-divider></mat-divider>
 <br />
-<br />
 
-<mat-select [(ngModel)]="selectedResource">
-  <mat-option *ngFor="let resource of resourcesService.resources" [value]="resource">
-    {{resource.name | titlecase}}
-  </mat-option>
-</mat-select>
+<div>
+  Resource:<mat-select style="width: 200px" [(ngModel)]="selectedResource">
+    <mat-option *ngFor="let resource of resourcesService.resources" [value]="resource">
+      {{resource.name | titlecase}}
+    </mat-option>
+  </mat-select>
 
-<mat-divider></mat-divider>
-<br />
-<br />
-
-<mat-form-field class="example-full-width">
-  <input matInput [(ngModel)]="amount">
-</mat-form-field>
-<button mat-raised-button (click)="addResourceAmount()">Add to all resources</button>
-<div *ngIf="selectedResource !== undefined">
-  <button mat-raised-button (click)="addResourceAmount(selectedResource)">Add to {{selectedResource.name | titlecase}}</button>
-  <button mat-raised-button color="accent" (click)="stringifyResource(selectedResource)">Export {{selectedResource.name | titlecase}} To JSON</button>
+  <mat-form-field class="example-full-width">
+    <input matInput [(ngModel)]="amount">
+  </mat-form-field>
+  <button mat-raised-button (click)="addResourceAmount()">Add to all resources</button>
+  <div *ngIf="selectedResource !== undefined">
+    <button mat-raised-button (click)="addResourceAmount(selectedResource)">Add to {{selectedResource.name |
+      titlecase}}</button>
+    <button mat-raised-button color="accent" (click)="stringifyResource(selectedResource)">Export
+      {{selectedResource.name | titlecase}} To JSON</button>
+  </div>
 </div>
+
+<mat-divider></mat-divider>
+<br />
 
 <button mat-raised-button color="primary" (click)="openResourceDialog()">New Resource</button>
 <button mat-raised-button color="primary" (click)="openUpgradeDialog()">New Upgrade</button>
 
 <mat-divider></mat-divider>
-<br />
 <br />
 
 <button mat-raised-button color="accent" (click)="stringifyResources()">Export Resources To JSON</button>

@@ -16,7 +16,7 @@ export class AdminDebugComponent implements OnInit {
   public filterAccessible = true;
 
   protected selectedResource: Resource;
-  amount: number;
+  amount = 0;
 
   constructor(
     protected resourcesService: ResourcesService,

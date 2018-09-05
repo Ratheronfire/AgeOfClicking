@@ -49,7 +49,7 @@ export class UpgradesService {
       let workersToUpgrade = [this.workersService.getResourceWorker(upgradeEffect.resourceId)];
 
       if (upgradeEffect.upgradeIsForWholeType) {
-        resourcesToUpgrade = this.resourcesService.resourcesOfType(upgradeEffect.resourceType, false, false);
+        resourcesToUpgrade = this.resourcesService.resourcesOfType(upgradeEffect.resourceType, false, false, false);
         workersToUpgrade = this.workersService.getWorker(upgradeEffect.resourceType).workersByResource;
 
         if (upgradeEffect.maxTier >= 0) {
