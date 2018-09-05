@@ -336,12 +336,6 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 30,
-    "upgradeVariable": "HARVESTABILITY",
-    "upgradeFactor": 1
-  }, {
-    "upgradeIsForWholeType": false,
-    "resourceType": "CURRENCY",
     "resourceId": 31,
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
