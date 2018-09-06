@@ -28,7 +28,11 @@ export class MapComponent implements OnInit, AfterViewInit {
   }
 
   selectBuilding(buildingTile: BuildingTile) {
-    this.selectedBuilding = buildingTile;
+    if (this.selectedBuilding !== undefined) {
+      this.selectedBuilding = undefined;
+    } else {
+      this.selectedBuilding = buildingTile;
+    }
   }
 
   canAffordBuilding(buildingType: BuildingTileType): boolean {

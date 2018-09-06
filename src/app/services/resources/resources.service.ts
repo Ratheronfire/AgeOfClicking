@@ -109,7 +109,12 @@ export class ResourcesService {
   }
 
   public addResourceAmount(id: number, amount: number) {
-    this.getResource(id).amount += amount;
+    const resource = this.getResource(id);
+
+    resource.amount += amount;
+    if (resource.amount < 0) {
+      resource.amount = 0;
+    }
   }
 
   public canAfford(id: number): boolean {

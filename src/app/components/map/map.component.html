@@ -1,9 +1,11 @@
-<canvas class="noselect" appNoScroll appMap width="{{canvasWidth}}" height="{{canvasHeight}}" oncontextmenu="return false"></canvas>
+<div id="canvas-container">
+  <canvas class="noselect" appNoScroll appMap width="{{canvasWidth}}" height="{{canvasHeight}}" oncontextmenu="return false"></canvas>
+</div>
 
 <h3>Buildings (Click & drag to place, Ctrl + click to delete)</h3>
 
 <div class="building-list">
-  <div *ngFor="let buildingTile of getBuildingTileArray(true)">
+  <div class="building-cell" *ngFor="let buildingTile of getBuildingTileArray(true)">
     <button mat-raised-button [color]="selectedBuilding === buildingTile && !deleteMode ? 'accent' : ''" (click)="selectBuilding(buildingTile)">
       <mat-card-title>{{buildingTile.name}}</mat-card-title>
       <mat-card-subtitle>{{buildingTile.description}}</mat-card-subtitle>

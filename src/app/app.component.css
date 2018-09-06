@@ -34,24 +34,12 @@ nav a.active {
   color: #039be5;
 }
 
-.main-pane {
-  float: left;
-}
-
 .resource-list {
   float: left;
 }
 
-.map {
-  float: right;
-}
-
 .tab-group {
   margin-left: 15px;
-}
-
-.debug-pane {
-  float: left;
 }
 
 .game-container {
@@ -81,11 +69,11 @@ h1.game-app-name {
 }
 
 .game-sidenav-container mat-sidenav {
-  width: 1200px;
+  width: 800px;
 }
 
 .game-is-mobile .game-sidenav-container mat-sidenav {
-  width: 100%;
+  width: auto;
 }
 
 .game-is-mobile .game-sidenav-container {

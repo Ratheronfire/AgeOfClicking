@@ -80,7 +80,7 @@ export class WorkersService {
           continue;
         }
 
-        this.resourcesService.addResourceAmount(0, -resourceWorker.recurringCost);
+        this.resourcesService.addResourceAmount(0, -resourceWorker.recurringCost * resourceWorker.workerCount);
 
         this.mapService.spawnResourceAnimation(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
       }

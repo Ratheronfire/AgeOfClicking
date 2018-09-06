@@ -16,6 +16,7 @@ declare var d3: any;
 export class MapDirective implements AfterViewInit {
   canvas;
   context: CanvasRenderingContext2D;
+  canvasContainer: Element;
   transform = d3.zoomIdentity;
   refreshTimer;
   lowFramerateActive = false;
@@ -36,6 +37,8 @@ export class MapDirective implements AfterViewInit {
   ngAfterViewInit() {
     this.canvas = d3.select('canvas');
     this.context = this.canvas.node().getContext('2d');
+
+    this.canvasContainer = document.getElementById('canvas-container');
 
     this.context.font = 'bold 4px Arial';
 
@@ -187,6 +190,10 @@ export class MapDirective implements AfterViewInit {
   }
 
   refreshCanvas() {
+    this.canvas.property('width', this.canvasContainer.clientWidth);
+
+    this.mapService.canvasPixelWidth = this.canvas.property('width');
+
     this.context.save();
     this.context.clearRect(0, 0, this.mapService.canvasPixelWidth, this.mapService.canvasPixelHeight);
     this.context.translate(this.transform.x, this.transform.y);

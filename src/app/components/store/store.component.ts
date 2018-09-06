@@ -24,7 +24,7 @@ export class StoreComponent implements OnInit {
   }
 
   canSellResource(id: number) {
-    return this.storeService.canSellResource(id, this.sellAmount);
+    return this.storeService.canSellResource(id, +this.sellAmount);
   }
 
   resourcesOfType(resourceType: ResourceType, filterBySellable: boolean, filterByAccessible): Resource[] {
@@ -34,6 +34,6 @@ export class StoreComponent implements OnInit {
   sellResource(id: number) {
     const resource = this.resourcesService.getResource(id);
 
-    this.storeService.sellResource(id, this.sellAmount);
+    this.storeService.sellResource(id, +this.sellAmount);
   }
 }

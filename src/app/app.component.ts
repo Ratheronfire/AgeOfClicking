@@ -10,6 +10,7 @@ import { SettingsService } from './services/settings/settings.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  sidebarWidth = 600;
   hideResourceList = false;
   mobileQuery: MediaQueryList;
 

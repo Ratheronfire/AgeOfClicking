@@ -40,7 +40,6 @@ nav a.active {
 
 .building-list {
   display: flex;
-  max-width: 750px;
   overflow-x: scroll;
   height: 230px;
 }
@@ -60,4 +59,8 @@ nav a.active {
 
 button {
   height: 180px;
+}
+
+#canvas-container {
+  display: flex;
 }

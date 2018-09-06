@@ -1,6 +1,6 @@
 <div class="game-container" [class.game-is-mobile]="mobileQuery.matches">
   <mat-toolbar color="primary" class="game-toolbar">
-    <h1 class="game-app-name">Age of Clicking - Version {{settingsService.gameVersion}}</h1>
+    <h1 class="game-app-name">Age of Clicking</h1>
     <div class="sidenav-buttons">
       <button mat-icon-button [style.display]="!mobileQuery.matches ? 'none': ''" (click)="hideResourceList = !hideResourceList">
         <mat-icon>map</mat-icon>
@@ -12,7 +12,7 @@
   </mat-toolbar>
 
   <mat-sidenav-container class="game-sidenav-container" [style.marginTop.px]="mobileQuery.matches ? 56 : 0">
-    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [fixedInViewport]="mobileQuery.matches" position="end"
+    <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="!mobileQuery.matches" [fixedInViewport]="mobileQuery.matches" position="end"
       fixedTopGap="56">
       <mat-nav-list>
         <mat-tab-group class="tab-group" dynamicHeight [matBadge]="affordableUpgradeCount" [matBadgeHidden]="affordableUpgradeCount <= 0"
