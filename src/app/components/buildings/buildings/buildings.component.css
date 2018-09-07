@@ -1,0 +1,88 @@
+/* BuildingsComponent's private CSS styles */
+.buildings {
+  margin: 0 0 2em 0;
+  list-style-type: none;
+  padding: 0;
+}
+
+.buildings mat-expansion-panel {
+  margin: 0;
+}
+
+.buildings mat-expansion-panel-header {
+  height: 30px !important;
+}
+
+.buildings mat-card-subtitle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-weight: bold;
+}
+
+.buildings button {
+  position: relative;
+  cursor: pointer;
+  margin: .5em;
+  padding: .4em 0;
+  height: 3.6em;
+  width: 100%;
+  border-radius: 4px;
+}
+
+.buildings button:hover {
+  left: .1em;
+}
+
+.buildings button.mat-disabled {
+  cursor: default;
+}
+
+.buildings .badge {
+  display: inline-block;
+  font-size: small;
+  color: white;
+  padding: 0.8em 0.7em 0 0.7em;
+  background-color: #607D8B;
+  line-height: 1em;
+  position: absolute;
+  right: -9px;
+  top: 1px;
+  height: 1.8em;
+  min-width: 16px;
+  text-align: center;
+  margin-right: .8em;
+  border-radius: 0 4px 4px 0;
+}
+
+button {
+  background-color: #eee;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  cursor: hand;
+  font-family: Arial;
+}
+
+.buildings {
+  text-align: center;
+}
+
+.building {
+  display: inline-block;
+  max-width: 300px;
+}
+
+.resource-list {
+  text-align: center;
+}
+
+.resource-list div {
+  display: inline-block;
+}
+
+.resource-list img {
+  width: 16px;
+  height: 16px;
+}

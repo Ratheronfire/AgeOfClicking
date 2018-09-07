@@ -18,21 +18,6 @@
   user-select: none;
 }
 
-.mat-badge-medium.mat-badge-above .mat-badge-content.mat-badge-active {
-  left: 320px;
-  top: 0;
-}
-
-.mat-badge-medium.mat-badge-above .mat-badge-content.mat-badge-active {
-  left: 320px;
-  top: 0;
-}
-
-.game-is-mobile .mat-badge-medium.mat-badge-above .mat-badge-content.mat-badge-active {
-  left: 181px;
-  top: 0;
-}
-
 mat-tab-group .mat-tab-body-wrapper {
   overflow: visible;
 }
@@ -43,4 +28,13 @@ mat-tab-body#mat-tab-content-0-4 {
 
 mat-tab-body#mat-tab-content-0-4 div {
   overflow: visible;
+}
+
+div.sidenav-buttons button.mat-badge-medium.mat-badge-overlap.mat-badge-before span.mat-badge-content {
+  top: 0;
+  left: 0;
+}
+
+mat-sidenav-container.game-sidenav-container mat-sidenav-content {
+  overflow-x: hidden;
 }

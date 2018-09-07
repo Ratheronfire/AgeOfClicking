@@ -73,7 +73,7 @@ h1.game-app-name {
 }
 
 .game-is-mobile .game-sidenav-container mat-sidenav {
-  width: auto;
+  width: 100%;
 }
 
 .game-is-mobile .game-sidenav-container {
@@ -85,4 +85,17 @@ h1.game-app-name {
 .sidenav-buttons {
   position: absolute;
   right: 0;
+}
+
+.toolbar-button-text {
+  display: inline-block;
+}
+
+.main-pane {
+  height: 100%;
+}
+
+app-clicker-main {
+  overflow-y: scroll;
+  max-height: 100%;
 }

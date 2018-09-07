@@ -38,29 +38,7 @@ nav a.active {
   color: #039be5;
 }
 
-.building-list {
-  display: flex;
-  overflow-x: scroll;
-  height: 230px;
-}
-
-.resource-list {
-  text-align: center;
-}
-
-.resource-list div {
-  display: inline-block;
-}
-
-.resource-list img {
-  width: 16px;
-  height: 16px;
-}
-
-button {
-  height: 180px;
-}
-
 #canvas-container {
   display: flex;
+  height: 100%;
 }

@@ -26,6 +26,7 @@ import { MapDirective } from './directives/map/map.directive';
 import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
 import { EnemyComponent } from './components/enemy/enemy.component';
 import { FighterComponent } from './components/fighter/fighter.component';
+import { BuildingsComponent } from './components/buildings/buildings/buildings.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { FighterComponent } from './components/fighter/fighter.component';
     MapDirective,
     NoScrollDirective,
     EnemyComponent,
-    FighterComponent
+    FighterComponent,
+    BuildingsComponent
   ],
   imports: [
     BrowserModule,

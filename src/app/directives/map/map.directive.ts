@@ -17,6 +17,11 @@ export class MapDirective implements AfterViewInit {
   canvas;
   context: CanvasRenderingContext2D;
   canvasContainer: Element;
+
+  headerPixels = 64;
+
+  imageElements = {};
+
   transform = d3.zoomIdentity;
   refreshTimer;
   lowFramerateActive = false;
@@ -37,17 +42,23 @@ export class MapDirective implements AfterViewInit {
   ngAfterViewInit() {
     this.canvas = d3.select('canvas');
     this.context = this.canvas.node().getContext('2d');
-
     this.canvasContainer = document.getElementById('canvas-container');
+
+    const imageElementContainer = document.getElementById('tile-images');
+    for (let i = 0; i < imageElementContainer.children.length; i++) {
+      const imageElement = imageElementContainer.children[i];
+      this.imageElements[imageElement.id] = imageElement;
+    }
 
     this.context.font = 'bold 4px Arial';
 
-    this.mapService.canvasPixelWidth = this.canvas.property('width');
-    this.mapService.canvasPixelHeight = this.canvas.property('height');
+    this.resizeCanvas();
+
+    this.transform.k = 2;
 
     this.canvas.call(d3.zoom()
         .filter(this.scrollFilter(this))
-        .scaleExtent([2 / 3, 5])
+        .scaleExtent([2, 5])
         .translateExtent([[0, 0], [this.mapService.gridWidth * this.mapService.tilePixelSize,
                                    this.mapService.gridHeight * this.mapService.tilePixelSize]])
         .on('zoom', this.zoomed(this)));
@@ -189,10 +200,15 @@ export class MapDirective implements AfterViewInit {
     }
   }
 
-  refreshCanvas() {
-    this.canvas.property('width', this.canvasContainer.clientWidth);
+  resizeCanvas() {
+    this.element.nativeElement.width = window.innerWidth;
+    this.element.nativeElement.height = window.innerHeight - this.headerPixels;
+    this.mapService.canvasPixelWidth = window.innerWidth;
+    this.mapService.canvasPixelHeight = window.innerHeight - this.headerPixels;
+  }
 
-    this.mapService.canvasPixelWidth = this.canvas.property('width');
+  refreshCanvas() {
+    this.resizeCanvas();
 
     this.context.save();
     this.context.clearRect(0, 0, this.mapService.canvasPixelWidth, this.mapService.canvasPixelHeight);
@@ -215,23 +231,23 @@ export class MapDirective implements AfterViewInit {
         continue;
       }
 
-      const mapTileImage = <HTMLImageElement> document.getElementById(tile.mapTileType.toLowerCase());
+      const mapTileImage = this.imageElements[tile.mapTileType.toLowerCase()];
       this.context.drawImage(mapTileImage, tile.x, tile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
 
       if (tile.resourceTileType) {
-        const resourceTileImage = <HTMLImageElement> document.getElementById(tile.resourceTileType.toLowerCase().replace(' ', '-'));
+        const resourceTileImage = this.imageElements[tile.resourceTileType.toLowerCase().replace(' ', '-')];
         this.context.drawImage(resourceTileImage, tile.x, tile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
       }
 
       if (tile.buildingTileType) {
-        const buildingTileImage = <HTMLImageElement> document.getElementById(tile.buildingTileType.toLowerCase());
+        const buildingTileImage = this.imageElements[tile.buildingTileType.toLowerCase()];
         this.context.drawImage(buildingTileImage, tile.x, tile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
       }
     }
 
     for (const resourceAnimation of this.mapService.resourceAnimations) {
-      const resourceTileImage = <HTMLImageElement> document.getElementById(
-          this.resourcesService.getResource(resourceAnimation.resourceId).name.toLowerCase().replace(' ', '-'));
+      const resourceTileImage = this.imageElements[
+          this.resourcesService.getResource(resourceAnimation.resourceId).name.toLowerCase().replace(' ', '-')];
       this.context.drawImage(resourceTileImage, resourceAnimation.x, resourceAnimation.y,
           this.mapService.tilePixelSize / 2, this.mapService.tilePixelSize / 2);
 
@@ -247,12 +263,12 @@ export class MapDirective implements AfterViewInit {
     }
 
     for (const enemy of this.enemyService.enemies) {
-      const enemyTileImage = <HTMLImageElement> document.getElementById(enemy.name.toLowerCase().replace(' ', '-'));
+      const enemyTileImage = this.imageElements[enemy.name.toLowerCase().replace(' ', '-')];
       this.context.drawImage(enemyTileImage, enemy.x, enemy.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
     }
 
     for (const fighter of this.fighterService.fighters) {
-      const fighterTileImage = <HTMLImageElement> document.getElementById(fighter.name.toLowerCase().replace(' ', '-'));
+      const fighterTileImage = this.imageElements[fighter.name.toLowerCase().replace(' ', '-')];
       this.context.drawImage(fighterTileImage, fighter.x, fighter.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
     }
 
@@ -265,7 +281,7 @@ export class MapDirective implements AfterViewInit {
     }
 
     for (const projectile of this.mapService.projectiles) {
-      const projectileTileImage = <HTMLImageElement> document.getElementById(projectile.name.toLowerCase().replace(' ', '-'));
+      const projectileTileImage = this.imageElements[projectile.name.toLowerCase().replace(' ', '-')];
 
       this.context.translate(projectile.x, projectile.y);
       this.context.rotate(projectile.rotation);

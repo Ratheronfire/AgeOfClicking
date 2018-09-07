@@ -2,11 +2,11 @@
   <mat-toolbar color="primary" class="game-toolbar">
     <h1 class="game-app-name">Age of Clicking</h1>
     <div class="sidenav-buttons">
-      <button mat-icon-button [style.display]="!mobileQuery.matches ? 'none': ''" (click)="hideResourceList = !hideResourceList">
-        <mat-icon>map</mat-icon>
+      <button mat-flat-button (click)="hideResourceList = !hideResourceList">
+        <mat-icon>map</mat-icon><p class="toolbar-button-text" *ngIf="!mobileQuery.matches">Expand Map</p>
       </button>
-      <button mat-icon-button (click)="snav.toggle()">
-        <mat-icon>menu</mat-icon>
+      <button mat-flat-button (click)="snav.toggle()" [matBadge]="affordableUpgradeCount" [matBadgeHidden]="affordableUpgradeCount <= 0" matBadgePosition="before" matBadgeColor="accent">
+        <mat-icon>menu</mat-icon><p class="toolbar-button-text" *ngIf="!mobileQuery.matches">Menu</p>
       </button>
     </div>
   </mat-toolbar>
@@ -15,15 +15,17 @@
     <mat-sidenav #snav [mode]="mobileQuery.matches ? 'over' : 'side'" [opened]="!mobileQuery.matches" [fixedInViewport]="mobileQuery.matches" position="end"
       fixedTopGap="56">
       <mat-nav-list>
-        <mat-tab-group class="tab-group" dynamicHeight [matBadge]="affordableUpgradeCount" [matBadgeHidden]="affordableUpgradeCount <= 0"
-          matBadgePosition="before" matBadgeColor="accent">
+        <mat-tab-group class="tab-group" dynamicHeight>
+          <mat-tab label="Buildings">
+            <app-buildings></app-buildings>
+          </mat-tab>
           <mat-tab label="Workers">
             <app-workers></app-workers>
           </mat-tab>
           <mat-tab label="Store">
             <app-store></app-store>
           </mat-tab>
-          <mat-tab label="Upgrades">
+          <mat-tab label="Upgrades{{affordableUpgradeCount > 0 ? ' (' + affordableUpgradeCount + ')' : ''}}">
             <app-upgrades></app-upgrades>
           </mat-tab>
           <mat-tab label="Settings">
@@ -38,7 +40,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-pane">
-        <app-clicker-main class="resource-list" [style.display]="mobileQuery.matches && hideResourceList? 'none': ''"></app-clicker-main>
+        <app-clicker-main class="resource-list" [style.display]="hideResourceList? 'none': ''"></app-clicker-main>
         <app-map class="map" [style.display]="mobileQuery.matches && !hideResourceList? 'none': ''"></app-map>
         <!-- <app-enemy></app-enemy> -->
         <!-- <app-fighter></app-fighter> -->
