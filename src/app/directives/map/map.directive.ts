@@ -85,10 +85,10 @@ export class MapDirective implements AfterViewInit {
   }
 
   clickTile(self: MapDirective) {
-    return function(elapsed) {
+    return async function(elapsed) {
       if (!d3.event.buttons) {
         if (d3.event.type === 'mouseup') {
-          self.enemyService.recalculateTargets();
+          await self.enemyService.recalculateTargets();
         }
 
         return;
@@ -183,19 +183,27 @@ export class MapDirective implements AfterViewInit {
       return;
     }
 
-    const currentTile = entity.tilePath[entity.pathStep];
-    const destinationTile = entity.tilePath[entity.pathStep + 1];
+    let totalDistance = animationSpeed * deltaTime;
 
-    entity.x += (destinationTile.x - currentTile.x) * deltaTime * animationSpeed;
-    entity.y += (destinationTile.y - currentTile.y) * deltaTime * animationSpeed;
+    while (totalDistance > 0) {
+      const stepDistance = Math.min(1, totalDistance);
+      totalDistance -= 1;
 
-    const offset = entity.position.subtract(new Vector(currentTile.x, currentTile.y));
+      const currentTile = entity.tilePath[entity.pathStep];
+      const destinationTile = entity.tilePath[entity.pathStep + 1];
 
-    if (Math.abs(offset.x) >= this.mapService.tilePixelSize || Math.abs(offset.y) >= this.mapService.tilePixelSize) {
-      entity.pathStep++;
+      entity.x += (destinationTile.x - currentTile.x) * stepDistance;
+      entity.y += (destinationTile.y - currentTile.y) * stepDistance;
 
-      if (entity.pathStep === entity.tilePath.length - 1) {
-          entity.pathingDone = true;
+      const offset = entity.position.subtract(new Vector(currentTile.x, currentTile.y));
+
+      if (Math.abs(offset.x) >= this.mapService.tilePixelSize || Math.abs(offset.y) >= this.mapService.tilePixelSize) {
+        entity.pathStep++;
+
+        if (entity.pathStep === entity.tilePath.length - 1) {
+            entity.pathingDone = true;
+            break;
+        }
       }
     }
   }

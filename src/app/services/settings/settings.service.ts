@@ -8,10 +8,14 @@ import { UpgradesService } from './../upgrades/upgrades.service';
 import { WorkersService } from './../workers/workers.service';
 import { MessagesService } from '../messages/messages.service';
 import { MapService } from './../map/map.service';
+import { EnemyService } from './../enemy/enemy.service';
+import { FighterService } from './../fighter/fighter.service';
 import { SaveData, WorkerData, TileData } from '../../objects/savedata';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 import { BuildingTileType } from '../../objects/tile';
+import { Enemy, Fighter } from '../../objects/entity';
 import { MessageSource } from './../../objects/message';
+import { Vector } from '../../objects/vector';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +43,8 @@ export class SettingsService {
               protected upgradesService: UpgradesService,
               protected workersService: WorkersService,
               protected mapService: MapService,
+              protected enemyService: EnemyService,
+              protected fighterService: FighterService,
               protected messagesService: MessagesService,
               protected snackbar: MatSnackBar,
               public dialog: MatDialog) {
@@ -109,6 +115,8 @@ export class SettingsService {
       upgrades: [],
       workers: [],
       tiles: [],
+      enemies: [],
+      fighters: [],
       settings: {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
@@ -181,6 +189,39 @@ export class SettingsService {
       }
 
       saveData.tiles.push(tileData);
+    }
+
+    for (const enemy of this.enemyService.enemies) {
+      saveData.enemies.push({
+        name: enemy.name,
+        position: enemy.position,
+        spawnPosition: enemy.spawnPosition,
+        health: enemy.health,
+        maxHealth: enemy.maxHealth,
+        attack: enemy.attack,
+        defense: enemy.defense,
+        attackRange: enemy.attackRange,
+        targetableBuildingTypes: enemy.targetableBuildingTypes,
+        resourcesToSteal: enemy.resourcesToSteal,
+        resorucesHeld: enemy.resourcesHeld,
+        stealMax: enemy.stealMax,
+        resourceCapacity: enemy.resourceCapacity
+      });
+    }
+
+    for (const fighter of this.fighterService.fighters) {
+      saveData.fighters.push({
+        name: fighter.name,
+        description: fighter.description,
+        position: fighter.position,
+        spawnPosition: fighter.spawnPosition,
+        health: fighter.health,
+        maxHealth: fighter.maxHealth,
+        attack: fighter.attack,
+        defense: fighter.defense,
+        attackRange: fighter.attackRange,
+        moveable: fighter.moveable
+      });
     }
 
     console.log(saveData);
@@ -267,6 +308,35 @@ export class SettingsService {
           tile.buildingRemovable = tileData.buildingRemovable;
 
           tile.tileCropDetail = tileData.tileCropDetail;
+        }
+      }
+
+      if (saveData.enemies !== undefined) {
+        for (const enemyData of saveData.enemies) {
+          const tilePosition = this.mapService.clampTileCoordinates(enemyData.position.x, enemyData.position.y);
+          const tile = this.mapService.getTile(tilePosition[0], tilePosition[1]);
+
+          const enemy = new Enemy(enemyData.name, new Vector(enemyData.position.x, enemyData.position.y), tile, enemyData.health,
+            enemyData.attack, enemyData.defense, enemyData.attackRange, enemyData.targetableBuildingTypes,
+            enemyData.resourcesToSteal, enemyData.stealMax, enemyData.resourceCapacity);
+          enemy.spawnPosition = new Vector(enemyData.spawnPosition.x, enemyData.spawnPosition.y);
+
+          this.enemyService.findTargets(enemy);
+          this.enemyService.pickTarget(enemy);
+          this.enemyService.enemies.push(enemy);
+        }
+      }
+
+      if (saveData.fighters !== undefined) {
+        for (const fighterData of saveData.fighters) {
+          const tilePosition = this.mapService.clampTileCoordinates(fighterData.position.x, fighterData.position.y);
+          const tile = this.mapService.getTile(tilePosition[0], tilePosition[1]);
+
+          const fighter = new Fighter(fighterData.name, new Vector(fighterData.position.x, fighterData.position.y),
+            tile, fighterData.health, fighterData.attack, fighterData.defense,
+            fighterData.attackRange, fighterData.description, 0, fighterData.moveable);
+
+          this.fighterService.fighters.push(fighter);
         }
       }
 

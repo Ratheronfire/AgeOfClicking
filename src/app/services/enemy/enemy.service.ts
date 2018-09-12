@@ -22,6 +22,7 @@ export class EnemyService {
   public enemyTypes: Enemy[] = baseEnemyTypes;
   public enemies: Enemy[] = [];
   activePortalTile: Tile;
+  reprocessing = false;
 
   minimumResourceAmount = 500;
   maxPathRetryCount = 10;
@@ -144,7 +145,13 @@ export class EnemyService {
   }
 
   async recalculateTargets() {
+    if (this.reprocessing) {
+      return;
+    }
+
+    this.reprocessing = true;
     this.enemies.map(enemy => this.findTargets(enemy));
+    this.reprocessing = false;
   }
 
   finishTask(enemy: Enemy) {
