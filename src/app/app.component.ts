@@ -32,6 +32,10 @@ export class AppComponent {
     return affordableUpgrades.length;
   }
 
+  get disableAnimations(): boolean {
+    return this.settingsService.disableAnimations;
+  }
+
   get debugMode(): boolean {
     return this.settingsService.debugMode;
   }

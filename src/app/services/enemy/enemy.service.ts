@@ -2,10 +2,15 @@ import { Injectable } from '@angular/core';
 
 import { timer } from 'rxjs';
 
-import { ResourcesService } from '../resources/resources.service';
 import { Enemy } from './../../objects/entity';
+import { Vector } from '../../objects/vector';
 import { MapService } from '../map/map.service';
-import { Tile, BuildingTileType } from '../../objects/tile';
+import { Tile, BuildingTileType, MapTileType } from '../../objects/tile';
+import { MessageSource } from '../../objects/message';
+import { BuildingsService } from '../buildings/buildings.service';
+import { ResourcesService } from '../resources/resources.service';
+import { MessagesService } from '../messages/messages.service';
+import { MapType } from '@angular/compiler';
 
 declare var require: any;
 const baseEnemyTypes = require('../../../assets/json/enemies.json');
@@ -18,35 +23,62 @@ export class EnemyService {
   public enemies: Enemy[] = [];
   activePortalTile: Tile;
 
+  minimumResourceAmount = 500;
+  maxPathRetryCount = 10;
+  maxEnemyCount = 5;
+
   constructor(protected resourcesService: ResourcesService,
-              protected mapService: MapService) {
+              protected buildingsService: BuildingsService,
+              protected mapService: MapService,
+              protected messagesService: MessagesService) {
     this.openPortal(this.mapService.enemySpawnTiles[0]);
 
-    // const spawnSource = timer(45000, 45000);
-    // const spawnSubscribe = spawnSource.subscribe(_ => this.spawnEnemy());
+    const spawnSource = timer(45000, 45000);
+    const spawnSubscribe = spawnSource.subscribe(_ => this.spawnEnemy());
 
-    // const processSource = timer(1000, 1000);
-    // const processSubscribe = processSource.subscribe(_ => this.processEnemies());
+    const processSource = timer(1000, 1000);
+    const processSubscribe = processSource.subscribe(_ => this.processEnemies());
   }
 
   pickTarget(enemy: Enemy) {
-    const sortedTargets = enemy.targets.sort((a, b) => {
-      const aDist = Math.abs(a.x - enemy.x) + Math.abs(a.y - enemy.y);
-      const bDist = Math.abs(b.x - enemy.x) + Math.abs(b.y - enemy.y);
+    // const sortedTargets = enemy.targets.filter(target => target.accessible).sort((a, b) => {
+    //   const aDist = Math.abs(a.tile.x - enemy.x) + Math.abs(a.tile.y - enemy.y);
+    //   const bDist = Math.abs(b.tile.x - enemy.x) + Math.abs(b.tile.y - enemy.y);
 
-      return aDist - bDist;
-    });
+    //   return aDist - bDist;
+    // });
 
-    const targetIndex = enemy.targets.indexOf(sortedTargets[0]);
+    const accessibleTargets = enemy.targets.filter(target => target.accessible);
+    const selectedTarget = accessibleTargets[Math.floor(Math.random() * accessibleTargets.length)];
+    enemy.targetIndex = enemy.targets.indexOf(selectedTarget);
 
     enemy.pathStep = 0;
     enemy.pathingDone = false;
 
-    enemy.targetIndex = targetIndex;
     enemy.currentTile = this.getTilePosition(enemy);
-    this.snapToTile(enemy, enemy.currentTile);
+    if (!this.mapService.mapTiles[enemy.currentTile.mapTileType].walkable) {
+      enemy.position = new Vector(enemy.spawnPosition.x, enemy.spawnPosition.y);
+      enemy.currentTile = this.getTilePosition(enemy);
+    }
 
-    enemy.tilePath = this.mapService.findPath(enemy.currentTile, enemy.targets[targetIndex], false, true);
+    if (enemy.targetIndex < 0) {
+      enemy.targets = enemy.targets.filter(target => !target.wanderTarget);
+      enemy.targets.push({tile: this.mapService.getRandomTile([MapTileType.Grass]), accessible: true, wanderTarget: true});
+      enemy.targetIndex = enemy.targets.length - 1;
+    }
+
+    this.mapService.findPath(enemy.currentTile, enemy.targets[enemy.targetIndex].tile, false, true).subscribe(tilePath => {
+      enemy.tilePath = tilePath;
+
+      if (!enemy.tilePath.length) {
+        enemy.pathAttempt++;
+        if (enemy.pathAttempt >= this.maxPathRetryCount) {
+          this.killEnemy(enemy);
+        }
+
+        this.finishTask(enemy);
+      }
+    });
   }
 
   openPortal(tile: Tile) {
@@ -76,53 +108,65 @@ export class EnemyService {
       this.openPortal(this.mapService.enemySpawnTiles[spawnIndex]);
     }
 
+    if (this.enemies.length >= this.maxEnemyCount) {
+      return;
+    }
+
     const enemyIndex = Math.floor(Math.random() * this.enemyTypes.length);
 
     const spawnPoint = this.activePortalTile;
     const enemyType = this.enemyTypes[enemyIndex];
 
-    const enemy: Enemy = {
-      name: enemyType.name,
-      x: spawnPoint.x,
-      y: spawnPoint.y,
-      currentTile: spawnPoint,
-      tilePath: [],
-      pathStep: 0,
-      pathingDone: false,
-      health: enemyType.health,
-      maxHealth: enemyType.maxHealth,
-      attackRange: enemyType.attackRange,
-      targetableBuildingTypes: enemyType.targetableBuildingTypes,
-      targets: [],
-      targetIndex: 0,
-      attack: enemyType.attack,
-      defense: enemyType.defense,
-      resourcesToSteal: enemyType.resourcesToSteal,
-      resourcesHeld: this.resourcesService.resources.map(resource => 0),
-      totalHeld: 0,
-      stealMax: enemyType.stealMax,
-      resourceCapacity: enemyType.resourceCapacity
-    };
+    const enemy = new Enemy(enemyType.name, new Vector(spawnPoint.x, spawnPoint.y), spawnPoint, enemyType.health,
+      enemyType.attack, enemyType.defense, enemyType.attackRange, enemyType.targetableBuildingTypes,
+      enemyType.resourcesToSteal, enemyType.stealMax, enemyType.resourceCapacity);
 
-    for (const buildingType of enemy.targetableBuildingTypes) {
-      this.mapService.tiledMap.filter(tile => tile.buildingTileType === buildingType).map(tile => enemy.targets.push(tile));
-    }
-
+    this.findTargets(enemy);
     this.pickTarget(enemy);
 
+    this.log('An enemy has appeared!');
+
     this.enemies.push(enemy);
+  }
+
+  findTargets(enemy: Enemy) {
+    for (const buildingType of enemy.targetableBuildingTypes) {
+      for (const tile of this.mapService.tiledMap.filter(_tile => _tile.buildingTileType === buildingType)) {
+        if (!enemy.targets.some(target => target.tile === tile)) {
+          enemy.targets.push({tile: tile, accessible: true, wanderTarget: false});
+        }
+      }
+    }
+
+    if (enemy.targets[enemy.targetIndex].wanderTarget) {
+      this.finishTask(enemy);
+    }
+  }
+
+  async recalculateTargets() {
+    this.enemies.map(enemy => this.findTargets(enemy));
+  }
+
+  finishTask(enemy: Enemy) {
+    enemy.targets[enemy.targetIndex].accessible = false;
+
+    if (enemy.targets) {
+      this.pickTarget(enemy);
+    }
   }
 
   processEnemies() {
     for (const enemy of this.enemies) {
       const target = enemy.targets[enemy.targetIndex];
 
-      if (target.buildingTileType === undefined) {
+      if (target === undefined || ((!target.wanderTarget || enemy.pathingDone) && target.tile.buildingTileType === undefined)) {
         this.finishTask(enemy);
+
+        continue;
       }
 
       if (enemy.pathingDone) {
-        if (target.buildingTileType === BuildingTileType.Home) {
+        if (target.tile.buildingTileType === BuildingTileType.Home) {
           for (const id of enemy.resourcesToSteal) {
             this.resourcesService.getResource(id).resourceBeingStolen = true;
           }
@@ -138,43 +182,73 @@ export class EnemyService {
           const resourceIndex = Math.floor(Math.random() * enemy.resourcesToSteal.length);
           const resourceToSteal = this.resourcesService.getResource(enemy.resourcesToSteal[resourceIndex]);
 
-          let amountToSteal = Math.random() * enemy.stealMax;
-          if (amountToSteal > resourceToSteal.amount) {
-            amountToSteal = resourceToSteal.amount;
+          if (resourceToSteal.amount > this.minimumResourceAmount) {
+            let amountToSteal = Math.floor(Math.random() * enemy.stealMax);
+            if (resourceToSteal.amount - amountToSteal < this.minimumResourceAmount) {
+              amountToSteal = resourceToSteal.amount - this.minimumResourceAmount;
+            }
+
+            if (enemy.resourcesHeld[resourceToSteal.id] === undefined) {
+              enemy.resourcesHeld[resourceToSteal.id] = amountToSteal;
+            } else {
+              enemy.resourcesHeld[resourceToSteal.id] += amountToSteal;
+            }
+
+            if (amountToSteal > 0) {
+              enemy.totalHeld += amountToSteal;
+
+              this.resourcesService.addResourceAmount(resourceToSteal.id, -amountToSteal);
+              this.log(`An enemy stole ${Math.floor(amountToSteal)} ${resourceToSteal.name}!`);
+            }
           }
+        } else {
+          target.tile.health -= enemy.attack;
 
-          enemy.resourcesHeld[resourceToSteal.id] += amountToSteal;
-          enemy.totalHeld += amountToSteal;
+          if (target.tile.health <= 0) {
+            this.buildingsService.clearBuilding(target.tile);
 
-          this.resourcesService.addResourceAmount(resourceToSteal.id, -amountToSteal);
-          // console.log(`An enemy stole ${amountToSteal} ${resourceToSteal.name}!`);
-
-          continue;
-        }
-
-        target.health -= enemy.attack;
-
-        if (target.health <= 0) {
-          this.mapService.clearBuilding(target);
-
-          this.finishTask(enemy);
+            this.finishTask(enemy);
+          }
         }
       }
     }
   }
 
-  finishTask(enemy) {
-    enemy.targets = enemy.targets.filter(target => target !== enemy.targets[enemy.targetIndex]);
+  killEnemy(enemy: Enemy) {
+    let enemyDefeatedMessage = 'An enemy has been defeated!';
 
-    if (enemy.targets) {
-      this.pickTarget(enemy);
+    if (enemy.totalHeld > 0) {
+      enemyDefeatedMessage += ' Resources recovered:';
+
+      for (let i = 0; i < enemy.resourcesHeld.length; i++) {
+        const stolenAmount = enemy.resourcesHeld[i];
+        if (isNaN(stolenAmount) || stolenAmount <= 0) {
+          continue;
+        }
+
+        const resource = this.resourcesService.getResource(i);
+        this.resourcesService.addResourceAmount(i, stolenAmount);
+
+        enemyDefeatedMessage += ` ${Math.floor(stolenAmount)} ${resource.name},`;
+      }
+
+      enemyDefeatedMessage = enemyDefeatedMessage.slice(0, enemyDefeatedMessage.length - 1) + '.';
     }
+
+    this.log(enemyDefeatedMessage);
+
+    this.enemies = this.enemies.filter(_enemy => _enemy !== enemy);
   }
 
   resourceIsBeingStolen(id: number): boolean {
     const activeEnemies = this.enemies.filter(
-      enemy => enemy.pathingDone && enemy.targets[enemy.targetIndex].buildingTileType === BuildingTileType.Home);
+      enemy => enemy.pathingDone && enemy.targets.length &&
+        enemy.targets[enemy.targetIndex].tile.buildingTileType === BuildingTileType.Home);
 
     return activeEnemies.some(enemy => id in enemy.resourcesToSteal);
+  }
+
+  private log(message: string) {
+    this.messagesService.add(MessageSource.Enemy, message);
   }
 }

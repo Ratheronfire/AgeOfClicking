@@ -4,6 +4,7 @@ import { Resource } from '../../objects/resource';
 import { ResourcesService } from '../../services/resources/resources.service';
 import { Upgrade, ResourceCost, UpgradeType } from '../../objects/upgrade';
 import { UpgradesService } from '../../services/upgrades/upgrades.service';
+import { SettingsService } from '../../services/settings/settings.service';
 import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
@@ -15,9 +16,10 @@ export class UpgradesComponent implements OnInit {
   upgradeTypes = UpgradeType;
   hidePurchased = true;
 
-  constructor(private resourcesService: ResourcesService,
-              private upgradesService: UpgradesService,
-              private adminService: AdminService) { }
+  constructor(protected resourcesService: ResourcesService,
+              protected upgradesService: UpgradesService,
+              protected settingsService: SettingsService,
+              protected adminService: AdminService) { }
 
   ngOnInit() {
   }

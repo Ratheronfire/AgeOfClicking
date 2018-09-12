@@ -1,6 +1,7 @@
 [
   {
     "name": "Sentry",
+    "description": "A stationary archer, capable of shooting at one target per second.",
     "health": 15,
     "maxHealth": 15,
     "cost": 50,

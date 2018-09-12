@@ -69,7 +69,7 @@ h1.game-app-name {
 }
 
 .game-sidenav-container mat-sidenav {
-  width: 800px;
+  width: 500px;
 }
 
 .game-is-mobile .game-sidenav-container mat-sidenav {

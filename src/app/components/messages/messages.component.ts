@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatSort } from '@angular/material';
+
+import { Message, MessageSource } from './../../objects/message';
 import { MessagesService } from '../../services/messages/messages.service';
 
 @Component({
@@ -7,9 +10,19 @@ import { MessagesService } from '../../services/messages/messages.service';
   styleUrls: ['./messages.component.css']
 })
 export class MessagesComponent implements OnInit {
+  @ViewChild(MatSort) sort: MatSort;
 
   constructor(public messagesService: MessagesService) { }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.messagesService.messagesDataSource.sort = this.sort;
+  }
 
+  get messages(): Message[] {
+    return this.messagesService.messages;
+  }
+
+  get displayedColumns(): string[] {
+    return ['source', 'timestamp', 'message'];
+  }
 }

@@ -33,3 +33,7 @@ button.clear {
   color: #888;
   margin-bottom: 12px;
 }
+
+table.message-table {
+  width: 100%;
+}

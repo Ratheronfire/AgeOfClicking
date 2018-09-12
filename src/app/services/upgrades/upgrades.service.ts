@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Upgrade, UpgradeType, UpgradeVariable } from '../../objects/upgrade';
+import { MessageSource } from '../../objects/message';
 import { ResourcesService } from '../resources/resources.service';
 import { WorkersService } from './../workers/workers.service';
 import { MessagesService } from '../messages/messages.service';
@@ -95,6 +96,8 @@ export class UpgradesService {
         }
       }
     }
+
+    this.log('Purchased upgrade: ' + upgrade.name);
   }
 
   public canAffordUpgrade(id: number): boolean {
@@ -169,6 +172,6 @@ export class UpgradesService {
   }
 
   private log(message: string) {
-    this.messagesService.add(`UpgradesService: ${message}`);
+    this.messagesService.add(MessageSource.Upgrades, message);
   }
 }

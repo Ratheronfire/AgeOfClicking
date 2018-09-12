@@ -1,4 +1,4 @@
-<div class="game-container" [class.game-is-mobile]="mobileQuery.matches">
+<div class="game-container" [class.game-is-mobile]="mobileQuery.matches" [@.disabled]="disableAnimations">
   <mat-toolbar color="primary" class="game-toolbar">
     <h1 class="game-app-name">Age of Clicking</h1>
     <div class="sidenav-buttons">
@@ -19,6 +19,10 @@
           <mat-tab label="Buildings">
             <app-buildings></app-buildings>
           </mat-tab>
+          <mat-tab label="Fighters">
+            <app-fighter></app-fighter>
+            <app-enemy></app-enemy>
+          </mat-tab>
           <mat-tab label="Workers">
             <app-workers></app-workers>
           </mat-tab>
@@ -28,12 +32,12 @@
           <mat-tab label="Upgrades{{affordableUpgradeCount > 0 ? ' (' + affordableUpgradeCount + ')' : ''}}">
             <app-upgrades></app-upgrades>
           </mat-tab>
+          <mat-tab label="Log">
+            <app-messages></app-messages>
+          </mat-tab>
           <mat-tab label="Settings">
             <app-settings></app-settings>
-          </mat-tab>
-          <mat-tab label="Debug" *ngIf="debugMode">
-            <app-admin-debug></app-admin-debug>
-            <app-messages></app-messages>
+            <app-admin-debug *ngIf="debugMode"></app-admin-debug>
           </mat-tab>
         </mat-tab-group>
       </mat-nav-list>
@@ -42,8 +46,6 @@
       <div class="main-pane">
         <app-clicker-main class="resource-list" [style.display]="hideResourceList? 'none': ''"></app-clicker-main>
         <app-map class="map" [style.display]="mobileQuery.matches && !hideResourceList? 'none': ''"></app-map>
-        <!-- <app-enemy></app-enemy> -->
-        <!-- <app-fighter></app-fighter> -->
       </div>
     </mat-sidenav-content>
   </mat-sidenav-container>

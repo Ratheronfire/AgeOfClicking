@@ -1,3 +1,4 @@
+import { Vector } from './vector';
 import { MapTileType, ResourceTileType, BuildingTileType, Tile, TileCropDetail } from './tile';
 
 export interface ResourceData {
@@ -41,9 +42,48 @@ export interface TileData {
   tileCropDetail: TileCropDetail;
 }
 
+export interface EnemyData {
+  name: string;
+
+  position: Vector;
+  spawnPosition: Vector;
+
+  health: number;
+  maxHealth: number;
+
+  attack: number;
+  defense: number;
+  attackRange: number;
+
+  targetableBuildingTypes: BuildingTileType[];
+  resourcesToSteal: number[];
+  resorucesHeld: number[];
+  stealMax: number;
+  resourceCapacity: number;
+}
+
+export interface FighterData {
+  name: string;
+  description: string;
+
+  position: Vector;
+  spawnPosition: Vector;
+
+  health: number;
+  maxHealth: number;
+
+  attack: number;
+  defense: number;
+  attackRange: number;
+
+  moveable: boolean;
+}
+
 export interface SettingsData {
   autosaveInterval: number;
   debugMode: boolean;
+
+  slimInterface: boolean;
 
   mapDetailMode: boolean;
   mapLowFramerate: boolean;
@@ -58,6 +98,8 @@ export class SaveData {
   upgrades: UpgradeData[];
   workers: WorkerData[];
   tiles: TileData[];
+  enemies: EnemyData[];
+  fighters: FighterData[];
 
   settings: SettingsData;
 

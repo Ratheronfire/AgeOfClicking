@@ -27,26 +27,6 @@ export class MapComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
   }
 
-  selectBuilding(buildingTile: BuildingTile) {
-    if (this.selectedBuilding !== undefined) {
-      this.selectedBuilding = undefined;
-    } else {
-      this.selectedBuilding = buildingTile;
-    }
-  }
-
-  canAffordBuilding(buildingType: BuildingTileType): boolean {
-    return this.mapService.canAffordBuilding(this.buildingTiles[buildingType]);
-  }
-
-  createBuilding(tile: Tile, buildingType: BuildingTileType) {
-    const buildingCreated = this.mapService.createBuilding(tile, buildingType);
-  }
-
-  clearBuilding(tile: Tile) {
-    this.mapService.clearBuilding(tile);
-  }
-
   get buildingTiles() {
     return this.mapService.buildingTiles;
   }
@@ -79,14 +59,6 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   set deleteMode(value) {
     this.mapService.deleteMode = value;
-  }
-
-  get selectedBuilding(): BuildingTile {
-    return this.mapService.selectedBuilding;
-  }
-
-  set selectedBuilding(value) {
-    this.mapService.selectedBuilding = value;
   }
 
   get rowCount(): number {

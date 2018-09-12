@@ -1,8 +1,10 @@
 import { Injectable } from '@angular/core';
+import { Observable, of } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
 import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
-import { ResourceAnimation, Projectile, Entity } from '../../objects/entity';
+import { ResourceAnimation, Projectile, Actor } from '../../objects/entity';
+import { Vector } from '../../objects/vector';
 
 declare var require: any;
 const Jimp = require('jimp');
@@ -32,7 +34,6 @@ export class MapService {
   projectiles: Projectile[] = [];
 
   deleteMode = false;
-  selectedBuilding: BuildingTile = this.buildingTiles[BuildingTileType.Road];
 
   lastAnimationTime = 0;
   tileAnimationSpeed = 0.003;
@@ -115,29 +116,26 @@ export class MapService {
       const buildingTileId = buildingTileIds[i];
       const flagTileId = flagTileIds[i];
 
-      const tile: Tile = {
-        id: _tiledMap.length,
-        mapTileType: this.tileTypes[mapTileId],
-        health: 50,
-        x: 16 * (_tiledMap.length % _mapWidth),
-        y: 16 * Math.floor(_tiledMap.length / _mapWidth),
-        tileCropDetail: {x: 0, y: 0, width: 16, height: 16},
-        buildingRemovable: false
-      };
+      const position = new Vector(16 * (_tiledMap.length % _mapWidth), 16 * Math.floor(_tiledMap.length / _mapWidth));
+      const tileCropDetail = {x: 0, y: 0, width: 16, height: 16};
+
+      let resourceTileType, buildingTileType;
 
       if (resourceTileId > 0) {
-        tile.resourceTileType = this.tileTypes[resourceTileId];
+        resourceTileType = this.tileTypes[resourceTileId];
       }
 
       if (buildingTileId > 0) {
-        tile.buildingTileType = this.tileTypes[buildingTileId];
+        buildingTileType = this.tileTypes[buildingTileId];
       }
+
+      const tile = new Tile(_tiledMap.length, this.tileTypes[mapTileId],
+        resourceTileType, buildingTileType, false, position, tileCropDetail, 50);
 
       const flagTileType = this.tileTypes[flagTileId];
       if (flagTileType === BuildingTileType.EnemyPortal) {
         this.enemySpawnTiles.push(tile);
       }
-
       _tiledMap.push(tile);
     }
 
@@ -145,56 +143,6 @@ export class MapService {
     this.mapWidth = _mapWidth;
     this.mapHeight = _mapHeight;
 
-    this.calculateResourceConnections();
-  }
-
-  createBuilding(tile: Tile, buildingType: BuildingTileType): boolean {
-    const buildingTile = this.buildingTiles[buildingType];
-
-    if (tile.buildingTileType !== undefined ||
-        tile.resourceTileType !== undefined ||
-        !buildingTile.buildableSurfaces.some(bs => bs === tile.mapTileType) ||
-        !this.canAffordBuilding(buildingTile)) {
-      return false;
-    }
-
-    for (const resourceCost of buildingTile.resourceCosts) {
-      this.resourcesService.addResourceAmount(resourceCost.resourceId, -resourceCost.resourceCost);
-    }
-
-    if (buildingTile.placesResourceTile) {
-      tile.resourceTileType = buildingTile.resourceTileType;
-    }
-
-    tile.buildingRemovable = true;
-    tile.buildingTileType = buildingType;
-    this.calculateResourceConnections();
-
-    return true;
-  }
-
-  public canAffordBuilding(buildingTile: BuildingTile): boolean {
-    for (const resourceCost of buildingTile.resourceCosts) {
-      if (this.resourcesService.getResource(resourceCost.resourceId).amount < resourceCost.resourceCost) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  clearBuilding(tile: Tile) {
-    if (!tile.buildingRemovable) {
-      return;
-    }
-
-    const buildingTile = this.buildingTiles[tile.buildingTileType];
-
-    if (buildingTile.placesResourceTile) {
-      tile.resourceTileType = undefined;
-    }
-
-    tile.buildingTileType = undefined;
     this.calculateResourceConnections();
   }
 
@@ -208,24 +156,25 @@ export class MapService {
     const homeTile = this.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
 
     for (const resourceTile of resourceTiles) {
-      resourceTile.buildingPath = this.findPath(resourceTile, homeTile, true, true);
+       this.findPath(resourceTile, homeTile, true, true).subscribe(tilePath => {
+        resourceTile.buildingPath = tilePath;
 
-      if (!resourceTile.buildingPath.length) {
-        continue;
-      }
-
-      const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
-      for (const resource of resources) {
-        resource.pathAvailable = true;
-      }
+        if (resourceTile.buildingPath.length) {
+          const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
+          for (const resource of resources) {
+            resource.pathAvailable = true;
+          }
+        }
+      });
     }
   }
 
-  findPath(startTile: Tile, targetTile: Tile, onlyPathable: boolean, onlyWalkable: boolean): Tile[] {
+  findPath(startTile: Tile, targetTile: Tile, onlyPathable: boolean, onlyWalkable: boolean): Observable<Tile[]> {
     const visitedTiles: Tile[] = [];
 
     let tileQueue: Tile[] = [];
-    const tileDistances = this.tiledMap.map(_ => this.tiledMap.length + 1);
+    const tileDistances = this.tiledMap.map(_ => Infinity);
+    const tileHeuristicDistances = this.tiledMap.map(_ => Infinity);
     const nodeMap = new Map<Tile, Tile>();
 
     let currentNode: Tile;
@@ -235,7 +184,7 @@ export class MapService {
     tileQueue.push(startTile);
 
     while (tileQueue.length) {
-      currentNode = tileQueue.sort((a, b) => tileDistances[a.id] - tileDistances[b.id])[0];
+      currentNode = tileQueue.sort((a, b) => tileHeuristicDistances[a.id] - tileHeuristicDistances[b.id])[0];
       tileQueue = tileQueue.filter(tile => tile !== currentNode);
 
       if (currentNode === targetTile) {
@@ -248,7 +197,7 @@ export class MapService {
         }
 
         buildingPath.push(backtrackNode);
-        return buildingPath.reverse();
+        return of(buildingPath.reverse());
       }
 
       const neighborDistance = tileDistances[currentNode.id] + 1;
@@ -260,7 +209,10 @@ export class MapService {
         if (!visitedTiles.includes(neighbor) && (!onlyPathable || pathable) && (!onlyWalkable || walkable) &&
             tileDistances[neighbor.id] > neighborDistance) {
           nodeMap.set(neighbor, currentNode);
+
           tileDistances[neighbor.id] = neighborDistance;
+          tileHeuristicDistances[neighbor.id] = neighborDistance + targetTile.position.subtract(neighbor.position).magnitude;
+
           tileQueue.push(neighbor);
         }
       }
@@ -268,7 +220,17 @@ export class MapService {
       visitedTiles.push(currentNode);
     }
 
-    return [];
+    return of([]);
+  }
+
+  getRandomTile(tileTypes?: MapTileType[]): Tile {
+    let tiles = this.tiledMap;
+
+    if (tileTypes) {
+      tiles = tiles.filter(tile => tileTypes.some(tileType => tileType === tile.mapTileType));
+    }
+
+    return tiles[Math.floor(Math.random() * tiles.length)];
   }
 
   spawnResourceAnimation(resourceId: number, multiplier: number = 1, spawnedByPlayer: boolean) {
@@ -285,37 +247,17 @@ export class MapService {
       return;
     }
 
-    this.resourceAnimations.push({
-      name: '',
-      resourceId: resourceId,
-      multiplier: multiplier,
-      spawnedByPlayer: spawnedByPlayer,
-      x: tile.x + 4,
-      y: tile.y + 4,
-      currentTile: tile,
-      tilePath: tile.buildingPath.map(_tile => _tile),
-      pathStep: 0,
-      pathingDone: false,
-      health: -1,
-      maxHealth: -1
-    });
+    const tilePathCopy = tile.buildingPath.map(_tile => _tile);
+
+    const resourceAnimation = new ResourceAnimation(new Vector(tile.x, tile.y), tile,
+      resourceId, multiplier, spawnedByPlayer, tilePathCopy);
+    this.resourceAnimations.push(resourceAnimation);
   }
 
-  spawnProjectile(owner: Entity, target: Entity) {
-    this.projectiles.push({
-      name: 'Arrow',
-      x: owner.x,
-      y: owner.y,
-      currentTile: owner.currentTile,
-      tilePath: [],
-      pathStep: -1,
-      pathingDone: true,
-      health: 1,
-      maxHealth: 1,
-      owner: owner,
-      target: target,
-      rotation: 0
-    });
+  spawnProjectile(owner: Actor, target: Actor) {
+    const projectile = new Projectile('Arrow', new Vector(owner.x, owner.y),
+      owner.currentTile, owner, target);
+    this.projectiles.push(projectile);
   }
 
   getNeighborTiles(tile: Tile): Tile[] {

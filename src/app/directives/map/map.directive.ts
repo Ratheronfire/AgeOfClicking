@@ -2,10 +2,12 @@ import { Directive, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 
 import { Entity } from '../../objects/entity';
 import { ResourceTile } from '../../objects/tile';
+import { Vector } from '../../objects/vector';
 import { ResourcesService } from './../../services/resources/resources.service';
 import { SettingsService } from './../../services/settings/settings.service';
 import { EnemyService } from '../../services/enemy/enemy.service';
 import { FighterService } from './../../services/fighter/fighter.service';
+import { BuildingsService } from './../../services/buildings/buildings.service';
 import { MapService } from './../../services/map/map.service';
 
 declare var d3: any;
@@ -37,6 +39,7 @@ export class MapDirective implements AfterViewInit {
               protected settingsService: SettingsService,
               protected enemyService: EnemyService,
               protected fighterService: FighterService,
+              protected buildingsService: BuildingsService,
               protected mapService: MapService) { }
 
   ngAfterViewInit() {
@@ -58,12 +61,12 @@ export class MapDirective implements AfterViewInit {
 
     this.canvas.call(d3.zoom()
         .filter(this.scrollFilter(this))
-        .scaleExtent([2, 5])
+        .scaleExtent([1, 5])
         .translateExtent([[0, 0], [this.mapService.gridWidth * this.mapService.tilePixelSize,
                                    this.mapService.gridHeight * this.mapService.tilePixelSize]])
         .on('zoom', this.zoomed(this)));
 
-    this.canvas.on('mousedown mousemove', this.clickTile(this));
+    this.canvas.on('mousedown mousemove mouseup', this.clickTile(this));
 
     this.refreshTimer = d3.interval(this.updateEntities(this), 25);
   }
@@ -71,7 +74,7 @@ export class MapDirective implements AfterViewInit {
   scrollFilter(self: MapDirective) {
     return function(elapsed) {
       return d3.event.type !== 'dblclick' && (d3.event.type !== 'mousedown' || d3.event.button === 2);
-    }
+    };
   }
 
   zoomed(self: MapDirective) {
@@ -84,6 +87,10 @@ export class MapDirective implements AfterViewInit {
   clickTile(self: MapDirective) {
     return function(elapsed) {
       if (!d3.event.buttons) {
+        if (d3.event.type === 'mouseup') {
+          self.enemyService.recalculateTargets();
+        }
+
         return;
       }
 
@@ -94,14 +101,13 @@ export class MapDirective implements AfterViewInit {
       const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
 
       const deleteMode = d3.event.ctrlKey;
-      const fighterMode = d3.event.shiftKey;
 
-      if (!fighterMode && deleteMode && tile.buildingTileType !== undefined) {
-        self.mapService.clearBuilding(tile);
-      } else if (!fighterMode && !deleteMode && self.mapService.selectedBuilding !== undefined) {
-        self.mapService.createBuilding(tile, self.mapService.selectedBuilding.tileType);
-      } else if (fighterMode && d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType !== undefined) {
-        // self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
+      if (deleteMode && tile.buildingTileType !== undefined) {
+        self.buildingsService.clearBuilding(tile);
+      } else if (!deleteMode && self.buildingsService.selectedBuilding !== undefined) {
+        self.buildingsService.createBuilding(tile, self.buildingsService.selectedBuilding.tileType);
+      } else if (d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType !== undefined) {
+        self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
       }
 
       self.refreshCanvas();
@@ -120,15 +126,7 @@ export class MapDirective implements AfterViewInit {
 
       for (const enemy of self.enemyService.enemies) {
         if (enemy.health <= 0) {
-          for (let i = 0; i < enemy.resourcesHeld.length; i++) {
-            const amount = enemy.resourcesHeld[i];
-
-            if (amount > 0) {
-              self.resourcesService.addResourceAmount(i, amount);
-            }
-          }
-
-          self.enemyService.enemies = self.enemyService.enemies.filter(_enemy => _enemy !== enemy);
+          self.enemyService.killEnemy(enemy);
         }
       }
 
@@ -155,19 +153,22 @@ export class MapDirective implements AfterViewInit {
       }
 
       for (const projectile of self.mapService.projectiles) {
-        const xDistance = projectile.target.x - projectile.x;
-        const yDistance = projectile.target.y - projectile.y;
-        const magnitude = Math.sqrt(xDistance ** 2 + yDistance ** 2);
+        const distance = projectile.target.position.subtract(projectile.position);
+        const totalDistance = projectile.target.position.subtract(projectile.spawnPosition);
 
-        if (magnitude < self.mapService.tilePixelSize) {
-          // projectile.target.health -= projectile.owner.attack;
+        if (distance.magnitude < self.mapService.tilePixelSize) {
+          projectile.target.health -= projectile.owner.attack;
           self.mapService.projectiles = self.mapService.projectiles.filter(_projectile => _projectile !== projectile);
         }
 
-        const angle = Math.acos(yDistance > 0 ? xDistance / yDistance : xDistance / yDistance) - (Math.PI / 2);
+        const gradientY = projectile.target.y - projectile.y;
+        const gradientX = projectile.target.x - projectile.x;
+        const angle = Math.atan2(gradientY, gradientX) + (Math.PI / 2);
 
-        projectile.x += xDistance * self.mapService.projectileAnimationSpeed * deltaTime;
-        projectile.y += yDistance * self.mapService.projectileAnimationSpeed * deltaTime;
+        totalDistance.x *= self.mapService.projectileAnimationSpeed * deltaTime;
+        totalDistance.y *= self.mapService.projectileAnimationSpeed * deltaTime;
+
+        projectile.position = projectile.position.add(totalDistance);
         projectile.rotation = angle;
       }
 
@@ -188,10 +189,9 @@ export class MapDirective implements AfterViewInit {
     entity.x += (destinationTile.x - currentTile.x) * deltaTime * animationSpeed;
     entity.y += (destinationTile.y - currentTile.y) * deltaTime * animationSpeed;
 
-    const xOffset = Math.abs(entity.x - currentTile.x);
-    const yOffset = Math.abs(entity.y - currentTile.y);
+    const offset = entity.position.subtract(new Vector(currentTile.x, currentTile.y));
 
-    if (xOffset >= this.mapService.tilePixelSize || yOffset >= this.mapService.tilePixelSize) {
+    if (Math.abs(offset.x) >= this.mapService.tilePixelSize || Math.abs(offset.y) >= this.mapService.tilePixelSize) {
       entity.pathStep++;
 
       if (entity.pathStep === entity.tilePath.length - 1) {
@@ -201,9 +201,9 @@ export class MapDirective implements AfterViewInit {
   }
 
   resizeCanvas() {
-    this.element.nativeElement.width = window.innerWidth;
+    this.element.nativeElement.width = this.canvasContainer.clientWidth;
     this.element.nativeElement.height = window.innerHeight - this.headerPixels;
-    this.mapService.canvasPixelWidth = window.innerWidth;
+    this.mapService.canvasPixelWidth = this.canvasContainer.clientWidth;
     this.mapService.canvasPixelHeight = window.innerHeight - this.headerPixels;
   }
 

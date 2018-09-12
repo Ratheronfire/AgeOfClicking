@@ -18,6 +18,19 @@
   user-select: none;
 }
 
+mat-tab-header.mat-tab-header {
+  height: 30px;
+}
+
+div.mat-tab-label {
+  min-width: 90px;
+}
+
+.mat-tab-label .mat-tab-label-content {
+  top: 5px;
+  position: absolute;
+}
+
 mat-tab-group .mat-tab-body-wrapper {
   overflow: visible;
 }
@@ -37,4 +50,13 @@ div.sidenav-buttons button.mat-badge-medium.mat-badge-overlap.mat-badge-before s
 
 mat-sidenav-container.game-sidenav-container mat-sidenav-content {
   overflow-x: hidden;
+}
+
+.game-is-mobile app-clicker-main.resource-list {
+  width: 100%;
+  overflow: hidden;
+}
+
+.game-is-mobile ul.resources {
+  width: 100%;
 }

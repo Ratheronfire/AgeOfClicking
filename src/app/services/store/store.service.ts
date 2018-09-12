@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Resource, ResourceType } from '../../objects/resource';
+import { MessageSource } from '../../objects/message';
 import { ResourcesService } from '../resources/resources.service';
 import { MessagesService } from '../messages/messages.service';
 
@@ -51,6 +52,6 @@ export class StoreService {
   }
 
   private log(message: string) {
-    this.messagesService.add(`ResourcesService: ${message}`);
+    this.messagesService.add(MessageSource.Store, message);
   }
 }

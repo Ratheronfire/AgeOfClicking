@@ -1,3 +1,5 @@
+import { Vector } from './vector';
+
 export enum MapTileType {
   Grass = 'GRASS',
   Water = 'WATER',
@@ -87,15 +89,6 @@ export interface ResourceTile {
   resourceIds: number[];
 }
 
-export interface TileImage {
-  name: string;
-
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-}
-
 export interface TileCropDetail {
   x: number;
   y: number;
@@ -116,8 +109,39 @@ export class Tile {
 
   health: number;
 
-  x: number;
-  y: number;
+  position: Vector;
 
   tileCropDetail: TileCropDetail;
+
+  public constructor(id: number, mapTileType: MapTileType, resourceTileType: ResourceTileType, buildingTileType: BuildingTileType,
+        buildingRemovable: boolean, position: Vector, tileCropDetail: TileCropDetail, health: number = -1) {
+    this.id = id;
+
+    this.mapTileType = mapTileType;
+    this.resourceTileType = resourceTileType;
+    this.buildingTileType = buildingTileType;
+
+    this.buildingPath = [];
+    this.buildingRemovable = buildingRemovable;
+
+    this.health = health;
+    this.position = position;
+    this.tileCropDetail = tileCropDetail;
+  }
+
+  public get x(): number {
+    return this.position.x;
+  }
+
+  public set x(value: number) {
+    this.position.x = value;
+  }
+
+  public get y(): number {
+    return this.position.y;
+  }
+
+  public set y(value: number) {
+    this.position.y = value;
+  }
 }

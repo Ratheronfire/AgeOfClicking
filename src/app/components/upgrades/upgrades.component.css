@@ -70,9 +70,15 @@ button {
   text-align: center;
 }
 
+.upgrades.slim-interface button {
+  width: auto;
+  height: auto;
+}
+
 .upgrade {
   display: inline-block;
   max-width: 300px;
+  width: 15vw;
 }
 
 .resource-list {

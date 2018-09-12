@@ -6,10 +6,12 @@ import { timer, Observable, Subscription } from 'rxjs';
 import { ResourcesService } from './../resources/resources.service';
 import { UpgradesService } from './../upgrades/upgrades.service';
 import { WorkersService } from './../workers/workers.service';
+import { MessagesService } from '../messages/messages.service';
 import { MapService } from './../map/map.service';
 import { SaveData, WorkerData, TileData } from '../../objects/savedata';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 import { BuildingTileType } from '../../objects/tile';
+import { MessageSource } from './../../objects/message';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +21,9 @@ export class SettingsService {
 
   autosaveInterval = 900000;
   debugMode = false;
+
+  disableAnimations = false;
+  slimInterface = false;
 
   mapDetailMode = true;
   mapLowFramerate = false;
@@ -34,6 +39,7 @@ export class SettingsService {
               protected upgradesService: UpgradesService,
               protected workersService: WorkersService,
               protected mapService: MapService,
+              protected messagesService: MessagesService,
               protected snackbar: MatSnackBar,
               public dialog: MatDialog) {
     this.loadGame();
@@ -74,6 +80,7 @@ export class SettingsService {
     localStorage.setItem('clickerGameSaveData', saveData);
 
     this.snackbar.open('Game successfully saved!', '', {duration: 2000});
+    this.log('Game successfully saved!');
   }
 
   loadGame() {
@@ -85,6 +92,7 @@ export class SettingsService {
 
     if (this.importSave(saveData)) {
       this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
+      this.log('Game successfully loaded!');
     }
   }
 
@@ -92,6 +100,7 @@ export class SettingsService {
     localStorage.removeItem('clickerGameSaveData');
 
     this.snackbar.open('Game save deleted.', '', {duration: 2000});
+    this.log('Game save deleted.');
   }
 
   exportSave() {
@@ -103,6 +112,7 @@ export class SettingsService {
       settings: {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
+        slimInterface: this.slimInterface,
         mapDetailMode: this.mapDetailMode,
         mapLowFramerate: this.mapLowFramerate,
         resourceDetailColor: this.resourceDetailColor,
@@ -264,6 +274,8 @@ export class SettingsService {
         this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
         this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
 
+        this.slimInterface = saveData.settings.slimInterface ? saveData.settings.slimInterface : false;
+
         this.mapDetailMode = saveData.settings.mapDetailMode ? saveData.settings.mapDetailMode : true;
         this.mapLowFramerate = saveData.settings.mapLowFramerate ? saveData.settings.mapLowFramerate : false;
 
@@ -283,5 +295,9 @@ export class SettingsService {
 
       return false;
     }
+  }
+
+  private log(message: string) {
+    this.messagesService.add(MessageSource.Settings, message);
   }
 }

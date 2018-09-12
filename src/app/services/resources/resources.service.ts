@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { Resource, ResourceType } from '../../objects/resource';
+import { MessageSource } from '../../objects/message';
 import { MessagesService } from '../messages/messages.service';
 
 declare var require: any;
@@ -12,7 +13,7 @@ const baseResources = require('../../../assets/json/resources.json');
 export class ResourcesService {
   public resources: Resource[] = baseResources;
 
-  constructor(private messagesService: MessagesService) { }
+  constructor(protected messagesService: MessagesService) { }
 
   public getResource(id: number): Resource {
     return this.resources.find(resource => resource.id === id);
@@ -122,6 +123,6 @@ export class ResourcesService {
   }
 
   private log(message: string) {
-    this.messagesService.add(`ResourcesService: ${message}`);
+    this.messagesService.add(MessageSource.Resources, message);
   }
 }

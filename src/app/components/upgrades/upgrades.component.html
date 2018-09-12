@@ -2,28 +2,48 @@
 <br />
 <br />
 
-<div class="upgrades">
-  <mat-card class="upgrade" *ngFor="let upgrade of getUpgrades(false, hidePurchased, adminService.filterAccessible)">
-    <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
-      <mat-card-title>
-        <b>
-          <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
-        </b>
-        {{upgrade.name}}
-      </mat-card-title>
-    </button>
-    <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
-    <mat-card-content>
-      {{upgrade.description}}
-      <div class="resource-list">
-        <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
-          matTooltipPosition="below">
-          <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}"> {{resourceCost.resourceCost}}
+<div class="upgrades" [ngClass]="{'slim-interface': settingsService.slimInterface}">
+  <div *ngIf="!settingsService.slimInterface">
+    <mat-card class="upgrade" *ngFor="let upgrade of getUpgrades(false, hidePurchased, adminService.filterAccessible)">
+      <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
+        <mat-card-title>
+          <b>
+            <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
+          </b>
+          {{upgrade.name}}
+        </mat-card-title>
+      </button>
+      <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
+      <mat-card-content>
+        {{upgrade.description}}
+        <div class="resource-list">
+          <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
+            matTooltipPosition="below">
+            <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}"> {{resourceCost.resourceCost}}
+          </div>
         </div>
+      </mat-card-content>
+      <div *ngIf="adminService.editMode">
+        <button (click)="editUpgrade(upgrade.id)">Edit {{upgrade.name | titlecase}}</button>
       </div>
-    </mat-card-content>
-    <div *ngIf="adminService.editMode">
-      <button (click)="editUpgrade(upgrade.id)">Edit {{upgrade.name | titlecase}}</button>
+    </mat-card>
+  </div>
+  <div *ngIf="settingsService.slimInterface">
+    <button mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchased, adminService.filterAccessible)" color="accent"
+      [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
+    <div class="title" matTooltip="{{upgrade.description}}" matTooltipPosition="above">
+      <b>
+        <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
+      </b>
+      {{upgrade.name}}
     </div>
-  </mat-card>
+    <div class="resource-list">
+      <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
+        matTooltipPosition="below">
+        <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
+        {{resourceCost.resourceCost}}
+      </div>
+    </div>
+  </button>
+  </div>
 </div>

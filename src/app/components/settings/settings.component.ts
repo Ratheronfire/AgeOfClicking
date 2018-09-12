@@ -43,7 +43,6 @@ export class SettingsComponent implements OnInit {
   get autosaveInterval() {
     return this.settingsService.autosaveInterval;
   }
-
   set autosaveInterval(value: number) {
     this.settingsService.autosaveInterval = value;
   }
@@ -51,7 +50,6 @@ export class SettingsComponent implements OnInit {
   get debugMode(): boolean {
     return this.settingsService.debugMode;
   }
-
   set debugMode(value: boolean) {
     this.settingsService.debugMode = value;
   }
@@ -59,7 +57,6 @@ export class SettingsComponent implements OnInit {
   get mapDetailMode(): boolean {
     return this.settingsService.mapDetailMode;
   }
-
   set mapDetailMode(value: boolean) {
     this.settingsService.mapDetailMode = value;
   }
@@ -67,7 +64,6 @@ export class SettingsComponent implements OnInit {
   get mapLowFramerate(): boolean {
     return this.settingsService.mapLowFramerate;
   }
-
   set mapLowFramerate(value: boolean) {
     this.settingsService.mapLowFramerate = value;
   }
@@ -75,7 +71,6 @@ export class SettingsComponent implements OnInit {
   get resourceDetailColor(): string {
     return this.settingsService.resourceDetailColor;
   }
-
   set resourceDetailColor(value: string) {
     this.settingsService.resourceDetailColor = value;
   }
@@ -83,7 +78,6 @@ export class SettingsComponent implements OnInit {
   get harvestDetailColor(): string {
     return this.settingsService.harvestDetailColor;
   }
-
   set harvestDetailColor(value: string) {
     this.settingsService.harvestDetailColor = value;
   }
@@ -91,8 +85,21 @@ export class SettingsComponent implements OnInit {
   get workerDetailColor(): string {
     return this.settingsService.workerDetailColor;
   }
-
   set workerDetailColor(value: string) {
     this.settingsService.workerDetailColor = value;
+  }
+
+  get slimInterface(): boolean {
+    return this.settingsService.slimInterface;
+  }
+  set slimInterface(value: boolean) {
+    this.settingsService.slimInterface = value;
+  }
+
+  get disableAnimations(): boolean {
+    return this.settingsService.disableAnimations;
+  }
+  set disableAnimations(value: boolean) {
+    this.settingsService.disableAnimations = value;
   }
 }

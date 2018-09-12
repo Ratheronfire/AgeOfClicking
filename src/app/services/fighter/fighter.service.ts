@@ -6,6 +6,7 @@ import { Fighter } from '../../objects/entity';
 import { Tile } from '../../objects/tile';
 import { Resource } from './../../objects/resource';
 import { MapTile } from './../../objects/tile';
+import { Vector } from '../../objects/vector';
 import { ResourcesService } from '../resources/resources.service';
 import { EnemyService } from './../enemy/enemy.service';
 import { MapService } from '../map/map.service';
@@ -19,7 +20,7 @@ const baseFighterTypes = require('../../../assets/json/fighters.json');
 export class FighterService {
   public fighterTypes: Fighter[] = baseFighterTypes;
   public fighters: Fighter[] = [];
-  public selectedFighterType: Fighter = this.fighterTypes[0];
+  public selectedFighterType: Fighter;
 
   constructor(protected resourcesService: ResourcesService,
               protected enemyService: EnemyService,
@@ -54,23 +55,8 @@ export class FighterService {
 
     this.resourcesService.addResourceAmount(0, -fighterType.cost);
 
-    const fighter: Fighter = {
-      name: fighterType.name,
-      x: tile.x,
-      y: tile.y,
-      currentTile: tile,
-      tilePath: [],
-      pathStep: 0,
-      pathingDone: false,
-      health: fighterType.health,
-      maxHealth: fighterType.maxHealth,
-      targetEnemy: undefined,
-      cost: fighterType.cost,
-      attack: fighterType.attack,
-      defense: fighterType.defense,
-      moveable: fighterType.moveable,
-      attackRange: fighterType.attackRange
-    };
+    const fighter = new Fighter(fighterType.name, new Vector(tile.x, tile.y), tile, fighterType.health, fighterType.attack,
+      fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.moveable);
 
     this.fighters.push(fighter);
   }

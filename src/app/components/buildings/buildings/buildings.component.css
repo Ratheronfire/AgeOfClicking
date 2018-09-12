@@ -69,9 +69,15 @@ button {
   text-align: center;
 }
 
+.buildings.slim-interface button {
+  width: auto;
+  height: auto;
+}
+
 .building {
   display: inline-block;
   max-width: 300px;
+  width: 15vw;
 }
 
 .resource-list {

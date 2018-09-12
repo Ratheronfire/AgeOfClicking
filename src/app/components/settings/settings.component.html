@@ -27,6 +27,19 @@
   </mat-expansion-panel>
 
   <mat-expansion-panel expanded="true">
+      <mat-expansion-panel-header>
+        <mat-panel-title>
+          <mat-icon color="primary">list</mat-icon>
+          Interface
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <mat-checkbox [(ngModel)]="slimInterface">Slim Mode</mat-checkbox>
+      <!-- <br />
+      <mat-checkbox [(ngModel)]="disableAnimations">Disable Animations</mat-checkbox> -->
+    </mat-expansion-panel>
+
+  <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon color="primary">map</mat-icon>

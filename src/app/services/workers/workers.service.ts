@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { timer } from 'rxjs';
 
 import { ResourceType } from '../../objects/resource';
+import { MessageSource } from '../../objects/message';
 import { ResourcesService } from '../resources/resources.service';
 import { Worker, ResourceWorker } from '../../objects/worker';
 import { MapService } from './../map/map.service';
@@ -82,6 +83,10 @@ export class WorkersService {
 
         this.resourcesService.addResourceAmount(0, -resourceWorker.recurringCost * resourceWorker.workerCount);
 
+        if (!this.canAffordToHarvest(resourceWorker.resourceId)) {
+          this.log(`No more money available for ${this.resourcesService.getResource(resourceWorker.resourceId).name}.`);
+        }
+
         this.mapService.spawnResourceAnimation(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
       }
     }
@@ -118,6 +123,6 @@ export class WorkersService {
   }
 
   private log(message: string) {
-    this.messagesService.add(`WorkersService: ${message}`);
+    this.messagesService.add(MessageSource.Workers, message);
   }
 }

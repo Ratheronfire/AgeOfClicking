@@ -1,18 +1,32 @@
-<h3>Fighters (Shift + Click to place)</h3>
-
-<div class="fighter-list">
-  <div *ngFor="let fighterType of fighterTypes">
-    <button mat-raised-button [color]="selectedFighterType === fighterType ? 'accent' : ''" (click)="selectFigherType(fighterType)">
-      <mat-card-title>{{fighterType.name}}</mat-card-title>
-      <mat-card-content>
-        <h3>Cost</h3>
+<div class="fighters" [ngClass]="{'slim-interface': settingsService.slimInterface}">
+    <div *ngIf="!settingsService.slimInterface">
+      <mat-card class="fighter" *ngFor="let fighterType of fighterTypes">
+        <button mat-raised-button [color]="selectedFighterType === fighterType ? 'accent' : ''" [disabled]="!canAffordFighter(fighterType)"
+          (click)="selectFigherType(fighterType)">
+          <mat-card-title>{{fighterType.name}}</mat-card-title>
+        </button>
+        <mat-card-content>
+          {{fighterType.description}}
+          <div class="fighter-cost">
+            <div matTooltip="{{fighterType.cost}} {{getResource(0).name | titlecase}}" matTooltipPosition="below">
+              <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}"> {{fighterType.cost}}
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div *ngIf="settingsService.slimInterface">
+      <button mat-raised-button *ngFor="let fighterType of fighterTypes" (click)="selectFigherType(fighterType)"
+        [color]="selectedFighterType === fighterType ? 'accent' : ''" [disabled]="!canAffordFighter(fighterType)">
+        <div class="title" matTooltip="{{fighterType.description}}" matTooltipPosition="above">
+          {{fighterType.name}}
+        </div>
         <div class="fighter-cost">
-          <b><mat-icon *ngIf="canAffordFighter(fighterType)" color="primary">check</mat-icon></b>
           <div matTooltip="{{fighterType.cost}} {{getResource(0).name | titlecase}}" matTooltipPosition="below">
-            <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}"> {{fighterType.cost}}
+            <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+            {{fighterType.cost}}
           </div>
         </div>
-      </mat-card-content>
-    </button>
+      </button>
+    </div>
   </div>
-</div>
