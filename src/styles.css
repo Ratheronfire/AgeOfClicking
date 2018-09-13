@@ -60,3 +60,7 @@ mat-sidenav-container.game-sidenav-container mat-sidenav-content {
 .game-is-mobile ul.resources {
   width: 100%;
 }
+
+.color-picker {
+  left: 75px !important;
+}

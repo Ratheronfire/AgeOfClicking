@@ -9,7 +9,7 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-form-field>
+    <mat-form-field class="full-width">
       <mat-select placeholder="Autosave Interval (Minutes)" [(value)]="autosaveInterval" (valueChange)="setAutosave()">
         <mat-option [value]="-1">Disable</mat-option>
         <mat-option [value]="60000">1</mat-option>
@@ -53,16 +53,43 @@
     <br />
     <br />
 
-    <mat-form-field>
+    <mat-form-field class="full-width">
       <input class="color-input" matInput placeholder="Resource Name Color" [(colorPicker)]="resourceDetailColor" [style.background]="resourceDetailColor" [value]="resourceDetailColor"/>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="full-width">
       <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="harvestDetailColor" [style.background]="harvestDetailColor" [value]="harvestDetailColor"/>
     </mat-form-field>
 
-    <mat-form-field>
+    <mat-form-field class="full-width">
       <input class="color-input" matInput placeholder="Worker Harvest Color" [(colorPicker)]="workerDetailColor" [style.background]="workerDetailColor" [value]="workerDetailColor"/>
+    </mat-form-field>
+  </mat-expansion-panel>
+
+  <mat-expansion-panel expanded="true">
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon color="primary">assessment</mat-icon>
+        Log
+      </mat-panel-title>
+    </mat-expansion-panel-header>
+
+    <button mat-raised-button (click)="messagesService.clear()">Clear</button>
+
+    <br />
+    
+    <mat-form-field class="full-width">
+      <input matInput type="number" placeholder="Log History" min="0" max="10000" [(ngModel)]="messagesService.messageLimit">
+    </mat-form-field>
+
+    <br />
+
+    <mat-form-field class="full-width">
+      <mat-select placeholder="Visible Log Sources" [(ngModel)]="messagesService.visibleSources" (ngModelChange)="messagesService.getFilteredMessages()" multiple>
+        <mat-option *ngFor="let messageSource of messageSources | enumToArray" [(value)]="messageSources[messageSource]">
+          {{messageSource | titlecase}}
+        </mat-option>
+      </mat-select>
     </mat-form-field>
   </mat-expansion-panel>
 

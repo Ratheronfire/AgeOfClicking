@@ -1,6 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 import { SettingsService } from '../../services/settings/settings.service';
+import { MessagesService } from './../../services/messages/messages.service';
+import { MessageSource } from './../../objects/message';
 
 @Component({
   selector: 'app-settings',
@@ -8,7 +11,11 @@ import { SettingsService } from '../../services/settings/settings.service';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  constructor(protected settingsService: SettingsService) { }
+  sources = new FormControl();
+  messageSources = MessageSource;
+
+  constructor(protected settingsService: SettingsService,
+              protected messagesService: MessagesService) { }
 
   ngOnInit() {
   }

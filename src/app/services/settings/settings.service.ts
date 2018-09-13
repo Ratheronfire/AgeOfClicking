@@ -49,6 +49,7 @@ export class SettingsService {
               protected snackbar: MatSnackBar,
               public dialog: MatDialog) {
     this.loadGame();
+    this.setAutosave();
   }
 
   openSaveDialog(saveData?: string) {
@@ -62,6 +63,7 @@ export class SettingsService {
       if (result !== undefined) {
         if (this.importSave(result)) {
           this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
+          this.log('Game successfully loaded!');
         }
       }
     });
@@ -120,6 +122,7 @@ export class SettingsService {
       settings: {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
+        enemiesActive: this.enemyService.enemiesActive,
         slimInterface: this.slimInterface,
         mapDetailMode: this.mapDetailMode,
         mapLowFramerate: this.mapLowFramerate,
@@ -344,6 +347,8 @@ export class SettingsService {
         this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
         this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
 
+        this.enemyService.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
+
         this.slimInterface = saveData.settings.slimInterface ? saveData.settings.slimInterface : false;
 
         this.mapDetailMode = saveData.settings.mapDetailMode ? saveData.settings.mapDetailMode : true;
@@ -359,6 +364,7 @@ export class SettingsService {
       return true;
     } catch (error) {
       this.snackbar.open(`Error loading save data: ${error}`, '', {duration: 5000});
+      this.log('Error loading save data.');
       this.importSave(backupSave);
 
       console.error(error);

@@ -1,5 +1,3 @@
-<button class="clear" (click)="messagesService.clear()">clear</button>
-
 <table mat-table [dataSource]="messagesService.messagesDataSource" matSort matSortActive="timestamp" matSortDirection="desc" class="message-table mat-elevation-z8">
     <ng-container matColumnDef="source">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Source </mat-header-cell>

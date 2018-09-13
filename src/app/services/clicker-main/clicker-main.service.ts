@@ -5,8 +5,11 @@ import { timer } from 'rxjs';
 import { ResourcesService } from '../resources/resources.service';
 import { WorkersService } from '../workers/workers.service';
 import { MapService } from '../map/map.service';
+import { EnemyService } from './../enemy/enemy.service';
+import { MessagesService } from '../messages/messages.service';
 import { AdminService } from '../admin/admin.service';
 import { Resource, ResourceType } from '../../objects/resource';
+import { MessageSource } from '../../objects/message';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +27,8 @@ export class ClickerMainService {
   constructor(protected resourcesService: ResourcesService,
               protected workersService: WorkersService,
               protected mapService: MapService,
+              protected enemyService: EnemyService,
+              protected messagesService: MessagesService,
               protected adminService: AdminService) {
     const progressBarTimer = timer(0, this.progressBarUpdateDelay);
     progressBarTimer.subscribe(iteration => this.updateProgressBars(iteration));
@@ -73,6 +78,15 @@ export class ClickerMainService {
 
     this.mapService.spawnResourceAnimation(id, resource.harvestYield, true);
 
+    if (resource.resourceTier > 3 && !this.enemyService.enemiesActive) {
+      this.enemyService.enemiesActive = true;
+      this.log('Your base has begun attracting unwanted attention...');
+    }
+
     this.stopHarvesting(id);
+  }
+
+  private log(message: string) {
+    this.messagesService.add(MessageSource.Main, message);
   }
 }

@@ -8,6 +8,9 @@ import { Message, MessageSource } from './../../objects/message';
 })
 export class MessagesService {
   messages: Message[] = [];
+  visibleSources: MessageSource[] = [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
+    MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
+    MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
   messagesDataSource = new MatTableDataSource(this.messages);
   messageLimit = 50;
 
@@ -20,7 +23,7 @@ export class MessagesService {
 
     this.messages.push(new Message(source, message));
 
-    this.messagesDataSource.data = [...this.messages];
+    this.getFilteredMessages();
   }
 
   clear() {
@@ -28,7 +31,7 @@ export class MessagesService {
     this.messagesDataSource.data = [];
   }
 
-  getFilteredMessages(sources: MessageSource[]): Message[] {
-    return this.messages.filter(message => message.source in sources);
+  getFilteredMessages() {
+    this.messagesDataSource.data = this.messages.filter(message => this.visibleSources.includes(message.source));
   }
 }

@@ -48,8 +48,9 @@ export class FighterService {
   createFighter(tile: Tile, fighterType: Fighter) {
     const goldResource: Resource = this.resourcesService.getResource(0);
     const mapTile: MapTile = this.mapService.mapTiles[tile.mapTileType];
+    const overlaps = this.fighters.filter(_fighter => !_fighter.moveable && _fighter.currentTile === tile);
 
-    if (goldResource.amount < fighterType.cost || !mapTile.walkable) {
+    if (goldResource.amount < fighterType.cost || !mapTile.walkable || overlaps.length) {
       return;
     }
 

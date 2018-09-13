@@ -83,6 +83,8 @@ export interface SettingsData {
   autosaveInterval: number;
   debugMode: boolean;
 
+  enemiesActive: boolean;
+
   slimInterface: boolean;
 
   mapDetailMode: boolean;

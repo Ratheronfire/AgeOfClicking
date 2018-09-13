@@ -2,6 +2,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
 
 import { UpgradesService } from './services/upgrades/upgrades.service';
+import { EnemyService } from './services/enemy/enemy.service';
 import { SettingsService } from './services/settings/settings.service';
 
 @Component({
@@ -17,6 +18,7 @@ export class AppComponent {
   private _mobileQueryListener: () => void;
 
   constructor(protected upgradesService: UpgradesService,
+              protected enemyService: EnemyService,
               protected settingsService: SettingsService,
               protected changeDetectorRef: ChangeDetectorRef,
               protected media: MediaMatcher) {

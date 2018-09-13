@@ -28,6 +28,8 @@ export class EnemyService {
   maxPathRetryCount = 10;
   maxEnemyCount = 5;
 
+  enemiesActive: boolean;
+
   constructor(protected resourcesService: ResourcesService,
               protected buildingsService: BuildingsService,
               protected mapService: MapService,
@@ -109,7 +111,7 @@ export class EnemyService {
       this.openPortal(this.mapService.enemySpawnTiles[spawnIndex]);
     }
 
-    if (this.enemies.length >= this.maxEnemyCount) {
+    if (this.enemies.length >= this.maxEnemyCount || !this.enemiesActive) {
       return;
     }
 
