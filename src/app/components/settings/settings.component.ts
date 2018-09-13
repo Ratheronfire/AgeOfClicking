@@ -61,25 +61,11 @@ export class SettingsComponent implements OnInit {
     this.settingsService.debugMode = value;
   }
 
-  get mapDetailMode(): boolean {
-    return this.settingsService.mapDetailMode;
-  }
-  set mapDetailMode(value: boolean) {
-    this.settingsService.mapDetailMode = value;
-  }
-
   get mapLowFramerate(): boolean {
     return this.settingsService.mapLowFramerate;
   }
   set mapLowFramerate(value: boolean) {
     this.settingsService.mapLowFramerate = value;
-  }
-
-  get resourceDetailColor(): string {
-    return this.settingsService.resourceDetailColor;
-  }
-  set resourceDetailColor(value: string) {
-    this.settingsService.resourceDetailColor = value;
   }
 
   get harvestDetailColor(): string {

@@ -47,15 +47,8 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-checkbox [(ngModel)]="mapDetailMode">Detail Mode</mat-checkbox>
-    <br />
     <mat-checkbox [(ngModel)]="mapLowFramerate">Limit Framerate</mat-checkbox>
     <br />
-    <br />
-
-    <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Resource Name Color" [(colorPicker)]="resourceDetailColor" [style.background]="resourceDetailColor" [value]="resourceDetailColor"/>
-    </mat-form-field>
 
     <mat-form-field class="full-width">
       <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="harvestDetailColor" [style.background]="harvestDetailColor" [value]="harvestDetailColor"/>
@@ -77,7 +70,7 @@
     <button mat-raised-button (click)="messagesService.clear()">Clear</button>
 
     <br />
-    
+
     <mat-form-field class="full-width">
       <input matInput type="number" placeholder="Log History" min="0" max="10000" [(ngModel)]="messagesService.messageLimit">
     </mat-form-field>

@@ -34,6 +34,9 @@ export interface ResourceWorkerData {
 export interface TileData {
   id: number;
 
+  health: number;
+  maxHealth: number;
+
   resourceTileType?: ResourceTileType;
   buildingTileType?: BuildingTileType;
 
@@ -87,10 +90,8 @@ export interface SettingsData {
 
   slimInterface: boolean;
 
-  mapDetailMode: boolean;
   mapLowFramerate: boolean;
 
-  resourceDetailColor: string;
   harvestDetailColor: string;
   workerDetailColor: string;
 }

@@ -1,3 +1,26 @@
 <div id="canvas-container">
   <canvas class="noselect" appNoScroll appMap width="{{canvasWidth}}" height="{{canvasHeight}}" oncontextmenu="return false"></canvas>
 </div>
+
+<mat-card [ngClass]="{'hidden': !focusedBuildingTile && !focusedResourceTile}" id="detail-tooltip">
+  <div *ngIf="focusedBuildingTile">
+    <mat-card-title>{{focusedBuildingTile.name}}</mat-card-title>
+    <mat-card-subtitle>{{focusedBuildingTile.description}}</mat-card-subtitle>
+    {{focusedTile.health}}/{{focusedTile.maxHealth}} Health
+  </div>
+
+  <div *ngIf="!focusedBuildingTile && focusedResourceTile">
+    <mat-card-title>{{focusedResourceTile.name}}</mat-card-title>
+  </div>
+
+  <mat-card-content>
+    <div *ngIf="focusedResourceTile" class="resource-list">
+      Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | number:'0.0-2'}} Seconds
+      <br />
+      Produces:
+      <div *ngFor="let resource of focusedResources">
+        <img src="{{resource.iconPath}}" alt="{{resource.name}}"> {{resource.name | titlecase}}
+      </div>
+    </div>
+  </mat-card-content>
+</mat-card>

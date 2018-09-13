@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
 import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
+import { Resource } from '../../objects/resource';
 import { ResourceAnimation, Projectile, Actor } from '../../objects/entity';
 import { Vector } from '../../objects/vector';
 
@@ -23,6 +24,11 @@ export class MapService {
   public mapTileArray: MapTile[] = [];
   public buildingTileArray: BuildingTile[] = [];
   public resourceTileArray: ResourceTile[] = [];
+
+  focusedTile: Tile;
+  focusedBuildingTile: BuildingTile;
+  focusedResourceTile: ResourceTile;
+  focusedResources: Resource[];
 
   public enemySpawnTiles: Tile[] = [];
 

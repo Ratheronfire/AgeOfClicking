@@ -124,9 +124,7 @@ export class SettingsService {
         debugMode: this.debugMode,
         enemiesActive: this.enemyService.enemiesActive,
         slimInterface: this.slimInterface,
-        mapDetailMode: this.mapDetailMode,
         mapLowFramerate: this.mapLowFramerate,
-        resourceDetailColor: this.resourceDetailColor,
         harvestDetailColor: this.harvestDetailColor,
         workerDetailColor: this.workerDetailColor
       },
@@ -180,6 +178,8 @@ export class SettingsService {
 
       const tileData: TileData = {
         id: tile.id,
+        health: tile.health,
+        maxHealth: tile.maxHealth,
         buildingRemovable: tile.buildingRemovable,
         tileCropDetail: tile.tileCropDetail
       }
@@ -227,7 +227,6 @@ export class SettingsService {
       });
     }
 
-    console.log(saveData);
     return btoa(JSON.stringify(saveData));
   }
 
@@ -305,6 +304,9 @@ export class SettingsService {
             continue;
           }
 
+          // tile.health = tileData.health;
+          // tile.maxHealth = tileData.maxHealth;
+
           tile.resourceTileType = tileData.resourceTileType;
           tile.buildingTileType = tileData.buildingTileType;
 
@@ -351,10 +353,8 @@ export class SettingsService {
 
         this.slimInterface = saveData.settings.slimInterface ? saveData.settings.slimInterface : false;
 
-        this.mapDetailMode = saveData.settings.mapDetailMode ? saveData.settings.mapDetailMode : true;
         this.mapLowFramerate = saveData.settings.mapLowFramerate ? saveData.settings.mapLowFramerate : false;
 
-        this.resourceDetailColor = saveData.settings.resourceDetailColor ? saveData.settings.resourceDetailColor : '#000000';
         this.harvestDetailColor = saveData.settings.harvestDetailColor ? saveData.settings.harvestDetailColor : '#a4ff89';
         this.workerDetailColor = saveData.settings.workerDetailColor ? saveData.settings.workerDetailColor : '#ae89ff';
       }

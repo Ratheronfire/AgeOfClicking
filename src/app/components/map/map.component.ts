@@ -1,3 +1,4 @@
+import { ResourceTile } from './../../objects/tile';
 import { Component, OnInit, HostListener, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { MapTileType, Tile, BuildingTileType, MapTile, BuildingTile } from '../../objects/tile';
@@ -67,5 +68,21 @@ export class MapComponent implements OnInit, AfterViewInit {
 
   get columnCount(): number {
     return this.mapService.getColumnCount();
+  }
+
+  get focusedTile(): Tile {
+    return this.mapService.focusedTile;
+  }
+
+  get focusedBuildingTile(): BuildingTile {
+    return this.mapService.focusedBuildingTile;
+  }
+
+  get focusedResourceTile(): ResourceTile {
+    return this.mapService.focusedResourceTile;
+  }
+
+  get focusedResources(): Resource[] {
+    return this.mapService.focusedResources;
   }
 }

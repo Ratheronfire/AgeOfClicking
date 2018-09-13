@@ -1,7 +1,7 @@
 import { Directive, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 
 import { Entity } from '../../objects/entity';
-import { ResourceTile } from '../../objects/tile';
+import { Tile, ResourceTile, BuildingTile } from '../../objects/tile';
 import { Vector } from '../../objects/vector';
 import { ResourcesService } from './../../services/resources/resources.service';
 import { SettingsService } from './../../services/settings/settings.service';
@@ -19,6 +19,9 @@ export class MapDirective implements AfterViewInit {
   canvas;
   context: CanvasRenderingContext2D;
   canvasContainer: Element;
+
+  focusedTile: Tile;
+  detailTooltip: Element;
 
   headerPixels = 64;
 
@@ -46,6 +49,8 @@ export class MapDirective implements AfterViewInit {
     this.canvas = d3.select('canvas');
     this.context = this.canvas.node().getContext('2d');
     this.canvasContainer = document.getElementById('canvas-container');
+
+    this.detailTooltip = document.getElementById('detail-tooltip');
 
     const imageElementContainer = document.getElementById('tile-images');
     for (let i = 0; i < imageElementContainer.children.length; i++) {
@@ -86,6 +91,10 @@ export class MapDirective implements AfterViewInit {
 
   clickTile(self: MapDirective) {
     return async function(elapsed) {
+      if (d3.event.type === 'mousemove') {
+        self.updateTooltip(d3.mouse(this));
+      }
+
       if (!d3.event.buttons) {
         if (d3.event.type === 'mouseup') {
           await self.enemyService.recalculateTargets();
@@ -112,6 +121,26 @@ export class MapDirective implements AfterViewInit {
 
       self.refreshCanvas();
     };
+  }
+
+  updateTooltip(mouseCoordinates: number[]) {
+    const tileCoordinates = [Math.floor(this.transform.invertX(mouseCoordinates[0]) / this.mapService.tilePixelSize),
+                              Math.floor(this.transform.invertY(mouseCoordinates[1]) / this.mapService.tilePixelSize)];
+
+    const focusedTile = this.mapService.tiledMap[tileCoordinates[0] + tileCoordinates[1] * this.mapService.mapWidth];
+
+    if (focusedTile.buildingTileType || focusedTile.resourceTileType) {
+      this.mapService.focusedTile = focusedTile;
+      this.mapService.focusedBuildingTile = this.mapService.buildingTiles[focusedTile.buildingTileType];
+      this.mapService.focusedResourceTile = this.mapService.resourceTiles[focusedTile.resourceTileType];
+      this.mapService.focusedResources = this.mapService.focusedResourceTile ?
+        this.mapService.focusedResourceTile.resourceIds.map(id => this.resourcesService.getResource(id)) : undefined;
+    } else {
+      this.mapService.focusedTile = undefined;
+      this.mapService.focusedBuildingTile = undefined;
+      this.mapService.focusedResourceTile = undefined;
+      this.mapService.focusedResources = undefined;
+    }
   }
 
   updateEntities(self: MapDirective) {
@@ -240,16 +269,16 @@ export class MapDirective implements AfterViewInit {
       }
 
       const mapTileImage = this.imageElements[tile.mapTileType.toLowerCase()];
-      this.context.drawImage(mapTileImage, tile.x, tile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
-
-      if (tile.resourceTileType) {
-        const resourceTileImage = this.imageElements[tile.resourceTileType.toLowerCase().replace(' ', '-')];
-        this.context.drawImage(resourceTileImage, tile.x, tile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
-      }
+      this.drawTile(tile.position, mapTileImage);
 
       if (tile.buildingTileType) {
         const buildingTileImage = this.imageElements[tile.buildingTileType.toLowerCase()];
-        this.context.drawImage(buildingTileImage, tile.x, tile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
+        this.drawTile(tile.position, buildingTileImage);
+      }
+
+      if (tile.resourceTileType) {
+        const resourceTileImage = this.imageElements[tile.resourceTileType.toLowerCase().replace(' ', '-')];
+        this.drawTile(tile.position, resourceTileImage, 1, tile.health / tile.maxHealth);
       }
     }
 
@@ -258,10 +287,7 @@ export class MapDirective implements AfterViewInit {
           this.resourcesService.getResource(resourceAnimation.resourceId).name.toLowerCase().replace(' ', '-')];
       this.context.drawImage(resourceTileImage, resourceAnimation.x, resourceAnimation.y,
           this.mapService.tilePixelSize / 2, this.mapService.tilePixelSize / 2);
-
-      if (!this.settingsService.mapDetailMode) {
-        continue;
-      }
+        this.drawTile(resourceAnimation.position, resourceTileImage, 0.5);
 
       this.context.fillStyle = resourceAnimation.spawnedByPlayer ?
         this.settingsService.harvestDetailColor : this.settingsService.workerDetailColor;
@@ -273,19 +299,13 @@ export class MapDirective implements AfterViewInit {
     for (const enemy of this.enemyService.enemies) {
       const enemyTileImage = this.imageElements[enemy.name.toLowerCase().replace(' ', '-')];
       this.context.drawImage(enemyTileImage, enemy.x, enemy.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
+      this.drawTile(enemy.position, enemyTileImage, 1, enemy.health / enemy.maxHealth);
     }
 
     for (const fighter of this.fighterService.fighters) {
       const fighterTileImage = this.imageElements[fighter.name.toLowerCase().replace(' ', '-')];
       this.context.drawImage(fighterTileImage, fighter.x, fighter.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
-    }
-
-    if (this.settingsService.mapDetailMode) {
-      for (const tile of this.mapService.getResourceTiles()) {
-        this.context.fillStyle = this.settingsService.resourceDetailColor;
-        const resourceTile: ResourceTile = this.mapService.resourceTiles[tile.resourceTileType];
-        this.context.fillText(resourceTile.name, tile.x + this.mapService.tilePixelSize / 2, tile.y - this.mapService.tilePixelSize / 4);
-      }
+      this.drawTile(fighter.position, fighterTileImage, 1, fighter.health / fighter.maxHealth);
     }
 
     for (const projectile of this.mapService.projectiles) {
@@ -295,8 +315,38 @@ export class MapDirective implements AfterViewInit {
       this.context.rotate(projectile.rotation);
       this.context.drawImage(projectileTileImage, -this.mapService.tilePixelSize / 2, -this.mapService.tilePixelSize / 2,
                              this.mapService.tilePixelSize, this.mapService.tilePixelSize);
+      this.drawTile(new Vector(-this.mapService.tilePixelSize / 2, -this.mapService.tilePixelSize / 2), projectileTileImage);
       this.context.rotate(-projectile.rotation);
       this.context.translate(-projectile.x, -projectile.y);
+    }
+
+    if (!this.mapService.focusedTile) {
+      return;
+    }
+
+    this.detailTooltip.style.setProperty('--detail-tooltip-top',
+    this.mapService.focusedTile.y * this.transform.k + this.transform.y - this.detailTooltip.clientHeight + 'px');
+    this.detailTooltip.style.setProperty('--detail-tooltip-left',
+      (this.mapService.focusedTile.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x +
+      this.element.nativeElement.getBoundingClientRect().left + 'px');
+
+    this.context.globalAlpha = 0.5;
+    this.context.fillStyle = 'cyan';
+    for (const pathTile of this.mapService.focusedTile.buildingPath) {
+      this.context.fillRect(pathTile.x, pathTile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
+    }
+    this.context.fillStyle = 'black';
+    this.context.globalAlpha = 1;
+  }
+
+  drawTile(position: Vector, image: HTMLImageElement, scale: number = 1, healthRatio: number = 1) {
+    this.context.drawImage(image, position.x, position.y, this.mapService.tilePixelSize * scale, this.mapService.tilePixelSize * scale);
+
+    if (healthRatio > 0 && healthRatio < 1) {
+      this.context.fillStyle = 'red';
+      this.context.fillRect(position.x, position.y + this.mapService.tilePixelSize, this.mapService.tilePixelSize  * healthRatio, -2);
+      this.context.fillStyle = 'black';
+      this.context.strokeRect(position.x, position.y + this.mapService.tilePixelSize, this.mapService.tilePixelSize, -2);
     }
   }
 }

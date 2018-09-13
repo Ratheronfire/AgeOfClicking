@@ -108,6 +108,7 @@ export class Tile {
   buildingRemovable: boolean;
 
   health: number;
+  maxHealth: number;
 
   position: Vector;
 
@@ -125,6 +126,7 @@ export class Tile {
     this.buildingRemovable = buildingRemovable;
 
     this.health = health;
+    this.maxHealth = health;
     this.position = position;
     this.tileCropDetail = tileCropDetail;
   }
