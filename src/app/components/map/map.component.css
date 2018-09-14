@@ -68,3 +68,10 @@ mat-card {
   width: 16px;
   height: 16px;
 }
+
+.cursor-tools {
+  position: absolute;
+  top: 0;
+
+  background: white;
+}

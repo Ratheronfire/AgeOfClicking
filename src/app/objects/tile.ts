@@ -71,6 +71,8 @@ export interface BuildingTile {
   description: string;
   placeable: boolean;
 
+  upgradeBuilding?: BuildingTileType;
+
   resourceCosts: ResourceCost[];
   buildableSurfaces: MapTileType[];
 

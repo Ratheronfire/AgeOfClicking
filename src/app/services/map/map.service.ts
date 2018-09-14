@@ -11,6 +11,11 @@ declare var require: any;
 const Jimp = require('jimp');
 const baseTiles = require('../../../assets/json/tileTypes.json');
 
+export enum CursorTool {
+  PlaceBuildings = 'PLACEBUILDINGS',
+  DetailMode = 'DETAILMODE'
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,6 +29,8 @@ export class MapService {
   public mapTileArray: MapTile[] = [];
   public buildingTileArray: BuildingTile[] = [];
   public resourceTileArray: ResourceTile[] = [];
+
+  cursorTool = CursorTool.PlaceBuildings;
 
   focusedTile: Tile;
   focusedBuildingTile: BuildingTile;

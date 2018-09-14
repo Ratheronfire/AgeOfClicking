@@ -111,6 +111,7 @@
       "name": "Cracked Forge",
       "description": "An old, weary forge. Bronze ingots are probably all this thing is capable of producing.",
       "placeable": true,
+      "upgradeBuilding": "STONEFORGE",
       "resourceCosts": [{
         "resourceId": 0,
         "resourceCost": 150
@@ -126,7 +127,8 @@
       "tileType": "STONEFORGE",
       "name": "Stone Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
-      "placeable": true,
+      "placeable": false,
+      "upgradeBuilding": "IRONFORGE",
       "resourceCosts": [{
         "resourceId": 0,
         "resourceCost": 150
@@ -151,7 +153,8 @@
       "tileType": "IRONFORGE",
       "name": "Iron Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
-      "placeable": true,
+      "placeable": false,
+      "upgradeBuilding": "GOLDFORGE",
       "resourceCosts": [{
         "resourceId": 6,
         "resourceCost": 500
@@ -173,7 +176,8 @@
       "tileType": "GOLDFORGE",
       "name": "Gold Forge",
       "description": "For reasons unknown to science, gold forges are particularly effective in forging latinum.",
-      "placeable": true,
+      "placeable": false,
+      "upgradeBuilding": "LATINUMFORGE",
       "resourceCosts": [{
         "resourceId": 12,
         "resourceCost": 1200
@@ -195,7 +199,8 @@
       "tileType": "LATINUMFORGE",
       "name": "Latinum Forge",
       "description": "A forge that burns hot enough to fuse together the world's most precious and rare metals.",
-      "placeable": true,
+      "placeable": false,
+      "upgradeBuilding": "TEMPROUSDISTILLERY",
       "resourceCosts": [{
         "resourceId": 19,
         "resourceCost": 2500
@@ -217,7 +222,7 @@
       "tileType": "TEMPROUSDISTILLERY",
       "name": "Temprous Distillery",
       "description": "With this device, all impurities can be removed from temprous ingots, unlocking their limitless potential.",
-      "placeable": true,
+      "placeable": false,
       "resourceCosts": [{
         "resourceId": 23,
         "resourceCost": 5000

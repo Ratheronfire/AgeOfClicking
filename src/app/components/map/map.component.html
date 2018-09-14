@@ -1,5 +1,18 @@
-<div id="canvas-container">
+<div id="canvas-container" (keyup.esc)="clearFocus()" tabindex="1">
   <canvas class="noselect" appNoScroll appMap width="{{canvasWidth}}" height="{{canvasHeight}}" oncontextmenu="return false"></canvas>
+
+  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools">
+    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool">
+      <mat-icon color="primary">add_photo_alternate</mat-icon>
+      <br />
+      Place Buildings
+    </mat-button-toggle>
+    <mat-button-toggle value="DETAILMODE" class="cursor-tool">
+      <mat-icon color="primary">mode_comment</mat-icon>
+      <br />
+      Tile Details
+    </mat-button-toggle>
+  </mat-button-toggle-group>
 </div>
 
 <mat-card [ngClass]="{'hidden': !focusedBuildingTile && !focusedResourceTile}" id="detail-tooltip">
@@ -15,12 +28,32 @@
 
   <mat-card-content>
     <div *ngIf="focusedResourceTile" class="resource-list">
-      Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | number:'0.0-2'}} Seconds
+      Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | number:'0.0-2'}}
+      Seconds
       <br />
       Produces:
       <div *ngFor="let resource of focusedResources">
         <img src="{{resource.iconPath}}" alt="{{resource.name}}"> {{resource.name | titlecase}}
       </div>
+    </div>
+    <div *ngIf="focusedBuildingTile && focusedBuildingTile.upgradeBuilding">
+      <br />
+      Upgrade:
+      <br />
+      <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding])">
+        <div class="title" matTooltip="{{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].description}}"
+          matTooltipPosition="above">
+          {{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].name}}
+        </div>
+        <div class="resource-list">
+          <div *ngFor="let resourceCost of mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].resourceCosts"
+            matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
+            matTooltipPosition="below">
+            <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
+            {{resourceCost.resourceCost}}
+          </div>
+        </div>
+      </button>
     </div>
   </mat-card-content>
 </mat-card>

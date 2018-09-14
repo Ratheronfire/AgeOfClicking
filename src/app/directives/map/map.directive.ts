@@ -8,7 +8,7 @@ import { SettingsService } from './../../services/settings/settings.service';
 import { EnemyService } from '../../services/enemy/enemy.service';
 import { FighterService } from './../../services/fighter/fighter.service';
 import { BuildingsService } from './../../services/buildings/buildings.service';
-import { MapService } from './../../services/map/map.service';
+import { MapService, CursorTool } from './../../services/map/map.service';
 
 declare var d3: any;
 
@@ -91,10 +91,6 @@ export class MapDirective implements AfterViewInit {
 
   clickTile(self: MapDirective) {
     return async function(elapsed) {
-      if (d3.event.type === 'mousemove') {
-        self.updateTooltip(d3.mouse(this));
-      }
-
       if (!d3.event.buttons) {
         if (d3.event.type === 'mouseup') {
           await self.enemyService.recalculateTargets();
@@ -103,20 +99,25 @@ export class MapDirective implements AfterViewInit {
         return;
       }
 
-      const coordinates = d3.mouse(this);
-      coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / self.mapService.tilePixelSize);
-      coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / self.mapService.tilePixelSize);
+      if (d3.event.type === 'mousedown' && self.mapService.cursorTool === CursorTool.DetailMode) {
+        self.updateTooltip(d3.mouse(this));
+        return;
+      } else if (self.mapService.cursorTool === CursorTool.PlaceBuildings) {
+        const coordinates = d3.mouse(this);
+        coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / self.mapService.tilePixelSize);
+        coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / self.mapService.tilePixelSize);
 
-      const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
+        const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
 
-      const deleteMode = d3.event.ctrlKey;
+        const deleteMode = d3.event.ctrlKey;
 
-      if (deleteMode && tile.buildingTileType !== undefined) {
-        self.buildingsService.clearBuilding(tile);
-      } else if (!deleteMode && self.buildingsService.selectedBuilding !== undefined) {
-        self.buildingsService.createBuilding(tile, self.buildingsService.selectedBuilding.tileType);
-      } else if (d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType !== undefined) {
-        self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
+        if (deleteMode && tile.buildingTileType !== undefined) {
+          self.buildingsService.clearBuilding(tile);
+        } else if (!deleteMode && self.buildingsService.selectedBuilding !== undefined) {
+          self.buildingsService.createBuilding(tile, self.buildingsService.selectedBuilding.tileType);
+        } else if (d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType !== undefined) {
+          self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
+        }
       }
 
       self.refreshCanvas();
