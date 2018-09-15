@@ -20,8 +20,10 @@ export class MapDirective implements AfterViewInit {
   context: CanvasRenderingContext2D;
   canvasContainer: Element;
 
+  lastEnemyReprosessTime = Date.now();
+  enemyReprocessDelay = 2000;
   focusedTile: Tile;
-  detailTooltip: Element;
+  detailTooltip: any;
 
   headerPixels = 64;
 
@@ -91,13 +93,11 @@ export class MapDirective implements AfterViewInit {
 
   clickTile(self: MapDirective) {
     return async function(elapsed) {
-      if (!d3.event.buttons) {
-        if (d3.event.type === 'mouseup') {
-          await self.enemyService.recalculateTargets();
-        }
-
+      if (!d3.event.buttons && d3.event.type !== 'mouseup') {
         return;
       }
+
+      let shouldUpdateEnemies = d3.event.type === 'mouseup';
 
       if (d3.event.type === 'mousedown' && self.mapService.cursorTool === CursorTool.DetailMode) {
         self.updateTooltip(d3.mouse(this));
@@ -111,13 +111,21 @@ export class MapDirective implements AfterViewInit {
 
         const deleteMode = d3.event.ctrlKey;
 
-        if (deleteMode && tile.buildingTileType !== undefined) {
-          self.buildingsService.clearBuilding(tile);
-        } else if (!deleteMode && self.buildingsService.selectedBuilding !== undefined) {
-          self.buildingsService.createBuilding(tile, self.buildingsService.selectedBuilding.tileType);
-        } else if (d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType !== undefined) {
+        if (deleteMode && !self.fighterService.selectedFighterType) {
+          const buildingCleared = self.buildingsService.clearBuilding(tile);
+          shouldUpdateEnemies = shouldUpdateEnemies && buildingCleared;
+        } else if (!deleteMode && self.buildingsService.selectedBuilding) {
+          const buildingCreated = self.buildingsService.createBuilding(tile, self.buildingsService.selectedBuilding.tileType);
+          shouldUpdateEnemies = shouldUpdateEnemies && buildingCreated;
+        } else if (d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType) {
           self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
+          shouldUpdateEnemies = false;
         }
+      }
+
+      if (shouldUpdateEnemies && Date.now() - self.lastEnemyReprosessTime > self.enemyReprocessDelay) {
+        self.lastEnemyReprosessTime = Date.now();
+        await self.enemyService.recalculateTargets();
       }
 
       self.refreshCanvas();

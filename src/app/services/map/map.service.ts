@@ -182,7 +182,8 @@ export class MapService {
     }
   }
 
-  findPath(startTile: Tile, targetTile: Tile, onlyPathable: boolean, onlyWalkable: boolean): Observable<Tile[]> {
+  findPath(startTile: Tile, targetTile: Tile, onlyPathable: boolean, onlyWalkable: boolean,
+      maxAttempts: number = Infinity): Observable<Tile[]> {
     const visitedTiles: Tile[] = [];
 
     let tileQueue: Tile[] = [];
@@ -196,7 +197,14 @@ export class MapService {
 
     tileQueue.push(startTile);
 
+    let nodesProcessed = 0;
+
     while (tileQueue.length) {
+      nodesProcessed++;
+      if (nodesProcessed > maxAttempts) {
+        break;
+      }
+
       currentNode = tileQueue.sort((a, b) => tileHeuristicDistances[a.id] - tileHeuristicDistances[b.id])[0];
       tileQueue = tileQueue.filter(tile => tile !== currentNode);
 
@@ -210,6 +218,7 @@ export class MapService {
         }
 
         buildingPath.push(backtrackNode);
+
         return of(buildingPath.reverse());
       }
 

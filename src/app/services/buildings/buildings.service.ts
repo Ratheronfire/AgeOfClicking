@@ -48,9 +48,9 @@ export class BuildingsService {
     return true;
   }
 
-  public clearBuilding(tile: Tile) {
-    if (!tile.buildingRemovable) {
-      return;
+  public clearBuilding(tile: Tile): boolean {
+    if (!tile.buildingRemovable || !tile.buildingTileType) {
+      return false;
     }
 
     const buildingTile = this.mapService.buildingTiles[tile.buildingTileType];
@@ -66,6 +66,8 @@ export class BuildingsService {
     }
 
     this.mapService.calculateResourceConnections();
+
+    return true;
   }
 
 }

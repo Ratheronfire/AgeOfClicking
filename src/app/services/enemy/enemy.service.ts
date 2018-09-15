@@ -22,11 +22,10 @@ export class EnemyService {
   public enemyTypes: Enemy[] = baseEnemyTypes;
   public enemies: Enemy[] = [];
   activePortalTile: Tile;
-  reprocessing = false;
 
   minimumResourceAmount = 500;
-  maxPathRetryCount = 10;
-  maxEnemyCount = 5;
+  maxPathRetryCount = 25;
+  maxEnemyCount = 25;
 
   enemiesActive: boolean;
 
@@ -59,10 +58,6 @@ export class EnemyService {
     enemy.pathingDone = false;
 
     enemy.currentTile = this.getTilePosition(enemy);
-    if (!this.mapService.mapTiles[enemy.currentTile.mapTileType].walkable) {
-      enemy.position = new Vector(enemy.spawnPosition.x, enemy.spawnPosition.y);
-      enemy.currentTile = this.getTilePosition(enemy);
-    }
 
     if (enemy.targetIndex < 0) {
       enemy.targets = enemy.targets.filter(target => !target.wanderTarget);
@@ -70,11 +65,13 @@ export class EnemyService {
       enemy.targetIndex = enemy.targets.length - 1;
     }
 
-    this.mapService.findPath(enemy.currentTile, enemy.targets[enemy.targetIndex].tile, false, true).subscribe(tilePath => {
+    this.mapService.findPath(enemy.currentTile, enemy.targets[enemy.targetIndex].tile, false, true, 250).subscribe(tilePath => {
       enemy.tilePath = tilePath;
 
       if (!enemy.tilePath.length) {
         enemy.pathAttempt++;
+        enemy.targets[enemy.targetIndex].accessible = false;
+
         if (enemy.pathAttempt >= this.maxPathRetryCount) {
           this.killEnemy(enemy);
         }
@@ -98,11 +95,6 @@ export class EnemyService {
     const y = Math.floor(enemy.y / 16) * 16;
 
     return this.mapService.tiledMap.filter(tile => tile.x === x && tile.y === y)[0];
-  }
-
-  snapToTile(enemy: Enemy, tile: Tile) {
-    enemy.x = tile.x;
-    enemy.y = tile.y;
   }
 
   spawnEnemy() {
@@ -141,19 +133,14 @@ export class EnemyService {
       }
     }
 
-    if (enemy.targets[enemy.targetIndex].wanderTarget) {
+    if (enemy.targets[enemy.targetIndex].wanderTarget ||
+      enemy.tilePath.some(tile => !tile.buildingTileType || !this.mapService.mapTiles[tile.mapTileType].walkable)) {
       this.finishTask(enemy);
     }
   }
 
   async recalculateTargets() {
-    if (this.reprocessing) {
-      return;
-    }
-
-    this.reprocessing = true;
     this.enemies.map(enemy => this.findTargets(enemy));
-    this.reprocessing = false;
   }
 
   finishTask(enemy: Enemy) {
