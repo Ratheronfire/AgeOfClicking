@@ -69,6 +69,15 @@ mat-card {
   height: 16px;
 }
 
+.repair-container {
+  display: inline-flex;
+}
+
+.repair-container button {
+  position: relative;
+  top: -25%;
+}
+
 .cursor-tools {
   position: absolute;
   top: 0;

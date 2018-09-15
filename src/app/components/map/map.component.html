@@ -19,7 +19,21 @@
   <div *ngIf="focusedBuildingTile">
     <mat-card-title>{{focusedBuildingTile.name}}</mat-card-title>
     <mat-card-subtitle>{{focusedBuildingTile.description}}</mat-card-subtitle>
-    {{focusedTile.health}}/{{focusedTile.maxHealth}} Health
+    <div class="repair-container">
+      {{focusedTile.health}}/{{focusedTile.maxHealth}} Health
+      <div *ngIf="focusedTile.health < focusedTile.maxHealth">
+        <button mat-raised-button (click)="repairBuilding(focusedTile)" color="accent" [disabled]="!canRepairBuilding(focusedTile)">
+          Repair
+          <div class="resource-list">
+            <div matTooltip="{{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}} {{getResource(focusedBuildingTile.repairResource).name | titlecase}}"
+              matTooltipPosition="below">
+              <img src="{{getResource(focusedBuildingTile.repairResource).iconPath}}" alt="{{getResource(focusedBuildingTile.repairResource).name}}">
+              {{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}}
+            </div>
+          </div>
+        </button>
+      </div>
+    </div>
   </div>
 
   <div *ngIf="!focusedBuildingTile && focusedResourceTile">

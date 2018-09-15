@@ -68,6 +68,14 @@ export class MapComponent implements OnInit, AfterViewInit {
     this.focusedResourceTile = this.mapService.resourceTiles[tile.resourceTileType];
   }
 
+  canRepairBuilding(tile: Tile): boolean {
+    return this.buildingsService.canRepairBuilding(tile);
+  }
+
+  repairBuilding(tile: Tile) {
+    this.buildingsService.repairBuilding(tile);
+  }
+
   clearFocus() {
     this.focusedTile = undefined;
     this.focusedBuildingTile = undefined;

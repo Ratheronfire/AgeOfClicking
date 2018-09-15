@@ -61,6 +61,10 @@ mat-sidenav-container.game-sidenav-container mat-sidenav-content {
   width: 100%;
 }
 
+.repair-container .mat-button-wrapper {
+  display: flex;
+}
+
 .color-picker {
   left: 75px !important;
 }

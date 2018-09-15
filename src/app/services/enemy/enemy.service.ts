@@ -43,12 +43,12 @@ export class EnemyService {
   }
 
   pickTarget(enemy: Enemy) {
-    // const sortedTargets = enemy.targets.filter(target => target.accessible).sort((a, b) => {
-    //   const aDist = Math.abs(a.tile.x - enemy.x) + Math.abs(a.tile.y - enemy.y);
-    //   const bDist = Math.abs(b.tile.x - enemy.x) + Math.abs(b.tile.y - enemy.y);
+    const sortedTargets = enemy.targets.filter(target => target.accessible).sort((a, b) => {
+      const aDist = Math.abs(a.tile.x - enemy.x) + Math.abs(a.tile.y - enemy.y);
+      const bDist = Math.abs(b.tile.x - enemy.x) + Math.abs(b.tile.y - enemy.y);
 
-    //   return aDist - bDist;
-    // });
+      return aDist - bDist;
+    });
 
     const accessibleTargets = enemy.targets.filter(target => target.accessible);
     const selectedTarget = accessibleTargets[Math.floor(Math.random() * accessibleTargets.length)];
@@ -199,9 +199,12 @@ export class EnemyService {
           }
         } else {
           target.tile.health -= enemy.attack;
+          if (target.tile.health < 0) {
+            target.tile.health = 0;
+          }
 
           if (target.tile.health <= 0) {
-            this.buildingsService.clearBuilding(target.tile);
+            this.mapService.calculateResourceConnections();
 
             this.finishTask(enemy);
           }
@@ -241,7 +244,7 @@ export class EnemyService {
       enemy => enemy.pathingDone && enemy.targets.length &&
         enemy.targets[enemy.targetIndex].tile.buildingTileType === BuildingTileType.Home);
 
-    return activeEnemies.some(enemy => id in enemy.resourcesToSteal);
+    return activeEnemies.some(enemy => enemy.resourcesToSteal.includes(id));
   }
 
   private log(message: string) {

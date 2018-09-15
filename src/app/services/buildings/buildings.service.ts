@@ -31,6 +31,9 @@ export class BuildingsService {
       tile.resourceTileType = buildingTile.resourceTileType;
     }
 
+    tile.health = buildingTile.baseHealth;
+    tile.maxHealth = buildingTile.baseHealth;
+
     tile.buildingRemovable = true;
     tile.buildingTileType = buildingType;
     this.mapService.calculateResourceConnections();
@@ -60,6 +63,7 @@ export class BuildingsService {
     }
 
     tile.buildingTileType = undefined;
+    tile.health = tile.maxHealth;
 
     for (const resourceCost of buildingTile.resourceCosts) {
       this.resourcesService.addResourceAmount(resourceCost.resourceId, resourceCost.resourceCost * 0.85);
@@ -70,4 +74,23 @@ export class BuildingsService {
     return true;
   }
 
+  public canRepairBuilding(tile: Tile): boolean {
+    const buildingTile: BuildingTile = this.mapService.buildingTiles[tile.buildingTileType];
+
+    return this.resourcesService.getResource(buildingTile.repairResource).amount >=
+      buildingTile.repairCostPerPoint * (tile.maxHealth - tile.health);
+  }
+
+  public repairBuilding(tile: Tile) {
+    if (!this.canRepairBuilding(tile)) {
+      return;
+    }
+    const buildingTile: BuildingTile = this.mapService.buildingTiles[tile.buildingTileType];
+    const healAmount = tile.maxHealth - tile.health;
+
+    this.resourcesService.addResourceAmount(buildingTile.repairResource, -buildingTile.repairCostPerPoint * healAmount);
+    tile.health = tile.maxHealth;
+
+    this.mapService.calculateResourceConnections();
+  }
 }

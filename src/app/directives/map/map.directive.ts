@@ -289,6 +289,12 @@ export class MapDirective implements AfterViewInit {
         const resourceTileImage = this.imageElements[tile.resourceTileType.toLowerCase().replace(' ', '-')];
         this.drawTile(tile.position, resourceTileImage, 1, tile.health / tile.maxHealth);
       }
+
+      if (tile.health === 0) {
+        this.context.globalAlpha = 0.5;
+        this.drawTile(tile.position, this.imageElements['disabled']);
+        this.context.globalAlpha = 1;
+      }
     }
 
     for (const resourceAnimation of this.mapService.resourceAnimations) {

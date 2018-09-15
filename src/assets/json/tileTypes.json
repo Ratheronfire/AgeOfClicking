@@ -60,6 +60,7 @@
       "name": "Home",
       "description": "",
       "placeable": false,
+      "baseHealth": 50,
       "resourceCosts": [],
       "buildableSurfaces": [],
       "resourcePathable": true
@@ -69,6 +70,9 @@
       "name": "Wall",
       "description": "Keeps invaders out.",
       "placeable": true,
+      "baseHealth": 50,
+      "repairResource": 1,
+      "repairCostPerPoint": 0.2,
       "resourceCosts": [{
         "resourceId": 1,
         "resourceCost": 20
@@ -83,6 +87,9 @@
       "name": "Road",
       "description": "Allows access between buildings.",
       "placeable": true,
+      "baseHealth": 50,
+      "repairResource": 13,
+      "repairCostPerPoint": 0.2,
       "resourceCosts": [{
         "resourceId": 13,
         "resourceCost": 20
@@ -97,6 +104,9 @@
       "name": "Bridge",
       "description": "Allows access between islands.",
       "placeable": true,
+      "baseHealth": 50,
+      "repairResource": 7,
+      "repairCostPerPoint": 0.25,
       "resourceCosts": [{
         "resourceId": 7,
         "resourceCost": 40
@@ -111,6 +121,9 @@
       "name": "Cracked Forge",
       "description": "An old, weary forge. Bronze ingots are probably all this thing is capable of producing.",
       "placeable": true,
+      "baseHealth": 50,
+      "repairResource": 0,
+      "repairCostPerPoint": 1,
       "upgradeBuilding": "STONEFORGE",
       "resourceCosts": [{
         "resourceId": 0,
@@ -128,6 +141,9 @@
       "name": "Stone Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
       "placeable": false,
+      "baseHealth": 75,
+      "repairResource": 13,
+      "repairCostPerPoint": 0.3,
       "upgradeBuilding": "IRONFORGE",
       "resourceCosts": [{
         "resourceId": 0,
@@ -154,6 +170,9 @@
       "name": "Iron Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
       "placeable": false,
+      "baseHealth": 125,
+      "repairResource": 6,
+      "repairCostPerPoint": 0.3,
       "upgradeBuilding": "GOLDFORGE",
       "resourceCosts": [{
         "resourceId": 6,
@@ -177,6 +196,9 @@
       "name": "Gold Forge",
       "description": "For reasons unknown to science, gold forges are particularly effective in forging latinum.",
       "placeable": false,
+      "baseHealth": 150,
+      "repairResource": 11,
+      "repairCostPerPoint": 0.35,
       "upgradeBuilding": "LATINUMFORGE",
       "resourceCosts": [{
         "resourceId": 12,
@@ -200,6 +222,9 @@
       "name": "Latinum Forge",
       "description": "A forge that burns hot enough to fuse together the world's most precious and rare metals.",
       "placeable": false,
+      "baseHealth": 200,
+      "repairResource": 19,
+      "repairCostPerPoint": 0.5,
       "upgradeBuilding": "TEMPROUSDISTILLERY",
       "resourceCosts": [{
         "resourceId": 19,
@@ -223,6 +248,9 @@
       "name": "Temprous Distillery",
       "description": "With this device, all impurities can be removed from temprous ingots, unlocking their limitless potential.",
       "placeable": false,
+      "baseHealth": 350,
+      "repairResource": 23,
+      "repairCostPerPoint": 0.65,
       "resourceCosts": [{
         "resourceId": 23,
         "resourceCost": 5000
@@ -243,6 +271,7 @@
     "ENEMYPORTAL": {
       "tileType": "ENEMYPORTAL",
       "name": "Enemy Portal",
+      "baseHealth": 50,
       "description": "",
       "placeable": false,
       "resourceCosts": [],

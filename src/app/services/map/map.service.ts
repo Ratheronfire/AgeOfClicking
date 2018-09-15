@@ -169,15 +169,19 @@ export class MapService {
     const homeTile = this.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
 
     for (const resourceTile of resourceTiles) {
-       this.findPath(resourceTile, homeTile, true, true).subscribe(tilePath => {
-        resourceTile.buildingPath = tilePath;
+      if (resourceTile.health <= 0) {
+        continue;
+      }
 
-        if (resourceTile.buildingPath.length) {
-          const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
-          for (const resource of resources) {
-            resource.pathAvailable = true;
-          }
+      this.findPath(resourceTile, homeTile, true, true).subscribe(tilePath => {
+      resourceTile.buildingPath = tilePath;
+
+      if (resourceTile.buildingPath.length && !resourceTile.buildingPath.some(tile => tile.health <= 0)) {
+        const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
+        for (const resource of resources) {
+          resource.pathAvailable = true;
         }
+      }
       });
     }
   }

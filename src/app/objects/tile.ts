@@ -73,6 +73,10 @@ export interface BuildingTile {
 
   upgradeBuilding?: BuildingTileType;
 
+  baseHealth: number;
+  repairResource?: number;
+  repairCostPerPoint?: number;
+
   resourceCosts: ResourceCost[];
   buildableSurfaces: MapTileType[];
 
