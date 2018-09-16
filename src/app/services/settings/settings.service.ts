@@ -10,6 +10,7 @@ import { MessagesService } from '../messages/messages.service';
 import { MapService } from './../map/map.service';
 import { EnemyService } from './../enemy/enemy.service';
 import { FighterService } from './../fighter/fighter.service';
+import { Tick } from './../tick/tick.service';
 import { SaveData, WorkerData, TileData } from '../../objects/savedata';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 import { BuildingTileType } from '../../objects/tile';
@@ -20,10 +21,11 @@ import { Vector } from '../../objects/vector';
 @Injectable({
   providedIn: 'root'
 })
-export class SettingsService {
+export class SettingsService implements Tick {
   gameVersion = '1.2';
 
   autosaveInterval = 900000;
+  lastAutosave = this.autosaveInterval;
   debugMode = false;
 
   disableAnimations = false;
@@ -52,6 +54,15 @@ export class SettingsService {
     this.setAutosave();
   }
 
+  tick(elapsed: number, deltaTime: number) {
+    if (elapsed - this.lastAutosave < this.autosaveInterval || this.autosaveInterval < 0) {
+      return;
+    }
+
+    this.lastAutosave = elapsed;
+    this.saveGame();
+  }
+
   openSaveDialog(saveData?: string) {
     const dialogRef = this.dialog.open(SaveDialogComponent, {
       width: '750px',
@@ -70,16 +81,7 @@ export class SettingsService {
   }
 
   setAutosave() {
-    if (this.autosaveSubscribe !== undefined) {
-      this.autosaveSubscribe.unsubscribe();
-    }
-
-    if (this.autosaveInterval <= 0) {
-      return;
-    }
-
-    this.autosaveSource = timer(this.autosaveInterval, this.autosaveInterval);
-    this.autosaveSubscribe = this.autosaveSource.subscribe(_ => this.saveGame());
+    this.lastAutosave = this.autosaveInterval;
   }
 
   saveGame() {

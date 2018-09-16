@@ -1,7 +1,9 @@
 import { BuildingTileType, Tile } from './tile';
 import { Vector } from './vector';
+import { tilePixelSize } from '../globals';
+import { Tick } from './../services/tick/tick.service';
 
-export class Entity {
+export class Entity implements Tick {
   name: string;
 
   position: Vector;
@@ -11,11 +13,12 @@ export class Entity {
   tilePath: Tile[];
   pathStep: number;
   pathingDone = false;
+  animationSpeed: number;
 
   health: number;
   maxHealth: number;
 
-  public constructor(name: string, position: Vector, currentTile: Tile, health: number, tilePath: Tile[] = []) {
+  public constructor(name: string, position: Vector, currentTile: Tile, health: number, animationSpeed = 0.003, tilePath: Tile[] = []) {
     this.name = name;
 
     this.position = position;
@@ -28,6 +31,11 @@ export class Entity {
 
     this.health = health;
     this.maxHealth = health;
+
+    this.animationSpeed = animationSpeed;
+  }
+
+  tick(elapsed: number, deltaTime: number) {
   }
 
   public get x(): number {
@@ -45,6 +53,37 @@ export class Entity {
   public set y(value: number) {
     this.position.y = value;
   }
+
+  updatePathPosition(deltaTime: number) {
+    if (this.tilePath === undefined || this.pathStep >= this.tilePath.length - 1) {
+      return;
+    }
+
+    let totalDistance = this.animationSpeed * deltaTime;
+
+    while (totalDistance > 0) {
+      const stepDistance = Math.min(1, totalDistance);
+      totalDistance -= 1;
+
+      const currentTile = this.tilePath[this.pathStep];
+      const destinationTile = this.tilePath[this.pathStep + 1];
+
+      this.x += (destinationTile.x - currentTile.x) * stepDistance;
+      this.y += (destinationTile.y - currentTile.y) * stepDistance;
+
+      const offset = this.position.subtract(new Vector(currentTile.x, currentTile.y));
+
+      if (Math.abs(offset.x) >= tilePixelSize || Math.abs(offset.y) >= tilePixelSize) {
+        this.pathStep++;
+        this.currentTile = destinationTile;
+
+        if (this.pathStep === this.tilePath.length - 1) {
+            this.pathingDone = true;
+            break;
+        }
+      }
+    }
+  }
 }
 
 export class Actor extends Entity {
@@ -52,9 +91,9 @@ export class Actor extends Entity {
   defense: number;
   attackRange: number;
 
-  public constructor(name: string, position: Vector, currentTile: Tile,
-      health: number, attack: number, defense: number, attackRange: number) {
-    super(name, position, currentTile, health);
+  public constructor(name: string, position: Vector, currentTile: Tile, health: number,
+      animationSpeed = 0.003, attack: number, defense: number, attackRange: number) {
+    super(name, position, currentTile, health, animationSpeed);
 
     this.attack = attack;
     this.defense = defense;
@@ -81,10 +120,10 @@ export class Enemy extends Actor {
   resourceCapacity: number;
 
   public constructor(name: string, position: Vector, currentTile: Tile,
-      health: number, attack: number, defense: number, attackRange: number,
-      targetableBuildingTypes: BuildingTileType[], resourcesToSteal: number[],
+      health: number, animationSpeed = 0.003, attack: number, defense: number,
+      attackRange: number, targetableBuildingTypes: BuildingTileType[], resourcesToSteal: number[],
       stealMax: number, resourceCapacity: number) {
-    super(name, position, currentTile, health, attack, defense, attackRange);
+    super(name, position, currentTile, health, animationSpeed, attack, defense, attackRange);
 
     this.targetableBuildingTypes = targetableBuildingTypes;
     this.targets = [];
@@ -109,9 +148,9 @@ export class Fighter extends Actor {
   moveable: boolean;
 
   public constructor(name: string, position: Vector, currentTile: Tile,
-      health: number, attack: number, defense: number, attackRange: number,
-      description: string, cost: number, moveable: boolean) {
-    super(name, position, currentTile, health, attack, defense, attackRange);
+      health: number, animationSpeed = 0.003, attack: number, defense: number,
+      attackRange: number, description: string, cost: number, moveable: boolean) {
+    super(name, position, currentTile, health, animationSpeed, attack, defense, attackRange);
 
     this.cost = cost;
     this.moveable = moveable;
@@ -124,12 +163,34 @@ export class Projectile extends Entity {
 
   rotation: number;
 
+  hitTarget = false;
+
   public constructor(name: string, position: Vector, currentTile: Tile,
-      owner: Actor, target: Actor) {
-    super(name, position, currentTile, 1);
+      animationSpeed = 0.003, owner: Actor, target: Actor) {
+    super(name, position, currentTile, 1, animationSpeed);
 
     this.owner = owner;
     this.target = target;
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    const distance = this.target.position.subtract(this.position);
+    const totalDistance = this.target.position.subtract(this.spawnPosition);
+
+    if (distance.magnitude < tilePixelSize) {
+      this.target.health -= this.owner.attack;
+      this.hitTarget = true;
+    }
+
+    const gradientY = this.target.y - this.y;
+    const gradientX = this.target.x - this.x;
+    const angle = Math.atan2(gradientY, gradientX) + (Math.PI / 2);
+
+    totalDistance.x *= this.animationSpeed * deltaTime;
+    totalDistance.y *= this.animationSpeed * deltaTime;
+
+    this.position = this.position.add(totalDistance);
+    this.rotation = angle;
   }
 }
 
@@ -139,12 +200,16 @@ export class ResourceAnimation extends Entity {
 
   spawnedByPlayer: boolean;
 
-  public constructor(position: Vector, currentTile: Tile,
+  public constructor(position: Vector, currentTile: Tile, animationSpeed = 0.003,
       resourceId: number, multiplier: number, spawnedByPlayer: boolean, tilePath: Tile[]) {
-    super('', position, currentTile, -1, tilePath);
+    super('', position, currentTile, -1, animationSpeed, tilePath);
 
     this.resourceId = resourceId;
     this.multiplier = multiplier;
     this.spawnedByPlayer = spawnedByPlayer;
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    this.updatePathPosition(deltaTime);
   }
 }

@@ -10,7 +10,7 @@
     </mat-expansion-panel-header>
 
     <mat-form-field class="full-width">
-      <mat-select placeholder="Autosave Interval (Minutes)" [(value)]="autosaveInterval" (valueChange)="setAutosave()">
+      <mat-select placeholder="Autosave Interval (Minutes)" [(ngModel)]="autosaveInterval" (valueChange)="settingsService.setAutosave()">
         <mat-option [value]="-1">Disable</mat-option>
         <mat-option [value]="60000">1</mat-option>
         <mat-option [value]="900000">15</mat-option>

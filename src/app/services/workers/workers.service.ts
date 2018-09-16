@@ -8,6 +8,7 @@ import { ResourcesService } from '../resources/resources.service';
 import { Worker, ResourceWorker } from '../../objects/worker';
 import { MapService } from './../map/map.service';
 import { MessagesService } from '../messages/messages.service';
+import { Tick } from './../tick/tick.service';
 
 declare var require: any;
 const baseWorkers = require('../../../assets/json/workers.json');
@@ -15,14 +16,39 @@ const baseWorkers = require('../../../assets/json/workers.json');
 @Injectable({
   providedIn: 'root'
 })
-export class WorkersService {
+export class WorkersService implements Tick {
   public workers: Worker[] = baseWorkers;
+
+  workerDelay = 1000;
+  lastWorkerTime: number;
 
   constructor(protected resourcesService: ResourcesService,
               protected mapService: MapService,
               protected messagesService: MessagesService) {
-    const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.processWorkers());
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    if (elapsed - this.lastWorkerTime < this.workerDelay) {
+      return;
+    }
+
+    this.lastWorkerTime = elapsed;
+
+    for (const worker of this.workers) {
+      for (const resourceWorker of worker.workersByResource) {
+        if (resourceWorker.workerCount === 0 || !this.canAffordToHarvest(resourceWorker.resourceId)) {
+          continue;
+        }
+
+        this.resourcesService.addResourceAmount(0, -resourceWorker.recurringCost * resourceWorker.workerCount);
+
+        if (!this.canAffordToHarvest(resourceWorker.resourceId)) {
+          this.log(`No more money available for ${this.resourcesService.getResource(resourceWorker.resourceId).name}.`);
+        }
+
+        this.mapService.spawnResourceAnimation(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
+      }
+    }
   }
 
   public getWorkers(filterByAccessible: boolean, filterByWorkable: boolean, filterByHarvestable: boolean) {
@@ -72,24 +98,6 @@ export class WorkersService {
     const resourceWorker = this.getResourceWorker(resourceId);
 
     return this.resourcesService.getResource(0).amount >= resourceWorker.recurringCost;
-  }
-
-  processWorkers() {
-    for (const worker of this.workers) {
-      for (const resourceWorker of worker.workersByResource) {
-        if (resourceWorker.workerCount === 0 || !this.canAffordToHarvest(resourceWorker.resourceId)) {
-          continue;
-        }
-
-        this.resourcesService.addResourceAmount(0, -resourceWorker.recurringCost * resourceWorker.workerCount);
-
-        if (!this.canAffordToHarvest(resourceWorker.resourceId)) {
-          this.log(`No more money available for ${this.resourcesService.getResource(resourceWorker.resourceId).name}.`);
-        }
-
-        this.mapService.spawnResourceAnimation(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
-      }
-    }
   }
 
   updateResourceWorker(id: number, newResourceWorkerCount: number) {

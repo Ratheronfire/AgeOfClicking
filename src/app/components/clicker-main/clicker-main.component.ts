@@ -8,6 +8,7 @@ import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { MapService } from './../../services/map/map.service';
 import { EnemyService } from './../../services/enemy/enemy.service';
 import { AdminService } from './../../services/admin/admin.service';
+import { TickService } from './../../services/tick/tick.service';
 
 @Component({
   selector: 'app-clicker-main',
@@ -23,7 +24,8 @@ export class ClickerMainComponent implements OnInit {
               protected tooltipService: TooltipService,
               protected mapService: MapService,
               protected enemyService: EnemyService,
-              protected adminService: AdminService) { }
+              protected adminService: AdminService,
+              protected tickService: TickService) { }
 
   ngOnInit() {
   }

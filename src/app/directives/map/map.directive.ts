@@ -9,13 +9,14 @@ import { EnemyService } from '../../services/enemy/enemy.service';
 import { FighterService } from './../../services/fighter/fighter.service';
 import { BuildingsService } from './../../services/buildings/buildings.service';
 import { MapService, CursorTool } from './../../services/map/map.service';
+import { Tick } from './../../services/tick/tick.service';
 
 declare var d3: any;
 
 @Directive({
   selector: '[appMap]'
 })
-export class MapDirective implements AfterViewInit {
+export class MapDirective implements AfterViewInit, Tick {
   canvas;
   context: CanvasRenderingContext2D;
   canvasContainer: Element;
@@ -33,11 +34,6 @@ export class MapDirective implements AfterViewInit {
   transform = d3.zoomIdentity;
   refreshTimer;
   lowFramerateActive = false;
-
-  images = [
-    {name: 'map', x: 0, y: 0, width: this.mapService.gridWidth * this.mapService.tilePixelSize,
-                              height: this.mapService.gridHeight * this.mapService.tilePixelSize}
-  ];
 
   constructor(protected element: ElementRef,
               protected renderer: Renderer2,
@@ -77,7 +73,11 @@ export class MapDirective implements AfterViewInit {
 
     this.canvas.on('mousedown mousemove mouseup', this.clickTile(this));
 
-    this.refreshTimer = d3.interval(this.updateEntities(this), 25);
+    this.refreshTimer = d3.interval(this.refreshCanvas(this), 25);
+  }
+
+  tick(elapsed: number) {
+
   }
 
   scrollFilter(self: MapDirective) {
@@ -89,7 +89,6 @@ export class MapDirective implements AfterViewInit {
   zoomed(self: MapDirective) {
     return function(elapsed) {
       self.transform = d3.event.transform;
-      self.refreshCanvas();
     };
   }
 
@@ -126,8 +125,6 @@ export class MapDirective implements AfterViewInit {
         self.lastEnemyReprosessTime = Date.now();
         await self.enemyService.recalculateTargets();
       }
-
-      self.refreshCanvas();
     };
   }
 
@@ -161,101 +158,6 @@ export class MapDirective implements AfterViewInit {
     }
   }
 
-  updateEntities(self: MapDirective) {
-    return function(elapsed) {
-      if (self.lowFramerateActive !== self.settingsService.mapLowFramerate) {
-        self.lowFramerateActive = self.settingsService.mapLowFramerate;
-
-        self.refreshTimer.stop();
-        self.refreshTimer = d3.interval(self.updateEntities(self),
-          self.lowFramerateActive ? self.mapService.lowFramerate : self.mapService.highFramerate);
-      }
-
-      for (const enemy of self.enemyService.enemies) {
-        if (enemy.health <= 0) {
-          self.enemyService.killEnemy(enemy);
-        }
-      }
-
-      self.fighterService.fighters = self.fighterService.fighters.filter(fighter => fighter.health > 0);
-
-      let deltaTime = elapsed - self.mapService.lastAnimationTime;
-      if (deltaTime < 0) {
-        deltaTime = 0;
-      }
-
-      for (const resourceAnimation of self.mapService.resourceAnimations) {
-        self.updateEntityPathPosition(resourceAnimation, self.mapService.tileAnimationSpeed, deltaTime);
-
-        if (resourceAnimation.pathingDone) {
-          self.resourcesService.finishResourceAnimation(
-            resourceAnimation.resourceId, resourceAnimation.multiplier, resourceAnimation.spawnedByPlayer);
-        }
-      }
-
-      self.mapService.resourceAnimations = self.mapService.resourceAnimations.filter(animation => !animation.pathingDone);
-
-      for (const enemy of self.enemyService.enemies) {
-        self.updateEntityPathPosition(enemy, self.mapService.enemyAnimationSpeed, deltaTime);
-      }
-
-      for (const projectile of self.mapService.projectiles) {
-        const distance = projectile.target.position.subtract(projectile.position);
-        const totalDistance = projectile.target.position.subtract(projectile.spawnPosition);
-
-        if (distance.magnitude < self.mapService.tilePixelSize) {
-          projectile.target.health -= projectile.owner.attack;
-          self.mapService.projectiles = self.mapService.projectiles.filter(_projectile => _projectile !== projectile);
-        }
-
-        const gradientY = projectile.target.y - projectile.y;
-        const gradientX = projectile.target.x - projectile.x;
-        const angle = Math.atan2(gradientY, gradientX) + (Math.PI / 2);
-
-        totalDistance.x *= self.mapService.projectileAnimationSpeed * deltaTime;
-        totalDistance.y *= self.mapService.projectileAnimationSpeed * deltaTime;
-
-        projectile.position = projectile.position.add(totalDistance);
-        projectile.rotation = angle;
-      }
-
-      self.mapService.lastAnimationTime = elapsed;
-
-      self.refreshCanvas();
-    };
-  }
-
-  updateEntityPathPosition(entity: Entity, animationSpeed: number, deltaTime: number) {
-    if (entity.tilePath === undefined || entity.pathStep >= entity.tilePath.length - 1) {
-      return;
-    }
-
-    let totalDistance = animationSpeed * deltaTime;
-
-    while (totalDistance > 0) {
-      const stepDistance = Math.min(1, totalDistance);
-      totalDistance -= 1;
-
-      const currentTile = entity.tilePath[entity.pathStep];
-      const destinationTile = entity.tilePath[entity.pathStep + 1];
-
-      entity.x += (destinationTile.x - currentTile.x) * stepDistance;
-      entity.y += (destinationTile.y - currentTile.y) * stepDistance;
-
-      const offset = entity.position.subtract(new Vector(currentTile.x, currentTile.y));
-
-      if (Math.abs(offset.x) >= this.mapService.tilePixelSize || Math.abs(offset.y) >= this.mapService.tilePixelSize) {
-        entity.pathStep++;
-        entity.currentTile = destinationTile;
-
-        if (entity.pathStep === entity.tilePath.length - 1) {
-            entity.pathingDone = true;
-            break;
-        }
-      }
-    }
-  }
-
   resizeCanvas() {
     this.element.nativeElement.width = this.canvasContainer.clientWidth;
     this.element.nativeElement.height = window.innerHeight - this.headerPixels;
@@ -263,15 +165,25 @@ export class MapDirective implements AfterViewInit {
     this.mapService.canvasPixelHeight = window.innerHeight - this.headerPixels;
   }
 
-  refreshCanvas() {
-    this.resizeCanvas();
+  refreshCanvas(self: MapDirective) {
+    return function (elapsed) {
+      if (self.lowFramerateActive !== self.settingsService.mapLowFramerate) {
+        self.lowFramerateActive = self.settingsService.mapLowFramerate;
 
-    this.context.save();
-    this.context.clearRect(0, 0, this.mapService.canvasPixelWidth, this.mapService.canvasPixelHeight);
-    this.context.translate(this.transform.x, this.transform.y);
-    this.context.scale(this.transform.k, this.transform.k);
-    this.drawCanvas();
-    this.context.restore();
+        self.refreshTimer.stop();
+        self.refreshTimer = d3.interval(self.refreshCanvas(self),
+        self.lowFramerateActive ? self.mapService.lowFramerate : self.mapService.highFramerate);
+      }
+
+      self.resizeCanvas();
+
+      self.context.save();
+      self.context.clearRect(0, 0, self.mapService.canvasPixelWidth, self.mapService.canvasPixelHeight);
+      self.context.translate(self.transform.x, self.transform.y);
+      self.context.scale(self.transform.k, self.transform.k);
+      self.drawCanvas();
+      self.context.restore();
+    };
   }
 
   drawCanvas() {

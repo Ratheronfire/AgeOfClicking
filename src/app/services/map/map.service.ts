@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
+import { Tick } from './../tick/tick.service';
 import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
 import { ResourceAnimation, Projectile, Actor, Fighter } from '../../objects/entity';
@@ -22,7 +23,7 @@ export enum CursorTool {
 @Injectable({
   providedIn: 'root'
 })
-export class MapService {
+export class MapService implements Tick {
   public tileTypes = baseTiles.tileTypes;
 
   public mapTiles = baseTiles.mapTiles;
@@ -55,7 +56,6 @@ export class MapService {
 
   deleteMode = false;
 
-  lastAnimationTime = 0;
   tileAnimationSpeed = 0.003;
   enemyAnimationSpeed = 0.003;
   projectileAnimationSpeed = 0.003;
@@ -164,6 +164,25 @@ export class MapService {
     this.mapHeight = _mapHeight;
 
     this.calculateResourceConnections();
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    for (const resourceAnimation of this.resourceAnimations) {
+      resourceAnimation.tick(elapsed, deltaTime);
+
+      if (resourceAnimation.pathingDone) {
+        this.resourcesService.finishResourceAnimation(
+          resourceAnimation.resourceId, resourceAnimation.multiplier, resourceAnimation.spawnedByPlayer);
+      }
+    }
+
+    this.resourceAnimations = this.resourceAnimations.filter(animation => !animation.pathingDone);
+
+    for (const projectile of this.projectiles) {
+      projectile.tick(elapsed, deltaTime);
+    }
+
+    this.projectiles = this.projectiles.filter(projectile => !projectile.hitTarget);
   }
 
   calculateResourceConnections() {

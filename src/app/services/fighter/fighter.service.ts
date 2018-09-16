@@ -10,6 +10,7 @@ import { Vector } from '../../objects/vector';
 import { ResourcesService } from '../resources/resources.service';
 import { EnemyService } from './../enemy/enemy.service';
 import { MapService } from '../map/map.service';
+import { Tick } from '../tick/tick.service';
 
 declare var require: any;
 const baseFighterTypes = require('../../../assets/json/fighters.json');
@@ -17,7 +18,7 @@ const baseFighterTypes = require('../../../assets/json/fighters.json');
 @Injectable({
   providedIn: 'root'
 })
-export class FighterService {
+export class FighterService implements Tick {
   public fighterTypes: Fighter[] = baseFighterTypes;
   public fighters: Fighter[] = [];
   public selectedFighterType: Fighter;
@@ -27,6 +28,10 @@ export class FighterService {
               protected mapService: MapService) {
     const processSource = timer(1000, 1000);
     const processSubscribe = processSource.subscribe(_ => this.processFighters());
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    this.fighters = this.fighters.filter(fighter => fighter.health > 0);
   }
 
   processFighters() {

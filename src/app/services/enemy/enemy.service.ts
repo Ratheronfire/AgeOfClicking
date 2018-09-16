@@ -10,7 +10,7 @@ import { MessageSource } from '../../objects/message';
 import { BuildingsService } from '../buildings/buildings.service';
 import { ResourcesService } from '../resources/resources.service';
 import { MessagesService } from '../messages/messages.service';
-import { MapType } from '@angular/compiler';
+import { Tick } from '../tick/tick.service';
 
 declare var require: any;
 const baseEnemyTypes = require('../../../assets/json/enemies.json');
@@ -18,10 +18,15 @@ const baseEnemyTypes = require('../../../assets/json/enemies.json');
 @Injectable({
   providedIn: 'root'
 })
-export class EnemyService {
+export class EnemyService implements Tick {
   public enemyTypes: Enemy[] = baseEnemyTypes;
   public enemies: Enemy[] = [];
   activePortalTile: Tile;
+
+  spawnInterval = 45000;
+  lastSpawnTime = 0;
+  processInterval = 1000;
+  lastProcessTime = 0;
 
   minimumResourceAmount = 500;
   maxPathRetryCount = 25;
@@ -34,12 +39,26 @@ export class EnemyService {
               protected mapService: MapService,
               protected messagesService: MessagesService) {
     this.openPortal(this.mapService.enemySpawnTiles[0]);
+  }
 
-    const spawnSource = timer(45000, 45000);
-    const spawnSubscribe = spawnSource.subscribe(_ => this.spawnEnemy());
+  tick(elapsed: number, deltaTime: number) {
+    if (elapsed - this.lastSpawnTime >= this.spawnInterval) {
+      this.spawnEnemy();
+      this.lastSpawnTime = elapsed;
+    }
 
-    const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.processEnemies());
+    if (elapsed - this.lastProcessTime >= this.processInterval) {
+      this.processEnemies();
+      this.lastProcessTime = elapsed;
+    }
+
+    for (const enemy of this.enemies) {
+      enemy.updatePathPosition(deltaTime);
+
+      if (enemy.health <= 0) {
+        this.killEnemy(enemy);
+      }
+    }
   }
 
   pickTarget(enemy: Enemy) {
