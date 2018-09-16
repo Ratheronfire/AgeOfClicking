@@ -1,7 +1,7 @@
 <div id="canvas-container" tabindex="1">
   <canvas class="noselect" appNoScroll appMap width="{{canvasWidth}}" height="{{canvasHeight}}" oncontextmenu="return false"></canvas>
 
-  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools">
+  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools" (valueChange)="clearFocus()">
     <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
       <mat-icon color="primary">add_photo_alternate</mat-icon>
       <br />

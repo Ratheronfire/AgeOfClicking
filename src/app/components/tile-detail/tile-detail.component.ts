@@ -25,13 +25,6 @@ export class TileDetailComponent implements OnInit {
     return this.resourcesService.getResource(resourceId);
   }
 
-  clearFocus() {
-    this.focusedTile = undefined;
-    this.focusedBuildingTile = undefined;
-    this.focusedResourceTile = undefined;
-    this.focusedResources = undefined;
-  }
-
   canAffordUpgrade(upgradeBuilding: BuildingTile) {
     for (const resourceCost of upgradeBuilding.resourceCosts) {
       if (this.resourcesService.getResource(resourceCost.resourceId).amount < resourceCost.resourceCost) {

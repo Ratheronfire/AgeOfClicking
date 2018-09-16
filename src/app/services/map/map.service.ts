@@ -336,7 +336,7 @@ export class MapService {
   }
 
   clampTileCoordinates(x: number, y: number) {
-    return [Math.floor(x / 16) * 16, Math.floor(y / 16) * 16];
+    return [Math.floor(x / this.tilePixelSize), Math.floor(y / this.tilePixelSize)];
   }
 
   getResourceTiles(resourceId?: number): Tile[] {

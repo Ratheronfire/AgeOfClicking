@@ -27,6 +27,14 @@ export class MapComponent implements OnInit {
   ngOnInit() {
   }
 
+  clearFocus() {
+    this.mapService.focusedTile = undefined;
+    this.mapService.focusedBuildingTile = undefined;
+    this.mapService.focusedResourceTile = undefined;
+    this.mapService.focusedResources = undefined;
+    this.mapService.focusedFighter = undefined;
+  }
+
   setPlacementGroupVisibility(buildingVisibility: boolean, fighterVisibility: boolean) {
     this.mapService.buildingListVisible = buildingVisibility;
     this.mapService.fighterListVisible = fighterVisibility;

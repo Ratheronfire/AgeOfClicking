@@ -346,11 +346,9 @@ export class MapDirective implements AfterViewInit {
     }
 
     if (this.mapService.focusedTile) {
-      this.tileTooltip.style.setProperty('--detail-tooltip-top',
-      this.mapService.focusedTile.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight + 'px');
-      this.tileTooltip.style.setProperty('--detail-tooltip-left',
-        (this.mapService.focusedTile.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x +
-        this.element.nativeElement.getBoundingClientRect().left + 'px');
+      const tooltipPosition = this.getTooltipPosition(this.mapService.focusedTile.position);
+      this.tileTooltip.style.setProperty('--detail-tooltip-top', tooltipPosition.x + 'px');
+      this.tileTooltip.style.setProperty('--detail-tooltip-left', tooltipPosition.y + 'px');
 
       this.context.globalAlpha = 0.5;
       this.context.fillStyle = 'cyan';
@@ -362,12 +360,30 @@ export class MapDirective implements AfterViewInit {
     }
 
     if (this.mapService.focusedFighter) {
-      this.fighterTooltip.style.setProperty('--detail-tooltip-top',
-      this.mapService.focusedFighter.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight + 'px');
-      this.fighterTooltip.style.setProperty('--detail-tooltip-left',
-        (this.mapService.focusedFighter.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x +
-        this.element.nativeElement.getBoundingClientRect().left + 'px');
+      const fighter = this.mapService.focusedFighter;
+
+      const tooltipPosition = this.getTooltipPosition(fighter.position);
+      this.fighterTooltip.style.setProperty('--detail-tooltip-top', tooltipPosition.x + 'px');
+      this.fighterTooltip.style.setProperty('--detail-tooltip-left', tooltipPosition.y + 'px');
+
+      this.context.globalAlpha = 0.5;
+      this.context.fillStyle = 'cyan';
+
+      this.context.beginPath();
+      this.context.arc(fighter.x + this.mapService.tilePixelSize / 2, fighter.y + this.mapService.tilePixelSize / 2,
+        fighter.attackRange * this.mapService.tilePixelSize, 0, 2 * Math.PI);
+      this.context.stroke();
+
+      this.context.fillStyle = 'black';
+      this.context.globalAlpha = 1;
     }
+  }
+
+  getTooltipPosition(targetPosition: Vector): Vector {
+    const mapBounds = this.element.nativeElement.getBoundingClientRect();
+
+    return new Vector(targetPosition.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight,
+      (targetPosition.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x + mapBounds.left);
   }
 
   drawTile(position: Vector, image: HTMLImageElement, scale: number = 1, healthRatio: number = 1) {
