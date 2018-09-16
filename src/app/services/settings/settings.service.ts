@@ -203,6 +203,7 @@ export class SettingsService implements Tick {
         spawnPosition: enemy.spawnPosition,
         health: enemy.health,
         maxHealth: enemy.maxHealth,
+        animationSpeed: enemy.animationSpeed,
         attack: enemy.attack,
         defense: enemy.defense,
         attackRange: enemy.attackRange,
@@ -222,6 +223,7 @@ export class SettingsService implements Tick {
         spawnPosition: fighter.spawnPosition,
         health: fighter.health,
         maxHealth: fighter.maxHealth,
+        animationSpeed: fighter.animationSpeed,
         attack: fighter.attack,
         defense: fighter.defense,
         attackRange: fighter.attackRange,
@@ -324,7 +326,7 @@ export class SettingsService implements Tick {
           const tile = this.mapService.getTile(tilePosition[0], tilePosition[1]);
 
           const enemy = new Enemy(enemyData.name, new Vector(enemyData.position.x, enemyData.position.y), tile, enemyData.health,
-            enemyData.attack, enemyData.defense, enemyData.attackRange, enemyData.targetableBuildingTypes,
+            enemyData.animationSpeed, enemyData.attack, enemyData.defense, enemyData.attackRange, enemyData.targetableBuildingTypes,
             enemyData.resourcesToSteal, enemyData.stealMax, enemyData.resourceCapacity);
           enemy.spawnPosition = new Vector(enemyData.spawnPosition.x, enemyData.spawnPosition.y);
 
@@ -340,7 +342,7 @@ export class SettingsService implements Tick {
           const tile = this.mapService.getTile(tilePosition[0], tilePosition[1]);
 
           const fighter = new Fighter(fighterData.name, new Vector(fighterData.position.x, fighterData.position.y),
-            tile, fighterData.health, fighterData.attack, fighterData.defense,
+            tile, fighterData.health, fighterData.animationSpeed, fighterData.attack, fighterData.defense,
             fighterData.attackRange, fighterData.description, 0, fighterData.moveable);
 
           this.fighterService.fighters.push(fighter);

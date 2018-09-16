@@ -132,7 +132,7 @@ export class EnemyService implements Tick {
     const enemyType = this.enemyTypes[enemyIndex];
 
     const enemy = new Enemy(enemyType.name, new Vector(spawnPoint.x, spawnPoint.y), spawnPoint, enemyType.health,
-      enemyType.attack, enemyType.defense, enemyType.attackRange, enemyType.targetableBuildingTypes,
+      0.003, enemyType.attack, enemyType.defense, enemyType.attackRange, enemyType.targetableBuildingTypes,
       enemyType.resourcesToSteal, enemyType.stealMax, enemyType.resourceCapacity);
 
     this.findTargets(enemy);

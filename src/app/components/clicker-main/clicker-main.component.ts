@@ -48,16 +48,8 @@ export class ClickerMainComponent implements OnInit {
     this.clickerMainService.startHarvesting(id);
   }
 
-  stopHarvesting(id: number) {
-    this.clickerMainService.stopHarvesting(id);
-  }
-
   resourceIsBeingStolen(id: number): boolean {
     return this.enemyService.resourceIsBeingStolen(id);
-  }
-
-  shouldAnimateProgressBar(id: number): boolean {
-    return this.clickerMainService.shouldAnimateProgressBar(id);
   }
 
   harvestResource(id: number) {

@@ -61,7 +61,7 @@ export class FighterService implements Tick {
 
     this.resourcesService.addResourceAmount(0, -fighterType.cost);
 
-    const fighter = new Fighter(fighterType.name, new Vector(tile.x, tile.y), tile, fighterType.health, fighterType.attack,
+    const fighter = new Fighter(fighterType.name, new Vector(tile.x, tile.y), tile, fighterType.health, 0.003, fighterType.attack,
       fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.moveable);
 
     this.fighters.push(fighter);

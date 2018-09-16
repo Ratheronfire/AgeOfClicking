@@ -70,7 +70,7 @@ mat-sidenav-container.game-sidenav-container mat-sidenav-content {
   display: flex;
 }
 
-.building button {
+.building button, .fighter button {
   width: 100%;
 }
 

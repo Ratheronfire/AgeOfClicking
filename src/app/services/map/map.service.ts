@@ -302,13 +302,13 @@ export class MapService implements Tick {
     const tilePathCopy = tile.buildingPath.map(_tile => _tile);
 
     const resourceAnimation = new ResourceAnimation(new Vector(tile.x, tile.y), tile,
-      resourceId, multiplier, spawnedByPlayer, tilePathCopy);
+      0.003, resourceId, multiplier, spawnedByPlayer, tilePathCopy);
     this.resourceAnimations.push(resourceAnimation);
   }
 
   spawnProjectile(owner: Actor, target: Actor) {
     const projectile = new Projectile('Arrow', new Vector(owner.x, owner.y),
-      owner.currentTile, owner, target);
+      owner.currentTile, 0.006, owner, target);
     this.projectiles.push(projectile);
   }
 

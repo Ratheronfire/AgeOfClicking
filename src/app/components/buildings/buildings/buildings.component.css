@@ -2,6 +2,7 @@
 .buildings {
   position: absolute;
   top: 72px;
+  width: 140px;
   display: grid;
 
   background: white;

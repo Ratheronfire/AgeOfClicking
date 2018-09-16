@@ -54,6 +54,8 @@ export interface EnemyData {
   health: number;
   maxHealth: number;
 
+  animationSpeed: number;
+
   attack: number;
   defense: number;
   attackRange: number;
@@ -74,6 +76,8 @@ export interface FighterData {
 
   health: number;
   maxHealth: number;
+
+  animationSpeed: number;
 
   attack: number;
   defense: number;

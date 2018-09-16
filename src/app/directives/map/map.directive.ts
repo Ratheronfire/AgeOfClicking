@@ -216,6 +216,10 @@ export class MapDirective implements AfterViewInit, Tick {
         this.context.globalAlpha = 0.5;
         this.drawTile(tile.position, this.imageElements['disabled']);
         this.context.globalAlpha = 1;
+      } else if (tile.buildingTileType && !tile.buildingRemovable && this.mapService.cursorTool === CursorTool.ClearBuildings) {
+        this.context.globalAlpha = 0.5;
+        this.drawTile(tile.position, this.imageElements['locked']);
+        this.context.globalAlpha = 1;
       }
     }
 
