@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 import { ResourcesService } from '../resources/resources.service';
 import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
-import { ResourceAnimation, Projectile, Actor } from '../../objects/entity';
+import { ResourceAnimation, Projectile, Actor, Fighter } from '../../objects/entity';
 import { Vector } from '../../objects/vector';
 
 declare var require: any;
@@ -13,7 +13,10 @@ const baseTiles = require('../../../assets/json/tileTypes.json');
 
 export enum CursorTool {
   PlaceBuildings = 'PLACEBUILDINGS',
-  DetailMode = 'DETAILMODE'
+  ClearBuildings = 'CLEARBUILDINGS',
+  TileDetail = 'TILEDETAIL',
+  PlaceFighters = 'PLACEFIGHTERS',
+  FighterDetail = 'FIGHTERDETAIL'
 }
 
 @Injectable({
@@ -30,9 +33,13 @@ export class MapService {
   public buildingTileArray: BuildingTile[] = [];
   public resourceTileArray: ResourceTile[] = [];
 
-  cursorTool = CursorTool.PlaceBuildings;
+  cursorTool: CursorTool;
+
+  buildingListVisible = false;
+  fighterListVisible = false;
 
   focusedTile: Tile;
+  focusedFighter: Fighter;
   focusedBuildingTile: BuildingTile;
   focusedResourceTile: ResourceTile;
   focusedResources: Resource[];

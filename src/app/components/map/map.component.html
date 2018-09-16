@@ -1,73 +1,37 @@
-<div id="canvas-container" (keyup.esc)="clearFocus()" tabindex="1">
+<div id="canvas-container" tabindex="1">
   <canvas class="noselect" appNoScroll appMap width="{{canvasWidth}}" height="{{canvasHeight}}" oncontextmenu="return false"></canvas>
 
   <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools">
-    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool">
+    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
       <mat-icon color="primary">add_photo_alternate</mat-icon>
       <br />
       Place Buildings
     </mat-button-toggle>
-    <mat-button-toggle value="DETAILMODE" class="cursor-tool">
+    <mat-button-toggle value="CLEARBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+      <mat-icon color="primary">delete</mat-icon>
+      <br />
+      Clear Buildings
+    </mat-button-toggle>
+    <mat-button-toggle value="TILEDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
       <mat-icon color="primary">mode_comment</mat-icon>
       <br />
       Tile Details
     </mat-button-toggle>
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
+      <mat-icon color="primary">directions_walk</mat-icon>
+      <br />
+      Place Fighters
+    </mat-button-toggle>
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+      <mat-icon color="primary">directions_run</mat-icon>
+      <br />
+      Fighter Details
+    </mat-button-toggle>
   </mat-button-toggle-group>
+
+  <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>
+  <app-fighter *ngIf="mapService.fighterListVisible"></app-fighter>
 </div>
 
-<mat-card [ngClass]="{'hidden': !focusedBuildingTile && !focusedResourceTile}" id="detail-tooltip">
-  <div *ngIf="focusedBuildingTile">
-    <mat-card-title>{{focusedBuildingTile.name}}</mat-card-title>
-    <mat-card-subtitle>{{focusedBuildingTile.description}}</mat-card-subtitle>
-    <div class="repair-container">
-      {{focusedTile.health}}/{{focusedTile.maxHealth}} Health
-      <div *ngIf="focusedTile.health < focusedTile.maxHealth">
-        <button mat-raised-button (click)="repairBuilding(focusedTile)" color="accent" [disabled]="!canRepairBuilding(focusedTile)">
-          Repair
-          <div class="resource-list">
-            <div matTooltip="{{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}} {{getResource(focusedBuildingTile.repairResource).name | titlecase}}"
-              matTooltipPosition="below">
-              <img src="{{getResource(focusedBuildingTile.repairResource).iconPath}}" alt="{{getResource(focusedBuildingTile.repairResource).name}}">
-              {{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}}
-            </div>
-          </div>
-        </button>
-      </div>
-    </div>
-  </div>
-
-  <div *ngIf="!focusedBuildingTile && focusedResourceTile">
-    <mat-card-title>{{focusedResourceTile.name}}</mat-card-title>
-  </div>
-
-  <mat-card-content>
-    <div *ngIf="focusedResourceTile" class="resource-list">
-      Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | number:'0.0-2'}}
-      Seconds
-      <br />
-      Produces:
-      <div *ngFor="let resource of focusedResources">
-        <img src="{{resource.iconPath}}" alt="{{resource.name}}"> {{resource.name | titlecase}}
-      </div>
-    </div>
-    <div *ngIf="focusedBuildingTile && focusedBuildingTile.upgradeBuilding">
-      <br />
-      Upgrade:
-      <br />
-      <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding])">
-        <div class="title" matTooltip="{{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].description}}"
-          matTooltipPosition="above">
-          {{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].name}}
-        </div>
-        <div class="resource-list">
-          <div *ngFor="let resourceCost of mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].resourceCosts"
-            matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
-            matTooltipPosition="below">
-            <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
-            {{resourceCost.resourceCost}}
-          </div>
-        </div>
-      </button>
-    </div>
-  </mat-card-content>
-</mat-card>
+<app-tile-detail [ngClass]="{'hidden': !mapService.focusedBuildingTile && !mapService.focusedResourceTile}"></app-tile-detail>
+<app-fighter-detail [ngClass]="{'hidden': !mapService.focusedFighter}"></app-fighter-detail>

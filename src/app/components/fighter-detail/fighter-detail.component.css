@@ -1,0 +1,30 @@
+#fighter-tooltip {
+  top: var(--detail-tooltip-top);
+  left: var(--detail-tooltip-left);
+
+  position: absolute;
+}
+
+mat-card {
+  text-align: center;
+  max-width: 300px;
+}
+
+.resource-list div {
+  display: inline-block;
+}
+
+.resource-list img {
+  width: 16px;
+  height: 16px;
+}
+
+.repair-container {
+  display: inline-flex;
+  white-space: pre-wrap;
+}
+
+.repair-container button {
+  position: relative;
+  top: -25%;
+}

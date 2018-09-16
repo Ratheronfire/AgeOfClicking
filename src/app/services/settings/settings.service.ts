@@ -304,8 +304,8 @@ export class SettingsService {
             continue;
           }
 
-          tile.health = tileData.health;
-          tile.maxHealth = tileData.maxHealth;
+          tile.health = tileData.health ? tileData.health : 50;
+          tile.maxHealth = tileData.maxHealth ? tileData.maxHealth : 50;
 
           tile.resourceTileType = tileData.resourceTileType;
           tile.buildingTileType = tileData.buildingTileType;

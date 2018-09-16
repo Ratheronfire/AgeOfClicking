@@ -22,8 +22,9 @@ export class MapDirective implements AfterViewInit {
 
   lastEnemyReprosessTime = Date.now();
   enemyReprocessDelay = 2000;
-  focusedTile: Tile;
-  detailTooltip: any;
+
+  tileTooltip: any;
+  fighterTooltip: any;
 
   headerPixels = 64;
 
@@ -52,7 +53,8 @@ export class MapDirective implements AfterViewInit {
     this.context = this.canvas.node().getContext('2d');
     this.canvasContainer = document.getElementById('canvas-container');
 
-    this.detailTooltip = document.getElementById('detail-tooltip');
+    this.tileTooltip = document.getElementById('tile-tooltip');
+    this.fighterTooltip = document.getElementById('fighter-tooltip');
 
     const imageElementContainer = document.getElementById('tile-images');
     for (let i = 0; i < imageElementContainer.children.length; i++) {
@@ -97,30 +99,27 @@ export class MapDirective implements AfterViewInit {
         return;
       }
 
-      let shouldUpdateEnemies = d3.event.type === 'mouseup';
+      const coordinates = d3.mouse(this);
+      coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / self.mapService.tilePixelSize);
+      coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / self.mapService.tilePixelSize);
 
-      if (d3.event.type === 'mousedown' && self.mapService.cursorTool === CursorTool.DetailMode) {
-        self.updateTooltip(d3.mouse(this));
-        return;
-      } else if (self.mapService.cursorTool === CursorTool.PlaceBuildings) {
-        const coordinates = d3.mouse(this);
-        coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / self.mapService.tilePixelSize);
-        coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / self.mapService.tilePixelSize);
+      const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
 
-        const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
+      let shouldUpdateEnemies = false;
 
-        const deleteMode = d3.event.ctrlKey;
-
-        if (deleteMode && !self.fighterService.selectedFighterType) {
-          const buildingCleared = self.buildingsService.clearBuilding(tile);
-          shouldUpdateEnemies = shouldUpdateEnemies && buildingCleared;
-        } else if (!deleteMode && self.buildingsService.selectedBuilding) {
-          const buildingCreated = self.buildingsService.createBuilding(tile, self.buildingsService.selectedBuilding.tileType);
-          shouldUpdateEnemies = shouldUpdateEnemies && buildingCreated;
-        } else if (d3.event.type !== 'mousemove' && self.fighterService.selectedFighterType) {
-          self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
-          shouldUpdateEnemies = false;
-        }
+      if (d3.event.type === 'mousedown' && self.mapService.cursorTool === CursorTool.TileDetail) {
+        self.updateTileTooltip(coordinates);
+      } else if (d3.event.type === 'mousedown' && self.mapService.cursorTool === CursorTool.FighterDetail) {
+        self.updateFighterTooltip(coordinates);
+      } else if (self.mapService.cursorTool === CursorTool.PlaceBuildings && self.buildingsService.selectedBuilding) {
+        const buildingCreated = self.buildingsService.createBuilding(tile, self.buildingsService.selectedBuilding.tileType);
+        shouldUpdateEnemies = d3.event.type === 'mouseup' && buildingCreated;
+      } else if (self.mapService.cursorTool === CursorTool.ClearBuildings) {
+        const buildingCleared = self.buildingsService.clearBuilding(tile);
+        shouldUpdateEnemies = d3.event.type === 'mouseup' && buildingCleared;
+      } else if (d3.event.type === 'mousedown' &&
+        self.mapService.cursorTool === CursorTool.PlaceFighters && self.fighterService.selectedFighterType) {
+        self.fighterService.createFighter(tile, self.fighterService.selectedFighterType);
       }
 
       if (shouldUpdateEnemies && Date.now() - self.lastEnemyReprosessTime > self.enemyReprocessDelay) {
@@ -132,11 +131,8 @@ export class MapDirective implements AfterViewInit {
     };
   }
 
-  updateTooltip(mouseCoordinates: number[]) {
-    const tileCoordinates = [Math.floor(this.transform.invertX(mouseCoordinates[0]) / this.mapService.tilePixelSize),
-                              Math.floor(this.transform.invertY(mouseCoordinates[1]) / this.mapService.tilePixelSize)];
-
-    const focusedTile = this.mapService.tiledMap[tileCoordinates[0] + tileCoordinates[1] * this.mapService.mapWidth];
+  updateTileTooltip(coordinates: number[]) {
+    const focusedTile = this.mapService.tiledMap[coordinates[0] + coordinates[1] * this.mapService.mapWidth];
 
     if (focusedTile.buildingTileType || focusedTile.resourceTileType) {
       this.mapService.focusedTile = focusedTile;
@@ -149,6 +145,19 @@ export class MapDirective implements AfterViewInit {
       this.mapService.focusedBuildingTile = undefined;
       this.mapService.focusedResourceTile = undefined;
       this.mapService.focusedResources = undefined;
+    }
+  }
+
+  updateFighterTooltip(coordinates: number[]) {
+    const focusedTile = this.mapService.tiledMap[coordinates[0] + coordinates[1] * this.mapService.mapWidth];
+    const focusedFighter = this.fighterService.fighters.find(fighter => fighter.currentTile === focusedTile);
+
+    if (focusedFighter) {
+      this.mapService.focusedTile = focusedTile;
+      this.mapService.focusedFighter = focusedFighter;
+    } else {
+      this.mapService.focusedTile = undefined;
+      this.mapService.focusedFighter = undefined;
     }
   }
 
@@ -237,6 +246,7 @@ export class MapDirective implements AfterViewInit {
 
       if (Math.abs(offset.x) >= this.mapService.tilePixelSize || Math.abs(offset.y) >= this.mapService.tilePixelSize) {
         entity.pathStep++;
+        entity.currentTile = destinationTile;
 
         if (entity.pathStep === entity.tilePath.length - 1) {
             entity.pathingDone = true;
@@ -335,23 +345,29 @@ export class MapDirective implements AfterViewInit {
       this.context.translate(-projectile.x, -projectile.y);
     }
 
-    if (!this.mapService.focusedTile) {
-      return;
+    if (this.mapService.focusedTile) {
+      this.tileTooltip.style.setProperty('--detail-tooltip-top',
+      this.mapService.focusedTile.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight + 'px');
+      this.tileTooltip.style.setProperty('--detail-tooltip-left',
+        (this.mapService.focusedTile.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x +
+        this.element.nativeElement.getBoundingClientRect().left + 'px');
+
+      this.context.globalAlpha = 0.5;
+      this.context.fillStyle = 'cyan';
+      for (const pathTile of this.mapService.focusedTile.buildingPath) {
+        this.context.fillRect(pathTile.x, pathTile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
+      }
+      this.context.fillStyle = 'black';
+      this.context.globalAlpha = 1;
     }
 
-    this.detailTooltip.style.setProperty('--detail-tooltip-top',
-    this.mapService.focusedTile.y * this.transform.k + this.transform.y - this.detailTooltip.clientHeight + 'px');
-    this.detailTooltip.style.setProperty('--detail-tooltip-left',
-      (this.mapService.focusedTile.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x +
-      this.element.nativeElement.getBoundingClientRect().left + 'px');
-
-    this.context.globalAlpha = 0.5;
-    this.context.fillStyle = 'cyan';
-    for (const pathTile of this.mapService.focusedTile.buildingPath) {
-      this.context.fillRect(pathTile.x, pathTile.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
+    if (this.mapService.focusedFighter) {
+      this.fighterTooltip.style.setProperty('--detail-tooltip-top',
+      this.mapService.focusedFighter.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight + 'px');
+      this.fighterTooltip.style.setProperty('--detail-tooltip-left',
+        (this.mapService.focusedFighter.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x +
+        this.element.nativeElement.getBoundingClientRect().left + 'px');
     }
-    this.context.fillStyle = 'black';
-    this.context.globalAlpha = 1;
   }
 
   drawTile(position: Vector, image: HTMLImageElement, scale: number = 1, healthRatio: number = 1) {

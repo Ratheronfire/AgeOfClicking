@@ -1,32 +1,15 @@
-<div class="fighters" [ngClass]="{'slim-interface': settingsService.slimInterface}">
-    <div *ngIf="!settingsService.slimInterface">
-      <mat-card class="fighter" *ngFor="let fighterType of fighterTypes">
-        <button mat-raised-button [color]="selectedFighterType === fighterType ? 'accent' : ''" [disabled]="!canAffordFighter(fighterType)"
-          (click)="selectFigherType(fighterType)">
-          <mat-card-title>{{fighterType.name}}</mat-card-title>
-        </button>
-        <mat-card-content>
-          {{fighterType.description}}
-          <div class="fighter-cost">
-            <div matTooltip="{{fighterType.cost}} {{getResource(0).name | titlecase}}" matTooltipPosition="below">
-              <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}"> {{fighterType.cost}}
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
+<mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="selectedFighterType" class="fighters">
+  <mat-button-toggle *ngFor="let fighterType of fighterService.fighterTypes" [value]="fighterType" class="fighter"
+    [disabled]="!canAffordFighter(fighterType)" (click)="mapService.fighterListVisible = false">
+    <div class="title" matTooltip="{{fighterType.description}}" matTooltipPosition="above">
+      {{fighterType.name}}
     </div>
-    <div *ngIf="settingsService.slimInterface">
-      <button mat-raised-button *ngFor="let fighterType of fighterTypes" (click)="selectFigherType(fighterType)"
-        [color]="selectedFighterType === fighterType ? 'accent' : ''" [disabled]="!canAffordFighter(fighterType)">
-        <div class="title" matTooltip="{{fighterType.description}}" matTooltipPosition="above">
-          {{fighterType.name}}
-        </div>
-        <div class="fighter-cost">
-          <div matTooltip="{{fighterType.cost}} {{getResource(0).name | titlecase}}" matTooltipPosition="below">
-            <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
-            {{fighterType.cost}}
-          </div>
-        </div>
-      </button>
+    <div class="resource-list">
+      <div matTooltip="{{fighterType.cost}} {{getResource(0).name | titlecase}}"
+        matTooltipPosition="below">
+        <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+        {{fighterType.cost}}
+      </div>
     </div>
-  </div>
+  </mat-button-toggle>
+</mat-button-toggle-group>

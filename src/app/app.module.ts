@@ -27,6 +27,8 @@ import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
 import { EnemyComponent } from './components/enemy/enemy.component';
 import { FighterComponent } from './components/fighter/fighter.component';
 import { BuildingsComponent } from './components/buildings/buildings/buildings.component';
+import { TileDetailComponent } from './components/tile-detail/tile-detail.component';
+import { FighterDetailComponent } from './components/fighter-detail/fighter-detail.component';
 
 @NgModule({
   declarations: [
@@ -49,7 +51,9 @@ import { BuildingsComponent } from './components/buildings/buildings/buildings.c
     NoScrollDirective,
     EnemyComponent,
     FighterComponent,
-    BuildingsComponent
+    BuildingsComponent,
+    TileDetailComponent,
+    FighterDetailComponent
   ],
   imports: [
     BrowserModule,

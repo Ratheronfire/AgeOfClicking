@@ -1,0 +1,41 @@
+<mat-card id="fighter-tooltip">
+  <div *ngIf="focusedFighter">
+    <mat-card-title>{{focusedFighter.name}}</mat-card-title>
+    <mat-card-subtitle>{{focusedFighter.description}}</mat-card-subtitle>
+    <div class="repair-container">
+      {{focusedFighter.health}}/{{focusedFighter.maxHealth}} Health
+      <div *ngIf="focusedFighter.health < focusedFighter.maxHealth">
+        <!-- <button mat-raised-button (click)="repairBuilding(focusedTile)" color="accent" [disabled]="!canRepairBuilding(focusedTile)">
+          Heal
+          <div class="resource-list">
+            <div matTooltip="{{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}} {{getResource(focusedBuildingTile.repairResource).name | titlecase}}"
+              matTooltipPosition="below">
+              <img src="{{getResource(focusedBuildingTile.repairResource).iconPath}}" alt="{{getResource(focusedBuildingTile.repairResource).name}}">
+              {{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}}
+            </div>
+          </div>
+        </button> -->
+      </div>
+    </div>
+
+    <mat-card-content>
+      <!-- <br />
+    Upgrade:
+    <br />
+    <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding])">
+      <div class="title" matTooltip="{{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].description}}"
+        matTooltipPosition="above">
+        {{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].name}}
+      </div>
+      <div class="resource-list">
+        <div *ngFor="let resourceCost of mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].resourceCosts"
+          matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
+          matTooltipPosition="below">
+          <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
+          {{resourceCost.resourceCost}}
+        </div>
+      </div>
+    </button> -->
+    </mat-card-content>
+  </div>
+</mat-card>

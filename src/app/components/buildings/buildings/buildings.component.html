@@ -1,35 +1,16 @@
-<div class="buildings" [ngClass]="{'slim-interface': settingsService.slimInterface}">
-  <div *ngIf="!settingsService.slimInterface">
-    <mat-card class="building" *ngFor="let buildingTile of getBuildingTileArray(true)">
-      <button mat-raised-button [color]="selectedBuilding === buildingTile ? 'accent' : ''" [disabled]="!canAffordBuilding(buildingTile.tileType)"
-        (click)="selectBuilding(buildingTile)">
-        <mat-card-title>{{buildingTile.name}}</mat-card-title>
-      </button>
-      <mat-card-content>
-        {{buildingTile.description}}
-        <div class="resource-list">
-          <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
-            matTooltipPosition="below">
-            <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
-            {{resourceCost.resourceCost}}
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+<mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="selectedBuilding"
+class="buildings">
+<mat-button-toggle *ngFor="let buildingTile of getBuildingTileArray(true)" [value]="buildingTile" class="building"
+  [disabled]="!canAffordBuilding(buildingTile.tileType)" (click)="mapService.buildingListVisible = false">
+  <div class="title" matTooltip="{{buildingTile.description}}" matTooltipPosition="above">
+    {{buildingTile.name}}
   </div>
-  <div *ngIf="settingsService.slimInterface">
-    <button mat-raised-button *ngFor="let buildingTile of getBuildingTileArray(true)" (click)="selectBuilding(buildingTile)"
-      [color]="selectedBuilding === buildingTile ? 'accent' : ''" [disabled]="!canAffordBuilding(buildingTile.tileType)">
-      <div class="title" matTooltip="{{buildingTile.description}}" matTooltipPosition="above">
-        {{buildingTile.name}}
-      </div>
-      <div class="resource-list">
-        <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
-          matTooltipPosition="below">
-          <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
-          {{resourceCost.resourceCost}}
-        </div>
-      </div>
-    </button>
+  <div class="resource-list">
+    <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
+      matTooltipPosition="below">
+      <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
+      {{resourceCost.resourceCost}}
+    </div>
   </div>
-</div>
+</mat-button-toggle>
+</mat-button-toggle-group>

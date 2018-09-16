@@ -31,9 +31,8 @@ export class AppComponent {
       if (!event) {
         event = window.event;
       }
-      if (event) {
-        event.returnValue = message;
-      }
+
+      event.returnValue = message;
 
       return message;
     };

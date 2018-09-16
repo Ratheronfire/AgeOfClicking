@@ -5,6 +5,7 @@ import { BuildingsService } from './../../services/buildings/buildings.service';
 import { FighterService } from '../../services/fighter/fighter.service';
 import { SettingsService } from '../../services/settings/settings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
+import { MapService } from '../../services/map/map.service';
 
 @Component({
   selector: 'app-fighter',
@@ -15,7 +16,8 @@ export class FighterComponent implements OnInit {
   constructor(protected resourcesService: ResourcesService,
               protected settingsService: SettingsService,
               protected buildingsService: BuildingsService,
-              protected fighterService: FighterService) { }
+              protected fighterService: FighterService,
+              protected mapService: MapService) { }
 
   ngOnInit() {
   }
