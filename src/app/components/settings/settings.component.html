@@ -27,17 +27,29 @@
   </mat-expansion-panel>
 
   <mat-expansion-panel expanded="true">
-      <mat-expansion-panel-header>
-        <mat-panel-title>
-          <mat-icon color="primary">list</mat-icon>
-          Interface
-        </mat-panel-title>
-      </mat-expansion-panel-header>
+    <mat-expansion-panel-header>
+      <mat-panel-title>
+        <mat-icon color="primary">list</mat-icon>
+        Interface
+      </mat-panel-title>
+    </mat-expansion-panel-header>
 
-      <mat-checkbox [(ngModel)]="slimInterface">Slim Mode</mat-checkbox>
-      <!-- <br />
+    <mat-checkbox [(ngModel)]="slimInterface">Slim Mode</mat-checkbox>
+    <!-- <br />
       <mat-checkbox [(ngModel)]="disableAnimations">Disable Animations</mat-checkbox> -->
-    </mat-expansion-panel>
+
+    <mat-form-field class="full-width">
+      <mat-select placeholder="Resource Shortcuts" [formControl]="bindSelected" multiple (selectionChange)="resourceBindChange($event)">
+        <mat-option *ngFor="let resource of resourcesService.harvestableResources()" [(value)]="resource.id">
+          {{resource.name | titlecase}}
+        </mat-option>
+      </mat-select>
+      <mat-error *ngIf="bindSelected.hasError('length')">
+        No more than 10 resource shortcuts allowed.
+      </mat-error>
+    </mat-form-field>
+
+  </mat-expansion-panel>
 
   <mat-expansion-panel expanded="true">
     <mat-expansion-panel-header>
@@ -51,11 +63,13 @@
     <br />
 
     <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="harvestDetailColor" [style.background]="harvestDetailColor" [value]="harvestDetailColor"/>
+      <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="harvestDetailColor"
+        [style.background]="harvestDetailColor" [value]="harvestDetailColor" />
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Worker Harvest Color" [(colorPicker)]="workerDetailColor" [style.background]="workerDetailColor" [value]="workerDetailColor"/>
+      <input class="color-input" matInput placeholder="Worker Harvest Color" [(colorPicker)]="workerDetailColor"
+        [style.background]="workerDetailColor" [value]="workerDetailColor" />
     </mat-form-field>
   </mat-expansion-panel>
 
@@ -78,7 +92,8 @@
     <br />
 
     <mat-form-field class="full-width">
-      <mat-select placeholder="Visible Log Sources" [(ngModel)]="messagesService.visibleSources" (ngModelChange)="messagesService.getFilteredMessages()" multiple>
+      <mat-select placeholder="Visible Log Sources" [(ngModel)]="messagesService.visibleSources" (ngModelChange)="messagesService.getFilteredMessages()"
+        multiple>
         <mat-option *ngFor="let messageSource of messageSources | enumToArray" [(value)]="messageSources[messageSource]">
           {{messageSource | titlecase}}
         </mat-option>

@@ -52,4 +52,6 @@ export class Resource {
   worker: Worker;
 
   resourceBeingStolen: boolean;
+
+  bindIndex: number;
 }

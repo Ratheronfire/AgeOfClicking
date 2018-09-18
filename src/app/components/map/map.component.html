@@ -1,28 +1,49 @@
 <div id="canvas-container" tabindex="1">
   <canvas class="noselect" appNoScroll appMap width="{{canvasWidth}}" height="{{canvasHeight}}" oncontextmenu="return false"></canvas>
 
-  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools" (valueChange)="clearFocus()">
+  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools"
+    (valueChange)="clearFocus()">
     <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
+      <div class="key-container">
+        <img src="../../../assets/sprites/key.png">
+        <p>Q</p>
+      </div>
       <mat-icon color="primary">add_photo_alternate</mat-icon>
       <br />
       Place Buildings
     </mat-button-toggle>
     <mat-button-toggle value="CLEARBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+      <div class="key-container">
+        <img src="../../../assets/sprites/key.png">
+        <p>W</p>
+      </div>
       <mat-icon color="primary">delete</mat-icon>
       <br />
       Clear Buildings
     </mat-button-toggle>
     <mat-button-toggle value="TILEDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+      <div class="key-container">
+        <img src="../../../assets/sprites/key.png">
+        <p>E</p>
+      </div>
       <mat-icon color="primary">mode_comment</mat-icon>
       <br />
       Tile Details
     </mat-button-toggle>
     <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
+      <div class="key-container">
+        <img src="../../../assets/sprites/key.png">
+        <p>R</p>
+      </div>
       <mat-icon color="primary">directions_walk</mat-icon>
       <br />
       Place Fighters
     </mat-button-toggle>
     <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+      <div class="key-container">
+        <img src="../../../assets/sprites/key.png">
+        <p>T</p>
+      </div>
       <mat-icon color="primary">directions_run</mat-icon>
       <br />
       Fighter Details

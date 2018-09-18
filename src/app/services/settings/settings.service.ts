@@ -28,6 +28,8 @@ export class SettingsService implements Tick {
   lastAutosave = this.autosaveInterval;
   debugMode = false;
 
+  resourceBinds = [1, 7, 8, 13, 26, 27, 2, 3, 4, 5];
+
   disableAnimations = false;
   slimInterface = false;
 

@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
+import { MatSelectChange } from '@angular/material';
 
 import { SettingsService } from '../../services/settings/settings.service';
+import { ResourcesService } from './../../services/resources/resources.service';
 import { MessagesService } from './../../services/messages/messages.service';
 import { MessageSource } from './../../objects/message';
 
@@ -11,11 +13,17 @@ import { MessageSource } from './../../objects/message';
   styleUrls: ['./settings.component.css']
 })
 export class SettingsComponent implements OnInit {
-  sources = new FormControl();
+  bindSelected = new FormControl();
+
   messageSources = MessageSource;
+  resourceBindErrorState = false;
 
   constructor(protected settingsService: SettingsService,
-              protected messagesService: MessagesService) { }
+              protected resourcesService: ResourcesService,
+              protected messagesService: MessagesService) {
+    this.bindSelected.setValue(this.resourceBinds);
+    this.resourceBindChange({'source': null, 'value': this.resourceBinds});
+  }
 
   ngOnInit() {
   }
@@ -38,13 +46,30 @@ export class SettingsComponent implements OnInit {
     }
   }
 
+  resourceBindChange(event: MatSelectChange) {
+    const limitExceeded = event.value.length > 10;
+    this.bindSelected.setErrors({'length': limitExceeded});
+
+    if (!limitExceeded) {
+      this.resourceBinds = event.value;
+
+      for (const resource of this.resourcesService.resources) {
+        resource.bindIndex = -1;
+      }
+
+      for (const resourceBind of this.resourceBinds) {
+        const resource = this.resourcesService.getResource(resourceBind);
+        resource.bindIndex = this.resourceBinds.indexOf(resourceBind);
+      }
+    }
+  }
+
   exportSave() {
     this.settingsService.openSaveDialog(this.settingsService.exportSave());
   }
 
   importSave() {
     this.settingsService.openSaveDialog();
-    // this.settingsService.importSave(prompt('Paste Save Data'));
   }
 
   get autosaveInterval() {
@@ -94,5 +119,12 @@ export class SettingsComponent implements OnInit {
   }
   set disableAnimations(value: boolean) {
     this.settingsService.disableAnimations = value;
+  }
+
+  get resourceBinds(): number[] {
+    return this.settingsService.resourceBinds;
+  }
+  set resourceBinds(value: number[]) {
+    this.settingsService.resourceBinds = value;
   }
 }

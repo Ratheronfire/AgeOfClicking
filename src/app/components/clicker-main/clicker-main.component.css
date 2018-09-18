@@ -98,3 +98,24 @@
   top: 0;
   left: 0;
 }
+
+.key-container {
+  position: absolute;
+  left: 50px;
+}
+
+.key-container img {
+  width: 24px;
+  height: 24px;
+}
+
+.key-container p {
+  z-index: 1;
+  position: absolute;
+
+  top: 9px;
+  right: 5px;
+
+  margin: 0;
+  line-height: 0;
+}

@@ -87,7 +87,7 @@ export class ResourcesService {
   }
 
   public harvestableResources(): Resource[] {
-    return this.resources.filter(resource => resource.harvestable);
+    return this.resources.filter(resource => resource.harvestable && resource.pathAvailable);
   }
 
   public sellableResources(): Resource[] {

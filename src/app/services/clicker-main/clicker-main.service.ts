@@ -4,9 +4,10 @@ import { timer } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
 import { WorkersService } from '../workers/workers.service';
-import { MapService } from '../map/map.service';
+import { MapService, CursorTool } from '../map/map.service';
 import { EnemyService } from './../enemy/enemy.service';
 import { MessagesService } from '../messages/messages.service';
+import { SettingsService } from '../settings/settings.service';
 import { AdminService } from '../admin/admin.service';
 import { Tick } from './../tick/tick.service';
 import { Resource, ResourceType } from '../../objects/resource';
@@ -25,7 +26,9 @@ export class ClickerMainService implements Tick {
               protected mapService: MapService,
               protected enemyService: EnemyService,
               protected messagesService: MessagesService,
+              protected settingsService: SettingsService,
               protected adminService: AdminService) {
+    document.addEventListener('keydown', (event) => this.processInput(event));
   }
 
   tick(elapsed: number, deltaTime: number) {
@@ -33,6 +36,58 @@ export class ClickerMainService implements Tick {
     for (const resource of this.resourcesService.resources.filter(_resource => _resource.harvesting)) {
       const millisecondsElapsed = elapsed - resource.harvestStartDate;
       resource.progressBarValue = Math.floor(millisecondsElapsed / resource.harvestMilliseconds * 100);
+    }
+  }
+
+  processInput(event: KeyboardEvent) {
+    if (event.repeat) {
+      return;
+    }
+
+    switch (event.key) {
+      case 'q': {
+        this.mapService.cursorTool = CursorTool.PlaceBuildings;
+        this.mapService.buildingListVisible = true;
+        this.mapService.fighterListVisible = false;
+        break;
+      } case 'w': {
+        this.mapService.cursorTool = CursorTool.ClearBuildings;
+        this.mapService.buildingListVisible = false;
+        this.mapService.fighterListVisible = false;
+        break;
+      } case 'e': {
+        this.mapService.cursorTool = CursorTool.TileDetail;
+        this.mapService.buildingListVisible = false;
+        this.mapService.fighterListVisible = false;
+        break;
+      } case 'r': {
+        if (!this.enemyService.enemiesActive) {
+          break;
+        }
+
+        this.mapService.cursorTool = CursorTool.PlaceFighters;
+        this.mapService.buildingListVisible = false;
+        this.mapService.fighterListVisible = true;
+        break;
+      } case 't': {
+        if (!this.enemyService.enemiesActive) {
+          break;
+        }
+
+        this.mapService.cursorTool = CursorTool.FighterDetail;
+        this.mapService.buildingListVisible = false;
+        this.mapService.fighterListVisible = false;
+        break;
+      }
+    }
+
+    if (!isNaN(+event.key)) {
+      const resourceId = this.settingsService.resourceBinds[+event.key];
+      const resource = this.resourcesService.getResource(resourceId);
+
+      if (resource && !resource.harvesting) {
+        this.startHarvesting(resourceId);
+      }
     }
   }
 
