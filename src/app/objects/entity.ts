@@ -2,6 +2,18 @@ import { BuildingTileType, Tile } from './tile';
 import { Vector } from './vector';
 import { tilePixelSize } from '../globals';
 import { Tick } from './../services/tick/tick.service';
+import { ResourcesService } from '../services/resources/resources.service';
+import { EnemyService } from './../services/enemy/enemy.service';
+import { MapService } from './../services/map/map.service';
+
+export enum FighterStats {
+  Attack = 'ATTACK',
+  Defense = 'DEFENSE',
+  Range = 'RANGE',
+  MovementSpeed = 'MOVEMENTSPEED',
+  FireRate = 'FIRERATE',
+  MaxHealth = 'MAXHEALTH'
+}
 
 export class Entity implements Tick {
   name: string;
@@ -142,18 +154,137 @@ export class Fighter extends Actor {
   description: string;
 
   targetEnemy: Enemy;
-
   cost: number;
-
   moveable: boolean;
 
+  fireMilliseconds: number;
+  lastFire = 0;
+
+  statLevels = {};
+  statCosts = {};
+
+  resourcesService: ResourcesService;
+  enemyService: EnemyService;
+  mapService: MapService;
+
   public constructor(name: string, position: Vector, currentTile: Tile,
-      health: number, animationSpeed = 0.003, attack: number, defense: number,
-      attackRange: number, description: string, cost: number, moveable: boolean) {
+      health: number, animationSpeed, attack: number, defense: number,
+      attackRange: number, description: string, cost: number, moveable: boolean, fireMilliseconds: number,
+      resourcesService: ResourcesService, enemyService: EnemyService, mapService: MapService) {
     super(name, position, currentTile, health, animationSpeed, attack, defense, attackRange);
+
+    this.description = description;
 
     this.cost = cost;
     this.moveable = moveable;
+
+    this.fireMilliseconds = fireMilliseconds;
+
+    this.statLevels[FighterStats.Attack] = 1;
+    this.statLevels[FighterStats.Defense] = 1;
+    this.statLevels[FighterStats.FireRate] = 1;
+    this.statLevels[FighterStats.MovementSpeed] = 1;
+    this.statLevels[FighterStats.Range] = 1;
+    this.statLevels[FighterStats.MaxHealth] = 1;
+
+    this.statCosts[FighterStats.Attack] = 1500;
+    this.statCosts[FighterStats.Defense] = 1500;
+    this.statCosts[FighterStats.FireRate] = 1500;
+    this.statCosts[FighterStats.MovementSpeed] = 1500;
+    this.statCosts[FighterStats.Range] = 1500;
+    this.statCosts[FighterStats.MaxHealth] = 1500;
+
+    this.resourcesService = resourcesService;
+    this.enemyService = enemyService;
+    this.mapService = mapService;
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    if (elapsed - this.lastFire > this.fireMilliseconds) {
+      const enemiesInRange = this.enemyService.enemies.filter(
+        enemy => Math.abs(Math.sqrt((this.x - enemy.x) ** 2 + (this.y - enemy.y) ** 2)) / 16 <= this.attackRange);
+
+      const targetedEnemy = enemiesInRange[Math.floor(Math.random() * enemiesInRange.length)];
+
+      if (targetedEnemy) {
+        this.mapService.spawnProjectile(this, targetedEnemy);
+      }
+
+      this.lastFire = elapsed;
+    }
+  }
+
+  public canUpgradeStat(stat: FighterStats): boolean {
+    return this.resourcesService.getResource(0).amount >= this.statCosts[stat];
+  }
+
+  public getUpgradedStat(stat: FighterStats): number {
+    switch (stat) {
+      case FighterStats.Attack: {
+        return this.attack * 1.2;
+      } case FighterStats.Defense: {
+        return this.defense * 1.2;
+      }  case FighterStats.FireRate: {
+        return this.fireMilliseconds / 1.1;
+      } case FighterStats.MovementSpeed: {
+        return this.animationSpeed * 1.2;
+      } case FighterStats.Range: {
+        return this.attackRange + 1;
+      } case FighterStats.MaxHealth: {
+        return Math.floor(this.maxHealth * 1.2);
+      }
+    }
+  }
+
+  public upgradeStat(stat: FighterStats) {
+    if (!this.canUpgradeStat(stat)) {
+      return;
+    }
+
+    this.resourcesService.addResourceAmount(0, -this.statCosts[stat]);
+
+    const upgradedStat = this.getUpgradedStat(stat);
+    switch (stat) {
+      case FighterStats.Attack: {
+        this.attack = upgradedStat;
+        break;
+      } case FighterStats.Defense: {
+        this.defense = upgradedStat;
+        break;
+      }  case FighterStats.FireRate: {
+        this.fireMilliseconds = upgradedStat;
+        break;
+      } case FighterStats.MovementSpeed: {
+        this.animationSpeed = upgradedStat;
+        break;
+      } case FighterStats.Range: {
+        this.attackRange = upgradedStat;
+        break;
+      } case FighterStats.MaxHealth {
+        this.maxHealth = upgradedStat;
+        this.health = this.maxHealth;
+      }
+    }
+
+    this.statLevels[stat]++;
+    this.statCosts[stat] *= 1.5;
+  }
+
+  public canHeal(): boolean {
+    return this.resourcesService.getResource(0).amount >= this.healCost;
+  }
+
+  public heal() {
+    if (!this.canHeal()) {
+      return;
+    }
+
+    this.resourcesService.addResourceAmount(0, -this.healCost);
+    this.health = this.maxHealth;
+  }
+
+  public get healCost() {
+    return (this.cost / this.maxHealth) * 0.65 * (this.maxHealth - this.health);
   }
 }
 

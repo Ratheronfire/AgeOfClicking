@@ -44,23 +44,23 @@ export class ClickerMainService implements Tick {
       return;
     }
 
-    switch (event.key) {
-      case 'q': {
+    switch (event.code) {
+      case 'KeyQ': {
         this.mapService.cursorTool = CursorTool.PlaceBuildings;
         this.mapService.buildingListVisible = true;
         this.mapService.fighterListVisible = false;
         break;
-      } case 'w': {
+      } case 'KeyW': {
         this.mapService.cursorTool = CursorTool.ClearBuildings;
         this.mapService.buildingListVisible = false;
         this.mapService.fighterListVisible = false;
         break;
-      } case 'e': {
+      } case 'KeyE': {
         this.mapService.cursorTool = CursorTool.TileDetail;
         this.mapService.buildingListVisible = false;
         this.mapService.fighterListVisible = false;
         break;
-      } case 'r': {
+      } case 'KeyR': {
         if (!this.enemyService.enemiesActive) {
           break;
         }
@@ -69,7 +69,7 @@ export class ClickerMainService implements Tick {
         this.mapService.buildingListVisible = false;
         this.mapService.fighterListVisible = true;
         break;
-      } case 't': {
+      } case 'KeyT': {
         if (!this.enemyService.enemiesActive) {
           break;
         }
@@ -81,8 +81,10 @@ export class ClickerMainService implements Tick {
       }
     }
 
-    if (!isNaN(+event.key)) {
-      const resourceId = this.settingsService.resourceBinds[+event.key];
+    const keyDigit = +event.code.replace('Digit', '').replace('Numpad', '');
+
+    if (!isNaN(keyDigit)) {
+      const resourceId = this.settingsService.resourceBinds[keyDigit];
       const resource = this.resourcesService.getResource(resourceId);
 
       if (resource && !resource.harvesting) {

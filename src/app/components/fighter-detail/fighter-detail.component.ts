@@ -20,6 +20,17 @@ export class FighterDetailComponent implements OnInit {
   ngOnInit() {
   }
 
+  removeFighter() {
+    if (!this.focusedFighter) {
+      return;
+    }
+
+    this.focusedFighter.health = 0;
+
+    this.focusedTile = undefined;
+    this.focusedFighter = undefined;
+  }
+
   getResource(resourceId: number): Resource {
     return this.resourcesService.getResource(resourceId);
   }

@@ -2,40 +2,151 @@
   <div *ngIf="focusedFighter">
     <mat-card-title>{{focusedFighter.name}}</mat-card-title>
     <mat-card-subtitle>{{focusedFighter.description}}</mat-card-subtitle>
+
     <div class="repair-container">
       {{focusedFighter.health}}/{{focusedFighter.maxHealth}} Health
       <div *ngIf="focusedFighter.health < focusedFighter.maxHealth">
-        <!-- <button mat-raised-button (click)="repairBuilding(focusedTile)" color="accent" [disabled]="!canRepairBuilding(focusedTile)">
+        <button mat-raised-button (click)="focusedFighter.heal()" color="accent" [disabled]="!focusedFighter.canHeal()">
           Heal
           <div class="resource-list">
-            <div matTooltip="{{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}} {{getResource(focusedBuildingTile.repairResource).name | titlecase}}"
+            <div matTooltip="{{focusedFighter.healCost | number:'1.0-2'}} {{getResource(0).name | titlecase}}"
               matTooltipPosition="below">
-              <img src="{{getResource(focusedBuildingTile.repairResource).iconPath}}" alt="{{getResource(focusedBuildingTile.repairResource).name}}">
-              {{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}}
+              <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+              {{focusedFighter.healCost | number:'1.0-2'}}
             </div>
           </div>
-        </button> -->
+        </button>
       </div>
     </div>
 
     <mat-card-content>
-      <!-- <br />
-    Upgrade:
-    <br />
-    <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding])">
-      <div class="title" matTooltip="{{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].description}}"
-        matTooltipPosition="above">
-        {{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].name}}
-      </div>
-      <div class="resource-list">
-        <div *ngFor="let resourceCost of mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].resourceCosts"
-          matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
-          matTooltipPosition="below">
-          <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
-          {{resourceCost.resourceCost}}
+
+      <button mat-raised-button color="warn" (click)="removeFighter()">Remove Fighter</button>
+
+      <h3>Stats</h3>
+      <div class="stats-container">
+        <div class="stat-row">
+          <p>
+            Max Health: {{focusedFighter.maxHealth | number:'1.0-2'}}
+          </p>
+          <em>
+            Level {{focusedFighter.statLevels['MAXHEALTH']}}
+          </em>
+          <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('MAXHEALTH')"
+            [disabled]="!focusedFighter.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedFighter.statLevels['MAXHEALTH'] + 1}}: {{focusedFighter.getUpgradedStat('ATTACK') | number:'1.0-2'}} Max Health"
+            matTooltipPosition="below">
+            <mat-icon color="primary">arrow_upward</mat-icon>
+            <div class="resource-list">
+              <div>
+                <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                {{focusedFighter.statCosts['MAXHEALTH'] | number:'1.0-0'}}
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="stat-row">
+          <p>
+            Attack: {{focusedFighter.attack | number:'1.0-2'}}
+          </p>
+          <em>
+            Level {{focusedFighter.statLevels['ATTACK']}}
+          </em>
+          <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('ATTACK')"
+            [disabled]="!focusedFighter.canUpgradeStat('ATTACK')" matTooltip="Level {{focusedFighter.statLevels['ATTACK'] + 1}}: {{focusedFighter.getUpgradedStat('ATTACK') | number:'1.0-2'}} Attack"
+            matTooltipPosition="below">
+            <mat-icon color="primary">arrow_upward</mat-icon>
+            <div class="resource-list">
+              <div>
+                <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                {{focusedFighter.statCosts['ATTACK'] | number:'1.0-0'}}
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="stat-row">
+          <p>
+            Defense: {{focusedFighter.defense | number:'1.0-2'}}
+          </p>
+          <em>
+            Level {{focusedFighter.statLevels['DEFENSE']}}
+          </em>
+          <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('DEFENSE')"
+            [disabled]="!focusedFighter.canUpgradeStat('DEFENSE')" matTooltip="Level {{focusedFighter.statLevels['DEFENSE'] + 1}}: {{focusedFighter.getUpgradedStat('DEFENSE') | number:'1.0-2'}} Defense"
+            matTooltipPosition="below">
+            <mat-icon color="primary">arrow_upward</mat-icon>
+            <div class="resource-list">
+              <div>
+                <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                {{focusedFighter.statCosts['DEFENSE'] | number:'1.0-0'}}
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="stat-row">
+          <p>
+            Attack Range: {{focusedFighter.attackRange | number:'1.0-2'}}
+            Tile{{focusedFighter.attackRange === 1 ? '' : 's'}}
+          </p>
+          <em>
+            Level {{focusedFighter.statLevels['RANGE']}}
+          </em>
+          <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('RANGE')"
+            [disabled]="!focusedFighter.canUpgradeStat('RANGE')" matTooltip="Level {{focusedFighter.statLevels['RANGE'] + 1}}: {{focusedFighter.getUpgradedStat('RANGE') | number:'1.0-2'}} Attack Range"
+            matTooltipPosition="below">
+            <mat-icon color="primary">arrow_upward</mat-icon>
+            <div class="resource-list">
+              <div>
+                <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                {{focusedFighter.statCosts['RANGE'] | number:'1.0-0'}}
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="stat-row" *ngIf="focusedFighter.moveable">
+          <p>
+            Movement Speed: {{focusedFighter.animationSpeed * 100 | number:'1.0-2'}}
+            Tile{{focusedFighter.animationSpeed === 1 ? '' : 's'}}/second
+          </p>
+          <em>
+            Level {{focusedFighter.statLevels['MOVEMENTSPEED']}}
+          </em>
+          <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('MOVEMENTSPEED')"
+            [disabled]="!focusedFighter.canUpgradeStat('MOVEMENTSPEED')" matTooltip="Level {{focusedFighter.statLevels['MOVEMENTSPEED'] + 1}}: {{focusedFighter.getUpgradedStat('MOVEMENTSPEED') * 100 | number:'1.0-2'}} Tiles/Second"
+            matTooltipPosition="below">
+            <mat-icon color="primary">arrow_upward</mat-icon>
+            <div class="resource-list">
+              <div>
+                <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                {{focusedFighter.statCosts['MOVEMENTSPEED'] | number:'1.0-0'}}
+              </div>
+            </div>
+          </button>
+        </div>
+
+        <div class="stat-row">
+          <p>
+            Fire Rate: {{focusedFighter.fireMilliseconds | number:'1.0-2'}}/Second
+          </p>
+          <em>
+            Level {{focusedFighter.statLevels['FIRERATE']}}
+          </em>
+          <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('FIRERATE')"
+            [disabled]="!focusedFighter.canUpgradeStat('FIRERATE')" matTooltip="Level {{focusedFighter.statLevels['FIRERATE'] + 1}}: {{focusedFighter.getUpgradedStat('FIRERATE') | number:'1.0-2'}}/Second"
+            matTooltipPosition="below">
+            <mat-icon color="primary">arrow_upward</mat-icon>
+            <div class="resource-list">
+              <div>
+                <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                {{focusedFighter.statCosts['FIRERATE'] | number:'1.0-0'}}
+              </div>
+            </div>
+          </button>
         </div>
       </div>
-    </button> -->
     </mat-card-content>
   </div>
 </mat-card>

@@ -86,6 +86,10 @@ export class ResourcesService {
     return resources;
   }
 
+  public getPlayerScore(): number {
+    return this.resources.map(resource => resource.amount * resource.resourceTier).reduce((total, amount) => total += amount);
+  }
+
   public harvestableResources(): Resource[] {
     return this.resources.filter(resource => resource.harvestable && resource.pathAvailable);
   }

@@ -229,7 +229,9 @@ export class SettingsService implements Tick {
         attack: fighter.attack,
         defense: fighter.defense,
         attackRange: fighter.attackRange,
-        moveable: fighter.moveable
+        moveable: fighter.moveable,
+        fireMilliseconds: fighter.fireMilliseconds,
+        cost: fighter.cost
       });
     }
 
@@ -344,8 +346,12 @@ export class SettingsService implements Tick {
           const tile = this.mapService.getTile(tilePosition[0], tilePosition[1]);
 
           const fighter = new Fighter(fighterData.name, new Vector(fighterData.position.x, fighterData.position.y),
-            tile, fighterData.health, fighterData.animationSpeed, fighterData.attack, fighterData.defense,
-            fighterData.attackRange, fighterData.description, 0, fighterData.moveable);
+            tile, fighterData.health, fighterData.animationSpeed, fighterData.attack,
+            fighterData.defense, fighterData.attackRange, fighterData.description,
+            fighterData.cost ? fighterData.cost : 50, fighterData.moveable,
+            fighterData.fireMilliseconds ? fighterData.fireMilliseconds : 1000,
+            this.resourcesService, this.enemyService, this.mapService);
+          fighter.maxHealth = fighterData.maxHealth;
 
           this.fighterService.fighters.push(fighter);
         }

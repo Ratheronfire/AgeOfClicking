@@ -69,9 +69,7 @@ export class EnemyService implements Tick {
       return aDist - bDist;
     });
 
-    const accessibleTargets = enemy.targets.filter(target => target.accessible);
-    const selectedTarget = accessibleTargets[Math.floor(Math.random() * accessibleTargets.length)];
-    enemy.targetIndex = enemy.targets.indexOf(selectedTarget);
+    enemy.targetIndex = enemy.targets.indexOf(sortedTargets[0]);
 
     enemy.pathStep = 0;
     enemy.pathingDone = false;
@@ -92,7 +90,7 @@ export class EnemyService implements Tick {
         enemy.targets[enemy.targetIndex].accessible = false;
 
         if (enemy.pathAttempt >= this.maxPathRetryCount) {
-          this.killEnemy(enemy);
+          this.killEnemy(enemy, true);
         }
 
         this.finishTask(enemy);
@@ -101,8 +99,8 @@ export class EnemyService implements Tick {
   }
 
   openPortal(tile: Tile) {
-    if (this.activePortalTile) {
-      this.activePortalTile.buildingTileType = undefined;
+    for (const existingTile of this.mapService.tiledMap.filter(_tile => _tile.buildingTileType === BuildingTileType.EnemyPortal)) {
+      existingTile.buildingTileType = undefined;
     }
 
     tile.buildingTileType = BuildingTileType.EnemyPortal;
@@ -131,9 +129,13 @@ export class EnemyService implements Tick {
     const spawnPoint = this.activePortalTile;
     const enemyType = this.enemyTypes[enemyIndex];
 
-    const enemy = new Enemy(enemyType.name, new Vector(spawnPoint.x, spawnPoint.y), spawnPoint, enemyType.health,
-      0.003, enemyType.attack, enemyType.defense, enemyType.attackRange, enemyType.targetableBuildingTypes,
-      enemyType.resourcesToSteal, enemyType.stealMax, enemyType.resourceCapacity);
+    const difficultyModifier = Math.max(1, Math.random() * this.resourcesService.getPlayerScore() / 50000);
+    const animationSpeed = Math.min(0.008, 0.003 + difficultyModifier / 10000);
+
+    const enemy = new Enemy(enemyType.name, new Vector(spawnPoint.x, spawnPoint.y), spawnPoint, enemyType.health * difficultyModifier,
+      animationSpeed, enemyType.attack * difficultyModifier, enemyType.defense * difficultyModifier,
+      enemyType.attackRange, enemyType.targetableBuildingTypes, enemyType.resourcesToSteal,
+      enemyType.stealMax * difficultyModifier, enemyType.resourceCapacity * difficultyModifier);
 
     this.findTargets(enemy);
     this.pickTarget(enemy);
@@ -232,7 +234,7 @@ export class EnemyService implements Tick {
     }
   }
 
-  killEnemy(enemy: Enemy) {
+  killEnemy(enemy: Enemy, killSilently = false) {
     let enemyDefeatedMessage = 'An enemy has been defeated!';
 
     if (enemy.totalHeld > 0) {
@@ -253,7 +255,9 @@ export class EnemyService implements Tick {
       enemyDefeatedMessage = enemyDefeatedMessage.slice(0, enemyDefeatedMessage.length - 1) + '.';
     }
 
-    this.log(enemyDefeatedMessage);
+    if (!killSilently) {
+      this.log(enemyDefeatedMessage);
+    }
 
     this.enemies = this.enemies.filter(_enemy => _enemy !== enemy);
   }

@@ -4,7 +4,7 @@
     "description": "A stationary archer, capable of shooting at one target per second.",
     "health": 15,
     "maxHealth": 15,
-    "cost": 50,
+    "cost": 500,
     "attack": 5,
     "defense": 5,
     "movable": false,

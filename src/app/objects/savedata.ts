@@ -83,7 +83,11 @@ export interface FighterData {
   defense: number;
   attackRange: number;
 
+  cost: number;
+
   moveable: boolean;
+
+  fireMilliseconds: number;
 }
 
 export interface SettingsData {

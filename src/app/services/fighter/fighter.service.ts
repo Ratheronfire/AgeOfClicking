@@ -26,11 +26,11 @@ export class FighterService implements Tick {
   constructor(protected resourcesService: ResourcesService,
               protected enemyService: EnemyService,
               protected mapService: MapService) {
-    const processSource = timer(1000, 1000);
-    const processSubscribe = processSource.subscribe(_ => this.processFighters());
   }
 
   tick(elapsed: number, deltaTime: number) {
+    this.fighters.map(fighter => fighter.tick(elapsed, deltaTime));
+
     this.fighters = this.fighters.filter(fighter => fighter.health > 0);
   }
 
@@ -62,7 +62,8 @@ export class FighterService implements Tick {
     this.resourcesService.addResourceAmount(0, -fighterType.cost);
 
     const fighter = new Fighter(fighterType.name, new Vector(tile.x, tile.y), tile, fighterType.health, 0.003, fighterType.attack,
-      fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.moveable);
+      fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.moveable, 1000,
+      this.resourcesService, this.enemyService, this.mapService);
 
     this.fighters.push(fighter);
   }

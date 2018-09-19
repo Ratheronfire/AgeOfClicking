@@ -38,7 +38,8 @@ export class ResourceDialogComponent implements OnInit {
     resourceTier: 0,
     previousTier: 0,
     worker: { workable: true, workerCount: 0, cost: 50 },
-    resourceBeingStolen: false
+    resourceBeingStolen: false,
+    bindIndex: -1
   };
   resourceWorker: ResourceWorker = this.workersService.getResourceWorker(0);
 

@@ -85,3 +85,7 @@ app-buildings {
 app-fighter {
   position: absolute;
 }
+
+.upgrade-button .mat-button-wrapper {
+  display: inline-flex;
+}
