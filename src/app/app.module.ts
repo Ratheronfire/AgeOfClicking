@@ -28,6 +28,7 @@ import { FighterComponent } from './components/fighter/fighter.component';
 import { BuildingsComponent } from './components/buildings/buildings/buildings.component';
 import { TileDetailComponent } from './components/tile-detail/tile-detail.component';
 import { FighterDetailComponent } from './components/fighter-detail/fighter-detail.component';
+import { SnapDirective } from './directives/snap/snap.directive';
 
 @NgModule({
   declarations: [
@@ -51,7 +52,8 @@ import { FighterDetailComponent } from './components/fighter-detail/fighter-deta
     FighterComponent,
     BuildingsComponent,
     TileDetailComponent,
-    FighterDetailComponent
+    FighterDetailComponent,
+    SnapDirective
   ],
   imports: [
     BrowserModule,

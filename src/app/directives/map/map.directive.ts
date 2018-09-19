@@ -263,8 +263,8 @@ export class MapDirective implements AfterViewInit, Tick {
 
     if (this.mapService.focusedTile) {
       const tooltipPosition = this.getTooltipPosition(this.mapService.focusedTile.position);
-      this.tileTooltip.style.setProperty('--detail-tooltip-top', tooltipPosition.x + 'px');
-      this.tileTooltip.style.setProperty('--detail-tooltip-left', tooltipPosition.y + 'px');
+      this.tileTooltip.style.setProperty('--detail-tooltip-left', tooltipPosition.x + 'px');
+      this.tileTooltip.style.setProperty('--detail-tooltip-top', tooltipPosition.y + 'px');
 
       this.context.globalAlpha = 0.5;
       this.context.fillStyle = 'cyan';
@@ -279,8 +279,8 @@ export class MapDirective implements AfterViewInit, Tick {
       const fighter = this.mapService.focusedFighter;
 
       const tooltipPosition = this.getTooltipPosition(fighter.position);
-      this.fighterTooltip.style.setProperty('--detail-tooltip-top', tooltipPosition.x + 'px');
-      this.fighterTooltip.style.setProperty('--detail-tooltip-left', tooltipPosition.y + 'px');
+      this.fighterTooltip.style.setProperty('--detail-tooltip-left', tooltipPosition.x + 'px');
+      this.fighterTooltip.style.setProperty('--detail-tooltip-top', tooltipPosition.y + 'px');
 
       this.context.globalAlpha = 0.5;
       this.context.fillStyle = 'cyan';
@@ -296,10 +296,8 @@ export class MapDirective implements AfterViewInit, Tick {
   }
 
   getTooltipPosition(targetPosition: Vector): Vector {
-    const mapBounds = this.element.nativeElement.getBoundingClientRect();
-
-    return new Vector(targetPosition.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight,
-      (targetPosition.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x + mapBounds.left);
+    return new Vector((targetPosition.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x,
+                      targetPosition.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight);
   }
 
   drawTile(position: Vector, image: HTMLImageElement, scale: number = 1, healthRatio: number = 1) {

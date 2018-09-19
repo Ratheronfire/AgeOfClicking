@@ -41,6 +41,7 @@ nav a.active {
 #canvas-container {
   display: flex;
   height: 100%;
+  position: relative;
 }
 
 .cursor-tools {

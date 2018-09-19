@@ -260,7 +260,7 @@ export class Fighter extends Actor {
       } case FighterStats.Range: {
         this.attackRange = upgradedStat;
         break;
-      } case FighterStats.MaxHealth {
+      } case FighterStats.MaxHealth: {
         this.maxHealth = upgradedStat;
         this.health = this.maxHealth;
       }

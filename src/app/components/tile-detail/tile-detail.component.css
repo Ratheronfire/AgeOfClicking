@@ -28,3 +28,84 @@ mat-card {
   position: relative;
   top: -25%;
 }
+
+.anchor-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+
+  width: 55px;
+  height: 55px;
+}
+
+.anchor-container #center {
+  position: absolute;
+
+  left: 15px;
+  top: 15px;
+}
+
+.anchor-container .corner {
+  display: none;
+}
+
+.anchor-container:hover .corner {
+  display: inherit;
+}
+
+.anchor-container a {
+  cursor: pointer;
+  color: gray;
+}
+
+.anchor-container a:hover {
+  color: black;
+}
+
+.anchor-container #arrow-upper-left {
+  -webkit-transform: rotate(225deg);
+  -moz-transform: rotate(225deg);
+  -ms-transform: rotate(225deg);
+  -o-transform: rotate(225deg);
+  transform: rotate(225deg);
+
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.anchor-container #arrow-upper-right {
+  -webkit-transform: rotate(315deg);
+  -moz-transform: rotate(315deg);
+  -ms-transform: rotate(315deg);
+  -o-transform: rotate(315deg);
+  transform: rotate(315deg);
+
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.anchor-container #arrow-lower-left {
+  -webkit-transform: rotate(135deg);
+  -moz-transform: rotate(135deg);
+  -ms-transform: rotate(135deg);
+  -o-transform: rotate(135deg);
+  transform: rotate(135deg);
+
+  position: absolute;
+  bottom: 0;
+  left: 0;
+}
+
+.anchor-container #arrow-lower-right {
+  -webkit-transform: rotate(45deg);
+  -moz-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  -o-transform: rotate(45deg);
+  transform: rotate(45deg);
+
+  position: absolute;
+  bottom: 0;
+  right: 0;
+}

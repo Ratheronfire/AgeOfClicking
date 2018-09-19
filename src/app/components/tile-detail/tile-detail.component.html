@@ -1,4 +1,21 @@
-<mat-card id="tile-tooltip">
+<mat-card appSnap [snapSetting]="snapSetting" id="tile-tooltip">
+  <div class="anchor-container">
+    <a>
+      <mat-icon class="corner" id="arrow-upper-left" (click)="snapSetting = 'upperLeft'">arrow_forward</mat-icon>
+    </a>
+    <a>
+      <mat-icon class="corner" id="arrow-upper-right" (click)="snapSetting = 'upperRight'">arrow_forward</mat-icon>
+    </a>
+    <a>
+      <mat-icon id="center" (click)="snapSetting = 'free'">all_out</mat-icon>
+    </a>
+    <a>
+      <mat-icon class="corner" id="arrow-lower-left" (click)="snapSetting = 'lowerLeft'">arrow_forward</mat-icon>
+    </a>
+    <a>
+      <mat-icon class="corner" id="arrow-lower-right" (click)="snapSetting = 'lowerRight'">arrow_forward</mat-icon>
+    </a>
+  </div>
   <div *ngIf="focusedBuildingTile">
     <mat-card-title>{{focusedBuildingTile.name}}</mat-card-title>
     <mat-card-subtitle>{{focusedBuildingTile.description}}</mat-card-subtitle>

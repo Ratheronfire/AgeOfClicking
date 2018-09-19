@@ -52,7 +52,7 @@
 
   <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>
   <app-fighter *ngIf="mapService.fighterListVisible"></app-fighter>
-</div>
 
-<app-tile-detail [ngClass]="{'hidden': !mapService.focusedBuildingTile && !mapService.focusedResourceTile}"></app-tile-detail>
-<app-fighter-detail [ngClass]="{'hidden': !mapService.focusedFighter}"></app-fighter-detail>
+  <app-tile-detail [ngClass]="{'hidden': !mapService.focusedBuildingTile && !mapService.focusedResourceTile}"></app-tile-detail>
+  <app-fighter-detail [ngClass]="{'hidden': !mapService.focusedFighter}"></app-fighter-detail>
+</div>

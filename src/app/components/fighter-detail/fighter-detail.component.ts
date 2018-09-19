@@ -13,6 +13,8 @@ import { Fighter } from './../../objects/entity';
   styleUrls: ['./fighter-detail.component.css']
 })
 export class FighterDetailComponent implements OnInit {
+  snapSetting = 'free';
+
   constructor(protected mapService: MapService,
               protected buildingsService: BuildingsService,
               protected resourcesService: ResourcesService) { }
