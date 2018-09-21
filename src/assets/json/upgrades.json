@@ -256,11 +256,11 @@
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 24,
+    "resourceId": 23,
     "resourceCost": 1500
   }, {
     "resourceId": 16,
-    "resourceCost": 1000
+    "resourceCost": 10
   }, {
     "resourceId": 31,
     "resourceCost": 750

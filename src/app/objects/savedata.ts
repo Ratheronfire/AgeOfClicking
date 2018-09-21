@@ -1,5 +1,6 @@
 import { Vector } from './vector';
 import { MapTileType, ResourceTileType, BuildingTileType, Tile, TileCropDetail } from './tile';
+import { MessageSource } from '../objects/message';
 
 export interface ResourceData {
   id: number;
@@ -88,11 +89,17 @@ export interface FighterData {
   moveable: boolean;
 
   fireMilliseconds: number;
+
+  statLevels: {};
+  statCosts: {};
 }
 
 export interface SettingsData {
   autosaveInterval: number;
   debugMode: boolean;
+
+  resourceBinds: number[];
+  visibleSources: MessageSource[];
 
   enemiesActive: boolean;
 

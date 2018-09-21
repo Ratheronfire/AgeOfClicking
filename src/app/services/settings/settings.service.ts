@@ -25,7 +25,7 @@ export class SettingsService implements Tick {
   versionHistory = ['1.2', 'Alpha 3'];
   gameVersion = 'Alpha 3';
 
-  autosaveInterval = 900000;
+  autosaveInterval = 60000;
   lastAutosave = this.autosaveInterval;
   debugMode = false;
 
@@ -36,9 +36,6 @@ export class SettingsService implements Tick {
 
   mapDetailMode = true;
   mapLowFramerate = false;
-
-  autosaveSource: Observable<number>;
-  autosaveSubscribe: Subscription;
 
   harvestDetailColor = '#a4ff89';
   workerDetailColor = '#ae89ff';
@@ -126,6 +123,8 @@ export class SettingsService implements Tick {
       settings: {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
+        resourceBinds: this.resourceBinds,
+        visibleSources: this.messagesService.visibleSources,
         enemiesActive: this.enemyService.enemiesActive,
         slimInterface: this.slimInterface,
         mapLowFramerate: this.mapLowFramerate,
@@ -231,7 +230,9 @@ export class SettingsService implements Tick {
         attackRange: fighter.attackRange,
         moveable: fighter.moveable,
         fireMilliseconds: fighter.fireMilliseconds,
-        cost: fighter.cost
+        cost: fighter.cost,
+        statLevels: fighter.statLevels,
+        statCosts: fighter.statCosts
       });
     }
 
@@ -354,6 +355,13 @@ export class SettingsService implements Tick {
             this.resourcesService, this.enemyService, this.mapService);
           fighter.maxHealth = fighterData.maxHealth;
 
+          if (fighterData.statLevels) {
+            fighter.statLevels = fighterData.statLevels;
+          }
+          if (fighterData.statCosts) {
+            fighter.statCosts = fighterData.statCosts;
+          }
+
           this.fighterService.fighters.push(fighter);
         }
       }
@@ -361,6 +369,13 @@ export class SettingsService implements Tick {
       if (saveData.settings !== undefined) {
         this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
         this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
+
+        this.resourceBinds = saveData.settings.resourceBinds ? saveData.settings.resourceBinds : [1, 7, 8, 13, 26, 27, 2, 3, 4, 5];
+
+        this.messagesService.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
+          [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
+            MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
+            MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
 
         this.enemyService.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
 
