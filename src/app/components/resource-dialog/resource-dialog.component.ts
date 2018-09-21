@@ -49,12 +49,11 @@ export class ResourceDialogComponent implements OnInit {
 
   resourceTypes = ResourceType;
 
-  constructor(
-    protected resourcesService: ResourcesService,
-    protected workersService: WorkersService,
-    protected _formBuilder: FormBuilder,
-    public dialogRef: MatDialogRef<ResourceDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: any) {}
+  constructor(public resourcesService: ResourcesService,
+              public workersService: WorkersService,
+              public _formBuilder: FormBuilder,
+              public dialogRef: MatDialogRef<ResourceDialogComponent>,
+              @Inject(MAT_DIALOG_DATA) public data: any) {}
 
 
   ngOnInit() {

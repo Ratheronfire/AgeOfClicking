@@ -18,9 +18,9 @@ export class SettingsComponent implements OnInit {
   messageSources = MessageSource;
   resourceBindErrorState = false;
 
-  constructor(protected settingsService: SettingsService,
-              protected resourcesService: ResourcesService,
-              protected messagesService: MessagesService) {
+  constructor(public settingsService: SettingsService,
+              public resourcesService: ResourcesService,
+              public messagesService: MessagesService) {
     this.bindSelected.setValue(this.resourceBinds);
     this.resourceBindChange({'source': null, 'value': this.resourceBinds});
   }

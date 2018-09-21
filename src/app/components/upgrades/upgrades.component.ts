@@ -16,10 +16,10 @@ export class UpgradesComponent implements OnInit {
   upgradeTypes = UpgradeType;
   hidePurchased = true;
 
-  constructor(protected resourcesService: ResourcesService,
-              protected upgradesService: UpgradesService,
-              protected settingsService: SettingsService,
-              protected adminService: AdminService) { }
+  constructor(public resourcesService: ResourcesService,
+              public upgradesService: UpgradesService,
+              public settingsService: SettingsService,
+              public adminService: AdminService) { }
 
   ngOnInit() {
   }

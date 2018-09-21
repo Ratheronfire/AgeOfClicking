@@ -26,16 +26,16 @@ export class AppComponent {
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
 
-    window.onbeforeunload = event => {
-      const message = 'Are you sure you want to leave this page? Unsaved data will be lost.';
-      if (!event) {
-        event = window.event;
-      }
+    // window.onbeforeunload = event => {
+    //   const message = 'Are you sure you want to leave this page? Unsaved data will be lost.';
+    //   if (!event) {
+    //     event = window.event;
+    //   }
 
-      event.returnValue = message;
+    //   event.returnValue = message;
 
-      return message;
-    };
+    //   return message;
+    // };
   }
 
   get affordableUpgradeCount(): number {

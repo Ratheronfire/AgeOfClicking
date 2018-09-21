@@ -97,7 +97,7 @@ export class ClickerMainService implements Tick {
     const resource = this.resourcesService.getResource(id);
     resource.harvestStartDate = this.timeElapsed;
 
-    if (!this.resourcesService.canHarvest(id)) {
+    if (!this.resourcesService.canHarvest(id, resource.harvestYield)) {
       return;
     }
 

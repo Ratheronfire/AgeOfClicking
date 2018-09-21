@@ -15,14 +15,13 @@ import { UpgradesService } from '../../services/upgrades/upgrades.service';
 export class AdminDebugComponent implements OnInit {
   public filterAccessible = true;
 
-  protected selectedResource: Resource;
+  public selectedResource: Resource;
   amount = 0;
 
-  constructor(
-    protected resourcesService: ResourcesService,
-    protected workersService: WorkersService,
-    protected upgradesService: UpgradesService,
-    protected adminService: AdminService
+  constructor(public resourcesService: ResourcesService,
+              public workersService: WorkersService,
+              public upgradesService: UpgradesService,
+              public adminService: AdminService
   ) {}
 
   ngOnInit() {}
@@ -35,7 +34,7 @@ export class AdminDebugComponent implements OnInit {
     this.adminService.openUpgradeDialog();
   }
 
-  addResourceAmount(selectedResource: Resource) {
+  addResourceAmount(selectedResource?: Resource) {
     if (selectedResource === undefined) {
       for (const resource of this.resourcesService.resources) {
         this.resourcesService.addResourceAmount(resource.id, +this.amount);

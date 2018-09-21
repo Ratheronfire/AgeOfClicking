@@ -127,7 +127,7 @@ export class MapService implements Tick {
       flagTileIds = flagLayer.textContent.split(',').map(tileId => +tileId);
     };
 
-    xmlRequest.open('GET', '../../../assets/tilemap/map.tmx', false);
+    xmlRequest.open('GET', './assets/tilemap/map.tmx', false);
     xmlRequest.send();
 
     for (let i = 0; i < mapTileIds.length; i++) {

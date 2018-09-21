@@ -13,11 +13,11 @@ import { MapService } from '../../services/map/map.service';
   styleUrls: ['./fighter.component.css']
 })
 export class FighterComponent implements OnInit {
-  constructor(protected resourcesService: ResourcesService,
-              protected settingsService: SettingsService,
-              protected buildingsService: BuildingsService,
-              protected fighterService: FighterService,
-              protected mapService: MapService) { }
+  constructor(public resourcesService: ResourcesService,
+              public settingsService: SettingsService,
+              public buildingsService: BuildingsService,
+              public fighterService: FighterService,
+              public mapService: MapService) { }
 
   ngOnInit() {
   }

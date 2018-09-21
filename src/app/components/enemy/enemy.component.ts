@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./enemy.component.css']
 })
 export class EnemyComponent implements OnInit {
-  constructor(protected enemyService: EnemyService) { }
+  constructor(public enemyService: EnemyService) { }
 
   ngOnInit() {
   }

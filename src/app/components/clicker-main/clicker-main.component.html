@@ -14,7 +14,7 @@
         <button mat-raised-button class="resource-button" [ngClass]="{'warn': resourceIsBeingStolen(resource.id)}"
           [disabled]="!canHarvest(resource.id, resource.harvestYield)" [id]="resource.id" (click)='startHarvesting(resource.id)'>
           <div class="key-container" *ngIf="resource.bindIndex >= 0">
-            <img src="../../../assets/sprites/key.png">
+            <img src="./assets/sprites/key.png">
             <p>{{resource.bindIndex}}</p>
           </div>
 

@@ -18,11 +18,11 @@ export class MapComponent implements OnInit {
   mapTileTypes = MapTileType;
   buildingTileTypes = BuildingTileType;
 
-  constructor(protected mapService: MapService,
-              protected buildingsService: BuildingsService,
-              protected resourcesService: ResourcesService,
-              protected enemyService: EnemyService,
-              protected adminService: AdminService) { }
+  constructor(public mapService: MapService,
+              public buildingsService: BuildingsService,
+              public resourcesService: ResourcesService,
+              public enemyService: EnemyService,
+              public adminService: AdminService) { }
 
   ngOnInit() {
   }

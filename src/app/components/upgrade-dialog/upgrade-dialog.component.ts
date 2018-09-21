@@ -32,9 +32,9 @@ export class UpgradeDialogComponent implements OnInit {
 
   oldUpgradeId: 0;
 
-  constructor(protected resourcesService: ResourcesService,
-              protected upgradesService: UpgradesService,
-              protected _formBuilder: FormBuilder,
+  constructor(public resourcesService: ResourcesService,
+              public upgradesService: UpgradesService,
+              public _formBuilder: FormBuilder,
               public dialogRef: MatDialogRef<ResourceDialogComponent>,
               @Inject(MAT_DIALOG_DATA) public data: any) { }
 

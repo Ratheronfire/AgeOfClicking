@@ -13,10 +13,11 @@ import { Resource } from '../../objects/resource';
 })
 export class TileDetailComponent implements OnInit {
   buildingTileTypes = BuildingTileType;
+  snapSetting = 'free';
 
-  constructor(protected mapService: MapService,
-              protected buildingsService: BuildingsService,
-              protected resourcesService: ResourcesService) { }
+  constructor(public mapService: MapService,
+              public buildingsService: BuildingsService,
+              public resourcesService: ResourcesService) { }
 
   ngOnInit() {
   }

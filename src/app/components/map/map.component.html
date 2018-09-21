@@ -5,7 +5,7 @@
     (valueChange)="clearFocus()">
     <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
       <div class="key-container">
-        <img src="../../../assets/sprites/key.png">
+        <img src="./assets/sprites/key.png">
         <p>Q</p>
       </div>
       <mat-icon color="primary">add_photo_alternate</mat-icon>
@@ -14,7 +14,7 @@
     </mat-button-toggle>
     <mat-button-toggle value="CLEARBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
-        <img src="../../../assets/sprites/key.png">
+        <img src="./assets/sprites/key.png">
         <p>W</p>
       </div>
       <mat-icon color="primary">delete</mat-icon>
@@ -23,7 +23,7 @@
     </mat-button-toggle>
     <mat-button-toggle value="TILEDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
-        <img src="../../../assets/sprites/key.png">
+        <img src="./assets/sprites/key.png">
         <p>E</p>
       </div>
       <mat-icon color="primary">mode_comment</mat-icon>
@@ -32,7 +32,7 @@
     </mat-button-toggle>
     <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
       <div class="key-container">
-        <img src="../../../assets/sprites/key.png">
+        <img src="./assets/sprites/key.png">
         <p>R</p>
       </div>
       <mat-icon color="primary">directions_walk</mat-icon>
@@ -41,7 +41,7 @@
     </mat-button-toggle>
     <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
-        <img src="../../../assets/sprites/key.png">
+        <img src="./assets/sprites/key.png">
         <p>T</p>
       </div>
       <mat-icon color="primary">directions_run</mat-icon>
