@@ -22,7 +22,8 @@ import { Vector } from '../../objects/vector';
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  gameVersion = '1.2';
+  versionHistory = ['1.2', 'Alpha 3'];
+  gameVersion = 'Alpha 3';
 
   autosaveInterval = 900000;
   lastAutosave = this.autosaveInterval;
@@ -39,7 +40,6 @@ export class SettingsService implements Tick {
   autosaveSource: Observable<number>;
   autosaveSubscribe: Subscription;
 
-  resourceDetailColor = '#000000';
   harvestDetailColor = '#a4ff89';
   workerDetailColor = '#ae89ff';
 
@@ -242,10 +242,11 @@ export class SettingsService implements Tick {
     const backupSave = this.exportSave();
 
     try {
-      const saveData: SaveData = JSON.parse(atob(saveDataString));
+      let saveData: SaveData = JSON.parse(atob(saveDataString));
+      saveData = this.processVersionDifferences(saveData);
 
-      if (saveData.gameVersion !== this.gameVersion) {
-        throw new Error('Save is from a different version of the game.');
+      if (!saveData.gameVersion) {
+        throw new Error('Save data is incompatible with the current version.');
       }
 
       if (saveData.resources !== undefined) {
@@ -383,6 +384,19 @@ export class SettingsService implements Tick {
 
       return false;
     }
+  }
+
+  processVersionDifferences(saveData: SaveData): SaveData {
+    switch (saveData.gameVersion) {
+      case '1.2': {
+        for (const resourceData of saveData.resources) {
+          const resource = this.resourcesService.getResource(resourceData.id);
+          resourceData.sellsFor = resource.sellsFor;
+        }
+      }
+    }
+
+    return saveData;
   }
 
   private log(message: string) {

@@ -87,7 +87,7 @@ export class ClickerMainService implements Tick {
       const resourceId = this.settingsService.resourceBinds[keyDigit];
       const resource = this.resourcesService.getResource(resourceId);
 
-      if (resource && !resource.harvesting) {
+      if (resource && resource.resourceAccessible && !resource.harvesting) {
         this.startHarvesting(resourceId);
       }
     }
