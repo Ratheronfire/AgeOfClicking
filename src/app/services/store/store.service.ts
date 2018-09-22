@@ -9,7 +9,6 @@ import { MessagesService } from '../messages/messages.service';
   providedIn: 'root'
 })
 export class StoreService {
-
   constructor(private resourcesService: ResourcesService,
               private messagesService: MessagesService) { }
 
@@ -25,6 +24,11 @@ export class StoreService {
     }
 
     this.resourcesService.addResourceAmount(resource.id, -amount);
+    this.resourcesService.addResourceAmount(0, amount * resource.sellsFor);
+  }
+
+  public finishResourceAnimation(id: number, amount: number) {
+    const resource = this.resourcesService.getResource(id);
     this.resourcesService.addResourceAmount(0, amount * resource.sellsFor);
   }
 

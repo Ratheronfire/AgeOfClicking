@@ -40,6 +40,7 @@ export class Resource {
 
   sellable: boolean;
   sellsFor?: number;
+  autoSellCutoff = 50;
 
   resourceDescription: string;
   workerVerb: string;

@@ -6,6 +6,8 @@
   display: grid;
 
   background: white;
+
+  flex-direction: column;
 }
 
 button {

@@ -63,13 +63,18 @@
     <br />
 
     <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="harvestDetailColor"
-        [style.background]="harvestDetailColor" [value]="harvestDetailColor" />
+      <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="resourceAnimationColors['PLAYERSPAWNED']"
+        [style.background]="resourceAnimationColors['PLAYERSPAWNED']" [value]="resourceAnimationColors['PLAYERSPAWNED']" />
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Worker Harvest Color" [(colorPicker)]="workerDetailColor"
-        [style.background]="workerDetailColor" [value]="workerDetailColor" />
+      <input class="color-input" matInput placeholder="Worker Harvest Color" [(colorPicker)]="resourceAnimationColors['WORKERSPAWNED']"
+        [style.background]="resourceAnimationColors['WORKERSPAWNED']" [value]="resourceAnimationColors['WORKERSPAWNED']" />
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <input class="color-input" matInput placeholder="Sold Resource Color" [(colorPicker)]="resourceAnimationColors['SOLD']"
+        [style.background]="resourceAnimationColors['SOLD']" [value]="resourceAnimationColors['SOLD']" />
     </mat-form-field>
   </mat-expansion-panel>
 

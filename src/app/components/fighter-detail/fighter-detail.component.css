@@ -7,7 +7,8 @@
 
 mat-card {
   text-align: center;
-  width: 400px;
+  min-width: 300px;
+  max-width: 400px;
 }
 
 .resource-list div {

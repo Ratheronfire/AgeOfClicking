@@ -31,6 +31,7 @@ export class ResourceDialogComponent implements OnInit {
     workerYield: 1,
     sellable: true,
     sellsFor: 5,
+    autoSellCutoff: 50,
     resourceDescription: '',
     workerVerb: '',
     workerNoun: '',

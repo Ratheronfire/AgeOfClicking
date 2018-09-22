@@ -72,14 +72,6 @@
   background-color: antiquewhite;
 }
 
-.workers .harvestable:hover {
-  background-color: blanchedalmond;
-}
-
-mat-card.mat-card.resource-disabled {
-  background: indianred;
-}
-
 .worker-input {
   width: 50px;
   border: none;

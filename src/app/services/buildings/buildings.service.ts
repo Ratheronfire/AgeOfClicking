@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Tile, BuildingTileType, BuildingTile } from '../../objects/tile';
+import { ResourceType } from '../../objects/resource';
+import { Tile, BuildingTileType, BuildingTile, BuildingSubType, Market } from '../../objects/tile';
 import { ResourcesService } from './../resources/resources.service';
 import { MapService } from '../map/map.service';
 
@@ -14,7 +15,7 @@ export class BuildingsService {
               protected mapService: MapService) { }
 
   public createBuilding(tile: Tile, buildingType: BuildingTileType): boolean {
-    const buildingTile = this.mapService.buildingTiles[buildingType];
+    const buildingTile: BuildingTile = this.mapService.buildingTiles[buildingType];
 
     if (tile.buildingTileType !== undefined ||
         tile.resourceTileType !== undefined ||
@@ -38,10 +39,32 @@ export class BuildingsService {
     tile.buildingTileType = buildingType;
     this.mapService.calculateResourceConnections();
 
+    if (buildingTile.subType === BuildingSubType.Market) {
+      let resourceType: ResourceType;
+      switch (buildingTile.tileType) {
+        case BuildingTileType.WoodMarket: {
+          resourceType = ResourceType.Wood;
+          break;
+        } case BuildingTileType.MineralMarket: {
+          resourceType = ResourceType.Mineral;
+          break;
+        } case BuildingTileType.MetalMarket: {
+          resourceType = ResourceType.Metal;
+          break;
+        }
+      }
+
+      tile.market = new Market(this.mapService, this.resourcesService, resourceType, tile, true);
+    }
+
     return true;
   }
 
   public canAffordBuilding(buildingTile: BuildingTile): boolean {
+    if (buildingTile.maxPlaceable > 0 &&
+        this.mapService.tiledMap.filter(tile => tile.buildingTileType === buildingTile.tileType).length >= buildingTile.maxPlaceable) {
+      return false;
+    }
     for (const resourceCost of buildingTile.resourceCosts) {
       if (this.resourcesService.getResource(resourceCost.resourceId).amount < resourceCost.resourceCost) {
         return false;
@@ -64,6 +87,7 @@ export class BuildingsService {
 
     tile.buildingTileType = undefined;
     tile.health = tile.maxHealth;
+    tile.market = undefined;
 
     for (const resourceCost of buildingTile.resourceCosts) {
       this.resourcesService.addResourceAmount(resourceCost.resourceId, resourceCost.resourceCost * 0.85);

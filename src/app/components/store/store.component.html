@@ -27,10 +27,15 @@ Amount to sell:<mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button class="full-width" color='accent' mat-flat-button *ngFor="let resource of resourcesOfType(resourceType, true, adminService.filterAccessible)"
-        (click)="sellResource(resource.id)" [disabled]="!canSellResource(resource.id)">
-         {{(sellAmount == -1 ? resource.amount : sellAmount) | number:'0.0-0'}} {{resource.name | titlecase }} - {{resource.sellsFor * (+sellAmount === -1 ? resource.amount : sellAmount) | number:'0.0-2'}} Gold
-      </button>
+      <div *ngFor="let resource of resourcesOfType(resourceType, true, adminService.filterAccessible)">
+        <button class="sell-button" color="accent" mat-flat-button
+          (click)="sellResource(resource.id)" [disabled]="!canSellResource(resource.id)">
+          {{(sellAmount == -1 ? resource.amount : sellAmount) | number:'0.0-0'}} {{resource.name | titlecase }} - {{resource.sellsFor * (+sellAmount === -1 ? resource.amount : sellAmount) | number:'0.0-2'}} Gold
+        </button>
+        <mat-form-field class="cutoff-input">
+          <input matInput placeholder="Autosell Cutoff" type="number" min="0" [(ngModel)]="resource.autoSellCutoff"/>
+        </mat-form-field>
+      </div>
     </mat-expansion-panel>
   </mat-accordion>
 </ul>

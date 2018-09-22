@@ -18,6 +18,7 @@ const baseWorkers = require('../../../assets/json/workers.json');
 })
 export class WorkersService implements Tick {
   public workers: Worker[] = baseWorkers;
+  workersPaused = false;
 
   workerDelay = 1000;
   lastWorkerTime: number;
@@ -28,7 +29,7 @@ export class WorkersService implements Tick {
   }
 
   tick(elapsed: number, deltaTime: number) {
-    if (elapsed - this.lastWorkerTime < this.workerDelay) {
+    if (this.workersPaused || elapsed - this.lastWorkerTime < this.workerDelay) {
       return;
     }
 
@@ -46,7 +47,8 @@ export class WorkersService implements Tick {
           this.log(`No more money available for ${this.resourcesService.getResource(resourceWorker.resourceId).name}.`);
         }
 
-        this.mapService.spawnResourceAnimation(resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
+        this.mapService.spawnHarvestedResourceAnimation(
+          resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
       }
     }
   }

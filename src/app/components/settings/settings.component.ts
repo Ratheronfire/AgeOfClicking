@@ -93,18 +93,11 @@ export class SettingsComponent implements OnInit {
     this.settingsService.mapLowFramerate = value;
   }
 
-  get harvestDetailColor(): string {
-    return this.settingsService.harvestDetailColor;
+  get resourceAnimationColors(): {} {
+    return this.settingsService.resourceAnimationColors;
   }
-  set harvestDetailColor(value: string) {
-    this.settingsService.harvestDetailColor = value;
-  }
-
-  get workerDetailColor(): string {
-    return this.settingsService.workerDetailColor;
-  }
-  set workerDetailColor(value: string) {
-    this.settingsService.workerDetailColor = value;
+  set resourceAnimationColors(value: {}) {
+    this.settingsService.resourceAnimationColors = value;
   }
 
   get slimInterface(): boolean {

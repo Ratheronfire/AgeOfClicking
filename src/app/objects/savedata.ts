@@ -10,6 +10,7 @@ export interface ResourceData {
   harvestMilliseconds: number;
   sellable: boolean;
   sellsFor: number;
+  autoSellCutoff: number;
   resourceAccessible: boolean;
 }
 
@@ -44,6 +45,12 @@ export interface TileData {
   buildingRemovable: boolean;
 
   tileCropDetail: TileCropDetail;
+
+  statLevels: {};
+  statCosts: {};
+
+  sellInterval?: number;
+  sellQuantity?: number;
 }
 
 export interface EnemyData {
@@ -98,6 +105,9 @@ export interface SettingsData {
   autosaveInterval: number;
   debugMode: boolean;
 
+  workersPaused: boolean;
+  hidePurchasedUpgrades: boolean;
+
   resourceBinds: number[];
   visibleSources: MessageSource[];
 
@@ -107,8 +117,9 @@ export interface SettingsData {
 
   mapLowFramerate: boolean;
 
-  harvestDetailColor: string;
-  workerDetailColor: string;
+  harvestDetailColor?: string;
+  workerDetailColor?: string;
+  resourceAnimationColors: {};
 }
 
 export class SaveData {

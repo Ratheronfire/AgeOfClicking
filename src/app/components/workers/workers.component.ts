@@ -86,4 +86,12 @@ export class WorkersComponent implements OnInit {
   getResource(id): Resource {
     return this.resourcesService.getResource(id);
   }
+
+  get workersPaused(): boolean {
+    return this.workersService.workersPaused;
+  }
+
+  set workersPaused(value: boolean) {
+    this.workersService.workersPaused = value;
+  }
 }

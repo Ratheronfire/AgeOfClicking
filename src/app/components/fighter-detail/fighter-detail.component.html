@@ -55,7 +55,7 @@
             </td>
             <td>
               <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('MAXHEALTH')"
-                [disabled]="!focusedFighter.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedFighter.statLevels['MAXHEALTH'] + 1}}: {{focusedFighter.getUpgradedStat('ATTACK') | number:'1.0-2'}} Max Health"
+                [disabled]="!focusedFighter.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedFighter.statLevels['MAXHEALTH'] + 1}}: {{focusedFighter.getUpgradedStat('MAXHEALTH') | number:'1.0-2'}} Max Health"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">

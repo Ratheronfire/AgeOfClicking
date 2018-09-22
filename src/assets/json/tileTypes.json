@@ -35,7 +35,10 @@
     "70": "WALL",
     "71": "ROAD",
     "72": "BRIDGE",
-    "73": "ENEMYPORTAL"
+    "73": "ENEMYPORTAL",
+    "74": "WOODMARKET",
+    "75": "MINERALMARKET",
+    "76": "METALMARKET"
   },
   "mapTiles": {
     "GRASS": {
@@ -57,9 +60,11 @@
   "buildingTiles": {
     "HOME": {
       "tileType": "HOME",
+      "subType": "MISC",
       "name": "Home",
       "description": "",
       "placeable": false,
+      "maxPlaceable": 1,
       "baseHealth": 50,
       "resourceCosts": [],
       "buildableSurfaces": [],
@@ -67,9 +72,11 @@
     },
     "WALL": {
       "tileType": "WALL",
+      "subType": "MISC",
       "name": "Wall",
       "description": "Keeps invaders out.",
       "placeable": true,
+      "maxPlaceable": -1,
       "baseHealth": 50,
       "repairResource": 1,
       "repairCostPerPoint": 0.2,
@@ -84,9 +91,11 @@
     },
     "ROAD": {
       "tileType": "ROAD",
+      "subType": "MISC",
       "name": "Road",
       "description": "Allows access between buildings.",
       "placeable": true,
+      "maxPlaceable": -1,
       "baseHealth": 50,
       "repairResource": 13,
       "repairCostPerPoint": 0.2,
@@ -101,9 +110,11 @@
     },
     "BRIDGE": {
       "tileType": "BRIDGE",
+      "subType": "MISC",
       "name": "Bridge",
       "description": "Allows access between islands.",
       "placeable": true,
+      "maxPlaceable": -1,
       "baseHealth": 50,
       "repairResource": 7,
       "repairCostPerPoint": 0.25,
@@ -118,9 +129,11 @@
     },
     "CRACKEDFORGE": {
       "tileType": "CRACKEDFORGE",
+      "subType": "RESOURCE",
       "name": "Cracked Forge",
       "description": "An old, weary forge. Bronze ingots are probably all this thing is capable of producing.",
       "placeable": true,
+      "maxPlaceable": -1,
       "baseHealth": 50,
       "repairResource": 0,
       "repairCostPerPoint": 1,
@@ -138,9 +151,11 @@
     },
     "STONEFORGE": {
       "tileType": "STONEFORGE",
+      "subType": "RESOURCE",
       "name": "Stone Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
       "placeable": false,
+      "maxPlaceable": -1,
       "baseHealth": 75,
       "repairResource": 13,
       "repairCostPerPoint": 0.3,
@@ -167,9 +182,11 @@
     },
     "IRONFORGE": {
       "tileType": "IRONFORGE",
+      "subType": "RESOURCE",
       "name": "Iron Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
       "placeable": false,
+      "maxPlaceable": -1,
       "baseHealth": 125,
       "repairResource": 6,
       "repairCostPerPoint": 0.3,
@@ -193,9 +210,11 @@
     },
     "GOLDFORGE": {
       "tileType": "GOLDFORGE",
+      "subType": "RESOURCE",
       "name": "Gold Forge",
       "description": "For reasons unknown to science, gold forges are particularly effective in forging latinum.",
       "placeable": false,
+      "maxPlaceable": -1,
       "baseHealth": 150,
       "repairResource": 11,
       "repairCostPerPoint": 0.35,
@@ -219,9 +238,11 @@
     },
     "LATINUMFORGE": {
       "tileType": "LATINUMFORGE",
+      "subType": "RESOURCE",
       "name": "Latinum Forge",
       "description": "A forge that burns hot enough to fuse together the world's most precious and rare metals.",
       "placeable": false,
+      "maxPlaceable": -1,
       "baseHealth": 200,
       "repairResource": 19,
       "repairCostPerPoint": 0.5,
@@ -245,9 +266,11 @@
     },
     "TEMPROUSDISTILLERY": {
       "tileType": "TEMPROUSDISTILLERY",
+      "subType": "RESOURCE",
       "name": "Temprous Distillery",
       "description": "With this device, all impurities can be removed from temprous ingots, unlocking their limitless potential.",
       "placeable": false,
+      "maxPlaceable": -1,
       "baseHealth": 350,
       "repairResource": 23,
       "repairCostPerPoint": 0.65,
@@ -268,12 +291,74 @@
       "resourceTileType": "TEMPROUSDISTILLERY",
       "resourcePathable": true
     },
+    "WOODMARKET": {
+      "tileType": "WOODMARKET",
+      "subType": "MARKET",
+      "name": "Wood Market",
+      "description": "A marketstand that automatically collects and sells wood resources. (Only one may be placed at a time.)",
+      "placeable": true,
+      "maxPlaceable": 1,
+      "baseHealth": 50,
+      "repairResource": 0,
+      "repairCostPerPoint": 1,
+      "resourceCosts": [{
+        "resourceId": 0,
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": false,
+      "resourcePathable": true
+    },
+    "MINERALMARKET": {
+      "tileType": "MINERALMARKET",
+      "subType": "MARKET",
+      "name": "Mineral Market",
+      "description": "A marketstand that automatically collects and sells mineral resources. (Only one may be placed at a time.)",
+      "placeable": true,
+      "maxPlaceable": 1,
+      "baseHealth": 50,
+      "repairResource": 0,
+      "repairCostPerPoint": 1,
+      "resourceCosts": [{
+        "resourceId": 0,
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": false,
+      "resourcePathable": true
+    },
+    "METALMARKET": {
+      "tileType": "METALMARKET",
+      "subType": "MARKET",
+      "name": "Metal Market",
+      "description": "A marketstand that automatically collects and sells metal resources. (Only one may be placed at a time.)",
+      "placeable": true,
+      "maxPlaceable": 1,
+      "baseHealth": 50,
+      "repairResource": 0,
+      "repairCostPerPoint": 1,
+      "resourceCosts": [{
+        "resourceId": 0,
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": false,
+      "resourcePathable": true
+    },
     "ENEMYPORTAL": {
       "tileType": "ENEMYPORTAL",
+      "subType": "MISC",
       "name": "Enemy Portal",
       "baseHealth": 50,
       "description": "",
       "placeable": false,
+      "maxPlaceable": -1,
       "resourceCosts": [],
       "buildableSurfaces": [],
       "resourcePathable": true

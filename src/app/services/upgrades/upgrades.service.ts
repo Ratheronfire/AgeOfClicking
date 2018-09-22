@@ -14,6 +14,7 @@ const baseUpgrades = require('../../../assets/json/upgrades.json');
 })
 export class UpgradesService {
   public upgrades: Upgrade[] = baseUpgrades;
+  hidePurchasedUpgrades = true;
 
   constructor(private resourcesService: ResourcesService,
               private workersService: WorkersService,

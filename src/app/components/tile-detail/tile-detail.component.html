@@ -40,7 +40,7 @@
     <mat-card-title>{{focusedResourceTile.name}}</mat-card-title>
   </div>
 
-  <mat-card-content>
+  <mat-card-content *ngIf="focusedTile">
     <div *ngIf="focusedResourceTile" class="resource-list">
       Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | number:'0.0-2'}}
       Seconds
@@ -51,9 +51,7 @@
       </div>
     </div>
     <div *ngIf="focusedBuildingTile && focusedBuildingTile.upgradeBuilding">
-      <br />
-      Upgrade:
-      <br />
+      <h3>Upgrade</h3>
       <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding])">
         <div class="title" matTooltip="{{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].description}}"
           matTooltipPosition="above">
@@ -69,5 +67,92 @@
         </div>
       </button>
     </div>
+
+    <div *ngIf="focusedTile.market">
+      Profit (Average of recent sales): {{focusedTile.market.averageRecentProfit | number:'0.0-2'}} {{this.resourcesService.getResource(0).name | titlecase}}/Second
+    </div>
+
+    <h3>Stats</h3>
+      <table class="stats-container">
+        <tbody>
+          <tr class="stat-row">
+            <td>
+              <p>
+                Max Health: {{focusedTile.maxHealth | number:'1.0-2'}}
+              </p>
+            </td>
+            <td>
+              <b>
+                Level {{focusedTile.statLevels['MAXHEALTH']}}
+              </b>
+            </td>
+            <td>
+              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('MAXHEALTH')"
+                [disabled]="!focusedTile.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedTile.statLevels['MAXHEALTH'] + 1}}: {{focusedTile.getUpgradedStat('MAXHEALTH') | number:'1.0-2'}} Max Health"
+                matTooltipPosition="below">
+                <mat-icon color="primary">arrow_upward</mat-icon>
+                <div class="resource-list">
+                  <div>
+                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    {{focusedTile.statCosts['MAXHEALTH'] | number:'1.0-0'}}
+                  </div>
+                </div>
+              </button>
+            </td>
+          </tr>
+
+          <tr class="stat-row" *ngIf="focusedTile.market">
+            <td>
+              <p>
+                Sell Rate: {{1000 / focusedTile.market.sellInterval | number:'1.0-2'}} Sale{{focusedTile.market.sellInterval === 1000 ? '' : 's'}}/Second
+              </p>
+            </td>
+            <td>
+              <b>
+                Level {{focusedTile.statLevels['SELLRATE']}}
+              </b>
+            </td>
+            <td>
+              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('SELLRATE')"
+                [disabled]="!focusedTile.canUpgradeStat('SELLRATE')" matTooltip="Level {{focusedTile.statLevels['SELLRATE'] + 1}}: {{1000 / focusedTile.getUpgradedStat('SELLRATE') | number:'1.0-2'}} Sales/Second"
+                matTooltipPosition="below">
+                <mat-icon color="primary">arrow_upward</mat-icon>
+                <div class="resource-list">
+                  <div>
+                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    {{focusedTile.statCosts['SELLRATE'] | number:'1.0-0'}}
+                  </div>
+                </div>
+              </button>
+            </td>
+          </tr>
+
+          <tr class="stat-row" *ngIf="focusedTile.market">
+            <td>
+              <p>
+                Sell Amount: {{focusedTile.market.sellQuantity | number:'1.0-2'}} Items/Sale
+              </p>
+            </td>
+            <td>
+              <b>
+                Level {{focusedTile.statLevels['SELLAMOUNT']}}
+              </b>
+            </td>
+            <td>
+              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('SELLAMOUNT')"
+                [disabled]="!focusedTile.canUpgradeStat('SELLAMOUNT')" matTooltip="Level {{focusedTile.statLevels['SELLAMOUNT'] + 1}}: {{focusedTile.getUpgradedStat('SELLAMOUNT') | number:'1.0-2'}} Items/Sale"
+                matTooltipPosition="below">
+                <mat-icon color="primary">arrow_upward</mat-icon>
+                <div class="resource-list">
+                  <div>
+                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    {{focusedTile.statCosts['SELLAMOUNT'] | number:'1.0-0'}}
+                  </div>
+                </div>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
   </mat-card-content>
 </mat-card>

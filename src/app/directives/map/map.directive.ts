@@ -230,8 +230,7 @@ export class MapDirective implements AfterViewInit, Tick {
           this.mapService.tilePixelSize / 2, this.mapService.tilePixelSize / 2);
         this.drawTile(resourceAnimation.position, resourceTileImage, 0.5);
 
-      this.context.fillStyle = resourceAnimation.spawnedByPlayer ?
-        this.settingsService.harvestDetailColor : this.settingsService.workerDetailColor;
+      this.context.fillStyle = this.settingsService.resourceAnimationColors[resourceAnimation.animationType];
 
       this.context.fillText(Math.floor(resourceAnimation.multiplier).toString(),
         resourceAnimation.x + this.mapService.tilePixelSize / 2, resourceAnimation.y + this.mapService.tilePixelSize / 2);

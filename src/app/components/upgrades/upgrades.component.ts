@@ -14,7 +14,6 @@ import { AdminService } from '../../services/admin/admin.service';
 })
 export class UpgradesComponent implements OnInit {
   upgradeTypes = UpgradeType;
-  hidePurchased = true;
 
   constructor(public resourcesService: ResourcesService,
               public upgradesService: UpgradesService,
@@ -58,5 +57,13 @@ export class UpgradesComponent implements OnInit {
 
   getResource(resourceId: number) {
     return this.resourcesService.getResource(resourceId);
+  }
+
+  get hidePurchasedUpgrades(): boolean {
+    return this.upgradesService.hidePurchasedUpgrades;
+  }
+
+  set hidePurchasedUpgrades(value: boolean) {
+    this.upgradesService.hidePurchasedUpgrades = value;
   }
 }

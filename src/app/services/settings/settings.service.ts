@@ -1,3 +1,4 @@
+import { TileStat } from './../../objects/tile';
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatDialog } from '@angular/material';
 
@@ -13,17 +14,18 @@ import { FighterService } from './../fighter/fighter.service';
 import { Tick } from './../tick/tick.service';
 import { SaveData, WorkerData, TileData } from '../../objects/savedata';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
-import { BuildingTileType } from '../../objects/tile';
-import { Enemy, Fighter } from '../../objects/entity';
+import { BuildingTileType, BuildingSubType, Market } from '../../objects/tile';
+import { Enemy, Fighter, ResourceAnimationType } from '../../objects/entity';
 import { MessageSource } from './../../objects/message';
 import { Vector } from '../../objects/vector';
+import { ResourceType } from '../../objects/resource';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  versionHistory = ['1.2', 'Alpha 3'];
-  gameVersion = 'Alpha 3';
+  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1'];
+  gameVersion = 'Alpha 3.1';
 
   autosaveInterval = 60000;
   lastAutosave = this.autosaveInterval;
@@ -39,6 +41,7 @@ export class SettingsService implements Tick {
 
   harvestDetailColor = '#a4ff89';
   workerDetailColor = '#ae89ff';
+  resourceAnimationColors = {};
 
   constructor(protected resourcesService: ResourcesService,
               protected upgradesService: UpgradesService,
@@ -49,6 +52,10 @@ export class SettingsService implements Tick {
               protected messagesService: MessagesService,
               protected snackbar: MatSnackBar,
               public dialog: MatDialog) {
+    this.resourceAnimationColors[ResourceAnimationType.PlayerSpawned] = '#a4ff89';
+    this.resourceAnimationColors[ResourceAnimationType.WorkerSpawned] = '#ae89ff';
+    this.resourceAnimationColors[ResourceAnimationType.Sold] = '#ffc089';
+
     this.loadGame();
     this.setAutosave();
   }
@@ -123,13 +130,14 @@ export class SettingsService implements Tick {
       settings: {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
+        workersPaused: this.workersService.workersPaused,
+        hidePurchasedUpgrades: this.upgradesService.hidePurchasedUpgrades,
         resourceBinds: this.resourceBinds,
         visibleSources: this.messagesService.visibleSources,
         enemiesActive: this.enemyService.enemiesActive,
         slimInterface: this.slimInterface,
         mapLowFramerate: this.mapLowFramerate,
-        harvestDetailColor: this.harvestDetailColor,
-        workerDetailColor: this.workerDetailColor
+        resourceAnimationColors: this.resourceAnimationColors
       },
       gameVersion: this.gameVersion
     };
@@ -143,6 +151,7 @@ export class SettingsService implements Tick {
         harvestMilliseconds: resource.harvestMilliseconds,
         sellable: resource.sellable,
         sellsFor: resource.sellsFor,
+        autoSellCutoff: resource.autoSellCutoff,
         resourceAccessible: resource.resourceAccessible
       });
     }
@@ -184,14 +193,21 @@ export class SettingsService implements Tick {
         health: tile.health,
         maxHealth: tile.maxHealth,
         buildingRemovable: tile.buildingRemovable,
-        tileCropDetail: tile.tileCropDetail
-      }
+        tileCropDetail: tile.tileCropDetail,
+        statLevels: tile.statLevels,
+        statCosts: tile.statCosts
+      };
 
       if (tile.resourceTileType !== undefined) {
         tileData.resourceTileType = tile.resourceTileType;
       }
       if (tile.buildingTileType !== undefined) {
         tileData.buildingTileType = tile.buildingTileType;
+      }
+
+      if (tile.market) {
+        tileData.sellInterval = tile.market.sellInterval;
+        tileData.sellQuantity = tile.market.sellQuantity;
       }
 
       saveData.tiles.push(tileData);
@@ -264,6 +280,7 @@ export class SettingsService implements Tick {
           resource.harvestMilliseconds = resourceData.harvestMilliseconds;
           resource.sellable = resourceData.sellable;
           resource.sellsFor = resourceData.sellsFor;
+          resource.autoSellCutoff = resourceData.autoSellCutoff ? resourceData.autoSellCutoff : 0;
           resource.resourceAccessible = resourceData.resourceAccessible;
         }
       }
@@ -323,9 +340,35 @@ export class SettingsService implements Tick {
           tile.buildingRemovable = tileData.buildingRemovable;
 
           tile.tileCropDetail = tileData.tileCropDetail;
+
+          tile.statLevels = tileData.statLevels;
+          tile.statCosts = tileData.statCosts;
+        }
+
+        const marketTiles = saveData.tiles.filter(
+          tile => tile.buildingTileType && this.mapService.buildingTiles[tile.buildingTileType].subType === BuildingSubType.Market);
+
+        for (const tileData of marketTiles) {
+          const tile = this.mapService.tiledMap[tileData.id];
+          let resourceType;
+          switch (tileData.buildingTileType) {
+            case BuildingTileType.WoodMarket: {
+              resourceType = ResourceType.Wood;
+              break;
+            } case BuildingTileType.MineralMarket: {
+              resourceType = ResourceType.Mineral;
+              break;
+            } case BuildingTileType.MetalMarket: {
+              resourceType = ResourceType.Metal;
+              break;
+            }
+          }
+          tile.market = new Market(this.mapService, this.resourcesService, resourceType, tile, false);
+
+          tile.market.sellInterval = tileData.sellInterval ? tileData.sellInterval : 1000;
+          tile.market.sellQuantity = tileData.sellQuantity ? tileData.sellQuantity : 50;
         }
       }
-
       if (saveData.enemies !== undefined) {
         for (const enemyData of saveData.enemies) {
           const tilePosition = this.mapService.clampTileCoordinates(enemyData.position.x, enemyData.position.y);
@@ -370,6 +413,10 @@ export class SettingsService implements Tick {
         this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
         this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
 
+        this.workersService.workersPaused = saveData.settings.workersPaused ? saveData.settings.workersPaused : false;
+        this.upgradesService.hidePurchasedUpgrades =
+          saveData.settings.hidePurchasedUpgrades ? saveData.settings.hidePurchasedUpgrades : false;
+
         this.resourceBinds = saveData.settings.resourceBinds ? saveData.settings.resourceBinds : [1, 7, 8, 13, 26, 27, 2, 3, 4, 5];
 
         this.messagesService.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
@@ -385,6 +432,9 @@ export class SettingsService implements Tick {
 
         this.harvestDetailColor = saveData.settings.harvestDetailColor ? saveData.settings.harvestDetailColor : '#a4ff89';
         this.workerDetailColor = saveData.settings.workerDetailColor ? saveData.settings.workerDetailColor : '#ae89ff';
+        if (saveData.settings.resourceAnimationColors) {
+          this.resourceAnimationColors = saveData.settings.resourceAnimationColors;
+        }
       }
 
       this.mapService.calculateResourceConnections();
@@ -402,13 +452,26 @@ export class SettingsService implements Tick {
   }
 
   processVersionDifferences(saveData: SaveData): SaveData {
-    switch (saveData.gameVersion) {
-      case '1.2': {
-        for (const resourceData of saveData.resources) {
-          const resource = this.resourcesService.getResource(resourceData.id);
-          resourceData.sellsFor = resource.sellsFor;
-        }
+    const oldVersionIndex = this.versionHistory.indexOf(saveData.gameVersion);
+
+    if (oldVersionIndex <= this.versionHistory.indexOf('1.2')) {
+      for (const resourceData of saveData.resources) {
+        const resource = this.resourcesService.getResource(resourceData.id);
+        resourceData.sellsFor = resource.sellsFor;
       }
+    }
+
+    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3')) {
+      saveData.settings.resourceAnimationColors = {};
+      saveData.settings.resourceAnimationColors[ResourceAnimationType.PlayerSpawned] = saveData.settings.harvestDetailColor;
+      saveData.settings.resourceAnimationColors[ResourceAnimationType.WorkerSpawned] = saveData.settings.workerDetailColor;
+      saveData.settings.resourceAnimationColors[ResourceAnimationType.Sold] = '#ffc089';
+
+      saveData.tiles.map(tileData => {
+        const isMarket = this.mapService.buildingTiles[tileData.buildingTileType].subType === BuildingSubType.Market;
+        tileData.statLevels = isMarket ? {'MAXHEALTH': 1, 'SELLAMOUNT': 1, 'SELLRATE': 1} : {'MAXHEALTH': 1};
+        tileData.statCosts = isMarket ? {'MAXHEALTH': 1500, 'SELLAMOUNT': 1500, 'SELLRATE': 1500} : {'MAXHEALTH': 1500};
+      });
     }
 
     return saveData;

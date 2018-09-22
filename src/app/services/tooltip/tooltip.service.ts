@@ -137,6 +137,6 @@ export class TooltipService {
 
     return `${resource.workerVerb} ${Math.floor(resourceWorker.workerYield * 100) / 100} ` +
       `${resource.workerNoun}${resourceWorker.workerYield === 1 ? '' : 's'} per second.\n` +
-      `Total cost: ${resourceWorker.recurringCost * resourceWorker.workerCount} gold per second.`;
+      `Cost: ${resourceWorker.recurringCost} per worker per second (${resourceWorker.recurringCost * resourceWorker.workerCount} total).`;
   }
 }

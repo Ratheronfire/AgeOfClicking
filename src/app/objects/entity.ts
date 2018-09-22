@@ -4,15 +4,22 @@ import { tilePixelSize } from '../globals';
 import { Tick } from './../services/tick/tick.service';
 import { ResourcesService } from '../services/resources/resources.service';
 import { EnemyService } from './../services/enemy/enemy.service';
+import { StoreService } from './../services/store/store.service';
 import { MapService } from './../services/map/map.service';
 
-export enum FighterStats {
+export enum FighterStat {
   Attack = 'ATTACK',
   Defense = 'DEFENSE',
   Range = 'RANGE',
   MovementSpeed = 'MOVEMENTSPEED',
   FireRate = 'FIRERATE',
   MaxHealth = 'MAXHEALTH'
+}
+
+export enum ResourceAnimationType {
+  PlayerSpawned = 'PLAYERSPAWNED',
+  WorkerSpawned = 'WORKERSPAWNED',
+  Sold = 'SOLD'
 }
 
 export class Entity implements Tick {
@@ -180,19 +187,19 @@ export class Fighter extends Actor {
 
     this.fireMilliseconds = fireMilliseconds;
 
-    this.statLevels[FighterStats.Attack] = 1;
-    this.statLevels[FighterStats.Defense] = 1;
-    this.statLevels[FighterStats.FireRate] = 1;
-    this.statLevels[FighterStats.MovementSpeed] = 1;
-    this.statLevels[FighterStats.Range] = 1;
-    this.statLevels[FighterStats.MaxHealth] = 1;
+    this.statLevels[FighterStat.Attack] = 1;
+    this.statLevels[FighterStat.Defense] = 1;
+    this.statLevels[FighterStat.FireRate] = 1;
+    this.statLevels[FighterStat.MovementSpeed] = 1;
+    this.statLevels[FighterStat.Range] = 1;
+    this.statLevels[FighterStat.MaxHealth] = 1;
 
-    this.statCosts[FighterStats.Attack] = 1500;
-    this.statCosts[FighterStats.Defense] = 1500;
-    this.statCosts[FighterStats.FireRate] = 1500;
-    this.statCosts[FighterStats.MovementSpeed] = 1500;
-    this.statCosts[FighterStats.Range] = 1500;
-    this.statCosts[FighterStats.MaxHealth] = 1500;
+    this.statCosts[FighterStat.Attack] = 1500;
+    this.statCosts[FighterStat.Defense] = 1500;
+    this.statCosts[FighterStat.FireRate] = 1500;
+    this.statCosts[FighterStat.MovementSpeed] = 1500;
+    this.statCosts[FighterStat.Range] = 1500;
+    this.statCosts[FighterStat.MaxHealth] = 1500;
 
     this.resourcesService = resourcesService;
     this.enemyService = enemyService;
@@ -214,29 +221,29 @@ export class Fighter extends Actor {
     }
   }
 
-  public canUpgradeStat(stat: FighterStats): boolean {
+  public canUpgradeStat(stat: FighterStat): boolean {
     return this.resourcesService.getResource(0).amount >= this.statCosts[stat];
   }
 
-  public getUpgradedStat(stat: FighterStats): number {
+  public getUpgradedStat(stat: FighterStat): number {
     switch (stat) {
-      case FighterStats.Attack: {
+      case FighterStat.Attack: {
         return this.attack * 1.2;
-      } case FighterStats.Defense: {
+      } case FighterStat.Defense: {
         return this.defense * 1.2;
-      }  case FighterStats.FireRate: {
+      }  case FighterStat.FireRate: {
         return this.fireMilliseconds / 1.1;
-      } case FighterStats.MovementSpeed: {
+      } case FighterStat.MovementSpeed: {
         return this.animationSpeed * 1.2;
-      } case FighterStats.Range: {
+      } case FighterStat.Range: {
         return this.attackRange + 1;
-      } case FighterStats.MaxHealth: {
+      } case FighterStat.MaxHealth: {
         return Math.floor(this.maxHealth * 1.2);
       }
     }
   }
 
-  public upgradeStat(stat: FighterStats) {
+  public upgradeStat(stat: FighterStat) {
     if (!this.canUpgradeStat(stat)) {
       return;
     }
@@ -245,22 +252,22 @@ export class Fighter extends Actor {
 
     const upgradedStat = this.getUpgradedStat(stat);
     switch (stat) {
-      case FighterStats.Attack: {
+      case FighterStat.Attack: {
         this.attack = upgradedStat;
         break;
-      } case FighterStats.Defense: {
+      } case FighterStat.Defense: {
         this.defense = upgradedStat;
         break;
-      }  case FighterStats.FireRate: {
+      }  case FighterStat.FireRate: {
         this.fireMilliseconds = upgradedStat;
         break;
-      } case FighterStats.MovementSpeed: {
+      } case FighterStat.MovementSpeed: {
         this.animationSpeed = upgradedStat;
         break;
-      } case FighterStats.Range: {
+      } case FighterStat.Range: {
         this.attackRange = upgradedStat;
         break;
-      } case FighterStats.MaxHealth: {
+      } case FighterStat.MaxHealth: {
         this.maxHealth = upgradedStat;
         this.health = this.maxHealth;
       }
@@ -326,21 +333,40 @@ export class Projectile extends Entity {
 }
 
 export class ResourceAnimation extends Entity {
+  animationType: ResourceAnimationType;
+
   resourceId: number;
   multiplier: number;
 
   spawnedByPlayer: boolean;
 
-  public constructor(position: Vector, currentTile: Tile, animationSpeed = 0.003,
-      resourceId: number, multiplier: number, spawnedByPlayer: boolean, tilePath: Tile[]) {
+  resourcesService: ResourcesService;
+  storeService: StoreService;
+
+  public constructor(position: Vector, currentTile: Tile, animationSpeed = 0.003, tilePath: Tile[],
+    animationType: ResourceAnimationType, resourceId: number, multiplier: number, spawnedByPlayer: boolean,
+      resourcesService: ResourcesService, storeService: StoreService) {
     super('', position, currentTile, -1, animationSpeed, tilePath);
+
+    this.animationType = animationType;
 
     this.resourceId = resourceId;
     this.multiplier = multiplier;
     this.spawnedByPlayer = spawnedByPlayer;
+
+    this.resourcesService = resourcesService;
+    this.storeService = storeService;
   }
 
   tick(elapsed: number, deltaTime: number) {
     this.updatePathPosition(deltaTime);
+  }
+
+  finishAnimation() {
+    if (this.animationType === ResourceAnimationType.PlayerSpawned || this.animationType === ResourceAnimationType.WorkerSpawned) {
+      this.resourcesService.finishResourceAnimation(this.resourceId, this.multiplier, this.spawnedByPlayer);
+    } else if (this.animationType === ResourceAnimationType.Sold) {
+      this.storeService.finishResourceAnimation(this.resourceId, this.multiplier);
+    }
   }
 }

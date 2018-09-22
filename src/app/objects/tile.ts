@@ -1,4 +1,8 @@
 import { Vector } from './vector';
+import { ResourceType, Resource } from './resource';
+import { Tick } from '../services/tick/tick.service';
+import { ResourcesService } from '../services/resources/resources.service';
+import { MapService } from '../services/map/map.service';
 
 export enum MapTileType {
   Grass = 'GRASS',
@@ -48,7 +52,22 @@ export enum BuildingTileType {
   GoldForge = 'GOLDFORGE',
   LatinumForge = 'LATINUMFORGE',
   TemprousDistillery = 'TEMPROUSDISTILLERY',
-  EnemyPortal = 'ENEMYPORTAL'
+  EnemyPortal = 'ENEMYPORTAL',
+  WoodMarket = 'WOODMARKET',
+  MineralMarket = 'MINERALMARKET',
+  MetalMarket = 'METALMARKET'
+}
+
+export enum BuildingSubType {
+  Resource = 'RESOURCE',
+  Market = 'MARKET',
+  Misc = 'MISC'
+}
+
+export enum TileStat {
+  SellRate = 'SELLRATE',
+  SellAmount = 'SELLAMOUNT',
+  MaxHealth = 'MAXHEALTH'
 }
 
 export interface ResourceCost {
@@ -66,10 +85,12 @@ export interface MapTile {
 
 export interface BuildingTile {
   tileType: BuildingTileType;
+  subType: BuildingSubType;
 
   name: string;
   description: string;
   placeable: boolean;
+  maxPlaceable: number;
 
   upgradeBuilding?: BuildingTileType;
 
@@ -113,6 +134,11 @@ export class Tile {
   buildingPath?: Tile[];
   buildingRemovable: boolean;
 
+  market?: Market;
+
+  statLevels = {};
+  statCosts = {};
+
   health: number;
   maxHealth: number;
 
@@ -120,8 +146,11 @@ export class Tile {
 
   tileCropDetail: TileCropDetail;
 
+  resourcesService: ResourcesService;
+
   public constructor(id: number, mapTileType: MapTileType, resourceTileType: ResourceTileType, buildingTileType: BuildingTileType,
-        buildingRemovable: boolean, position: Vector, tileCropDetail: TileCropDetail, health: number = -1) {
+        buildingRemovable: boolean, position: Vector, tileCropDetail: TileCropDetail,
+        health: number = -1, resourcesService: ResourcesService) {
     this.id = id;
 
     this.mapTileType = mapTileType;
@@ -131,10 +160,57 @@ export class Tile {
     this.buildingPath = [];
     this.buildingRemovable = buildingRemovable;
 
+    this.statLevels[TileStat.MaxHealth] = 1;
+    this.statCosts[TileStat.MaxHealth] = 1500;
+
     this.health = health;
     this.maxHealth = health;
     this.position = position;
     this.tileCropDetail = tileCropDetail;
+
+    this.resourcesService = resourcesService;
+  }
+
+  public canUpgradeStat(stat: TileStat): boolean {
+    return this.resourcesService.getResource(0).amount >= this.statCosts[stat];
+  }
+
+  public getUpgradedStat(stat: TileStat): number {
+    switch (stat) {
+      case TileStat.SellAmount: {
+        return this.market.sellQuantity * 1.2;
+      } case TileStat.SellRate: {
+        return this.market.sellInterval / 1.1;
+      } case TileStat.MaxHealth: {
+        return Math.floor(this.maxHealth * 1.2);
+      }
+    }
+  }
+
+  public upgradeStat(stat: TileStat) {
+    if (!this.canUpgradeStat(stat)) {
+      return;
+    }
+
+    this.resourcesService.addResourceAmount(0, -this.statCosts[stat]);
+
+    const upgradedStat = this.getUpgradedStat(stat);
+    switch (stat) {
+      case TileStat.SellAmount: {
+        this.market.sellQuantity = upgradedStat;
+        break;
+      } case TileStat.SellRate: {
+        this.market.sellInterval = upgradedStat;
+        break;
+      } case TileStat.MaxHealth: {
+        this.maxHealth = upgradedStat;
+        this.health = this.maxHealth;
+        break;
+      }
+    }
+
+    this.statLevels[stat]++;
+    this.statCosts[stat] *= 1.5;
   }
 
   public get x(): number {
@@ -151,5 +227,93 @@ export class Tile {
 
   public set y(value: number) {
     this.position.y = value;
+  }
+}
+
+export class Market {
+  mapService: MapService;
+  resourcesService: ResourcesService;
+
+  homeTile: Tile;
+  owningTile: Tile;
+  tilePath: Tile[];
+  soldResources: Resource[];
+  currentResource = 0;
+
+  recentSales: number[] = [];
+  recentWindowSize = 20;
+  timeSinceLastSale = 0;
+
+  lastSellTime = 0;
+  sellInterval = 1000;
+  sellQuantity = 50;
+
+  public constructor(mapService: MapService, resourcesService: ResourcesService, resourceType: ResourceType, owningTile: Tile,
+      shouldInitStats: boolean) {
+    if (shouldInitStats) {
+      owningTile.statLevels[TileStat.SellAmount] = 1;
+      owningTile.statLevels[TileStat.SellRate] = 1;
+
+      owningTile.statCosts[TileStat.SellAmount] = 1500;
+      owningTile.statCosts[TileStat.SellRate] = 1500;
+    }
+
+    this.mapService = mapService;
+    this.resourcesService = resourcesService;
+
+    this.soldResources = resourcesService.resourcesOfType(resourceType, false, false, false);
+
+    this.homeTile = mapService.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+    this.owningTile = owningTile;
+
+    this.calculateConnection();
+  }
+
+  public tick(elapsed: number, deltaTime: number) {
+    if (this.tilePath.length && elapsed - this.lastSellTime > this.sellInterval) {
+      this.timeSinceLastSale += deltaTime;
+
+      const resource = this.soldResources[this.currentResource];
+      const sellAmount = Math.min(this.sellQuantity, resource.amount - resource.autoSellCutoff);
+
+      if (sellAmount > 0) {
+        this.mapService.spawnSoldResourceAnimation(resource.id, sellAmount, this);
+        this.lastSellTime = elapsed;
+
+        this.resourcesService.addResourceAmount(resource.id, -sellAmount);
+
+        this.logSale(sellAmount * resource.sellsFor);
+
+        this.timeSinceLastSale = 0;
+      }
+
+      if (this.timeSinceLastSale >= 1000) {
+        this.logSale(0);
+        this.timeSinceLastSale = 0;
+      }
+
+      this.currentResource = (this.currentResource + 1) % this.soldResources.length;
+    }
+  }
+
+  logSale(profit: number) {
+    this.recentSales.push(profit);
+    if (this.recentSales.length >= this.recentWindowSize) {
+      this.recentSales = this.recentSales.slice(1, this.recentWindowSize);
+    }
+  }
+
+  public calculateConnection() {
+    this.mapService.findPath(this.homeTile, this.owningTile, true, true).subscribe(path => {
+      this.tilePath = path;
+    });
+  }
+
+  public get averageRecentProfit(): number {
+    if (!this.recentSales.length) {
+      return 0;
+    }
+
+    return this.recentSales.reduce((total, sale) => total += sale) / this.recentSales.length;
   }
 }

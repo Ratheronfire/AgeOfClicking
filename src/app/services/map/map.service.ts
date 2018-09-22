@@ -2,10 +2,11 @@ import { Injectable } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
+import { StoreService } from './../store/store.service';
 import { Tick } from './../tick/tick.service';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile } from '../../objects/tile';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile, Market } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
-import { ResourceAnimation, Projectile, Actor, Fighter } from '../../objects/entity';
+import { ResourceAnimation, Projectile, Actor, Fighter, ResourceAnimationType } from '../../objects/entity';
 import { Vector } from '../../objects/vector';
 
 declare var require: any;
@@ -72,7 +73,8 @@ export class MapService implements Tick {
   canvasPixelWidth: number;
   canvasPixelHeight: number;
 
-  constructor(protected resourcesService: ResourcesService) {
+  constructor(protected resourcesService: ResourcesService,
+              protected storeService: StoreService) {
     const _tiledMap: Tile[] = [];
     let mapTileIds: number[], resourceTileIds: number[], buildingTileIds: number[], flagTileIds: number[];
     let _mapWidth: number, _mapHeight: number;
@@ -150,7 +152,7 @@ export class MapService implements Tick {
       }
 
       const tile = new Tile(_tiledMap.length, this.tileTypes[mapTileId],
-        resourceTileType, buildingTileType, false, position, tileCropDetail, 50);
+        resourceTileType, buildingTileType, false, position, tileCropDetail, 50, this.resourcesService);
 
       const flagTileType = this.tileTypes[flagTileId];
       if (flagTileType === BuildingTileType.EnemyPortal) {
@@ -171,9 +173,12 @@ export class MapService implements Tick {
       resourceAnimation.tick(elapsed, deltaTime);
 
       if (resourceAnimation.pathingDone) {
-        this.resourcesService.finishResourceAnimation(
-          resourceAnimation.resourceId, resourceAnimation.multiplier, resourceAnimation.spawnedByPlayer);
+        resourceAnimation.finishAnimation();
       }
+    }
+
+    for (const tile of this.tiledMap.filter(_tile => _tile.market)) {
+      tile.market.tick(elapsed, deltaTime);
     }
 
     this.resourceAnimations = this.resourceAnimations.filter(animation => !animation.pathingDone);
@@ -200,15 +205,19 @@ export class MapService implements Tick {
       }
 
       this.findPath(resourceTile, homeTile, true, true).subscribe(tilePath => {
-      resourceTile.buildingPath = tilePath;
+        resourceTile.buildingPath = tilePath;
 
-      if (resourceTile.buildingPath.length && !resourceTile.buildingPath.some(tile => tile.health <= 0)) {
-        const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
-        for (const resource of resources) {
-          resource.pathAvailable = true;
+        if (resourceTile.buildingPath.length && !resourceTile.buildingPath.some(tile => tile.health <= 0)) {
+          const resources = this.resourceTiles[resourceTile.resourceTileType].resourceIds.map(id => this.resourcesService.getResource(id));
+          for (const resource of resources) {
+            resource.pathAvailable = true;
+          }
         }
-      }
       });
+    }
+
+    for (const marketTile of this.tiledMap.filter(tile => tile.market)) {
+      marketTile.market.calculateConnection();
     }
   }
 
@@ -285,7 +294,7 @@ export class MapService implements Tick {
     return tiles[Math.floor(Math.random() * tiles.length)];
   }
 
-  spawnResourceAnimation(resourceId: number, multiplier: number = 1, spawnedByPlayer: boolean) {
+  spawnHarvestedResourceAnimation(resourceId: number, multiplier: number = 1, spawnedByPlayer: boolean) {
     const matchingTiles = this.getTilesForResource(resourceId).filter(_tile => _tile.buildingPath.length > 0);
 
     if (!this.resourcesService.canAffordResource(resourceId, multiplier)) {
@@ -300,9 +309,17 @@ export class MapService implements Tick {
     }
 
     const tilePathCopy = tile.buildingPath.map(_tile => _tile);
+    const animationType = spawnedByPlayer ? ResourceAnimationType.PlayerSpawned : ResourceAnimationType.WorkerSpawned;
 
     const resourceAnimation = new ResourceAnimation(new Vector(tile.x, tile.y), tile,
-      0.003, resourceId, multiplier, spawnedByPlayer, tilePathCopy);
+      0.003, tilePathCopy, animationType, resourceId, multiplier, spawnedByPlayer, this.resourcesService, this.storeService);
+    this.resourceAnimations.push(resourceAnimation);
+  }
+
+  spawnSoldResourceAnimation(resourceId: number, multiplier: number, market: Market) {
+    const resourceAnimation = new ResourceAnimation(new Vector(market.homeTile.x, market.homeTile.y),
+      market.homeTile, 0.003, market.tilePath, ResourceAnimationType.Sold,
+      resourceId, multiplier, false, this.resourcesService, this.storeService);
     this.resourceAnimations.push(resourceAnimation);
   }
 

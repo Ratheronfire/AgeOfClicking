@@ -111,7 +111,7 @@ export class ClickerMainService implements Tick {
     const resource = this.resourcesService.getResource(id);
     resource.amountTravelling++;
 
-    this.mapService.spawnResourceAnimation(id, resource.harvestYield, true);
+    this.mapService.spawnHarvestedResourceAnimation(id, resource.harvestYield, true);
 
     if (resource.resourceTier > 3 && !this.enemyService.enemiesActive) {
       this.enemyService.enemiesActive = true;

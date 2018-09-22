@@ -100,3 +100,11 @@ button.delete {
 .full-width {
   width: 100%;
 }
+
+.sell-button {
+  width: 80%;
+}
+
+.cutoff-input {
+  width: 20%;
+}

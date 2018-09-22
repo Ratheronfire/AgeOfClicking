@@ -7,7 +7,8 @@
 
 mat-card {
   text-align: center;
-  width: 300px;
+  min-width: 300px;
+  max-width: 400px;
 }
 
 .resource-list div {
@@ -27,6 +28,19 @@ mat-card {
 .repair-container button {
   position: relative;
   top: -25%;
+}
+
+.stats-container {
+  width: 100%;
+}
+
+.upgrade-button {
+  width: fit-content;
+}
+
+.upgrade-button mat-icon {
+  position: relative;
+  top: 5px;
 }
 
 .anchor-container {

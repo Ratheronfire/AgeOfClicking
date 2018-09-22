@@ -1,7 +1,7 @@
 [
   {
     "id": 0,
-    "cost": 500,
+    "cost": 250,
     "resourceType": "WOOD",
     "workerCount": 0,
     "freeWorkers": 0,
@@ -74,7 +74,7 @@
   },
   {
     "id": 2,
-    "cost": 1350,
+    "cost": 650,
     "resourceType": "MINERAL",
     "workerCount": 0,
     "freeWorkers": 0,
@@ -137,7 +137,7 @@
   },
   {
     "id": 1,
-    "cost": 2000,
+    "cost": 1000,
     "resourceType": "METAL",
     "workerCount": 0,
     "freeWorkers": 0,
