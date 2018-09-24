@@ -1,7 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, AfterViewInit } from '@angular/core';
 
 import { timer } from 'rxjs';
 
+import { Resource } from '../../objects/resource';
 import { Enemy } from './../../objects/entity';
 import { Vector } from '../../objects/vector';
 import { MapService } from '../map/map.service';
@@ -18,7 +19,7 @@ const baseEnemyTypes = require('../../../assets/json/enemies.json');
 @Injectable({
   providedIn: 'root'
 })
-export class EnemyService implements Tick {
+export class EnemyService implements Tick, AfterViewInit {
   public enemyTypes: Enemy[] = baseEnemyTypes;
   public enemies: Enemy[] = [];
   activePortalTile: Tile;
@@ -37,7 +38,9 @@ export class EnemyService implements Tick {
   constructor(protected resourcesService: ResourcesService,
               protected buildingsService: BuildingsService,
               protected mapService: MapService,
-              protected messagesService: MessagesService) {
+              protected messagesService: MessagesService) { }
+
+  ngAfterViewInit() {
     this.openPortal(this.mapService.enemySpawnTiles[0]);
   }
 
@@ -184,12 +187,12 @@ export class EnemyService implements Tick {
 
       if (enemy.pathingDone) {
         if (target.tile.buildingTileType === BuildingTileType.Home) {
-          for (const id of enemy.resourcesToSteal) {
-            this.resourcesService.getResource(id).resourceBeingStolen = true;
+          for (const resourceEnum of enemy.resourcesToSteal) {
+            this.resourcesService.resources.get(resourceEnum).resourceBeingStolen = true;
           }
 
           if (enemy.totalHeld >= enemy.resourceCapacity) {
-            for (const resource of this.resourcesService.resources) {
+            for (const resource of this.resourcesService.getResources()) {
               resource.resourceBeingStolen = false;
             }
 
@@ -197,7 +200,7 @@ export class EnemyService implements Tick {
           }
 
           const resourceIndex = Math.floor(Math.random() * enemy.resourcesToSteal.length);
-          const resourceToSteal = this.resourcesService.getResource(enemy.resourcesToSteal[resourceIndex]);
+          const resourceToSteal = this.resourcesService.resources.get(enemy.resourcesToSteal[resourceIndex]);
 
           if (resourceToSteal.amount > this.minimumResourceAmount) {
             let amountToSteal = Math.floor(Math.random() * enemy.stealMax);
@@ -205,16 +208,16 @@ export class EnemyService implements Tick {
               amountToSteal = resourceToSteal.amount - this.minimumResourceAmount;
             }
 
-            if (enemy.resourcesHeld[resourceToSteal.id] === undefined) {
-              enemy.resourcesHeld[resourceToSteal.id] = amountToSteal;
+            if (!enemy.resourcesHeld.get(resourceToSteal.resourceEnum)) {
+              enemy.resourcesHeld.set(resourceToSteal.resourceEnum, amountToSteal);
             } else {
-              enemy.resourcesHeld[resourceToSteal.id] += amountToSteal;
+              enemy.resourcesHeld.set(resourceToSteal.resourceEnum, enemy.resourcesHeld.get(resourceToSteal.resourceEnum) + amountToSteal);
             }
 
             if (amountToSteal > 0) {
               enemy.totalHeld += amountToSteal;
 
-              this.resourcesService.addResourceAmount(resourceToSteal.id, -amountToSteal);
+              resourceToSteal.addAmount(-amountToSteal);
               this.log(`An enemy stole ${Math.floor(amountToSteal)} ${resourceToSteal.name}!`);
             }
           }
@@ -240,14 +243,14 @@ export class EnemyService implements Tick {
     if (enemy.totalHeld > 0) {
       enemyDefeatedMessage += ' Resources recovered:';
 
-      for (let i = 0; i < enemy.resourcesHeld.length; i++) {
-        const stolenAmount = enemy.resourcesHeld[i];
+      for (const resourceEnum of enemy.resourcesToSteal) {
+        const stolenAmount = enemy.resourcesHeld.get(resourceEnum);
         if (isNaN(stolenAmount) || stolenAmount <= 0) {
           continue;
         }
 
-        const resource = this.resourcesService.getResource(i);
-        this.resourcesService.addResourceAmount(i, stolenAmount);
+        const resource = this.resourcesService.resources.get(resourceEnum);
+        resource.addAmount(stolenAmount);
 
         enemyDefeatedMessage += ` ${Math.floor(stolenAmount)} ${resource.name},`;
       }
@@ -262,12 +265,12 @@ export class EnemyService implements Tick {
     this.enemies = this.enemies.filter(_enemy => _enemy !== enemy);
   }
 
-  resourceIsBeingStolen(id: number): boolean {
+  resourceIsBeingStolen(resource: Resource): boolean {
     const activeEnemies = this.enemies.filter(
       enemy => enemy.pathingDone && enemy.targets.length &&
         enemy.targets[enemy.targetIndex].tile.buildingTileType === BuildingTileType.Home);
 
-    return activeEnemies.some(enemy => enemy.resourcesToSteal.includes(id));
+    return activeEnemies.some(enemy => enemy.resourcesToSteal.includes(resource.resourceEnum));
   }
 
   private log(message: string) {

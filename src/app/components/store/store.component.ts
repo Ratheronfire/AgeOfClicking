@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Resource, ResourceType } from '../../objects/resource';
+import { Resource } from '../../objects/resource';
+import { ResourceType } from '../../objects/resourceData';
 import { ResourcesService } from '../../services/resources/resources.service';
 import { StoreService } from '../../services/store/store.service';
 import { AdminService } from '../../services/admin/admin.service';
@@ -23,17 +24,15 @@ export class StoreComponent implements OnInit {
   ngOnInit() {
   }
 
-  canSellResource(id: number) {
-    return this.storeService.canSellResource(id, +this.sellAmount);
+  canSellResource(resource: Resource) {
+    return this.storeService.canSellResource(resource, +this.sellAmount);
   }
 
   resourcesOfType(resourceType: ResourceType, filterBySellable: boolean, filterByAccessible): Resource[] {
-    return this.storeService.resourcesOfType(resourceType, filterBySellable, filterByAccessible);
+    return this.resourcesService.getResources(resourceType, filterBySellable, filterByAccessible);
   }
 
-  sellResource(id: number) {
-    const resource = this.resourcesService.getResource(id);
-
-    this.storeService.sellResource(id, +this.sellAmount);
+  sellResource(resource: Resource) {
+    this.storeService.sellResource(resource, +this.sellAmount);
   }
 }

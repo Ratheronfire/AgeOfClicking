@@ -25,6 +25,7 @@ export class MapComponent implements OnInit {
               public adminService: AdminService) { }
 
   ngOnInit() {
+    this.mapService.initializeMap();
   }
 
   clearFocus() {

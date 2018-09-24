@@ -1,9 +1,10 @@
+import { ResourceType, ResourceEnum } from './resourceData';
 import { Vector } from './vector';
 import { MapTileType, ResourceTileType, BuildingTileType, Tile, TileCropDetail } from './tile';
 import { MessageSource } from '../objects/message';
 
 export interface ResourceData {
-  id: number;
+  resourceEnum: ResourceEnum;
   amount: number;
   harvestable: boolean;
   harvestYield: number;
@@ -20,14 +21,14 @@ export interface UpgradeData {
 }
 
 export interface WorkerData {
-  id: number;
+  resourceType: ResourceType;
   cost: number;
   workerCount: number;
   workersByResource: ResourceWorkerData[];
 }
 
 export interface ResourceWorkerData {
-  resourceId: number;
+  resourceEnum: ResourceEnum;
   workable: boolean;
   workerCount: number;
   workerYield: number;
@@ -69,8 +70,8 @@ export interface EnemyData {
   attackRange: number;
 
   targetableBuildingTypes: BuildingTileType[];
-  resourcesToSteal: number[];
-  resorucesHeld: number[];
+  resourcesToSteal: ResourceEnum[];
+  resorucesHeld: Map<ResourceEnum, number>;
   stealMax: number;
   resourceCapacity: number;
 }
@@ -105,10 +106,12 @@ export interface SettingsData {
   autosaveInterval: number;
   debugMode: boolean;
 
+  highestTierReached: number;
+
   workersPaused: boolean;
   hidePurchasedUpgrades: boolean;
 
-  resourceBinds: number[];
+  resourceBinds: ResourceEnum[];
   visibleSources: MessageSource[];
 
   enemiesActive: boolean;

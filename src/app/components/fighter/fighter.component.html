@@ -5,9 +5,9 @@
       {{fighterType.name}}
     </div>
     <div class="resource-list">
-      <div matTooltip="{{fighterType.cost}} {{getResource(0).name | titlecase}}"
+      <div matTooltip="{{fighterType.cost}} {{getResource('GOLD').name | titlecase}}"
         matTooltipPosition="below">
-        <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+        <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
         {{fighterType.cost}}
       </div>
     </div>

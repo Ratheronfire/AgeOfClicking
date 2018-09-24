@@ -59,9 +59,9 @@
         </div>
         <div class="resource-list">
           <div *ngFor="let resourceCost of mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].resourceCosts"
-            matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
+            matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below">
-            <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
+            <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost}}
           </div>
         </div>
@@ -69,7 +69,7 @@
     </div>
 
     <div *ngIf="focusedTile.market">
-      Profit (Average of recent sales): {{focusedTile.market.averageRecentProfit | number:'0.0-2'}} {{this.resourcesService.getResource(0).name | titlecase}}/Second
+      Profit (Average of recent sales): {{focusedTile.market.averageRecentProfit | number:'0.0-2'}} {{getResource('GOLD').name | titlecase}}/Second
     </div>
 
     <h3>Stats</h3>
@@ -93,7 +93,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedTile.statCosts['MAXHEALTH'] | number:'1.0-0'}}
                   </div>
                 </div>
@@ -119,7 +119,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedTile.statCosts['SELLRATE'] | number:'1.0-0'}}
                   </div>
                 </div>
@@ -145,7 +145,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedTile.statCosts['SELLAMOUNT'] | number:'1.0-0'}}
                   </div>
                 </div>

@@ -9,7 +9,7 @@
     "attack": 5,
     "defense": 1,
     "attackRange": 2,
-    "resourcesToSteal": [1, 2, 3],
+    "resourcesToSteal": ["OAK", "COPPERORE", "TINORE"],
     "stealMax": 25,
     "resourceCapacity": 200
   }

@@ -6,9 +6,9 @@ class="buildings">
     {{buildingTile.name}}
   </div>
   <div class="resource-list">
-    <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceId).name | titlecase}}"
+    <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
       matTooltipPosition="below">
-      <img src="{{getResource(resourceCost.resourceId).iconPath}}" alt="{{getResource(resourceCost.resourceId).name}}">
+      <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
       {{resourceCost.resourceCost}}
     </div>
   </div>

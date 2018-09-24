@@ -10,25 +10,24 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button mat-raised-button [color]="canAfford(worker.id) ? 'accent' : 'disabled'" (click)="hireWorker(worker.id)">
+      <button mat-raised-button [color]="worker.canAffordToHire() ? 'accent' : 'disabled'" (click)="worker.hireWorker()">
         <mat-card-title>{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
         <mat-card-subtitle>{{worker.cost | number}} Gold</mat-card-subtitle>
       </button>
 
       <div *ngFor="let resourceWorker of getAccessibleResourceWorkers(worker)">
-        <mat-card [ngClass]="{'resource-disabled': !canHarvest(resourceWorker.resourceId)}"
-        *ngIf="shouldShowResource(resourceWorker.resourceId)" matTooltip="{{getTooltipMessage(resourceWorker.resourceId)}}" matTooltipPosition="right">
-          <mat-card-title [style.color]="canHarvest(resourceWorker.resourceId) ? 'black' : 'red'">
-            {{getResource(resourceWorker.resourceId).name | titlecase}}
+        <mat-card [ngClass]="{'resource-disabled': !canHarvest(resourceWorker.resourceEnum)}"
+        *ngIf="shouldShowResource(resourceWorker.resourceEnum)" matTooltip="{{getTooltipMessage(resourceWorker.resourceEnum)}}" matTooltipPosition="right">
+          <mat-card-title [style.color]="canHarvest(resourceWorker.resourceEnum) ? 'black' : 'red'">
+            {{getResource(resourceWorker.resourceEnum).name | titlecase}}
           </mat-card-title>
-          <div class="path-broken-warn" *ngIf="!pathAvailable(resourceWorker.resourceId)">(Path Broken)</div>
+          <div class="path-broken-warn" *ngIf="!pathAvailable(resourceWorker.resourceEnum)">(Path Broken)</div>
           <mat-card-subtitle>
             Workers: <input class="worker-input" type="number" min="0" [max]="worker.workerCount"
-              [(ngModel)]="resourceWorker.sliderSetting" (input)="checkSliderValue(resourceWorker.resourceId)" (change)="updateResourceWorker(resourceWorker.resourceId, resourceWorker.sliderSetting)"/>
+              [(ngModel)]="resourceWorker.sliderSetting" (input)="checkSliderValue(resourceWorker.resourceEnum)" (change)="updateResourceWorker(resourceWorker.resourceEnum, resourceWorker.sliderSetting)"/>
           </mat-card-subtitle>
-          <mat-slider [color]="resourceWorker.sliderSettingValid ? 'accent' : 'warn'" [id]="resourceWorker.resourceId" [max]="worker.workerCount"
-              [disabled]="!pathAvailable(resourceWorker.resourceId)" [tickInterval]="1" [(ngModel)]="resourceWorker.sliderSetting"
-              (input)="checkSliderValue($event)" (change)="updateResourceWorker($event)">
+          <mat-slider [color]="resourceWorker.sliderSettingValid ? 'accent' : 'warn'" [id]="resourceWorker.resourceEnum" [max]="worker.workerCount"
+              [tickInterval]="1" [(ngModel)]="resourceWorker.sliderSetting" (input)="checkSliderValue($event)" (change)="updateResourceWorker($event)">
           </mat-slider>
         </mat-card>
       </div>

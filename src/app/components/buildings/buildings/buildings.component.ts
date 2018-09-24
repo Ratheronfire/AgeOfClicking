@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { BuildingTile, BuildingTileType, Tile } from '../../../objects/tile';
 import { Resource } from '../../../objects/resource';
+import { ResourceType, ResourceEnum } from '../../../objects/resourceData';
 import { ResourcesService } from '../../../services/resources/resources.service';
 import { BuildingsService } from '../../../services/buildings/buildings.service';
 import { FighterService } from './../../../services/fighter/fighter.service';
@@ -58,8 +59,8 @@ export class BuildingsComponent implements OnInit {
     return tiles;
   }
 
-  getResource(resourceId: number): Resource {
-    return this.resourcesService.getResource(resourceId);
+  getResource(resourceEnum: ResourceEnum): Resource {
+    return this.resourcesService.resources.get(resourceEnum);
   }
 
   get selectedBuilding(): BuildingTile {

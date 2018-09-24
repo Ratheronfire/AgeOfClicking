@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ResourceType } from '../../objects/resource';
+import { ResourceType } from './../../objects/resourceData';
 import { Tile, BuildingTileType, BuildingTile, BuildingSubType, Market } from '../../objects/tile';
 import { ResourcesService } from './../resources/resources.service';
 import { MapService } from '../map/map.service';
@@ -25,7 +25,7 @@ export class BuildingsService {
     }
 
     for (const resourceCost of buildingTile.resourceCosts) {
-      this.resourcesService.addResourceAmount(resourceCost.resourceId, -resourceCost.resourceCost);
+      this.resourcesService.resources.get(resourceCost.resourceEnum).addAmount(-resourceCost.resourceCost);
     }
 
     if (buildingTile.placesResourceTile) {
@@ -66,7 +66,7 @@ export class BuildingsService {
       return false;
     }
     for (const resourceCost of buildingTile.resourceCosts) {
-      if (this.resourcesService.getResource(resourceCost.resourceId).amount < resourceCost.resourceCost) {
+      if (this.resourcesService.resources.get(resourceCost.resourceEnum).amount < resourceCost.resourceCost) {
         return false;
       }
     }
@@ -90,7 +90,7 @@ export class BuildingsService {
     tile.market = undefined;
 
     for (const resourceCost of buildingTile.resourceCosts) {
-      this.resourcesService.addResourceAmount(resourceCost.resourceId, resourceCost.resourceCost * 0.85);
+      this.resourcesService.resources.get(resourceCost.resourceEnum).addAmount(resourceCost.resourceCost * 0.85);
     }
 
     this.mapService.calculateResourceConnections();
@@ -100,9 +100,9 @@ export class BuildingsService {
 
   public canRepairBuilding(tile: Tile): boolean {
     const buildingTile: BuildingTile = this.mapService.buildingTiles[tile.buildingTileType];
+    const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);
 
-    return this.resourcesService.getResource(buildingTile.repairResource).amount >=
-      buildingTile.repairCostPerPoint * (tile.maxHealth - tile.health);
+    return repairResource.amount >= buildingTile.repairCostPerPoint * (tile.maxHealth - tile.health);
   }
 
   public repairBuilding(tile: Tile) {
@@ -112,7 +112,8 @@ export class BuildingsService {
     const buildingTile: BuildingTile = this.mapService.buildingTiles[tile.buildingTileType];
     const healAmount = tile.maxHealth - tile.health;
 
-    this.resourcesService.addResourceAmount(buildingTile.repairResource, -buildingTile.repairCostPerPoint * healAmount);
+    const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);
+    repairResource.addAmount(-buildingTile.repairCostPerPoint * healAmount);
     tile.health = tile.maxHealth;
 
     this.mapService.calculateResourceConnections();

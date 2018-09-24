@@ -10,7 +10,8 @@ import { MessagesService } from '../messages/messages.service';
 import { SettingsService } from '../settings/settings.service';
 import { AdminService } from '../admin/admin.service';
 import { Tick } from './../tick/tick.service';
-import { Resource, ResourceType } from '../../objects/resource';
+import { Resource } from '../../objects/resource';
+import { ResourceType } from './../../objects/resourceData';
 import { MessageSource } from '../../objects/message';
 
 @Injectable({
@@ -33,7 +34,7 @@ export class ClickerMainService implements Tick {
 
   tick(elapsed: number, deltaTime: number) {
     this.timeElapsed = elapsed;
-    for (const resource of this.resourcesService.resources.filter(_resource => _resource.harvesting)) {
+    for (const resource of this.resourcesService.getResources().filter(_resource => _resource.harvesting)) {
       const millisecondsElapsed = elapsed - resource.harvestStartDate;
       resource.progressBarValue = Math.floor(millisecondsElapsed / resource.harvestMilliseconds * 100);
     }
@@ -84,34 +85,32 @@ export class ClickerMainService implements Tick {
     const keyDigit = +event.code.replace('Digit', '').replace('Numpad', '');
 
     if (!isNaN(keyDigit)) {
-      const resourceId = this.settingsService.resourceBinds[keyDigit];
-      const resource = this.resourcesService.getResource(resourceId);
+      const resourceEnum = this.settingsService.resourceBinds[keyDigit];
+      const resource = this.resourcesService.resources.get(resourceEnum);
 
       if (resource && resource.resourceAccessible && !resource.harvesting) {
-        this.startHarvesting(resourceId);
+        this.startHarvesting(resource);
       }
     }
   }
 
-  startHarvesting(id: number) {
-    const resource = this.resourcesService.getResource(id);
+  startHarvesting(resource: Resource) {
     resource.harvestStartDate = this.timeElapsed;
 
-    if (!this.resourcesService.canHarvest(id, resource.harvestYield)) {
+    if (!resource.canHarvest(resource.harvestYield)) {
       return;
     }
 
     resource.harvesting = true;
 
     const harvestTimer = timer(resource.harvestMilliseconds);
-    harvestTimer.subscribe(_ => this.harvestResource(id));
+    harvestTimer.subscribe(_ => this.harvestResource(resource));
   }
 
-  harvestResource(id: number) {
-    const resource = this.resourcesService.getResource(id);
+  harvestResource(resource: Resource) {
     resource.amountTravelling++;
 
-    this.mapService.spawnHarvestedResourceAnimation(id, resource.harvestYield, true);
+    this.mapService.spawnHarvestedResourceAnimation(resource, resource.harvestYield, true);
 
     if (resource.resourceTier > 3 && !this.enemyService.enemiesActive) {
       this.enemyService.enemiesActive = true;

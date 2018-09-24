@@ -1,267 +1,269 @@
-[
-  {
+{
+  "WOOD": {
     "id": 0,
     "cost": 250,
     "resourceType": "WOOD",
     "workerCount": 0,
     "freeWorkers": 0,
-    "workersByResource": [
-      {
-        "resourceId": 1,
+    "resourceWorkers": {
+      "OAK": {
+        "resourceEnum": "OAK",
         "workable": true,
         "recurringCost": 5,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 7,
+      "PINE": {
+        "resourceEnum": "PINE",
         "workable": false,
         "recurringCost": 10,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 8,
+      "BIRCH": {
+        "resourceEnum": "BIRCH",
         "workable": false,
         "recurringCost": 20,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 9,
+      "EUCALYPTUS": {
+        "resourceEnum": "EUCALYPTUS",
         "workable": false,
         "recurringCost": 25,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 15,
+      "WILLOW": {
+        "resourceEnum": "WILLOW",
         "workable": false,
         "recurringCost": 40,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 25,
+      "TEAK": {
+        "resourceEnum": "TEAK",
         "workable": false,
         "recurringCost": 50,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 16,
+      "ENTSOUL": {
+        "resourceEnum": "ENTSOUL",
         "workable": false,
         "recurringCost": 60,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 17,
+      "REANIMATEDENT": {
+        "resourceEnum": "REANIMATEDENT",
         "workable": false,
         "recurringCost": 150,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       }
-    ]
+    }
   },
-  {
+  "MINERAL": {
     "id": 2,
     "cost": 650,
     "resourceType": "MINERAL",
     "workerCount": 0,
     "freeWorkers": 0,
-    "workersByResource": [
-      {
-        "resourceId": 13,
+    "resourceWorkers": {
+      "STONE": {
+        "resourceEnum": "STONE",
         "workable": true,
         "recurringCost": 10,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
-      },{
-        "resourceId": 26,
+      },
+      "GRAPHITE": {
+        "resourceEnum": "GRAPHITE",
         "workable": false,
         "recurringCost": 15,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
-      },{
-        "resourceId": 27,
+      },
+      "LIMESTONE": {
+        "resourceEnum": "LIMESTONE",
         "workable": false,
         "recurringCost": 20,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 28,
+      "MARBLE": {
+        "resourceEnum": "MARBLE",
         "workable": false,
         "recurringCost": 30,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 29,
+      "QUARTZ": {
+        "resourceEnum": "QUARTZ",
         "workable": false,
         "recurringCost": 45,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 30,
+      "OBSIDIAN": {
+        "resourceEnum": "OBSIDIAN",
         "workable": false,
         "recurringCost": 55,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 31,
+      "DIAMOND": {
+        "resourceEnum": "DIAMOND",
         "workable": false,
         "recurringCost": 70,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       }
-    ]
+    }
   },
-  {
+  "METAL": {
     "id": 1,
     "cost": 1000,
     "resourceType": "METAL",
     "workerCount": 0,
     "freeWorkers": 0,
-    "workersByResource": [
-      {
-        "resourceId": 2,
+    "resourceWorkers": {
+      "COPPERORE": {
+        "resourceEnum": "COPPERORE",
         "workable": false,
         "recurringCost": 5,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 3,
+      "TINORE": {
+        "resourceEnum": "TINORE",
         "workable": false,
         "recurringCost": 5,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 4,
+      "BRONZEINGOT": {
+        "resourceEnum": "BRONZEINGOT",
         "workable": false,
         "recurringCost": 10,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 5,
+      "IRONORE": {
+        "resourceEnum": "IRONORE",
         "workable": false,
         "recurringCost": 15,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 6,
+      "IRONINGOT": {
+        "resourceEnum": "IRONINGOT",
         "workable": false,
         "recurringCost": 25,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 10,
+      "STEELINGOT": {
+        "resourceEnum": "STEELINGOT",
         "workable": false,
         "recurringCost": 40,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 11,
+      "GOLDORE": {
+        "resourceEnum": "GOLDORE",
         "workable": false,
         "recurringCost": 35,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 12,
+      "GOLDINGOT": {
+        "resourceEnum": "GOLDINGOT",
         "workable": false,
         "recurringCost": 60,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 18,
+      "LATINUMORE": {
+        "resourceEnum": "LATINUMORE",
         "workable": false,
         "recurringCost": 75,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 19,
+      "LATINUMINGOT": {
+        "resourceEnum": "LATINUMINGOT",
         "workable": false,
         "recurringCost": 95,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 20,
+      "UNBELIEVIUMORE": {
+        "resourceEnum": "UNBELIEVIUMORE",
         "workable": false,
         "recurringCost": 120,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 21,
+      "LUSTRIALORE": {
+        "resourceEnum": "LUSTRIALORE",
         "workable": false,
         "recurringCost": 120,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 22,
+      "SPECTRUSORE": {
+        "resourceEnum": "SPECTRUSORE",
         "workable": false,
         "recurringCost": 120,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 23,
+      "TEMPROUSINGOT": {
+        "resourceEnum": "TEMPROUSINGOT",
         "workable": false,
         "recurringCost": 200,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       },
-      {
-        "resourceId": 24,
+      "REFINEDTEMPROUS": {
+        "resourceEnum": "REFINEDTEMPROUS",
         "workable": false,
         "recurringCost": 500,
         "workerCount": 0,
         "workerYield": 1,
         "sliderSettingValid": true
       }
-    ]
+    }
   }
-]
+}

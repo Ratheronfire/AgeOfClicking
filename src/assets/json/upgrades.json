@@ -6,16 +6,16 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.2,
     "maxTier": "1"
   }],
   "resourceCosts": [{
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "resourceCost": 10
   }, {
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 25
   }],
   "purchased": false
@@ -27,16 +27,16 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5,
     "maxTier": "1"
   }],
   "resourceCosts": [{
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "resourceCost": 15
   }, {
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 35
   }],
   "purchased": false
@@ -48,24 +48,24 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 2,
+    "resourceEnum": "COPPERORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 3,
+    "resourceEnum": "TINORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "resourceCost": 50
   }],
   "purchased": false
@@ -77,13 +77,13 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 1.15,
     "maxTier": 2
   }],
   "resourceCosts": [{
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "resourceCost": 20
   }],
   "purchased": false
@@ -95,21 +95,21 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 5,
+    "resourceEnum": "IRONORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "resourceCost": 5
   }, {
-    "resourceId": 7,
+    "resourceEnum": "PINE",
     "resourceCost": 15
   }],
   "purchased": false
@@ -121,38 +121,38 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 2,
+    "resourceEnum": "COPPERORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 3,
+    "resourceEnum": "TINORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 5,
+    "resourceEnum": "IRONORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.75
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.75
   }],
   "resourceCosts": [{
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 20
   }, {
-    "resourceId": 8,
+    "resourceEnum": "BIRCH",
     "resourceCost": 30
   }],
   "purchased": false
@@ -164,16 +164,16 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1,
     "maxTier": 2
   }],
   "resourceCosts": [{
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "resourceCost": 10
   }, {
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "resourceCost": 30
   }],
   "purchased": false
@@ -185,16 +185,16 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1,
     "maxTier": 4
   }],
   "resourceCosts": [{
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 30
   }, {
-    "resourceId": 8,
+    "resourceEnum": "BIRCH",
     "resourceCost": 60
   }],
   "purchased": false
@@ -206,16 +206,16 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1,
     "maxTier": 5
   }],
   "resourceCosts": [{
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "resourceCost": 100
   }, {
-    "resourceId": 15,
+    "resourceEnum": "WILLOW",
     "resourceCost": 200
   }],
   "purchased": false
@@ -227,19 +227,19 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1,
     "maxTier": 6
   }],
   "resourceCosts": [{
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 500
   }, {
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 1000
   }, {
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "resourceCost": 250
   }],
   "purchased": false
@@ -251,18 +251,18 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "resourceCost": 1500
   }, {
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 10
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 750
   }],
   "purchased": false
@@ -274,26 +274,26 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 27,
+    "resourceEnum": "LIMESTONE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 28,
+    "resourceEnum": "MARBLE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 11,
+    "resourceEnum": "GOLDORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 30
   }, {
-    "resourceId": 9,
+    "resourceEnum": "EUCALYPTUS",
     "resourceCost": 45
   }],
   "purchased": false
@@ -305,26 +305,26 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 18,
+    "resourceEnum": "LATINUMORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "resourceCost": 100
   }, {
-    "resourceId": 9,
+    "resourceEnum": "EUCALYPTUS",
     "resourceCost": 200
   }],
   "purchased": false
@@ -336,33 +336,33 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 20,
+    "resourceEnum": "UNBELIEVIUMORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 21,
+    "resourceEnum": "LUSTRIALORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 22,
+    "resourceEnum": "SPECTRUSORE",
     "upgradeVariable": "HARVESTABILITY",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 500
   }, {
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 800
   }, {
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "resourceCost": 250
   }],
   "purchased": false
@@ -374,15 +374,15 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.45
   }],
   "resourceCosts": [{
-    "resourceId": 15,
+    "resourceEnum": "WILLOW",
     "resourceCost": 100
   }, {
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "resourceCost": 80
   }],
   "purchased": false
@@ -394,18 +394,18 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.5
   }],
   "resourceCosts": [{
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 500
   }, {
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 375
   }, {
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "resourceCost": 200
   }],
   "purchased": false
@@ -417,18 +417,18 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 17,
+    "resourceEnum": "REANIMATEDENT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }],
   "resourceCosts": [{
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 1000
   }, {
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "resourceCost": 600
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 425
   }],
   "purchased": false
@@ -440,35 +440,35 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 2,
+    "resourceEnum": "COPPERORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 3,
+    "resourceEnum": "TINORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 5,
+    "resourceEnum": "IRONORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.2
   }],
   "resourceCosts": [{
-    "resourceId": 7,
+    "resourceEnum": "PINE",
     "resourceCost": 25
   }, {
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 25
   }],
   "purchased": false
@@ -480,51 +480,51 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 2,
+    "resourceEnum": "COPPERORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 3,
+    "resourceEnum": "TINORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 5,
+    "resourceEnum": "IRONORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 27,
+    "resourceEnum": "LIMESTONE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 28,
+    "resourceEnum": "MARBLE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 11,
+    "resourceEnum": "GOLDORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.75
   }],
   "resourceCosts": [{
-    "resourceId": 15,
+    "resourceEnum": "WILLOW",
     "resourceCost": 150
   }, {
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "resourceCost": 85
   }],
   "purchased": false
@@ -536,90 +536,90 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 2,
+    "resourceEnum": "COPPERORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 3,
+    "resourceEnum": "TINORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 5,
-    "upgradeVariable": "HARVEST_YIELD",
-    "upgradeFactor": 3
-  }, {
-    "upgradeIsForWholeType": false,
-    "resourceType": "WOOD",
-    "resourceId": 27,
-    "upgradeVariable": "HARVEST_YIELD",
-    "upgradeFactor": 3
-  }, {
-    "upgradeIsForWholeType": false,
-    "resourceId": 28,
-    "upgradeVariable": "HARVEST_YIELD",
-    "upgradeFactor": 3
-  }, {
-    "upgradeIsForWholeType": false,
-    "resourceId": 11,
+    "resourceEnum": "IRONORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 29,
+    "resourceEnum": "LIMESTONE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 30,
+    "resourceEnum": "MARBLE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 31,
+    "resourceEnum": "GOLDORE",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 18,
+    "resourceType": "WOOD",
+    "resourceEnum": "QUARTZ",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 20,
+    "resourceEnum": "OBSIDIAN",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 21,
+    "resourceEnum": "DIAMOND",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 23,
+    "resourceEnum": "LATINUMORE",
+    "upgradeVariable": "HARVEST_YIELD",
+    "upgradeFactor": 3
+  }, {
+    "upgradeIsForWholeType": false,
+    "resourceEnum": "UNBELIEVIUMORE",
+    "upgradeVariable": "HARVEST_YIELD",
+    "upgradeFactor": 3
+  }, {
+    "upgradeIsForWholeType": false,
+    "resourceEnum": "LUSTRIALORE",
+    "upgradeVariable": "HARVEST_YIELD",
+    "upgradeFactor": 3
+  }, {
+    "upgradeIsForWholeType": false,
+    "resourceEnum": "TEMPROUSINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3
   }],
   "resourceCosts": [{
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 550
   }, {
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 1000
   }, {
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "resourceCost": 750
   }],
   "purchased": false
@@ -631,15 +631,15 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.2
   }],
   "resourceCosts": [{
-    "resourceId": 8,
+    "resourceEnum": "BIRCH",
     "resourceCost": 25
   }, {
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 25
   }],
   "purchased": false
@@ -651,25 +651,25 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.8
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.8
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 1.8
   }],
   "resourceCosts": [{
-    "resourceId": 9,
+    "resourceEnum": "EUCALYPTUS",
     "resourceCost": 200
   }, {
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "resourceCost": 100
   }],
   "purchased": false
@@ -681,30 +681,30 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 12,
+    "resourceEnum": "GOLDINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.5
   }],
   "resourceCosts": [{
-    "resourceId": 15,
+    "resourceEnum": "WILLOW",
     "resourceCost": 200
   }, {
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "resourceCost": 100
   }],
   "purchased": false
@@ -716,35 +716,35 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.8
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.8
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.8
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 12,
+    "resourceEnum": "GOLDINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.8
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2.8
   }],
   "resourceCosts": [{
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 500
   }, {
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 350
   }],
   "purchased": false
@@ -756,40 +756,40 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 12,
+    "resourceEnum": "GOLDINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3.2
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 3.2
   }],
   "resourceCosts": [{
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 1500
   }, {
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "resourceCost": 600
   }],
   "purchased": false
@@ -801,15 +801,15 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 24,
+    "resourceEnum": "REFINEDTEMPROUS",
     "upgradeVariable": "HARVEST_YIELD",
     "upgradeFactor": 2
   }],
   "resourceCosts": [{
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 500
   }, {
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "resourceCost": 800
   }],
   "purchased": false
@@ -821,16 +821,16 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.35,
     "maxTier": 3
   }],
   "resourceCosts": [{
-    "resourceId": 15,
+    "resourceEnum": "WILLOW",
     "resourceCost": 55
   }, {
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "resourceCost": 85
   }],
   "purchased": false
@@ -842,19 +842,19 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12,
     "maxTier": 5
   }],
   "resourceCosts": [{
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 850
   }, {
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 650
   }, {
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "resourceCost": 200
   }],
   "purchased": false
@@ -866,19 +866,19 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.04,
     "maxTier": 6
   }],
   "resourceCosts": [{
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 500
   }, {
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 1000
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 255
   }],
   "purchased": false
@@ -890,18 +890,18 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 17,
+    "resourceEnum": "REANIMATEDENT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.25
   }],
   "resourceCosts": [{
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 1500
   }, {
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 1250
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 600
   }],
   "purchased": false
@@ -913,56 +913,56 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 2,
+    "resourceEnum": "COPPERORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 3,
+    "resourceEnum": "TINORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 5,
+    "resourceEnum": "IRONORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 27,
+    "resourceEnum": "LIMESTONE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 28,
+    "resourceEnum": "MARBLE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 11,
+    "resourceEnum": "GOLDORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }],
   "resourceCosts": [{
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "resourceCost": 120
   }, {
-    "resourceId": 15,
+    "resourceEnum": "WILLOW",
     "resourceCost": 60
   }, {
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "resourceCost": 110
   }],
   "purchased": false
@@ -974,91 +974,91 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 2,
+    "resourceEnum": "COPPERORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 3,
+    "resourceEnum": "TINORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 5,
+    "resourceEnum": "IRONORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 27,
+    "resourceEnum": "LIMESTONE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 28,
+    "resourceEnum": "MARBLE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 11,
+    "resourceEnum": "GOLDORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 18,
+    "resourceEnum": "LATINUMORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 20,
+    "resourceEnum": "UNBELIEVIUMORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 21,
+    "resourceEnum": "LUSTRIALORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 22,
+    "resourceEnum": "SPECTRUSORE",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.5
   }],
   "resourceCosts": [{
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 500
   }, {
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 250
   }, {
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "resourceCost": 110
   }],
   "purchased": false
@@ -1070,18 +1070,18 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "CURRENCY",
-    "resourceId": 24,
+    "resourceEnum": "REFINEDTEMPROUS",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.3
   }],
   "resourceCosts": [{
-    "resourceId": 24,
+    "resourceEnum": "REFINEDTEMPROUS",
     "resourceCost": 750
   }, {
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 350
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 160
   }],
   "purchased": false
@@ -1093,15 +1093,15 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.6
   }],
   "resourceCosts": [{
-    "resourceId": 8,
+    "resourceEnum": "BIRCH",
     "resourceCost": 50
   }, {
-    "resourceId": 27,
+    "resourceEnum": "LIMESTONE",
     "resourceCost": 80
   }],
   "purchased": false
@@ -1113,25 +1113,25 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.4
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.4
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.4
   }],
   "resourceCosts": [{
-    "resourceId": 9,
+    "resourceEnum": "EUCALYPTUS",
     "resourceCost": 120
   }, {
-    "resourceId": 28,
+    "resourceEnum": "MARBLE",
     "resourceCost": 220
   }],
   "purchased": false
@@ -1143,30 +1143,30 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.25
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.25
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.25
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 12,
+    "resourceEnum": "GOLDINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.25
   }],
   "resourceCosts": [{
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 350
   }, {
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "resourceCost": 475
   }],
   "purchased": false
@@ -1178,38 +1178,38 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 12,
+    "resourceEnum": "GOLDINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.12
   }],
   "resourceCosts": [{
-    "resourceId": 25,
+    "resourceEnum": "TEAK",
     "resourceCost": 750
   }, {
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "resourceCost": 200
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 1000
   }],
   "purchased": false
@@ -1221,43 +1221,43 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 4,
+    "resourceEnum": "BRONZEINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.06
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 6,
+    "resourceEnum": "IRONINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.06
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 10,
+    "resourceEnum": "STEELINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.06
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 12,
+    "resourceEnum": "GOLDINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.06
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.06
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "upgradeVariable": "HARVEST_MILLISECONDS",
     "upgradeFactor": 0.06
   }],
   "resourceCosts": [{
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 500
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 350
   }, {
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "resourceCost": 1350
   }],
   "purchased": false
@@ -1268,14 +1268,14 @@
   "description": "Dammit, Jim! I'm a lumberjack, not a doctor! (Allows you to assign workers for more tree varieties.)",
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1,
     "resourceType": "WOOD",
     "maxTier": 5
   }],
   "resourceCosts": [{
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "resourceCost": 3000
   }],
   "purchased": false
@@ -1287,20 +1287,20 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 17,
+    "resourceEnum": "REANIMATEDENT",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "resourceCost": 60000
   }, {
-    "resourceId": 17,
+    "resourceEnum": "REANIMATEDENT",
     "resourceCost": 1
   }],
   "purchased": false
@@ -1312,32 +1312,32 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 13,
+    "resourceEnum": "STONE",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 26,
+    "resourceEnum": "GRAPHITE",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 27,
+    "resourceEnum": "LIMESTONE",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 28,
+    "resourceEnum": "MARBLE",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "resourceCost": 4000
   }],
   "purchased": false
@@ -1349,26 +1349,26 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1
   }],
   "resourceCosts": [{
-    "resourceId": 28,
+    "resourceEnum": "MARBLE",
     "resourceCost": 375
   }, {
-    "resourceId": 29,
+    "resourceEnum": "QUARTZ",
     "resourceCost": 300
   }, {
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "resourceCost": 30
   }, {
-    "resourceId": 31,
+    "resourceEnum": "DIAMOND",
     "resourceCost": 20
   }],
   "purchased": false
@@ -1380,13 +1380,13 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "METAL",
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1,
     "maxTier": 5
   }],
   "resourceCosts": [{
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "resourceCost": 4500
   }],
   "purchased": false
@@ -1398,16 +1398,16 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "METAL",
-    "resourceId": 30,
+    "resourceEnum": "OBSIDIAN",
     "upgradeVariable": "WORKABLE",
     "upgradeFactor": 1,
     "maxTier": 7
   }],
   "resourceCosts": [{
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "resourceCost": 60000
   }, {
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "resourceCost": 10
   }],
   "purchased": false
@@ -1419,13 +1419,13 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "WOOD",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 1.6,
     "maxTier": 5
   }],
   "resourceCosts": [{
-    "resourceId": 9,
+    "resourceEnum": "EUCALYPTUS",
     "resourceCost": 300
   }],
   "purchased": false
@@ -1437,20 +1437,20 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "WOOD",
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 3
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 17,
+    "resourceEnum": "REANIMATEDENT",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 3
   }],
   "resourceCosts": [{
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 500
   }, {
-    "resourceId": 24,
+    "resourceEnum": "REFINEDTEMPROUS",
     "resourceCost": 150
   }],
   "purchased": false
@@ -1462,18 +1462,18 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "MINERAL",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 1.15
   }, {
     "upgradeIsForWholeType": true,
     "resourceType": "METAL",
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 1.15
   }],
   "resourceCosts": [{
-    "resourceId": 12,
+    "resourceEnum": "GOLDINGOT",
     "resourceCost": 500
   }],
   "purchased": false
@@ -1485,20 +1485,20 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": true,
     "resourceType": "MINERAL",
-    "resourceId": 1,
+    "resourceEnum": "OAK",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 2,
     "maxTier": 6
   }, {
     "upgradeIsForWholeType": true,
     "resourceType": "METAL",
-    "resourceId": 0,
+    "resourceEnum": "GOLD",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 2,
     "maxTier": 5
   }],
   "resourceCosts": [{
-    "resourceId": 19,
+    "resourceEnum": "LATINUMINGOT",
     "resourceCost": 1500
   }],
   "purchased": false
@@ -1510,20 +1510,20 @@
   "upgradeEffects": [{
     "upgradeIsForWholeType": false,
     "resourceType": "MINERAL",
-    "resourceId": 23,
+    "resourceEnum": "TEMPROUSINGOT",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 1.5
   }, {
     "upgradeIsForWholeType": false,
-    "resourceId": 24,
+    "resourceEnum": "REFINEDTEMPROUS",
     "upgradeVariable": "WORKER_YIELD",
     "upgradeFactor": 1.5
   }],
   "resourceCosts": [{
-    "resourceId": 24,
+    "resourceEnum": "REFINEDTEMPROUS",
     "resourceCost": 250
   }, {
-    "resourceId": 16,
+    "resourceEnum": "ENTSOUL",
     "resourceCost": 50
   }],
   "purchased": false

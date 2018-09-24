@@ -9,10 +9,10 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div class='button-container' *ngFor="let resource of resourcesOfType(resourceType, adminService.filterAccessible)"
-        matTooltip="{{getTooltipMessage(resource.id)}}" matTooltipPosition="right">
-        <button mat-raised-button class="resource-button" [ngClass]="{'warn': resourceIsBeingStolen(resource.id)}"
-          [disabled]="!canHarvest(resource.id, resource.harvestYield)" [id]="resource.id" (click)='startHarvesting(resource.id)'>
+      <div class='button-container' *ngFor="let resource of getResources(resourceType, adminService.filterAccessible)"
+        matTooltip="{{getTooltipMessage(resource)}}" matTooltipPosition="right">
+        <button mat-raised-button class="resource-button" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
+          [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'>
           <div class="key-container" *ngIf="resource.bindIndex >= 0">
             <img src="./assets/sprites/key.png">
             <p>{{resource.bindIndex}}</p>
@@ -20,17 +20,11 @@
 
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
           <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
-          <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [mode]="progressBarMode"
-            [value]="resource.progressBarValue"></mat-progress-bar>
+          <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [value]="resource.progressBarValue"></mat-progress-bar>
 
           <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
           <div class='travelling-count' *ngIf="resource.amountTravelling > 0">{{resource.amountTravelling}} Travelling</div>
         </button>
-
-        <div *ngIf="adminService.editMode">
-          <br />
-          <button (click)="editResource(resource.id)">Edit {{resource.name | titlecase}}</button>
-        </div>
       </div>
     </mat-expansion-panel>
   </mat-accordion>

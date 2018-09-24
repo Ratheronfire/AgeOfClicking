@@ -26,9 +26,9 @@
         <button mat-raised-button (click)="focusedFighter.heal()" color="accent" [disabled]="!focusedFighter.canHeal()">
           Heal
           <div class="resource-list">
-            <div matTooltip="{{focusedFighter.healCost | number:'1.0-2'}} {{getResource(0).name | titlecase}}"
+            <div matTooltip="{{focusedFighter.healCost | number:'1.0-2'}} {{getResource('GOLD').name | titlecase}}"
               matTooltipPosition="below">
-              <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+              <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
               {{focusedFighter.healCost | number:'1.0-2'}}
             </div>
           </div>
@@ -60,7 +60,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['MAXHEALTH'] | number:'1.0-0'}}
                   </div>
                 </div>
@@ -86,7 +86,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['ATTACK'] | number:'1.0-0'}}
                   </div>
                 </div>
@@ -112,7 +112,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['DEFENSE'] | number:'1.0-0'}}
                   </div>
                 </div>
@@ -139,7 +139,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['RANGE'] | number:'1.0-0'}}
                   </div>
                 </div>
@@ -166,7 +166,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['MOVEMENTSPEED'] | number:'1.0-0'}}
                   </div>
                 </div>
@@ -192,7 +192,7 @@
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource(0).iconPath}}" alt="{{getResource(0).name}}">
+                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['FIRERATE'] | number:'1.0-0'}}
                   </div>
                 </div>

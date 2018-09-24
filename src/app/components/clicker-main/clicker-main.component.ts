@@ -2,7 +2,8 @@ import { Component, OnInit, } from '@angular/core';
 
 import { ClickerMainService } from './../../services/clicker-main/clicker-main.service';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { ResourceType, Resource } from '../../objects/resource';
+import { Resource } from '../../objects/resource';
+import { ResourceType } from '../../objects/resourceData';
 import { WorkersService } from '../../services/workers/workers.service';
 import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { MapService } from './../../services/map/map.service';
@@ -30,33 +31,27 @@ export class ClickerMainComponent implements OnInit {
   ngOnInit() {
   }
 
-  resourcesOfType(resourceType: string, filterByAccessible: boolean): Resource[] {
-    return this.resourcesService.resourcesOfType(this.resourceTypes[resourceType], false, false, filterByAccessible);
+  getResources(resourceType: ResourceType, filterByAccessible: boolean): Resource[] {
+    return this.resourcesService.getResources(this.resourceTypes[resourceType], false, filterByAccessible);
   }
 
-  public getTooltipMessage(id: number): string {
-    return this.tooltipService.getResourceTooltip(id);
+  public getTooltipMessage(resource: Resource): string {
+    return this.tooltipService.getResourceTooltip(resource);
   }
 
-  canHarvest(id: number, multiplier: number): boolean {
-    const resource = this.resourcesService.getResource(id);
-
-    return !resource.harvesting && this.resourcesService.canHarvest(id, multiplier);
+  canHarvest(resource: Resource, multiplier: number): boolean {
+    return !resource.harvesting && resource.canHarvest(multiplier);
   }
 
-  startHarvesting(id: number) {
-    this.clickerMainService.startHarvesting(id);
+  startHarvesting(resource: Resource) {
+    this.clickerMainService.startHarvesting(resource);
   }
 
-  resourceIsBeingStolen(id: number): boolean {
-    return this.enemyService.resourceIsBeingStolen(id);
+  resourceIsBeingStolen(resource: Resource): boolean {
+    return this.enemyService.resourceIsBeingStolen(resource);
   }
 
-  harvestResource(id: number) {
-    this.clickerMainService.harvestResource(id);
-  }
-
-  editResource(id: number) {
-    this.adminService.openResourceDialog(id);
+  harvestResource(resource: Resource) {
+    this.clickerMainService.harvestResource(resource);
   }
 }

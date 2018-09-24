@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Resource } from '../../objects/resource';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { Upgrade, ResourceCost, UpgradeType } from '../../objects/upgrade';
+import { ResourceEnum } from '../../objects/resourceData';
+import { Upgrade, UpgradeType } from '../../objects/upgrade';
 import { UpgradesService } from '../../services/upgrades/upgrades.service';
 import { SettingsService } from '../../services/settings/settings.service';
 import { AdminService } from '../../services/admin/admin.service';
@@ -24,7 +24,7 @@ export class UpgradesComponent implements OnInit {
   }
 
   canAffordUpgrade(id: number) {
-    return this.upgradesService.canAffordUpgrade(id);
+    return this.upgradesService.getUpgrade(id).canAfford();
   }
 
   getUpgrades(filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
@@ -32,11 +32,11 @@ export class UpgradesComponent implements OnInit {
   }
 
   upgradesOfType(upgradeType: string, filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
-    return this.upgradesService.upgradesOfType(this.upgradeTypes[upgradeType], filterByPurchased, filterByUnpurchased, filterByAccessible);
+    return this.upgradesService.getUpgrades(filterByPurchased, filterByUnpurchased, filterByAccessible, this.upgradeTypes[upgradeType]);
   }
 
   purchaseUpgrade(id: number) {
-    this.upgradesService.purchaseUpgrade(id);
+    this.upgradesService.getUpgrade(id).purchaseUpgrade();
   }
 
   getBackgroundColor(id: number): string {
@@ -44,19 +44,15 @@ export class UpgradesComponent implements OnInit {
 
     if (upgrade.purchased) {
       return 'lightgreen';
-    } else if (!this.upgradesService.canAffordUpgrade(id)) {
+    } else if (!upgrade.canAfford()) {
       return 'gray';
     }
 
     return 'lightblue';
   }
 
-  editUpgrade(id: number) {
-    this.adminService.openUpgradeDialog(id);
-  }
-
-  getResource(resourceId: number) {
-    return this.resourcesService.getResource(resourceId);
+  getResource(resourceEnum: ResourceEnum) {
+    return this.resourcesService.resources.get(resourceEnum);
   }
 
   get hidePurchasedUpgrades(): boolean {

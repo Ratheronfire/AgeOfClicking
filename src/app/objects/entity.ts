@@ -1,3 +1,4 @@
+import { ResourceEnum } from './resourceData';
 import { BuildingTileType, Tile } from './tile';
 import { Vector } from './vector';
 import { tilePixelSize } from '../globals';
@@ -54,8 +55,7 @@ export class Entity implements Tick {
     this.animationSpeed = animationSpeed;
   }
 
-  tick(elapsed: number, deltaTime: number) {
-  }
+  tick(elapsed: number, deltaTime: number) { }
 
   public get x(): number {
     return this.position.x;
@@ -132,15 +132,15 @@ export class Enemy extends Actor {
   targetIndex: number;
   pathAttempt: number;
 
-  resourcesToSteal: number[];
-  resourcesHeld: number[];
+  resourcesToSteal: ResourceEnum[];
+  resourcesHeld: Map<ResourceEnum, number>;
   totalHeld: number;
   stealMax: number;
   resourceCapacity: number;
 
   public constructor(name: string, position: Vector, currentTile: Tile,
       health: number, animationSpeed = 0.003, attack: number, defense: number,
-      attackRange: number, targetableBuildingTypes: BuildingTileType[], resourcesToSteal: number[],
+      attackRange: number, targetableBuildingTypes: BuildingTileType[], resourcesToSteal: ResourceEnum[],
       stealMax: number, resourceCapacity: number) {
     super(name, position, currentTile, health, animationSpeed, attack, defense, attackRange);
 
@@ -150,7 +150,7 @@ export class Enemy extends Actor {
     this.pathAttempt = 0;
 
     this.resourcesToSteal = resourcesToSteal;
-    this.resourcesHeld = [];
+    this.resourcesHeld = new Map<ResourceEnum, number>();
     this.totalHeld = 0;
     this.stealMax = stealMax;
     this.resourceCapacity = resourceCapacity;
@@ -222,7 +222,7 @@ export class Fighter extends Actor {
   }
 
   public canUpgradeStat(stat: FighterStat): boolean {
-    return this.resourcesService.getResource(0).amount >= this.statCosts[stat];
+    return this.resourcesService.resources.get(ResourceEnum.Gold).amount >= this.statCosts[stat];
   }
 
   public getUpgradedStat(stat: FighterStat): number {
@@ -248,7 +248,7 @@ export class Fighter extends Actor {
       return;
     }
 
-    this.resourcesService.addResourceAmount(0, -this.statCosts[stat]);
+    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-this.statCosts[stat]);
 
     const upgradedStat = this.getUpgradedStat(stat);
     switch (stat) {
@@ -278,7 +278,7 @@ export class Fighter extends Actor {
   }
 
   public canHeal(): boolean {
-    return this.resourcesService.getResource(0).amount >= this.healCost;
+    return this.resourcesService.resources.get(ResourceEnum.Gold).amount >= this.healCost;
   }
 
   public heal() {
@@ -286,7 +286,7 @@ export class Fighter extends Actor {
       return;
     }
 
-    this.resourcesService.addResourceAmount(0, -this.healCost);
+    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-this.healCost);
     this.health = this.maxHealth;
   }
 
@@ -335,7 +335,7 @@ export class Projectile extends Entity {
 export class ResourceAnimation extends Entity {
   animationType: ResourceAnimationType;
 
-  resourceId: number;
+  resourceEnum: ResourceEnum;
   multiplier: number;
 
   spawnedByPlayer: boolean;
@@ -344,13 +344,13 @@ export class ResourceAnimation extends Entity {
   storeService: StoreService;
 
   public constructor(position: Vector, currentTile: Tile, animationSpeed = 0.003, tilePath: Tile[],
-    animationType: ResourceAnimationType, resourceId: number, multiplier: number, spawnedByPlayer: boolean,
+    animationType: ResourceAnimationType, resourceEnum: ResourceEnum, multiplier: number, spawnedByPlayer: boolean,
       resourcesService: ResourcesService, storeService: StoreService) {
     super('', position, currentTile, -1, animationSpeed, tilePath);
 
     this.animationType = animationType;
 
-    this.resourceId = resourceId;
+    this.resourceEnum = resourceEnum;
     this.multiplier = multiplier;
     this.spawnedByPlayer = spawnedByPlayer;
 
@@ -363,10 +363,6 @@ export class ResourceAnimation extends Entity {
   }
 
   finishAnimation() {
-    if (this.animationType === ResourceAnimationType.PlayerSpawned || this.animationType === ResourceAnimationType.WorkerSpawned) {
-      this.resourcesService.finishResourceAnimation(this.resourceId, this.multiplier, this.spawnedByPlayer);
-    } else if (this.animationType === ResourceAnimationType.Sold) {
-      this.storeService.finishResourceAnimation(this.resourceId, this.multiplier);
-    }
+    this.resourcesService.resources.get(this.resourceEnum).finishResourceAnimation(this.multiplier, this.animationType);
   }
 }

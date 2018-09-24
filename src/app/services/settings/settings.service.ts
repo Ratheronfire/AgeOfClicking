@@ -1,9 +1,8 @@
-import { TileStat } from './../../objects/tile';
+import { FormControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
-import { MatSnackBar, MatDialog } from '@angular/material';
+import { MatSnackBar, MatDialog, MatSelectChange } from '@angular/material';
 
-import { timer, Observable, Subscription } from 'rxjs';
-
+import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 import { ResourcesService } from './../resources/resources.service';
 import { UpgradesService } from './../upgrades/upgrades.service';
 import { WorkersService } from './../workers/workers.service';
@@ -12,26 +11,30 @@ import { MapService } from './../map/map.service';
 import { EnemyService } from './../enemy/enemy.service';
 import { FighterService } from './../fighter/fighter.service';
 import { Tick } from './../tick/tick.service';
+import { ResourceType, ResourceEnum } from './../../objects/resourceData';
 import { SaveData, WorkerData, TileData } from '../../objects/savedata';
-import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 import { BuildingTileType, BuildingSubType, Market } from '../../objects/tile';
 import { Enemy, Fighter, ResourceAnimationType } from '../../objects/entity';
 import { MessageSource } from './../../objects/message';
 import { Vector } from '../../objects/vector';
-import { ResourceType } from '../../objects/resource';
+
+const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.Birch, ResourceEnum.Stone, ResourceEnum.Graphite,
+  ResourceEnum.Limestone, ResourceEnum.CopperOre, ResourceEnum.TinOre, ResourceEnum.BronzeIngot, ResourceEnum.IronOre];
 
 @Injectable({
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1'];
-  gameVersion = 'Alpha 3.1';
+  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2'];
+  gameVersion = 'Alpha 3.2';
+
+  bindSelected = new FormControl();
 
   autosaveInterval = 60000;
   lastAutosave = this.autosaveInterval;
   debugMode = false;
 
-  resourceBinds = [1, 7, 8, 13, 26, 27, 2, 3, 4, 5];
+  resourceBinds = defaultResourceBinds;
 
   disableAnimations = false;
   slimInterface = false;
@@ -41,7 +44,11 @@ export class SettingsService implements Tick {
 
   harvestDetailColor = '#a4ff89';
   workerDetailColor = '#ae89ff';
-  resourceAnimationColors = {};
+  resourceAnimationColors = {
+    'PLAYERSPAWNED': '#a4ff89',
+    'WORKERSPAWNED': 'ae89ff',
+    'SOLD': '#ffc089'
+  };
 
   constructor(protected resourcesService: ResourcesService,
               protected upgradesService: UpgradesService,
@@ -51,14 +58,7 @@ export class SettingsService implements Tick {
               protected fighterService: FighterService,
               protected messagesService: MessagesService,
               protected snackbar: MatSnackBar,
-              public dialog: MatDialog) {
-    this.resourceAnimationColors[ResourceAnimationType.PlayerSpawned] = '#a4ff89';
-    this.resourceAnimationColors[ResourceAnimationType.WorkerSpawned] = '#ae89ff';
-    this.resourceAnimationColors[ResourceAnimationType.Sold] = '#ffc089';
-
-    this.loadGame();
-    this.setAutosave();
-  }
+              public dialog: MatDialog) { }
 
   tick(elapsed: number, deltaTime: number) {
     if (elapsed - this.lastAutosave < this.autosaveInterval || this.autosaveInterval < 0) {
@@ -67,6 +67,24 @@ export class SettingsService implements Tick {
 
     this.lastAutosave = elapsed;
     this.saveGame();
+  }
+
+  resourceBindChange(event: MatSelectChange) {
+    const limitExceeded = event.value.length > 10;
+    this.bindSelected.setErrors({'length': limitExceeded});
+
+    if (!limitExceeded) {
+      this.resourceBinds = event.value;
+
+      for (const resource of this.resourcesService.getResources()) {
+        resource.bindIndex = -1;
+      }
+
+      for (const resourceBind of this.resourceBinds) {
+        const resource = this.resourcesService.resources.get(resourceBind);
+        resource.bindIndex = this.resourceBinds.indexOf(resourceBind);
+      }
+    }
   }
 
   openSaveDialog(saveData?: string) {
@@ -115,6 +133,42 @@ export class SettingsService implements Tick {
   deleteSave() {
     localStorage.removeItem('clickerGameSaveData');
 
+    this.resourcesService.loadBaseResources();
+    this.upgradesService.loadBaseUpgrades();
+    this.workersService.loadBaseWorkers();
+    this.mapService.initializeMap();
+    this.enemyService.enemies = [];
+    this.fighterService.fighters = [];
+
+    this.autosaveInterval = 60000;
+    this.setAutosave();
+
+    this.debugMode = false;
+
+    this.resourcesService.highestTierReached = 0;
+
+    this.workersService.workersPaused = false;
+
+    this.resourceBinds = defaultResourceBinds;
+    this.bindSelected.setValue(this.resourceBinds);
+    this.resourceBindChange({'source': null, 'value': this.resourceBinds});
+
+    this.messagesService.visibleSources = [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
+      MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
+      MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
+
+    this.enemyService.enemiesActive = false;
+
+    this.disableAnimations = false;
+    this.slimInterface = false;
+
+    this.mapLowFramerate = false;
+    this.resourceAnimationColors = {
+      'PLAYERSPAWNED': '#a4ff89',
+      'WORKERSPAWNED': 'ae89ff',
+      'SOLD': '#ffc089'
+    };
+
     this.snackbar.open('Game save deleted.', '', {duration: 2000});
     this.log('Game save deleted.');
   }
@@ -130,6 +184,7 @@ export class SettingsService implements Tick {
       settings: {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
+        highestTierReached: this.resourcesService.highestTierReached,
         workersPaused: this.workersService.workersPaused,
         hidePurchasedUpgrades: this.upgradesService.hidePurchasedUpgrades,
         resourceBinds: this.resourceBinds,
@@ -142,9 +197,9 @@ export class SettingsService implements Tick {
       gameVersion: this.gameVersion
     };
 
-    for (const resource of this.resourcesService.resources) {
+    for (const resource of this.resourcesService.getResources()) {
       saveData.resources.push({
-        id: resource.id,
+        resourceEnum: resource.resourceEnum,
         amount: resource.amount,
         harvestable: resource.harvestable,
         harvestYield: resource.harvestYield,
@@ -163,17 +218,17 @@ export class SettingsService implements Tick {
       });
     }
 
-    for (const worker of this.workersService.workers) {
+    for (const worker of this.workersService.getWorkers()) {
       const workerData: WorkerData = {
-        id: worker.id,
+        resourceType: worker.resourceType,
         cost: worker.cost,
         workerCount: worker.workerCount,
         workersByResource: []
       };
 
-      for (const resourceWorker of worker.workersByResource) {
+      for (const resourceWorker of worker.getResourceWorkers()) {
         workerData.workersByResource.push({
-          resourceId: resourceWorker.resourceId,
+          resourceEnum: resourceWorker.resourceEnum,
           workable: resourceWorker.workable,
           workerCount: resourceWorker.workerCount,
           workerYield: resourceWorker.workerYield
@@ -268,7 +323,7 @@ export class SettingsService implements Tick {
 
       if (saveData.resources !== undefined) {
         for (const resourceData of saveData.resources) {
-          const resource = this.resourcesService.getResource(resourceData.id);
+          const resource = this.resourcesService.resources.get(resourceData.resourceEnum);
 
           if (resource === undefined) {
             continue;
@@ -281,7 +336,6 @@ export class SettingsService implements Tick {
           resource.sellable = resourceData.sellable;
           resource.sellsFor = resourceData.sellsFor;
           resource.autoSellCutoff = resourceData.autoSellCutoff ? resourceData.autoSellCutoff : 0;
-          resource.resourceAccessible = resourceData.resourceAccessible;
         }
       }
 
@@ -299,14 +353,14 @@ export class SettingsService implements Tick {
 
       if (saveData.workers !== undefined) {
         for (const workerData of saveData.workers) {
-          const worker = this.workersService.getWorker(workerData.id);
+          const worker = this.workersService.workers.get(workerData.resourceType);
 
           worker.cost = workerData.cost;
           worker.workerCount = workerData.workerCount;
           worker.freeWorkers = workerData.workerCount;
 
           for (const resourceWorkerData of workerData.workersByResource) {
-            const resourceWorker = this.workersService.getResourceWorker(resourceWorkerData.resourceId);
+            const resourceWorker = worker.resourceWorkers.get(resourceWorkerData.resourceEnum);
 
             resourceWorker.workable = resourceWorkerData.workable;
             resourceWorker.workerYield = resourceWorkerData.workerYield;
@@ -314,7 +368,7 @@ export class SettingsService implements Tick {
 
             resourceWorker.sliderSetting = resourceWorkerData.workerCount;
 
-            this.workersService.updateResourceWorker(resourceWorkerData.resourceId, resourceWorkerData.workerCount);
+            worker.updateResourceWorker(resourceWorkerData.resourceEnum, resourceWorkerData.workerCount);
           }
 
           if (worker.freeWorkers < 0) {
@@ -369,6 +423,7 @@ export class SettingsService implements Tick {
           tile.market.sellQuantity = tileData.sellQuantity ? tileData.sellQuantity : 50;
         }
       }
+
       if (saveData.enemies !== undefined) {
         for (const enemyData of saveData.enemies) {
           const tilePosition = this.mapService.clampTileCoordinates(enemyData.position.x, enemyData.position.y);
@@ -413,11 +468,13 @@ export class SettingsService implements Tick {
         this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
         this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
 
+        this.resourcesService.highestTierReached = saveData.settings.highestTierReached ? saveData.settings.highestTierReached : 0;
+
         this.workersService.workersPaused = saveData.settings.workersPaused ? saveData.settings.workersPaused : false;
         this.upgradesService.hidePurchasedUpgrades =
           saveData.settings.hidePurchasedUpgrades ? saveData.settings.hidePurchasedUpgrades : false;
 
-        this.resourceBinds = saveData.settings.resourceBinds ? saveData.settings.resourceBinds : [1, 7, 8, 13, 26, 27, 2, 3, 4, 5];
+        this.resourceBinds = saveData.settings.resourceBinds ? saveData.settings.resourceBinds : defaultResourceBinds;
 
         this.messagesService.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
           [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
@@ -442,21 +499,62 @@ export class SettingsService implements Tick {
       return true;
     } catch (error) {
       this.snackbar.open(`Error loading save data: ${error}`, '', {duration: 5000});
-      this.log('Error loading save data.');
+      this.log('Error loading save data. Printing data to console for debugging.');
       this.importSave(backupSave);
 
+      console.log(saveDataString);
       console.error(error);
 
       return false;
     }
   }
 
-  processVersionDifferences(saveData: SaveData): SaveData {
+  processVersionDifferences(saveData: any): SaveData {
+    const legacyResourceIds = {
+      0: 'GOLD',
+      1: 'OAK',
+      2: 'COPPERORE',
+      3: 'TINORE',
+      4: 'BRONZEINGOT',
+      5: 'IRONORE',
+      6: 'IRONINGOT',
+      7: 'PINE',
+      8: 'BIRCH',
+      9: 'EUCALYPTUS',
+      10: 'STEELINGOT',
+      11: 'GOLDORE',
+      12: 'GOLDINGOT',
+      13: 'STONE',
+      15: 'WILLOW',
+      16: 'ENTSOUL',
+      17: 'REANIMATEDENT',
+      18: 'LATINUMORE',
+      19: 'LATINUMINGOT',
+      20: 'UNBELIEVIUMORE',
+      21: 'LUSTRIALORE',
+      22: 'SPECTRUSORE',
+      23: 'TEMPROUSINGOT',
+      24: 'REFINEDTEMPROUS',
+      25: 'TEAK',
+      26: 'GRAPHITE',
+      27: 'LIMESTONE',
+      28: 'MARBLE',
+      29: 'QUARTZ',
+      30: 'OBSIDIAN',
+      31: 'DIAMOND'
+    };
+
+    const legacyWorkerIds = {
+      0: 'WOOD',
+      1: 'METAL',
+      2: 'MINERAL'
+    };
+
     const oldVersionIndex = this.versionHistory.indexOf(saveData.gameVersion);
 
     if (oldVersionIndex <= this.versionHistory.indexOf('1.2')) {
       for (const resourceData of saveData.resources) {
-        const resource = this.resourcesService.getResource(resourceData.id);
+        const resource = this.resourcesService.resources.get(legacyResourceIds[resourceData.resourceId]);
         resourceData.sellsFor = resource.sellsFor;
       }
     }
@@ -472,6 +570,43 @@ export class SettingsService implements Tick {
         tileData.statLevels = isMarket ? {'MAXHEALTH': 1, 'SELLAMOUNT': 1, 'SELLRATE': 1} : {'MAXHEALTH': 1};
         tileData.statCosts = isMarket ? {'MAXHEALTH': 1500, 'SELLAMOUNT': 1500, 'SELLRATE': 1500} : {'MAXHEALTH': 1500};
       });
+    }
+
+    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.1')) {
+      for (const resourceData of saveData.resources) {
+        resourceData.resourceEnum = legacyResourceIds[resourceData.id];
+      }
+
+      for (const workerData of saveData.workers) {
+        workerData.resourceType = legacyWorkerIds[workerData.id];
+
+        for (const resourceWorkerData of workerData.workersByResource) {
+          resourceWorkerData.resourceEnum = legacyResourceIds[resourceWorkerData.resourceId];
+        }
+      }
+
+      for (const enemyData of saveData.enemies) {
+        const newResourcesToSteal = enemyData.resourcesToSteal.map(resourceId => legacyResourceIds[resourceId]);
+        const newResourcesHeld = new Map<ResourceEnum, number>();
+
+        if (!enemyData.resourcesHeld || !enemyData.resourcesHeld.length) {
+          continue;
+        }
+
+        for (const resourceId of enemyData.resourcesToSteal) {
+          const amountHeld = enemyData.resourcesHeld[resourceId];
+          newResourcesHeld.set(legacyResourceIds[resourceId], amountHeld === undefined ? 0 : amountHeld);
+        }
+
+        enemyData.resourcesToSteal = newResourcesToSteal;
+        enemyData.resourcesHeld = newResourcesHeld;
+      }
+
+      saveData.settings.resourceBinds = saveData.settings.resourceBinds.map(resourceId => legacyResourceIds[resourceId]);
+
+      const accessedTiers = saveData.resources.filter(resource => resource.amount).map(resource =>
+        this.resourcesService.resources.get(resource.resourceEnum).resourceTier);
+      saveData.settings.highestTierReached = accessedTiers.sort()[accessedTiers.length - 1];
     }
 
     return saveData;

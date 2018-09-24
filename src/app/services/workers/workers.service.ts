@@ -1,8 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { timer } from 'rxjs';
-
-import { ResourceType } from '../../objects/resource';
+import { ResourceType, ResourceEnum } from './../../objects/resourceData';
 import { MessageSource } from '../../objects/message';
 import { ResourcesService } from '../resources/resources.service';
 import { Worker, ResourceWorker } from '../../objects/worker';
@@ -17,7 +15,7 @@ const baseWorkers = require('../../../assets/json/workers.json');
   providedIn: 'root'
 })
 export class WorkersService implements Tick {
-  public workers: Worker[] = baseWorkers;
+  public workers = new Map<string, Worker>();
   workersPaused = false;
 
   workerDelay = 1000;
@@ -26,6 +24,35 @@ export class WorkersService implements Tick {
   constructor(protected resourcesService: ResourcesService,
               protected mapService: MapService,
               protected messagesService: MessagesService) {
+    this.loadBaseWorkers();
+  }
+
+  public loadBaseWorkers() {
+    for (const resourceTypeString in ResourceType) {
+      if (Number(resourceTypeString)) {
+        continue;
+      }
+
+      const resourceType = ResourceType[resourceTypeString];
+
+      const baseWorker = baseWorkers[resourceType];
+      if (!baseWorker) {
+        continue;
+      }
+
+      const resourceWorkers = new Map<string, ResourceWorker>();
+      for (const resoruceEnum in baseWorker.resourceWorkers) {
+        if (Number(resoruceEnum)) {
+          continue;
+        }
+
+        resourceWorkers.set(resoruceEnum, baseWorker.resourceWorkers[resoruceEnum]);
+      }
+
+      const worker = new Worker(baseWorker.cost, baseWorker.resourceType, resourceWorkers,
+                                this.resourcesService, this.mapService, this.messagesService);
+      this.workers.set(resourceType, worker);
+    }
   }
 
   tick(elapsed: number, deltaTime: number) {
@@ -35,101 +62,30 @@ export class WorkersService implements Tick {
 
     this.lastWorkerTime = elapsed;
 
-    for (const worker of this.workers) {
-      for (const resourceWorker of worker.workersByResource) {
-        if (resourceWorker.workerCount === 0 || !this.canAffordToHarvest(resourceWorker.resourceId)) {
-          continue;
-        }
-
-        this.resourcesService.addResourceAmount(0, -resourceWorker.recurringCost * resourceWorker.workerCount);
-
-        if (!this.canAffordToHarvest(resourceWorker.resourceId)) {
-          this.log(`No more money available for ${this.resourcesService.getResource(resourceWorker.resourceId).name}.`);
-        }
-
-        this.mapService.spawnHarvestedResourceAnimation(
-          resourceWorker.resourceId, resourceWorker.workerYield * resourceWorker.workerCount, false);
-      }
+    for (const worker of this.getWorkers()) {
+      worker.tick(elapsed, deltaTime);
     }
   }
 
-  public getWorkers(filterByAccessible: boolean, filterByWorkable: boolean, filterByHarvestable: boolean) {
-    let workers = this.workers;
-
-    if (filterByAccessible) {
-      workers = this.workers.filter(worker => worker.workersByResource.some(
-        rw => this.resourcesService.getResource(rw.resourceId).resourceAccessible));
-    }
-
-    if (filterByWorkable) {
-      workers = this.workers.filter(worker => worker.workersByResource.some(rw => rw.workable));
-    }
-
-    if (filterByHarvestable) {
-      workers = this.workers.filter(worker => worker.workersByResource.some(
-        rw => this.resourcesService.getResource(rw.resourceId).harvestable));
-    }
-
-    return workers;
+  public getWorkers(filterByAccessible = false, filterByWorkable = false, filterByHarvestable = false): Worker[] {
+    const workers = Array.from(this.workers.values());
+    return workers.filter(worker => worker.getResourceWorkers(filterByAccessible, filterByWorkable, filterByHarvestable).length);
   }
 
-  public getWorker(idOrResourceType: number | string | ResourceType) {
-    return typeof idOrResourceType === 'number' ?
-      this.workers.find(worker => worker.id === idOrResourceType) :
-      this.workers.find(worker => worker.resourceType === idOrResourceType);
+  public getWorker(resourceEnum: ResourceEnum): Worker {
+    const resoruce = this.resourcesService.resources.get(resourceEnum);
+    return this.workers.get(resoruce.resourceType);
   }
 
-  public getResourceWorker(resourceId: number): ResourceWorker {
-    const resourceType = this.resourcesService.getResource(resourceId).resourceType;
-    const worker = this.getWorker(resourceType);
+  public getResourceWorker(resourceEnum: ResourceEnum): ResourceWorker {
+    const resource = this.resourcesService.resources.get(resourceEnum);
+    const worker = this.workers.get(resource.resourceType);
 
-    if (worker === undefined) {
-      return null;
+    if (!resource || !worker) {
+      return undefined;
     }
 
-    return worker.workersByResource.find(rw => rw.resourceId === resourceId);
-  }
-
-  canAffordWorker(id: number): boolean {
-    const worker = this.getWorker(id);
-
-    return worker.cost <= this.resourcesService.getResource(0).amount;
-  }
-
-  canAffordToHarvest(resourceId: number): boolean {
-    const resourceWorker = this.getResourceWorker(resourceId);
-
-    return this.resourcesService.getResource(0).amount >= resourceWorker.recurringCost;
-  }
-
-  updateResourceWorker(id: number, newResourceWorkerCount: number) {
-    const resource = this.resourcesService.getResource(id);
-    const worker = this.getWorker(resource.resourceType);
-    const resourceWorker = worker.workersByResource.find(ws => ws.resourceId === resource.id);
-
-    if (!resourceWorker.sliderSettingValid) {
-      newResourceWorkerCount = worker.freeWorkers + resourceWorker.workerCount;
-      resourceWorker.sliderSetting = newResourceWorkerCount;
-    }
-
-    const newFreeWorkers = worker.freeWorkers + resourceWorker.workerCount - newResourceWorkerCount;
-
-    worker.freeWorkers = newFreeWorkers;
-    resourceWorker.workerCount = newResourceWorkerCount;
-  }
-
-  hireWorker(id: number) {
-    if (!this.canAffordWorker(id)) {
-      return;
-    }
-
-    const worker = this.getWorker(id);
-
-    this.resourcesService.addResourceAmount(0, -worker.cost);
-
-    worker.cost *= 1.01;
-    worker.workerCount++;
-    worker.freeWorkers++;
+    return worker.resourceWorkers.get(resourceEnum);
   }
 
   private log(message: string) {

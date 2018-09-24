@@ -136,7 +136,7 @@ export class MapDirective implements AfterViewInit, Tick {
       this.mapService.focusedBuildingTile = this.mapService.buildingTiles[focusedTile.buildingTileType];
       this.mapService.focusedResourceTile = this.mapService.resourceTiles[focusedTile.resourceTileType];
       this.mapService.focusedResources = this.mapService.focusedResourceTile ?
-        this.mapService.focusedResourceTile.resourceIds.map(id => this.resourcesService.getResource(id)) : undefined;
+        this.mapService.focusedResourceTile.resourceEnums.map(rEnum => this.resourcesService.resources.get(rEnum)) : undefined;
     } else {
       this.mapService.focusedTile = undefined;
       this.mapService.focusedBuildingTile = undefined;
@@ -225,7 +225,7 @@ export class MapDirective implements AfterViewInit, Tick {
 
     for (const resourceAnimation of this.mapService.resourceAnimations) {
       const resourceTileImage = this.imageElements[
-          this.resourcesService.getResource(resourceAnimation.resourceId).name.toLowerCase().replace(' ', '-')];
+          this.resourcesService.resources.get(resourceAnimation.resourceEnum).name.toLowerCase().replace(' ', '-')];
       this.context.drawImage(resourceTileImage, resourceAnimation.x, resourceAnimation.y,
           this.mapService.tilePixelSize / 2, this.mapService.tilePixelSize / 2);
         this.drawTile(resourceAnimation.position, resourceTileImage, 0.5);

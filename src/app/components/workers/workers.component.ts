@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Resource, ResourceType } from '../../objects/resource';
+import { Resource } from '../../objects/resource';
+import { ResourceType, ResourceEnum } from '../../objects/resourceData';
+import { Worker } from '../../objects/worker';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { Worker, ResourceWorker } from '../../objects/worker';
 import { WorkersService } from '../../services/workers/workers.service';
 import { TooltipService } from './../../services/tooltip/tooltip.service';
 import { AdminService } from '../../services/admin/admin.service';
@@ -27,64 +28,60 @@ export class WorkersComponent implements OnInit {
     return this.workersService.getWorkers(filterByAccessible, filterByWorkable, filterByHarvestable);
   }
 
-  public getWorker(idOrResourceType: number | ResourceType) {
-    return this.workersService.getWorker(idOrResourceType);
+  public getWorker(resourceType: ResourceType) {
+    return this.workersService.workers.get(resourceType);
+  }
+
+  getResource(resourceEnum: ResourceEnum): Resource {
+    return this.resourcesService.resources.get(resourceEnum);
   }
 
   getAccessibleResourceWorkers(worker: Worker) {
-    return worker.workersByResource.filter(rw => this.resourcesService.getResource(rw.resourceId).resourceAccessible);
+    return worker.getResourceWorkers(true);
   }
 
-  canAfford(id: number): boolean {
-    return this.workersService.canAffordWorker(id);
+  canAffordToHarvest(resourceEnum: ResourceEnum): boolean {
+    return this.workersService.getWorker(resourceEnum).canAffordToHarvest(resourceEnum);
   }
 
-  canHarvest(resourceId: number): boolean {
-    return this.resourcesService.canHarvest(resourceId) && this.workersService.canAffordToHarvest(resourceId);
+  canHarvest(resourceEnum: ResourceEnum): boolean {
+    return this.resourcesService.resources.get(resourceEnum).canHarvest() && this.canAffordToHarvest(resourceEnum);
   }
 
-  shouldShowResource(id: number): boolean {
-    const resource = this.resourcesService.getResource(id);
-    const resourceWorker = this.workersService.getResourceWorker(id);
+  shouldShowResource(resourceEnum: ResourceEnum): boolean {
+    const resource = this.resourcesService.resources.get(resourceEnum);
+    const resourceWorker = this.workersService.getResourceWorker(resourceEnum);
 
     return (resourceWorker.workable && resource.harvestable) || !this.adminService.filterAccessible;
   }
 
-  getTooltipMessage(id: number): string {
-    return this.tooltipService.getWorkerTooltip(id);
+  getTooltipMessage(resourceEnum: ResourceEnum): string {
+    return this.tooltipService.getWorkerTooltip(resourceEnum);
   }
 
-  hireWorker(id: number) {
-    this.workersService.hireWorker(id);
-  }
+  checkSliderValue(eventOrEnum: any | string) {
+    const resourceEnum = typeof(eventOrEnum) === 'string' ? eventOrEnum : eventOrEnum.source._elementRef.nativeElement.id;
 
-  checkSliderValue(eventOrId: any | ResourceWorker) {
-    const id = typeof(eventOrId) === 'number' ? eventOrId : +eventOrId.source._elementRef.nativeElement.id;
-
-    const resource = this.resourcesService.getResource(id);
+    const resource = this.resourcesService.resources.get(resourceEnum);
     const worker = this.getWorker(resource.resourceType);
-    const resourceWorker = worker.workersByResource.find(ws => ws.resourceId === resource.id);
+    const resourceWorker = this.workersService.getResourceWorker(resourceEnum);
 
-    const newValue = typeof(eventOrId) === 'number' ? resourceWorker.sliderSetting : +eventOrId.value;
+    const newValue = typeof(eventOrEnum) === 'string' ? resourceWorker.sliderSetting : +eventOrEnum.value;
 
     resourceWorker.sliderSettingValid = worker.freeWorkers + resourceWorker.workerCount - newValue >= 0;
   }
 
-  updateResourceWorker(eventOrId: any | number, value = -1) {
-    const id = typeof(eventOrId) === 'number' ? eventOrId : +eventOrId.source._elementRef.nativeElement.id;
+  updateResourceWorker(eventOrEnum: any | string, value = -1) {
+    const resourceEnum = typeof(eventOrEnum) === 'string' ? eventOrEnum : eventOrEnum.source._elementRef.nativeElement.id;
     if (value === -1) {
-      value = +eventOrId.value;
+      value = +eventOrEnum.value;
     }
 
-    this.workersService.updateResourceWorker(id, value);
+    this.workersService.getWorker(resourceEnum).updateResourceWorker(resourceEnum, value);
   }
 
-  pathAvailable(id): boolean {
-    return this.getResource(id).pathAvailable;
-  }
-
-  getResource(id): Resource {
-    return this.resourcesService.getResource(id);
+  pathAvailable(resourceEnum: ResourceEnum): boolean {
+    return this.resourcesService.resources.get(resourceEnum).pathAvailable;
   }
 
   get workersPaused(): boolean {

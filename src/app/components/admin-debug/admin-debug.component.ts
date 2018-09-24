@@ -19,110 +19,20 @@ export class AdminDebugComponent implements OnInit {
   amount = 0;
 
   constructor(public resourcesService: ResourcesService,
-              public workersService: WorkersService,
-              public upgradesService: UpgradesService,
               public adminService: AdminService
   ) {}
 
   ngOnInit() {}
 
-  openResourceDialog() {
-    this.adminService.openResourceDialog();
-  }
-
-  openUpgradeDialog() {
-    this.adminService.openUpgradeDialog();
-  }
-
   addResourceAmount(selectedResource?: Resource) {
-    if (selectedResource === undefined) {
-      for (const resource of this.resourcesService.resources) {
-        this.resourcesService.addResourceAmount(resource.id, +this.amount);
+    if (!selectedResource) {
+      for (const resource of this.resourcesService.getResources()) {
+        resource.addAmount(+this.amount);
       }
 
       return;
     }
 
-    this.resourcesService.addResourceAmount(
-      +selectedResource.id,
-      +this.amount
-    );
-  }
-
-  prepareResourceForJson(resource: Resource) {
-    resource.id = +resource.id;
-
-    resource.amount = +resource.amount;
-
-    for (const resourceConsume of resource.resourceConsumes) {
-      resourceConsume.resourceId = +resourceConsume.resourceId;
-      resourceConsume.cost = +resourceConsume.cost;
-    }
-
-    resource.harvestYield = +resource.harvestYield;
-    resource.harvestMilliseconds = +resource.harvestMilliseconds;
-
-    resource.workerYield = +resource.workerYield;
-    resource.sellsFor = +resource.sellsFor;
-
-    resource.resourceTier = +resource.resourceTier;
-    resource.previousTier = resource.resourceTier === 0 ? 0 : resource.resourceTier - 1;
-    resource.resourceAccessible = resource.resourceTier === 0;
-
-    resource.worker.workerCount = +resource.worker.workerCount;
-    resource.worker.cost = +resource.worker.cost;
-
-    resource.amount = 0;
-    resource.resourceAccessible = resource.resourceTier === 0;
-  }
-
-  prepareWorkerForJson(worker: Worker) {
-    worker.id = +worker.id;
-
-    worker.cost = +worker.cost;
-
-    for (const resourceWorker of worker.workersByResource) {
-      resourceWorker.resourceId = +resourceWorker.resourceId;
-
-      resourceWorker.workerCount = +resourceWorker.workerCount;
-      resourceWorker.workerYield = +resourceWorker.workerYield;
-    }
-
-    worker.workerCount = 0;
-    worker.freeWorkers = 0;
-  }
-
-  stringifyResource(resource: Resource) {
-    this.prepareResourceForJson(resource);
-
-    const resourceJson = JSON.stringify(resource);
-    alert(resourceJson);
-    console.log(resourceJson);
-  }
-
-  stringifyResources() {
-    for (const resource of this.resourcesService.resources) {
-      this.prepareResourceForJson(resource);
-    }
-
-    const resourcesJson = JSON.stringify(this.resourcesService.resources);
-    alert(resourcesJson);
-    console.log(resourcesJson);
-  }
-
-  stringifyWorkers() {
-    for (const worker of this.workersService.workers) {
-      this.prepareWorkerForJson(worker);
-    }
-
-    const workersJson = JSON.stringify(this.workersService.workers);
-    alert(workersJson);
-    console.log(workersJson);
-  }
-
-  stringifyUpgrades() {
-    const upgradesJson = JSON.stringify(this.upgradesService.upgrades);
-    alert(upgradesJson);
-    console.log(upgradesJson);
+    selectedResource.addAmount(+this.amount);
   }
 }

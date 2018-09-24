@@ -40,7 +40,7 @@ export class AppComponent {
 
   get affordableUpgradeCount(): number {
     const upgrades = this.upgradesService.getUpgrades(false, true, true);
-    const affordableUpgrades = upgrades.filter(upgrade => this.upgradesService.canAffordUpgrade(upgrade.id));
+    const affordableUpgrades = upgrades.filter(upgrade => upgrade.canAfford());
 
     return affordableUpgrades.length;
   }

@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { Resource, ResourceType } from '../../objects/resource';
+import { Resource } from '../../objects/resource';
+import { ResourceEnum } from './../../objects/resourceData';
 import { MessageSource } from '../../objects/message';
 import { ResourcesService } from '../resources/resources.service';
 import { MessagesService } from '../messages/messages.service';
@@ -12,47 +13,25 @@ export class StoreService {
   constructor(private resourcesService: ResourcesService,
               private messagesService: MessagesService) { }
 
-  public sellResource(id: number, amount: number) {
-    if (!this.canSellResource(id, amount)) {
+  public sellResource(resource: Resource, amount: number) {
+    if (!this.canSellResource(resource, amount)) {
       return;
     }
-
-    const resource = this.resourcesService.getResource(id);
 
     if (amount === -1) {
       amount = resource.amount;
     }
 
-    this.resourcesService.addResourceAmount(resource.id, -amount);
-    this.resourcesService.addResourceAmount(0, amount * resource.sellsFor);
+    resource.addAmount(-amount);
+    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(amount * resource.sellsFor);
   }
 
-  public finishResourceAnimation(id: number, amount: number) {
-    const resource = this.resourcesService.getResource(id);
-    this.resourcesService.addResourceAmount(0, amount * resource.sellsFor);
-  }
-
-  public canSellResource(id: number, amount: number): boolean {
-    const resource = this.resourcesService.getResource(id);
-
+  public canSellResource(resource: Resource, amount: number): boolean {
     if (amount === -1) {
       return resource.sellable && resource.amount > 0;
     }
 
     return resource.sellable && resource.amount - amount >= 0;
-  }
-
-  public resourcesOfType(resourceType: ResourceType, filterBySellable: boolean, filterByAccessible: boolean) {
-    let resources = this.resourcesService.resources.filter(resource => resource.resourceType === resourceType);
-
-    if (filterBySellable) {
-      resources = resources.filter(resource => resource.sellable);
-    }
-    if (filterByAccessible) {
-      resources = resources.filter(resource => resource.resourceAccessible);
-    }
-
-    return resources;
   }
 
   private log(message: string) {

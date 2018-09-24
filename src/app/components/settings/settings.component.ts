@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormControl, Validators } from '@angular/forms';
+import { Component, AfterViewInit } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
 
 import { SettingsService } from '../../services/settings/settings.service';
 import { ResourcesService } from './../../services/resources/resources.service';
 import { MessagesService } from './../../services/messages/messages.service';
+import { ResourceEnum } from '../../objects/resourceData';
 import { MessageSource } from './../../objects/message';
 
 @Component({
@@ -12,20 +13,18 @@ import { MessageSource } from './../../objects/message';
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.css']
 })
-export class SettingsComponent implements OnInit {
-  bindSelected = new FormControl();
-
+export class SettingsComponent implements AfterViewInit {
   messageSources = MessageSource;
   resourceBindErrorState = false;
 
   constructor(public settingsService: SettingsService,
               public resourcesService: ResourcesService,
               public messagesService: MessagesService) {
-    this.bindSelected.setValue(this.resourceBinds);
-    this.resourceBindChange({'source': null, 'value': this.resourceBinds});
   }
 
-  ngOnInit() {
+  ngAfterViewInit() {
+    this.loadGame();
+    this.setAutosave();
   }
 
   setAutosave() {
@@ -38,6 +37,9 @@ export class SettingsComponent implements OnInit {
 
   loadGame() {
     this.settingsService.loadGame();
+
+    this.bindSelected.setValue(this.resourceBinds);
+    this.resourceBindChange({'source': null, 'value': this.resourceBinds});
   }
 
   deleteGame() {
@@ -47,21 +49,7 @@ export class SettingsComponent implements OnInit {
   }
 
   resourceBindChange(event: MatSelectChange) {
-    const limitExceeded = event.value.length > 10;
-    this.bindSelected.setErrors({'length': limitExceeded});
-
-    if (!limitExceeded) {
-      this.resourceBinds = event.value;
-
-      for (const resource of this.resourcesService.resources) {
-        resource.bindIndex = -1;
-      }
-
-      for (const resourceBind of this.resourceBinds) {
-        const resource = this.resourcesService.getResource(resourceBind);
-        resource.bindIndex = this.resourceBinds.indexOf(resourceBind);
-      }
-    }
+    this.settingsService.resourceBindChange(event);
   }
 
   exportSave() {
@@ -70,6 +58,10 @@ export class SettingsComponent implements OnInit {
 
   importSave() {
     this.settingsService.openSaveDialog();
+  }
+
+  get bindSelected() {
+    return this.settingsService.bindSelected;
   }
 
   get autosaveInterval() {
@@ -114,10 +106,10 @@ export class SettingsComponent implements OnInit {
     this.settingsService.disableAnimations = value;
   }
 
-  get resourceBinds(): number[] {
+  get resourceBinds(): ResourceEnum[] {
     return this.settingsService.resourceBinds;
   }
-  set resourceBinds(value: number[]) {
+  set resourceBinds(value: ResourceEnum[]) {
     this.settingsService.resourceBinds = value;
   }
 }

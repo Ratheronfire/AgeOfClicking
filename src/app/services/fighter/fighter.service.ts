@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 
-import { timer } from 'rxjs';
-
 import { Fighter } from '../../objects/entity';
 import { Tile } from '../../objects/tile';
 import { Resource } from './../../objects/resource';
+import { ResourceEnum } from './../../objects/resourceData';
 import { MapTile } from './../../objects/tile';
 import { Vector } from '../../objects/vector';
 import { ResourcesService } from '../resources/resources.service';
@@ -51,7 +50,7 @@ export class FighterService implements Tick {
   }
 
   createFighter(tile: Tile, fighterType: Fighter) {
-    const goldResource: Resource = this.resourcesService.getResource(0);
+    const goldResource: Resource = this.resourcesService.resources.get(ResourceEnum.Gold);
     const mapTile: MapTile = this.mapService.mapTiles[tile.mapTileType];
     const overlaps = this.fighters.filter(_fighter => !_fighter.moveable && _fighter.currentTile === tile);
 
@@ -59,7 +58,7 @@ export class FighterService implements Tick {
       return;
     }
 
-    this.resourcesService.addResourceAmount(0, -fighterType.cost);
+    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-fighterType.cost);
 
     const fighter = new Fighter(fighterType.name, new Vector(tile.x, tile.y), tile, fighterType.health, 0.003, fighterType.attack,
       fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.moveable, 1000,

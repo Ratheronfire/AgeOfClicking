@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MapService } from '../../services/map/map.service';
 import { BuildingsService } from '../../services/buildings/buildings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { Resource } from '../../objects/resource';
+import { ResourceEnum } from './../../objects/resourceData';
 import { Tile } from '../../objects/tile';
 import { Fighter } from './../../objects/entity';
 
@@ -22,6 +22,10 @@ export class FighterDetailComponent implements OnInit {
   ngOnInit() {
   }
 
+  getResource(resourceEnum: ResourceEnum) {
+    return this.resourcesService.resources.get(resourceEnum);
+  }
+
   removeFighter() {
     if (!this.focusedFighter) {
       return;
@@ -31,10 +35,6 @@ export class FighterDetailComponent implements OnInit {
 
     this.focusedTile = undefined;
     this.focusedFighter = undefined;
-  }
-
-  getResource(resourceId: number): Resource {
-    return this.resourcesService.getResource(resourceId);
   }
 
   get focusedTile(): Tile {

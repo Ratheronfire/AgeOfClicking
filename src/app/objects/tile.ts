@@ -1,6 +1,7 @@
 import { Vector } from './vector';
-import { ResourceType, Resource } from './resource';
-import { Tick } from '../services/tick/tick.service';
+import { Resource } from './resource';
+import { ResourceType, ResourceEnum } from './resourceData';
+import { ResourceCost } from './resourceCost';
 import { ResourcesService } from '../services/resources/resources.service';
 import { MapService } from '../services/map/map.service';
 
@@ -70,11 +71,6 @@ export enum TileStat {
   MaxHealth = 'MAXHEALTH'
 }
 
-export interface ResourceCost {
-  resourceId: number;
-  resourceCost: number;
-}
-
 export interface MapTile {
   tileType: MapTileType;
 
@@ -95,7 +91,7 @@ export interface BuildingTile {
   upgradeBuilding?: BuildingTileType;
 
   baseHealth: number;
-  repairResource?: number;
+  repairResourceEnum?: ResourceEnum;
   repairCostPerPoint?: number;
 
   resourceCosts: ResourceCost[];
@@ -113,7 +109,7 @@ export interface ResourceTile {
   name: string;
   placeable: boolean;
 
-  resourceIds: number[];
+  resourceEnums: ResourceEnum[];
 }
 
 export interface TileCropDetail {
@@ -172,7 +168,7 @@ export class Tile {
   }
 
   public canUpgradeStat(stat: TileStat): boolean {
-    return this.resourcesService.getResource(0).amount >= this.statCosts[stat];
+    return this.resourcesService.resources.get(ResourceEnum.Gold).amount >= this.statCosts[stat];
   }
 
   public getUpgradedStat(stat: TileStat): number {
@@ -192,7 +188,7 @@ export class Tile {
       return;
     }
 
-    this.resourcesService.addResourceAmount(0, -this.statCosts[stat]);
+    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-this.statCosts[stat]);
 
     const upgradedStat = this.getUpgradedStat(stat);
     switch (stat) {
@@ -261,7 +257,7 @@ export class Market {
     this.mapService = mapService;
     this.resourcesService = resourcesService;
 
-    this.soldResources = resourcesService.resourcesOfType(resourceType, false, false, false);
+    this.soldResources = resourcesService.getResources(resourceType);
 
     this.homeTile = mapService.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
     this.owningTile = owningTile;
@@ -277,10 +273,10 @@ export class Market {
       const sellAmount = Math.min(this.sellQuantity, resource.amount - resource.autoSellCutoff);
 
       if (sellAmount > 0) {
-        this.mapService.spawnSoldResourceAnimation(resource.id, sellAmount, this);
+        this.mapService.spawnSoldResourceAnimation(resource.resourceEnum, sellAmount, this);
         this.lastSellTime = elapsed;
 
-        this.resourcesService.addResourceAmount(resource.id, -sellAmount);
+        resource.addAmount(-sellAmount);
 
         this.logSale(sellAmount * resource.sellsFor);
 
@@ -292,7 +288,9 @@ export class Market {
         this.timeSinceLastSale = 0;
       }
 
-      this.currentResource = (this.currentResource + 1) % this.soldResources.length;
+      do {
+        this.currentResource = (this.currentResource + 1) % this.soldResources.length;
+      } while (!this.soldResources[this.currentResource].sellable);
     }
   }
 

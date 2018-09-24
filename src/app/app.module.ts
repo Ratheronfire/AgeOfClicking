@@ -17,8 +17,6 @@ import { UpgradesComponent } from './components/upgrades/upgrades.component';
 import { MapComponent } from './components/map/map.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AdminDebugComponent } from './components/admin-debug/admin-debug.component';
-import { ResourceDialogComponent } from './components/resource-dialog/resource-dialog.component';
-import { UpgradeDialogComponent } from './components/upgrade-dialog/upgrade-dialog.component';
 import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { CropDirective } from './directives/crop/crop.directive';
 import { MapDirective } from './directives/map/map.directive';
@@ -42,8 +40,6 @@ import { SnapDirective } from './directives/snap/snap.directive';
     SettingsComponent,
     AdminDebugComponent,
     MapComponent,
-    ResourceDialogComponent,
-    UpgradeDialogComponent,
     CropDirective,
     SaveDialogComponent,
     MapDirective,
@@ -65,8 +61,6 @@ import { SnapDirective } from './directives/snap/snap.directive';
     ColorPickerModule
   ],
   entryComponents: [
-    ResourceDialogComponent,
-    UpgradeDialogComponent,
     SaveDialogComponent
   ],
   providers: [],

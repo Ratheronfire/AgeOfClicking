@@ -40,7 +40,7 @@
 
     <mat-form-field class="full-width">
       <mat-select placeholder="Resource Shortcuts" [formControl]="bindSelected" multiple (selectionChange)="resourceBindChange($event)">
-        <mat-option *ngFor="let resource of resourcesService.harvestableResources()" [(value)]="resource.id">
+        <mat-option *ngFor="let resource of resourcesService.getResources(false, false, true)" [(value)]="resource.resourceEnum">
           {{resource.name | titlecase}}
         </mat-option>
       </mat-select>

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
+import { ResourceEnum } from '../../objects/resourceData';
 import { Fighter } from '../../objects/entity';
 import { BuildingsService } from './../../services/buildings/buildings.service';
 import { FighterService } from '../../services/fighter/fighter.service';
@@ -22,8 +23,12 @@ export class FighterComponent implements OnInit {
   ngOnInit() {
   }
 
+  getResource(resourceEnum: ResourceEnum) {
+    return this.resourcesService.resources.get(resourceEnum);
+  }
+
   canAffordFighter(fighterType: Fighter) {
-    return this.resourcesService.getResource(0).amount >= fighterType.cost;
+    return this.resourcesService.resources.get(ResourceEnum.Gold).amount >= fighterType.cost;
   }
 
   selectFigherType(fighterType: Fighter) {
@@ -33,10 +38,6 @@ export class FighterComponent implements OnInit {
       this.buildingsService.selectedBuilding = undefined;
       this.selectedFighterType = fighterType;
     }
-  }
-
-  getResource(id: number) {
-    return this.resourcesService.getResource(id);
   }
 
   get fighterTypes() {

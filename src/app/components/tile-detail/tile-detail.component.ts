@@ -5,6 +5,7 @@ import { BuildingsService } from '../../services/buildings/buildings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
 import { Tile, BuildingTile, ResourceTile, BuildingTileType } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
+import { ResourceEnum } from '../../objects/resourceData';
 
 @Component({
   selector: 'app-tile-detail',
@@ -22,13 +23,13 @@ export class TileDetailComponent implements OnInit {
   ngOnInit() {
   }
 
-  getResource(resourceId: number): Resource {
-    return this.resourcesService.getResource(resourceId);
+  getResource(resourceEnum: ResourceEnum): Resource {
+    return this.resourcesService.resources.get(resourceEnum);
   }
 
   canAffordUpgrade(upgradeBuilding: BuildingTile) {
     for (const resourceCost of upgradeBuilding.resourceCosts) {
-      if (this.resourcesService.getResource(resourceCost.resourceId).amount < resourceCost.resourceCost) {
+      if (this.getResource(resourceCost.resourceEnum).amount < resourceCost.resourceCost) {
         return false;
       }
     }

@@ -78,10 +78,10 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": 1,
+      "repairResource": "OAK",
       "repairCostPerPoint": 0.2,
       "resourceCosts": [{
-        "resourceId": 1,
+        "resourceEnum": "OAK",
         "resourceCost": 20
       }],
       "buildableSurfaces": [
@@ -97,10 +97,10 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": 13,
+      "repairResource": "STONE",
       "repairCostPerPoint": 0.2,
       "resourceCosts": [{
-        "resourceId": 13,
+        "resourceEnum": "STONE",
         "resourceCost": 20
       }],
       "buildableSurfaces": [
@@ -116,10 +116,10 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": 7,
+      "repairResource": "PINE",
       "repairCostPerPoint": 0.25,
       "resourceCosts": [{
-        "resourceId": 7,
+        "resourceEnum": "PINE",
         "resourceCost": 40
       }],
       "buildableSurfaces": [
@@ -135,11 +135,11 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": 0,
+      "repairResource": "GOLD",
       "repairCostPerPoint": 1,
       "upgradeBuilding": "STONEFORGE",
       "resourceCosts": [{
-        "resourceId": 0,
+        "resourceEnum": "GOLD",
         "resourceCost": 150
       }],
       "buildableSurfaces": [
@@ -157,20 +157,20 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 75,
-      "repairResource": 13,
+      "repairResource": "GOLD",
       "repairCostPerPoint": 0.3,
       "upgradeBuilding": "IRONFORGE",
       "resourceCosts": [{
-        "resourceId": 0,
+        "resourceEnum": "GOLD",
         "resourceCost": 150
       }, {
-        "resourceId": 13,
+        "resourceEnum": "STONE",
         "resourceCost": 50
       }, {
-        "resourceId": 7,
+        "resourceEnum": "PINE",
         "resourceCost": 75
       }, {
-        "resourceId": 4,
+        "resourceEnum": "BRONZEINGOT",
         "resourceCost": 20
       }],
       "buildableSurfaces": [
@@ -188,17 +188,17 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 125,
-      "repairResource": 6,
+      "repairResource": "IRONINGOT",
       "repairCostPerPoint": 0.3,
       "upgradeBuilding": "GOLDFORGE",
       "resourceCosts": [{
-        "resourceId": 6,
+        "resourceEnum": "IRONINGOT",
         "resourceCost": 500
       }, {
-        "resourceId": 9,
+        "resourceEnum": "EUCALYPTUS",
         "resourceCost": 700
       }, {
-        "resourceId": 28,
+        "resourceEnum": "MARBLE",
         "resourceCost": 250
       }],
       "buildableSurfaces": [
@@ -216,17 +216,17 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 150,
-      "repairResource": 11,
+      "repairResource": "GOLDINGOT",
       "repairCostPerPoint": 0.35,
       "upgradeBuilding": "LATINUMFORGE",
       "resourceCosts": [{
-        "resourceId": 12,
+        "resourceEnum": "GOLDINGOT",
         "resourceCost": 1200
       }, {
-        "resourceId": 15,
+        "resourceEnum": "WILLOW",
         "resourceCost": 1500
       }, {
-        "resourceId": 29,
+        "resourceEnum": "QUARTZ",
         "resourceCost": 250
       }],
       "buildableSurfaces": [
@@ -244,17 +244,17 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 200,
-      "repairResource": 19,
+      "repairResource": "LATINUMINGOT",
       "repairCostPerPoint": 0.5,
       "upgradeBuilding": "TEMPROUSDISTILLERY",
       "resourceCosts": [{
-        "resourceId": 19,
+        "resourceEnum": "LATINUMINGOT",
         "resourceCost": 2500
       }, {
-        "resourceId": 25,
+        "resourceEnum": "TEAK",
         "resourceCost": 1500
       }, {
-        "resourceId": 30,
+        "resourceEnum": "OBSIDIAN",
         "resourceCost": 700
       }],
       "buildableSurfaces": [
@@ -272,16 +272,16 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 350,
-      "repairResource": 23,
+      "repairResource": "TEMPROUSINGOT",
       "repairCostPerPoint": 0.65,
       "resourceCosts": [{
-        "resourceId": 23,
+        "resourceEnum": "TEMPROUSINGOT",
         "resourceCost": 5000
       }, {
-        "resourceId": 16,
+        "resourceEnum": "ENTSOUL",
         "resourceCost": 500
       }, {
-        "resourceId": 31,
+        "resourceEnum": "DIAMOND",
         "resourceCost": 1200
       }],
       "buildableSurfaces": [
@@ -299,10 +299,10 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResource": 0,
+      "repairResource": "GOLD",
       "repairCostPerPoint": 1,
       "resourceCosts": [{
-        "resourceId": 0,
+        "resourceEnum": "GOLD",
         "resourceCost": 150
       }],
       "buildableSurfaces": [
@@ -319,10 +319,10 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResource": 0,
+      "repairResource": "GOLD",
       "repairCostPerPoint": 1,
       "resourceCosts": [{
-        "resourceId": 0,
+        "resourceEnum": "GOLD",
         "resourceCost": 150
       }],
       "buildableSurfaces": [
@@ -339,10 +339,10 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResource": 0,
+      "repairResource": "GOLD",
       "repairCostPerPoint": 1,
       "resourceCosts": [{
-        "resourceId": 0,
+        "resourceEnum": "GOLD",
         "resourceCost": 150
       }],
       "buildableSurfaces": [
@@ -369,169 +369,169 @@
       "tileType": "OAKTREE",
       "name": "Oak Tree",
       "placeable": false,
-      "resourceIds": [1]
+      "resourceEnums": ["OAK"]
     },
     "PINETREE": {
       "tileType": "PINETREE",
       "name": "Pine Tree",
       "placeable": false,
-      "resourceIds": [7]
+      "resourceEnums": ["PINE"]
     },
     "BIRCHTREE": {
       "tileType": "BIRCHTREE",
       "name": "Birch Tree",
       "placeable": false,
-      "resourceIds": [8]
+      "resourceEnums": ["BIRCH"]
     },
     "EUCALYPTUSTREE": {
       "tileType": "EUCALYPTUSTREE",
       "name": "Eucalptus Tree",
       "placeable": false,
-      "resourceIds": [9]
+      "resourceEnums": ["EUCALYPTUS"]
     },
     "WILLOWTREE": {
       "tileType": "WILLOWTREE",
       "name": "Willow Tree",
       "placeable": false,
-      "resourceIds": [15]
+      "resourceEnums": ["WILLOW"]
     },
     "TEAKTREE": {
       "tileType": "TEAKTREE",
       "name": "Teak Tree",
       "placeable": false,
-      "resourceIds": [25]
+      "resourceEnums": ["TEAK"]
     },
     "DEADENT": {
       "tileType": "DEADENT",
       "name": "Dead Ent",
       "placeable": false,
-      "resourceIds": [16, 17]
+      "resourceEnums": ["ENTSOUL", "REANIMATEDENT"]
     },
     "STONEMINE": {
       "tileType": "STONEMINE",
       "name": "Stone Mine",
       "placeable": false,
-      "resourceIds": [13]
+      "resourceEnums": ["STONE"]
     },
     "GRAPHITEMINE": {
       "tileType": "GRAPHITEMINE",
       "name": "Graphite Mine",
       "placeable": false,
-      "resourceIds": [26]
+      "resourceEnums": ["GRAPHITE"]
     },
     "LIMESTONEMINE": {
       "tileType": "LIMESTONEMINE",
       "name": "Limestone Mine",
       "placeable": false,
-      "resourceIds": [27]
+      "resourceEnums": ["LIMESTONE"]
     },
     "MARBLEMINE": {
       "tileType": "MARBLEMINE",
       "name": "Marble Mine",
       "placeable": false,
-      "resourceIds": [28]
+      "resourceEnums": ["MARBLE"]
     },
     "QUARTZMINE": {
       "tileType": "QUARTZMINE",
       "name": "Quartz Mine",
       "placeable": false,
-      "resourceIds": [29]
+      "resourceEnums": ["QUARTZ"]
     },
     "OBSIDIANMINE": {
       "tileType": "OBSIDIANMINE",
       "name": "Obsidian Mine",
       "placeable": false,
-      "resourceIds": [30]
+      "resourceEnums": ["OBSIDIAN"]
     },
     "DIAMONDMINE": {
       "tileType": "DIAMONDMINE",
       "name": "Diamond Mine",
       "placeable": false,
-      "resourceIds": [31]
+      "resourceEnums": ["DIAMOND"]
     },
     "COPPERMINE": {
       "tileType": "COPPERMINE",
       "name": "Copper Mine",
       "placeable": false,
-      "resourceIds": [2]
+      "resourceEnums": ["COPPERORE"]
     },
     "TINMINE": {
       "tileType": "TINMINE",
       "name": "Tin Mine",
       "placeable": false,
-      "resourceIds": [3]
+      "resourceEnums": ["TINORE"]
     },
     "IRONMINE": {
       "tileType": "IRONMINE",
       "name": "Iron Mine",
       "placeable": false,
-      "resourceIds": [5]
+      "resourceEnums": ["IRONORE"]
     },
     "GOLDMINE": {
       "tileType": "GOLDMINE",
       "name": "Gold Mine",
       "placeable": false,
-      "resourceIds": [11]
+      "resourceEnums": ["GOLDORE"]
     },
     "LATINUMMINE": {
       "tileType": "LATINUMMINE",
       "name": "Latinum Mine",
       "placeable": false,
-      "resourceIds": [18]
+      "resourceEnums": ["LATINUMORE"]
     },
     "UNBELIEVIUMMINE": {
       "tileType": "UNBELIEVIUMMINE",
       "name": "Unbelievium Mine",
       "placeable": false,
-      "resourceIds": [20]
+      "resourceEnums": ["UNBELIEVIUMORE"]
     },
     "LUSTRIALMINE": {
       "tileType": "LUSTRIALMINE",
       "name": "Lustrial Mine",
       "placeable": false,
-      "resourceIds": [21]
+      "resourceEnums": ["LUSTRIALORE"]
     },
     "SPECTRUSMINE": {
       "tileType": "SPECTRUSMINE",
       "name": "Spectrus Mine",
       "placeable": false,
-      "resourceIds": [22]
+      "resourceEnums": ["SPECTRUSORE"]
     },
     "CRACKEDFORGE": {
       "tileType": "CRACKEDFORGE",
       "name": "Cracked Forge",
       "placeable": true,
-      "resourceIds": [4]
+      "resourceEnums": ["BRONZEINGOT"]
     },
     "STONEFORGE": {
       "tileType": "STONEFORGE",
       "name": "Stone Forge",
       "placeable": true,
-      "resourceIds": [4, 6]
+      "resourceEnums": ["BRONZEINGOT", "IRONINGOT"]
     },
     "IRONFORGE": {
       "tileType": "IRONFORGE",
       "name": "Iron Forge",
       "placeable": true,
-      "resourceIds": [4, 6, 10, 12]
+      "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT"]
     },
     "GOLDFORGE": {
       "tileType": "GOLDFORGE",
       "name": "Gold Forge",
       "placeable": true,
-      "resourceIds": [4, 6, 10, 12, 19]
+      "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT", "LATINUMINGOT"]
     },
     "LATINUMFORGE": {
       "tileType": "LATINUMFORGE",
       "name": "Latinum Forge",
       "placeable": true,
-      "resourceIds": [4, 6, 10, 12, 19, 23]
+      "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT", "LATINUMINGOT", "TEMPROUSINGOT"]
     },
     "TEMPROUSDISTILLERY": {
       "tileType": "TEMPROUSDISTILLERY",
       "name": "Temprous Distillery",
       "placeable": true,
-      "resourceIds": [4, 6, 10, 12, 19, 23, 24]
+      "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT", "LATINUMINGOT", "TEMPROUSINGOT", "REFINEDTEMPROUS"]
     }
   }
 }

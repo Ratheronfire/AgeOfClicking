@@ -1,7 +1,12 @@
-import { ResourceType } from './resource';
+import { Tick } from './../services/tick/tick.service';
+import { ResourcesService } from './../services/resources/resources.service';
+import { MapService } from './../services/map/map.service';
+import { MessagesService } from './../services/messages/messages.service';
+import { ResourceType, ResourceEnum } from './resourceData';
+import { MessageSource } from './message';
 
 export interface ResourceWorker {
-  resourceId: number;
+  resourceEnum: ResourceEnum;
   workable: boolean;
 
   recurringCost: number;
@@ -12,14 +17,99 @@ export interface ResourceWorker {
   sliderSettingValid: boolean;
 }
 
-export class Worker {
-  id: number;
-
+export class Worker implements Tick {
   cost: number;
 
   resourceType: ResourceType;
-  workerCount: number;
-  freeWorkers: number;
+  workerCount = 0;
+  freeWorkers = 0;
 
-  workersByResource: ResourceWorker[];
+  resourceWorkers: Map<string, ResourceWorker>;
+
+  resourcesService: ResourcesService;
+  mapService: MapService;
+  messagesService: MessagesService;
+
+  public constructor(cost: number, resourceType: ResourceType, resourceWorkers: Map<string, ResourceWorker>,
+                     resourcesService: ResourcesService, mapService: MapService, messagesService: MessagesService) {
+    this.cost = cost;
+    this.resourceType = resourceType;
+    this.resourceWorkers = resourceWorkers;
+
+    this.resourcesService = resourcesService;
+    this.mapService = mapService;
+    this.messagesService = messagesService;
+  }
+
+  public tick(elapsed: number, deltaTime: number) {
+    for (const resourceWorker of this.getResourceWorkers()) {
+      const resource = this.resourcesService.resources.get(resourceWorker.resourceEnum);
+
+      if (resourceWorker.workerCount === 0 || !this.canAffordToHarvest(resource.resourceEnum)) {
+        continue;
+      }
+
+      this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-resourceWorker.recurringCost * resourceWorker.workerCount);
+
+      if (!this.canAffordToHarvest(resource.resourceEnum)) {
+        this.log(`No more money available for ${resource.name}.`);
+      }
+
+      this.mapService.spawnHarvestedResourceAnimation(resource, resourceWorker.workerYield * resourceWorker.workerCount, false);
+    }
+  }
+
+  public getResourceWorkers(filterByAccessible = false, filterByWorkable = false, filterByHarvestable = false): ResourceWorker[] {
+    let resourceWorkers = Array.from(this.resourceWorkers.values());
+
+    if (filterByAccessible) {
+      resourceWorkers = resourceWorkers.filter(rw => this.resourcesService.resources.get(rw.resourceEnum).resourceAccessible);
+    }
+    if (filterByWorkable) {
+      resourceWorkers = resourceWorkers.filter(rw => rw.workable);
+    }
+    if (filterByHarvestable) {
+      resourceWorkers = resourceWorkers.filter(rw => this.resourcesService.resources.get(rw.resourceEnum).harvestable);
+    }
+
+    return resourceWorkers;
+  }
+
+  hireWorker() {
+    if (!this.canAffordToHire()) {
+      return;
+    }
+
+    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-this.cost);
+
+    this.cost *= 1.01;
+    this.workerCount++;
+    this.freeWorkers++;
+  }
+
+  canAffordToHire(): boolean {
+    return this.cost <= this.resourcesService.resources.get(ResourceEnum.Gold).amount;
+  }
+
+  canAffordToHarvest(resourceEnum: ResourceEnum): boolean {
+    return this.resourceWorkers.get(resourceEnum).recurringCost <= this.resourcesService.resources.get(ResourceEnum.Gold).amount;
+  }
+
+  updateResourceWorker(resourceEnum: ResourceEnum, newResourceWorkerCount: number) {
+    const resourceWorker = this.resourceWorkers.get(resourceEnum);
+
+    if (!resourceWorker.sliderSettingValid) {
+      newResourceWorkerCount = this.freeWorkers + resourceWorker.workerCount;
+      resourceWorker.sliderSetting = newResourceWorkerCount;
+    }
+
+    const newFreeWorkers = this.freeWorkers + resourceWorker.workerCount - newResourceWorkerCount;
+
+    this.freeWorkers = newFreeWorkers;
+    resourceWorker.workerCount = newResourceWorkerCount;
+  }
+
+  private log(message: string) {
+    this.messagesService.add(MessageSource.Workers, message);
+  }
 }
