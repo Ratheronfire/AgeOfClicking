@@ -3,4 +3,6 @@ declare module "*.json" {
     export default value;
 }
 
+interface Window { Game: any; }
+
 declare const hammer: any;

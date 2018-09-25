@@ -139,6 +139,8 @@ export class SettingsService implements Tick {
     this.mapService.initializeMap();
     this.enemyService.enemies = [];
     this.fighterService.fighters = [];
+    this.mapService.resourceAnimations = [];
+    this.mapService.projectiles = [];
 
     this.autosaveInterval = 60000;
     this.setAutosave();

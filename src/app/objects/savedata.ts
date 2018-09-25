@@ -122,7 +122,7 @@ export interface SettingsData {
 
   harvestDetailColor?: string;
   workerDetailColor?: string;
-  resourceAnimationColors: {};
+  resourceAnimationColors;
 }
 
 export class SaveData {

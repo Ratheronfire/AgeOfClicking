@@ -85,10 +85,10 @@ export class SettingsComponent implements AfterViewInit {
     this.settingsService.mapLowFramerate = value;
   }
 
-  get resourceAnimationColors(): {} {
+  get resourceAnimationColors() {
     return this.settingsService.resourceAnimationColors;
   }
-  set resourceAnimationColors(value: {}) {
+  set resourceAnimationColors(value) {
     this.settingsService.resourceAnimationColors = value;
   }
 

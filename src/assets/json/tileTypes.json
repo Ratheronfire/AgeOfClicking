@@ -78,7 +78,7 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": "OAK",
+      "repairResourceEnum": "OAK",
       "repairCostPerPoint": 0.2,
       "resourceCosts": [{
         "resourceEnum": "OAK",
@@ -97,7 +97,7 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": "STONE",
+      "repairResourceEnum": "STONE",
       "repairCostPerPoint": 0.2,
       "resourceCosts": [{
         "resourceEnum": "STONE",
@@ -116,7 +116,7 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": "PINE",
+      "repairResourceEnum": "PINE",
       "repairCostPerPoint": 0.25,
       "resourceCosts": [{
         "resourceEnum": "PINE",
@@ -135,7 +135,7 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResource": "GOLD",
+      "repairResourceEnum": "GOLD",
       "repairCostPerPoint": 1,
       "upgradeBuilding": "STONEFORGE",
       "resourceCosts": [{
@@ -157,7 +157,7 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 75,
-      "repairResource": "GOLD",
+      "repairResourceEnum": "GOLD",
       "repairCostPerPoint": 0.3,
       "upgradeBuilding": "IRONFORGE",
       "resourceCosts": [{
@@ -188,7 +188,7 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 125,
-      "repairResource": "IRONINGOT",
+      "repairResourceEnum": "IRONINGOT",
       "repairCostPerPoint": 0.3,
       "upgradeBuilding": "GOLDFORGE",
       "resourceCosts": [{
@@ -216,7 +216,7 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 150,
-      "repairResource": "GOLDINGOT",
+      "repairResourceEnum": "GOLDINGOT",
       "repairCostPerPoint": 0.35,
       "upgradeBuilding": "LATINUMFORGE",
       "resourceCosts": [{
@@ -244,7 +244,7 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 200,
-      "repairResource": "LATINUMINGOT",
+      "repairResourceEnum": "LATINUMINGOT",
       "repairCostPerPoint": 0.5,
       "upgradeBuilding": "TEMPROUSDISTILLERY",
       "resourceCosts": [{
@@ -272,7 +272,7 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 350,
-      "repairResource": "TEMPROUSINGOT",
+      "repairResourceEnum": "TEMPROUSINGOT",
       "repairCostPerPoint": 0.65,
       "resourceCosts": [{
         "resourceEnum": "TEMPROUSINGOT",
@@ -299,7 +299,7 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResource": "GOLD",
+      "repairResourceEnum": "GOLD",
       "repairCostPerPoint": 1,
       "resourceCosts": [{
         "resourceEnum": "GOLD",
@@ -319,7 +319,7 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResource": "GOLD",
+      "repairResourceEnum": "GOLD",
       "repairCostPerPoint": 1,
       "resourceCosts": [{
         "resourceEnum": "GOLD",
@@ -339,7 +339,7 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResource": "GOLD",
+      "repairResourceEnum": "GOLD",
       "repairCostPerPoint": 1,
       "resourceCosts": [{
         "resourceEnum": "GOLD",

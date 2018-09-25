@@ -25,9 +25,9 @@
         <button mat-raised-button (click)="repairBuilding(focusedTile)" color="accent" [disabled]="!canRepairBuilding(focusedTile)">
           Repair
           <div class="resource-list">
-            <div matTooltip="{{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}} {{getResource(focusedBuildingTile.repairResource).name | titlecase}}"
+            <div matTooltip="{{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}} {{getResource(focusedBuildingTile.repairResourceEnum).name | titlecase}}"
               matTooltipPosition="below">
-              <img src="{{getResource(focusedBuildingTile.repairResource).iconPath}}" alt="{{getResource(focusedBuildingTile.repairResource).name}}">
+              <img src="{{getResource(focusedBuildingTile.repairResourceEnum).iconPath}}" alt="{{getResource(focusedBuildingTile.repairResourceEnum).name}}">
               {{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}}
             </div>
           </div>

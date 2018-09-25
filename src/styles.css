@@ -23,8 +23,20 @@
   user-select: none;
 }
 
+mat-nav-list.mat-nav-list {
+  padding-top: unset;
+}
+
 mat-tab-header.mat-tab-header {
   height: 30px;
+  padding-top: 8px;
+
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+
+  z-index: 2;
+  background: white;
 }
 
 div.mat-tab-label {
