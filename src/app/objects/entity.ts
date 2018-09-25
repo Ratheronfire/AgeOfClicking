@@ -303,6 +303,9 @@ export class Projectile extends Entity {
 
   hitTarget = false;
 
+  timeSinceSpawn = 0;
+  lifeSpan = 5000;
+
   public constructor(name: string, position: Vector, currentTile: Tile,
       animationSpeed = 0.003, owner: Actor, target: Actor) {
     super(name, position, currentTile, 1, animationSpeed);
@@ -312,6 +315,12 @@ export class Projectile extends Entity {
   }
 
   tick(elapsed: number, deltaTime: number) {
+    this.timeSinceSpawn += deltaTime;
+    if (this.timeSinceSpawn > this.lifeSpan || !this.target || !this.target.health) {
+      this.hitTarget = true;
+      return;
+    }
+
     const distance = this.target.position.subtract(this.position);
     const totalDistance = this.target.position.subtract(this.spawnPosition);
 

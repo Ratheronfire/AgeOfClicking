@@ -20,6 +20,7 @@ export class ResourcesService {
   }
 
   public loadBaseResources() {
+    this.resources.clear();
     for (const resourceName in ResourceEnum) {
       if (Number(resourceName)) {
         continue;

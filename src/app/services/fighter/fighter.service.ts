@@ -51,7 +51,7 @@ export class FighterService implements Tick {
 
   createFighter(tile: Tile, fighterType: Fighter) {
     const goldResource: Resource = this.resourcesService.resources.get(ResourceEnum.Gold);
-    const mapTile: MapTile = this.mapService.mapTiles[tile.mapTileType];
+    const mapTile: MapTile = this.mapService.mapTiles.get(tile.mapTileType);
     const overlaps = this.fighters.filter(_fighter => !_fighter.moveable && _fighter.currentTile === tile);
 
     if (goldResource.amount < fighterType.cost || !mapTile.walkable || overlaps.length) {

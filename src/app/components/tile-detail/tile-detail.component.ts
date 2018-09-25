@@ -42,7 +42,7 @@ export class TileDetailComponent implements OnInit {
   }
 
   getBuildingTileArray(filterByPlaceable: boolean): BuildingTile[] {
-    let tiles = this.mapService.buildingTileArray;
+    let tiles = Array.from(this.mapService.buildingTiles.values());
 
     if (filterByPlaceable) {
       tiles = tiles.filter(tile => tile.placeable);
@@ -52,17 +52,17 @@ export class TileDetailComponent implements OnInit {
   }
 
   canAffordBuilding(buildingType: BuildingTileType): boolean {
-    return this.buildingsService.canAffordBuilding(this.buildingTiles[buildingType]);
+    return this.buildingsService.canAffordBuilding(this.buildingTiles.get(buildingType));
   }
 
   upgradeBuilding(tile: Tile) {
-    const currentBuilding = this.mapService.buildingTiles[tile.buildingTileType];
+    const currentBuilding = this.mapService.buildingTiles.get(tile.buildingTileType);
 
     this.buildingsService.clearBuilding(tile);
     this.buildingsService.createBuilding(tile, currentBuilding.upgradeBuilding);
 
-    this.focusedBuildingTile = this.mapService.buildingTiles[tile.buildingTileType];
-    this.focusedResourceTile = this.mapService.resourceTiles[tile.resourceTileType];
+    this.focusedBuildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
+    this.focusedResourceTile = this.mapService.resourceTiles.get(tile.resourceTileType);
   }
 
   canRepairBuilding(tile: Tile): boolean {

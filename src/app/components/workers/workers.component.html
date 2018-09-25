@@ -12,7 +12,7 @@
 
       <button mat-raised-button [color]="worker.canAffordToHire() ? 'accent' : 'disabled'" (click)="worker.hireWorker()">
         <mat-card-title>{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
-        <mat-card-subtitle>{{worker.cost | number}} Gold</mat-card-subtitle>
+        <mat-card-subtitle>{{worker.cost | longNumber}} Gold</mat-card-subtitle>
       </button>
 
       <div *ngFor="let resourceWorker of getAccessibleResourceWorkers(worker)">

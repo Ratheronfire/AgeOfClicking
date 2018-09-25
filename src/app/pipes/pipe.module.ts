@@ -3,14 +3,8 @@ import { CommonModule } from '@angular/common';
 import { EnumToPipe } from './enumtoarraypipe';
 
 @NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: [
-    EnumToPipe
-  ],
-  exports: [
-    EnumToPipe
-  ]
+  imports: [CommonModule],
+  declarations: [EnumToPipe],
+  exports: [EnumToPipe]
 })
-export class PipeModule { }
+export class PipeModule {}

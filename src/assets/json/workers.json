@@ -12,6 +12,7 @@
         "recurringCost": 5,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "PINE": {
@@ -20,6 +21,7 @@
         "recurringCost": 10,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "BIRCH": {
@@ -28,6 +30,7 @@
         "recurringCost": 20,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "EUCALYPTUS": {
@@ -36,6 +39,7 @@
         "recurringCost": 25,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "WILLOW": {
@@ -44,6 +48,7 @@
         "recurringCost": 40,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "TEAK": {
@@ -52,6 +57,7 @@
         "recurringCost": 50,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "ENTSOUL": {
@@ -60,6 +66,7 @@
         "recurringCost": 60,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "REANIMATEDENT": {
@@ -68,6 +75,7 @@
         "recurringCost": 150,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       }
     }
@@ -85,6 +93,7 @@
         "recurringCost": 10,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "GRAPHITE": {
@@ -93,6 +102,7 @@
         "recurringCost": 15,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "LIMESTONE": {
@@ -101,6 +111,7 @@
         "recurringCost": 20,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "MARBLE": {
@@ -109,6 +120,7 @@
         "recurringCost": 30,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "QUARTZ": {
@@ -117,6 +129,7 @@
         "recurringCost": 45,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "OBSIDIAN": {
@@ -125,6 +138,7 @@
         "recurringCost": 55,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "DIAMOND": {
@@ -133,6 +147,7 @@
         "recurringCost": 70,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       }
     }
@@ -150,6 +165,7 @@
         "recurringCost": 5,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "TINORE": {
@@ -158,6 +174,7 @@
         "recurringCost": 5,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "BRONZEINGOT": {
@@ -166,6 +183,7 @@
         "recurringCost": 10,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "IRONORE": {
@@ -174,6 +192,7 @@
         "recurringCost": 15,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "IRONINGOT": {
@@ -182,6 +201,7 @@
         "recurringCost": 25,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "STEELINGOT": {
@@ -190,6 +210,7 @@
         "recurringCost": 40,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "GOLDORE": {
@@ -198,6 +219,7 @@
         "recurringCost": 35,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "GOLDINGOT": {
@@ -206,6 +228,7 @@
         "recurringCost": 60,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "LATINUMORE": {
@@ -214,6 +237,7 @@
         "recurringCost": 75,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "LATINUMINGOT": {
@@ -222,6 +246,7 @@
         "recurringCost": 95,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "UNBELIEVIUMORE": {
@@ -230,6 +255,7 @@
         "recurringCost": 120,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "LUSTRIALORE": {
@@ -238,6 +264,7 @@
         "recurringCost": 120,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "SPECTRUSORE": {
@@ -246,6 +273,7 @@
         "recurringCost": 120,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "TEMPROUSINGOT": {
@@ -254,6 +282,7 @@
         "recurringCost": 200,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       },
       "REFINEDTEMPROUS": {
@@ -262,6 +291,7 @@
         "recurringCost": 500,
         "workerCount": 0,
         "workerYield": 1,
+        "lastHarvestTime": 0,
         "sliderSettingValid": true
       }
     }

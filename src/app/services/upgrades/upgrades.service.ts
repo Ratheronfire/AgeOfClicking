@@ -23,6 +23,7 @@ export class UpgradesService {
   }
 
   public loadBaseUpgrades() {
+    this.upgrades = [];
     for (const baseUpgrade of baseUpgrades) {
       const upgrade = new Upgrade(baseUpgrade.id, baseUpgrade.name, baseUpgrade.description, baseUpgrade.upgradeType,
                                   baseUpgrade.upgradeEffects, baseUpgrade.resourceCosts, false,

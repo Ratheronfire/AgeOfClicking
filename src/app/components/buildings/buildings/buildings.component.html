@@ -9,7 +9,7 @@ class="buildings">
     <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
       matTooltipPosition="below">
       <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
-      {{resourceCost.resourceCost}}
+      {{resourceCost.resourceCost | longNumber}}
     </div>
   </div>
 </mat-button-toggle>

@@ -17,9 +17,9 @@
       <mat-card-content>
         {{upgrade.description}}
         <div class="resource-list">
-          <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
+          <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below">
-            <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}"> {{resourceCost.resourceCost}}
+            <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}"> {{resourceCost.resourceCost | longNumber}}
           </div>
         </div>
       </mat-card-content>
@@ -35,10 +35,10 @@
       {{upgrade.name}}
     </div>
     <div class="resource-list">
-      <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
+      <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
         matTooltipPosition="below">
         <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
-        {{resourceCost.resourceCost}}
+        {{resourceCost.resourceCost | longNumber}}
       </div>
     </div>
   </button>

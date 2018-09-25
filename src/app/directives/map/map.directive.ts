@@ -133,8 +133,8 @@ export class MapDirective implements AfterViewInit, Tick {
 
     if (focusedTile.buildingTileType || focusedTile.resourceTileType) {
       this.mapService.focusedTile = focusedTile;
-      this.mapService.focusedBuildingTile = this.mapService.buildingTiles[focusedTile.buildingTileType];
-      this.mapService.focusedResourceTile = this.mapService.resourceTiles[focusedTile.resourceTileType];
+      this.mapService.focusedBuildingTile = this.mapService.buildingTiles.get(focusedTile.buildingTileType);
+      this.mapService.focusedResourceTile = this.mapService.resourceTiles.get(focusedTile.resourceTileType);
       this.mapService.focusedResources = this.mapService.focusedResourceTile ?
         this.mapService.focusedResourceTile.resourceEnums.map(rEnum => this.resourcesService.resources.get(rEnum)) : undefined;
     } else {

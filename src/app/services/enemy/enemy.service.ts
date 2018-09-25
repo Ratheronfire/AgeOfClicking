@@ -132,7 +132,9 @@ export class EnemyService implements Tick, AfterViewInit {
     const spawnPoint = this.activePortalTile;
     const enemyType = this.enemyTypes[enemyIndex];
 
-    const difficultyModifier = Math.max(1, Math.random() * this.resourcesService.getPlayerScore() / 50000);
+    const cappedScore = Math.min(3000, this.resourcesService.getPlayerScore() / 50000);
+    const difficultyModifier = Math.max(1, Math.random() * cappedScore);
+
     const animationSpeed = Math.min(0.008, 0.003 + difficultyModifier / 10000);
 
     const enemy = new Enemy(enemyType.name, new Vector(spawnPoint.x, spawnPoint.y), spawnPoint, enemyType.health * difficultyModifier,
@@ -158,7 +160,7 @@ export class EnemyService implements Tick, AfterViewInit {
     }
 
     if (enemy.targets[enemy.targetIndex].wanderTarget ||
-      enemy.tilePath.some(tile => !tile.buildingTileType || !this.mapService.mapTiles[tile.mapTileType].walkable)) {
+      enemy.tilePath.some(tile => !tile.buildingTileType || !this.mapService.mapTiles.get(tile.mapTileType).walkable)) {
       this.finishTask(enemy);
     }
   }

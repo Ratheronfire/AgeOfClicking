@@ -42,7 +42,7 @@
 
   <mat-card-content *ngIf="focusedTile">
     <div *ngIf="focusedResourceTile" class="resource-list">
-      Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | number:'0.0-2'}}
+      Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | longNumber}}
       Seconds
       <br />
       Produces:
@@ -52,13 +52,13 @@
     </div>
     <div *ngIf="focusedBuildingTile && focusedBuildingTile.upgradeBuilding">
       <h3>Upgrade</h3>
-      <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding])">
-        <div class="title" matTooltip="{{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].description}}"
+      <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding))">
+        <div class="title" matTooltip="{{this.mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding).description}}"
           matTooltipPosition="above">
-          {{this.mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].name}}
+          {{this.mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding).name}}
         </div>
         <div class="resource-list">
-          <div *ngFor="let resourceCost of mapService.buildingTiles[focusedBuildingTile.upgradeBuilding].resourceCosts"
+          <div *ngFor="let resourceCost of mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding).resourceCosts"
             matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below">
             <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
@@ -69,7 +69,7 @@
     </div>
 
     <div *ngIf="focusedTile.market">
-      Profit (Average of recent sales): {{focusedTile.market.averageRecentProfit | number:'0.0-2'}} {{getResource('GOLD').name | titlecase}}/Second
+      Profit (Average of recent sales): {{focusedTile.market.averageRecentProfit | longNumber}} {{getResource('GOLD').name | titlecase}}/Second
     </div>
 
     <h3>Stats</h3>
@@ -78,7 +78,7 @@
           <tr class="stat-row">
             <td>
               <p>
-                Max Health: {{focusedTile.maxHealth | number:'1.0-2'}}
+                Max Health: {{focusedTile.maxHealth | longNumber}}
               </p>
             </td>
             <td>
@@ -88,13 +88,13 @@
             </td>
             <td>
               <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('MAXHEALTH')"
-                [disabled]="!focusedTile.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedTile.statLevels['MAXHEALTH'] + 1}}: {{focusedTile.getUpgradedStat('MAXHEALTH') | number:'1.0-2'}} Max Health"
+                [disabled]="!focusedTile.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedTile.statLevels['MAXHEALTH'] + 1}}: {{focusedTile.getUpgradedStat('MAXHEALTH') | longNumber}} Max Health"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
                     <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
-                    {{focusedTile.statCosts['MAXHEALTH'] | number:'1.0-0'}}
+                    {{focusedTile.statCosts['MAXHEALTH'] | longNumber}}
                   </div>
                 </div>
               </button>
@@ -104,7 +104,7 @@
           <tr class="stat-row" *ngIf="focusedTile.market">
             <td>
               <p>
-                Sell Rate: {{1000 / focusedTile.market.sellInterval | number:'1.0-2'}} Sale{{focusedTile.market.sellInterval === 1000 ? '' : 's'}}/Second
+                Sell Rate: {{1000 / focusedTile.market.sellInterval | longNumber}} Sale{{focusedTile.market.sellInterval === 1000 ? '' : 's'}}/Second
               </p>
             </td>
             <td>
@@ -114,13 +114,13 @@
             </td>
             <td>
               <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('SELLRATE')"
-                [disabled]="!focusedTile.canUpgradeStat('SELLRATE')" matTooltip="Level {{focusedTile.statLevels['SELLRATE'] + 1}}: {{1000 / focusedTile.getUpgradedStat('SELLRATE') | number:'1.0-2'}} Sales/Second"
+                [disabled]="!focusedTile.canUpgradeStat('SELLRATE')" matTooltip="Level {{focusedTile.statLevels['SELLRATE'] + 1}}: {{1000 / focusedTile.getUpgradedStat('SELLRATE') | longNumber}} Sales/Second"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
                     <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
-                    {{focusedTile.statCosts['SELLRATE'] | number:'1.0-0'}}
+                    {{focusedTile.statCosts['SELLRATE'] | longNumber}}
                   </div>
                 </div>
               </button>
@@ -130,7 +130,7 @@
           <tr class="stat-row" *ngIf="focusedTile.market">
             <td>
               <p>
-                Sell Amount: {{focusedTile.market.sellQuantity | number:'1.0-2'}} Items/Sale
+                Sell Amount: {{focusedTile.market.sellQuantity | longNumber}} Items/Sale
               </p>
             </td>
             <td>
@@ -140,13 +140,13 @@
             </td>
             <td>
               <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('SELLAMOUNT')"
-                [disabled]="!focusedTile.canUpgradeStat('SELLAMOUNT')" matTooltip="Level {{focusedTile.statLevels['SELLAMOUNT'] + 1}}: {{focusedTile.getUpgradedStat('SELLAMOUNT') | number:'1.0-2'}} Items/Sale"
+                [disabled]="!focusedTile.canUpgradeStat('SELLAMOUNT')" matTooltip="Level {{focusedTile.statLevels['SELLAMOUNT'] + 1}}: {{focusedTile.getUpgradedStat('SELLAMOUNT') | longNumber}} Items/Sale"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
                     <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
-                    {{focusedTile.statCosts['SELLAMOUNT'] | number:'1.0-0'}}
+                    {{focusedTile.statCosts['SELLAMOUNT'] | longNumber}}
                   </div>
                 </div>
               </button>

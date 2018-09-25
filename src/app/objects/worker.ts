@@ -1,3 +1,4 @@
+import { Resource } from './resource';
 import { Tick } from './../services/tick/tick.service';
 import { ResourcesService } from './../services/resources/resources.service';
 import { MapService } from './../services/map/map.service';
@@ -13,6 +14,8 @@ export interface ResourceWorker {
   workerCount: number;
   workerYield: number;
 
+  lastHarvestTime: number;
+
   sliderSetting: number;
   sliderSettingValid: boolean;
 }
@@ -25,6 +28,8 @@ export class Worker implements Tick {
   freeWorkers = 0;
 
   resourceWorkers: Map<string, ResourceWorker>;
+
+  minimumInterval = 1000;
 
   resourcesService: ResourcesService;
   mapService: MapService;
@@ -45,8 +50,14 @@ export class Worker implements Tick {
     for (const resourceWorker of this.getResourceWorkers()) {
       const resource = this.resourcesService.resources.get(resourceWorker.resourceEnum);
 
-      if (resourceWorker.workerCount === 0 || !this.canAffordToHarvest(resource.resourceEnum)) {
+      if (resourceWorker.workerCount === 0 || elapsed - resourceWorker.lastHarvestTime < this.getWorkInterval(resource) ||
+          !this.canAffordToHarvest(resource.resourceEnum)) {
         continue;
+      }
+
+      let workerOutput = resourceWorker.workerYield * resourceWorker.workerCount;
+      if (resource.harvestMilliseconds < this.minimumInterval) {
+        workerOutput *= this.minimumInterval / resource.harvestMilliseconds;
       }
 
       this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-resourceWorker.recurringCost * resourceWorker.workerCount);
@@ -55,7 +66,9 @@ export class Worker implements Tick {
         this.log(`No more money available for ${resource.name}.`);
       }
 
-      this.mapService.spawnHarvestedResourceAnimation(resource, resourceWorker.workerYield * resourceWorker.workerCount, false);
+      this.mapService.spawnHarvestedResourceAnimation(resource, workerOutput, false);
+
+      resourceWorker.lastHarvestTime = elapsed;
     }
   }
 
@@ -107,6 +120,10 @@ export class Worker implements Tick {
 
     this.freeWorkers = newFreeWorkers;
     resourceWorker.workerCount = newResourceWorkerCount;
+  }
+
+  getWorkInterval(resource: Resource): number {
+    return Math.max(resource.harvestMilliseconds, this.minimumInterval);
   }
 
   private log(message: string) {

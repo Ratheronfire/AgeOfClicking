@@ -18,9 +18,6 @@ export class WorkersService implements Tick {
   public workers = new Map<string, Worker>();
   workersPaused = false;
 
-  workerDelay = 1000;
-  lastWorkerTime: number;
-
   constructor(protected resourcesService: ResourcesService,
               protected mapService: MapService,
               protected messagesService: MessagesService) {
@@ -28,6 +25,7 @@ export class WorkersService implements Tick {
   }
 
   public loadBaseWorkers() {
+    this.workers.clear();
     for (const resourceTypeString in ResourceType) {
       if (Number(resourceTypeString)) {
         continue;
@@ -46,7 +44,18 @@ export class WorkersService implements Tick {
           continue;
         }
 
-        resourceWorkers.set(resoruceEnum, baseWorker.resourceWorkers[resoruceEnum]);
+        const resourceWorker: ResourceWorker = {
+          resourceEnum: baseWorker.resourceWorkers[resoruceEnum].resourceEnum,
+          workable: baseWorker.resourceWorkers[resoruceEnum].workable,
+          recurringCost: baseWorker.resourceWorkers[resoruceEnum].recurringCost,
+          workerCount: 0,
+          workerYield: baseWorker.resourceWorkers[resoruceEnum].workerYield,
+          lastHarvestTime: 0,
+          sliderSetting: 0,
+          sliderSettingValid: true
+        };
+
+        resourceWorkers.set(resoruceEnum, resourceWorker);
       }
 
       const worker = new Worker(baseWorker.cost, baseWorker.resourceType, resourceWorkers,
@@ -56,11 +65,9 @@ export class WorkersService implements Tick {
   }
 
   tick(elapsed: number, deltaTime: number) {
-    if (this.workersPaused || elapsed - this.lastWorkerTime < this.workerDelay) {
+    if (this.workersPaused) {
       return;
     }
-
-    this.lastWorkerTime = elapsed;
 
     for (const worker of this.getWorkers()) {
       worker.tick(elapsed, deltaTime);

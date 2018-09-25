@@ -19,7 +19,7 @@
           </div>
 
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
-          <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
+          <mat-card-subtitle>{{resource.amount | longNumber}}</mat-card-subtitle>
           <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [value]="resource.progressBarValue"></mat-progress-bar>
 
           <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">

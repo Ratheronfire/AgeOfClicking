@@ -25,8 +25,8 @@ const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2'];
-  gameVersion = 'Alpha 3.2';
+  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3'];
+  gameVersion = 'Alpha 3.3';
 
   bindSelected = new FormControl();
 
@@ -178,7 +178,7 @@ export class SettingsService implements Tick {
   exportSave() {
     const saveData: SaveData = {
       resources: [],
-      upgrades: [],
+      purchasedUpgrades: [],
       workers: [],
       tiles: [],
       enemies: [],
@@ -203,22 +203,11 @@ export class SettingsService implements Tick {
       saveData.resources.push({
         resourceEnum: resource.resourceEnum,
         amount: resource.amount,
-        harvestable: resource.harvestable,
-        harvestYield: resource.harvestYield,
-        harvestMilliseconds: resource.harvestMilliseconds,
-        sellable: resource.sellable,
-        sellsFor: resource.sellsFor,
-        autoSellCutoff: resource.autoSellCutoff,
-        resourceAccessible: resource.resourceAccessible
+        autoSellCutoff: resource.autoSellCutoff
       });
     }
 
-    for (const upgrade of this.upgradesService.upgrades) {
-      saveData.upgrades.push({
-        id: upgrade.id,
-        purchased: upgrade.purchased
-      });
-    }
+    saveData.purchasedUpgrades = this.upgradesService.getUpgrades(true).map(upgrade => upgrade.id);
 
     for (const worker of this.workersService.getWorkers()) {
       const workerData: WorkerData = {
@@ -232,8 +221,7 @@ export class SettingsService implements Tick {
         workerData.workersByResource.push({
           resourceEnum: resourceWorker.resourceEnum,
           workable: resourceWorker.workable,
-          workerCount: resourceWorker.workerCount,
-          workerYield: resourceWorker.workerYield
+          workerCount: resourceWorker.workerCount
         });
       }
 
@@ -316,6 +304,8 @@ export class SettingsService implements Tick {
     const backupSave = this.exportSave();
 
     try {
+      this.deleteSave();
+
       let saveData: SaveData = JSON.parse(atob(saveDataString));
       saveData = this.processVersionDifferences(saveData);
 
@@ -331,25 +321,19 @@ export class SettingsService implements Tick {
             continue;
           }
 
-          resource.amount = resourceData.amount;
-          resource.harvestable = resourceData.harvestable;
-          resource.harvestYield = resourceData.harvestYield;
-          resource.harvestMilliseconds = resourceData.harvestMilliseconds;
-          resource.sellable = resourceData.sellable;
-          resource.sellsFor = resourceData.sellsFor;
+          resource.amount = resourceData.amount ? resourceData.amount : 0;
           resource.autoSellCutoff = resourceData.autoSellCutoff ? resourceData.autoSellCutoff : 0;
         }
       }
 
-      if (saveData.upgrades !== undefined) {
-        for (const upgradeData of saveData.upgrades) {
-          const upgrade = this.upgradesService.getUpgrade(upgradeData.id);
+      if (saveData.purchasedUpgrades !== undefined) {
+        for (const upgradeId of saveData.purchasedUpgrades) {
+          const upgrade = this.upgradesService.getUpgrade(upgradeId);
 
-          if (upgrade === undefined) {
-            continue;
+          if (upgrade) {
+            upgrade.applyUpgrade();
+            upgrade.purchased = true;
           }
-
-          upgrade.purchased = upgradeData.purchased;
         }
       }
 
@@ -365,7 +349,6 @@ export class SettingsService implements Tick {
             const resourceWorker = worker.resourceWorkers.get(resourceWorkerData.resourceEnum);
 
             resourceWorker.workable = resourceWorkerData.workable;
-            resourceWorker.workerYield = resourceWorkerData.workerYield;
             resourceWorker.workerCount = 0;
 
             resourceWorker.sliderSetting = resourceWorkerData.workerCount;
@@ -402,7 +385,7 @@ export class SettingsService implements Tick {
         }
 
         const marketTiles = saveData.tiles.filter(
-          tile => tile.buildingTileType && this.mapService.buildingTiles[tile.buildingTileType].subType === BuildingSubType.Market);
+          tile => tile.buildingTileType && this.mapService.buildingTiles.get(tile.buildingTileType).subType === BuildingSubType.Market);
 
         for (const tileData of marketTiles) {
           const tile = this.mapService.tiledMap[tileData.id];
@@ -477,6 +460,8 @@ export class SettingsService implements Tick {
           saveData.settings.hidePurchasedUpgrades ? saveData.settings.hidePurchasedUpgrades : false;
 
         this.resourceBinds = saveData.settings.resourceBinds ? saveData.settings.resourceBinds : defaultResourceBinds;
+        this.bindSelected.setValue(this.resourceBinds);
+        this.resourceBindChange({'source': null, 'value': this.resourceBinds});
 
         this.messagesService.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
           [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
@@ -568,7 +553,7 @@ export class SettingsService implements Tick {
       saveData.settings.resourceAnimationColors[ResourceAnimationType.Sold] = '#ffc089';
 
       saveData.tiles.map(tileData => {
-        const isMarket = this.mapService.buildingTiles[tileData.buildingTileType].subType === BuildingSubType.Market;
+        const isMarket = this.mapService.buildingTiles.get(tileData.buildingTileType).subType === BuildingSubType.Market;
         tileData.statLevels = isMarket ? {'MAXHEALTH': 1, 'SELLAMOUNT': 1, 'SELLRATE': 1} : {'MAXHEALTH': 1};
         tileData.statCosts = isMarket ? {'MAXHEALTH': 1500, 'SELLAMOUNT': 1500, 'SELLRATE': 1500} : {'MAXHEALTH': 1500};
       });
@@ -609,6 +594,10 @@ export class SettingsService implements Tick {
       const accessedTiers = saveData.resources.filter(resource => resource.amount).map(resource =>
         this.resourcesService.resources.get(resource.resourceEnum).resourceTier);
       saveData.settings.highestTierReached = accessedTiers.sort()[accessedTiers.length - 1];
+    }
+
+    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.1')) {
+      saveData.purchasedUpgrades = saveData.upgrades.map(upgrade => upgrade.id);
     }
 
     return saveData;

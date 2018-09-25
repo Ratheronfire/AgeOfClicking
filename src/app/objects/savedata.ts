@@ -6,18 +6,7 @@ import { MessageSource } from '../objects/message';
 export interface ResourceData {
   resourceEnum: ResourceEnum;
   amount: number;
-  harvestable: boolean;
-  harvestYield: number;
-  harvestMilliseconds: number;
-  sellable: boolean;
-  sellsFor: number;
   autoSellCutoff: number;
-  resourceAccessible: boolean;
-}
-
-export interface UpgradeData {
-  id: number;
-  purchased: boolean;
 }
 
 export interface WorkerData {
@@ -31,7 +20,6 @@ export interface ResourceWorkerData {
   resourceEnum: ResourceEnum;
   workable: boolean;
   workerCount: number;
-  workerYield: number;
 }
 
 export interface TileData {
@@ -127,7 +115,7 @@ export interface SettingsData {
 
 export class SaveData {
   resources: ResourceData[];
-  upgrades: UpgradeData[];
+  purchasedUpgrades: number[];
   workers: WorkerData[];
   tiles: TileData[];
   enemies: EnemyData[];
