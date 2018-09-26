@@ -1,4 +1,4 @@
-import { LongNumberPipe } from './long-number-pipe.pipe';
+import { LongNumberPipe } from './long-number-pipe';
 
 describe('LongNumberPipePipe', () => {
   it('create an instance', () => {

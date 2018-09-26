@@ -80,6 +80,24 @@
   font-family: Arial;
 }
 
+.resources button.resource-button.currency-button {
+  width: 95%;
+  cursor: auto;
+
+  z-index: 2;
+
+  position: sticky;
+  top: 0;
+  left: 5%;
+
+  background-color: #eee;
+  color: black;
+}
+
+.currency-button:hover {
+  left: unset;
+}
+
 .harvest-progress {
   display: flex;
   align-content: center;

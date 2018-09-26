@@ -38,6 +38,7 @@ export class SettingsService implements Tick {
 
   disableAnimations = false;
   slimInterface = false;
+  organizeLeftPanelByType = true;
 
   mapDetailMode = true;
   mapLowFramerate = false;
@@ -163,6 +164,7 @@ export class SettingsService implements Tick {
 
     this.disableAnimations = false;
     this.slimInterface = false;
+    this.organizeLeftPanelByType = true;
 
     this.mapLowFramerate = false;
     this.resourceAnimationColors = {
@@ -193,6 +195,7 @@ export class SettingsService implements Tick {
         visibleSources: this.messagesService.visibleSources,
         enemiesActive: this.enemyService.enemiesActive,
         slimInterface: this.slimInterface,
+        organizeLeftPanelByType: this.organizeLeftPanelByType,
         mapLowFramerate: this.mapLowFramerate,
         resourceAnimationColors: this.resourceAnimationColors
       },
@@ -331,7 +334,7 @@ export class SettingsService implements Tick {
           const upgrade = this.upgradesService.getUpgrade(upgradeId);
 
           if (upgrade) {
-            upgrade.applyUpgrade();
+            upgrade.applyUpgrade(true);
             upgrade.purchased = true;
           }
         }
@@ -471,6 +474,7 @@ export class SettingsService implements Tick {
         this.enemyService.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
 
         this.slimInterface = saveData.settings.slimInterface ? saveData.settings.slimInterface : false;
+        this.organizeLeftPanelByType = saveData.settings.organizeLeftPanelByType ? saveData.settings.organizeLeftPanelByType : true;
 
         this.mapLowFramerate = saveData.settings.mapLowFramerate ? saveData.settings.mapLowFramerate : false;
 

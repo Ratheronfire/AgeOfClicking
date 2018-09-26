@@ -99,6 +99,13 @@ export class SettingsComponent implements AfterViewInit {
     this.settingsService.slimInterface = value;
   }
 
+  get organizeLeftPanelByType(): boolean {
+    return this.settingsService.organizeLeftPanelByType;
+  }
+  set organizeLeftPanelByType(value: boolean) {
+    this.settingsService.organizeLeftPanelByType = value;
+  }
+
   get disableAnimations(): boolean {
     return this.settingsService.disableAnimations;
   }

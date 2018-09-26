@@ -37,12 +37,15 @@ export class ResourcesService {
     }
   }
 
-  public getResources(resourceType?: ResourceType,
+  public getResources(resourceType?: ResourceType, resourceTiers?: number[],
                       filterBySellable = false, filterByAccessible = false, filterByHarvestable = false): Resource[] {
     let resources = Array.from(this.resources.values());
 
     if (resourceType) {
       resources = resources.filter(resource => resource.resourceType === resourceType);
+    }
+    if (resourceTiers && resourceTiers.length) {
+      resources = resources.filter(resource => resourceTiers.includes(resource.resourceTier));
     }
     if (filterBySellable) {
       resources = resources.filter(resource => resource.sellable);
@@ -60,6 +63,18 @@ export class ResourcesService {
   public getPlayerScore(): number {
     const resources = Array.from(this.resources.values());
     return resources.map(resource => resource.amount * resource.resourceTier).reduce((total, amount) => total += amount);
+  }
+
+  public get tiers(): number[] {
+    const tiersByResource = this.getResources().map(resource => resource.resourceTier).sort();
+    const tiers = [];
+    tiersByResource.map(tier => {
+      if (!tiers.includes(tier) && this.highestTierReached >= tier - 1) {
+        tiers.push(tier);
+     }
+    });
+
+    return tiers;
   }
 
   private log(message: string) {

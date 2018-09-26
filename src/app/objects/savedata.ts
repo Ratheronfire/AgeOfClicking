@@ -105,6 +105,7 @@ export interface SettingsData {
   enemiesActive: boolean;
 
   slimInterface: boolean;
+  organizeLeftPanelByType: boolean;
 
   mapLowFramerate: boolean;
 

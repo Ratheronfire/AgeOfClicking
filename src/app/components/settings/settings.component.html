@@ -34,9 +34,11 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
+    <!-- <mat-checkbox [(ngModel)]="disableAnimations">Disable Animations</mat-checkbox>
+    <br /> -->
     <mat-checkbox [(ngModel)]="slimInterface">Slim Mode</mat-checkbox>
-    <!-- <br />
-      <mat-checkbox [(ngModel)]="disableAnimations">Disable Animations</mat-checkbox> -->
+    <br />
+    <mat-checkbox [(ngModel)]="organizeLeftPanelByType">Organize Left Pane By Resource Type</mat-checkbox>
 
     <mat-form-field class="full-width">
       <mat-select placeholder="Resource Shortcuts" [formControl]="bindSelected" multiple (selectionChange)="resourceBindChange($event)">

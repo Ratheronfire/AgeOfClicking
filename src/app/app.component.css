@@ -96,7 +96,7 @@ h1.game-app-name {
 }
 
 app-clicker-main {
-  overflow-y: scroll;
+  overflow: auto;
   max-height: 100%;
 }
 

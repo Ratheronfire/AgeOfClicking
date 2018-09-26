@@ -1,7 +1,9 @@
 import { Component, OnInit, } from '@angular/core';
 
 import { ClickerMainService } from './../../services/clicker-main/clicker-main.service';
+import { SettingsService } from '../../services/settings/settings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
+import { ResourceEnum } from './../../objects/resourceData';
 import { Resource } from '../../objects/resource';
 import { ResourceType } from '../../objects/resourceData';
 import { WorkersService } from '../../services/workers/workers.service';
@@ -20,6 +22,7 @@ export class ClickerMainComponent implements OnInit {
   resourceTypes = ResourceType;
 
   constructor(protected clickerMainService: ClickerMainService,
+              protected settingsService: SettingsService,
               protected resourcesService: ResourcesService,
               protected workersService: WorkersService,
               protected tooltipService: TooltipService,
@@ -31,8 +34,8 @@ export class ClickerMainComponent implements OnInit {
   ngOnInit() {
   }
 
-  getResources(resourceType: ResourceType, filterByAccessible: boolean): Resource[] {
-    return this.resourcesService.getResources(this.resourceTypes[resourceType], false, filterByAccessible);
+  getResources(resourceType: ResourceType, resourceTiers?: number[], filterByAccessible = true): Resource[] {
+    return this.resourcesService.getResources(this.resourceTypes[resourceType], resourceTiers, false, filterByAccessible);
   }
 
   public getTooltipMessage(resource: Resource): string {
@@ -53,5 +56,17 @@ export class ClickerMainComponent implements OnInit {
 
   harvestResource(resource: Resource) {
     this.clickerMainService.harvestResource(resource);
+  }
+
+  get goldResource(): Resource {
+    return this.resourcesService.resources.get(ResourceEnum.Gold);
+  }
+
+  get tiers(): number[] {
+    return this.resourcesService.tiers;
+  }
+
+  get organizeLeftPanelByType(): boolean {
+    return this.settingsService.organizeLeftPanelByType;
   }
 }

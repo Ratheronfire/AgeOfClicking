@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 
 import { ResourcesService } from '../../services/resources/resources.service';
 import { ResourceEnum } from '../../objects/resourceData';
-import { Upgrade, UpgradeType } from '../../objects/upgrade';
+import { Upgrade, UpgradeType, UpgradeVariable } from '../../objects/upgrade';
 import { UpgradesService } from '../../services/upgrades/upgrades.service';
 import { SettingsService } from '../../services/settings/settings.service';
 import { AdminService } from '../../services/admin/admin.service';
@@ -14,6 +14,8 @@ import { AdminService } from '../../services/admin/admin.service';
 })
 export class UpgradesComponent implements OnInit {
   upgradeTypes = UpgradeType;
+  upgradeVariables = UpgradeVariable;
+  upgradeVariableNames = Upgrade.UpgradeVariableNames;
 
   constructor(public resourcesService: ResourcesService,
               public upgradesService: UpgradesService,
@@ -27,12 +29,10 @@ export class UpgradesComponent implements OnInit {
     return this.upgradesService.getUpgrade(id).canAfford();
   }
 
-  getUpgrades(filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
-    return this.upgradesService.getUpgrades(filterByPurchased, filterByUnpurchased, filterByAccessible);
-  }
-
-  upgradesOfType(upgradeType: string, filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean): Upgrade[] {
-    return this.upgradesService.getUpgrades(filterByPurchased, filterByUnpurchased, filterByAccessible, this.upgradeTypes[upgradeType]);
+  getUpgrades(filterByPurchased: boolean, filterByUnpurchased: boolean, filterByAccessible: boolean,
+      upgradeType?: string, upgradeVariable?: string): Upgrade[] {
+    return this.upgradesService.getUpgrades(filterByPurchased, filterByUnpurchased, filterByAccessible,
+      UpgradeType[upgradeType], UpgradeVariable[upgradeVariable]);
   }
 
   purchaseUpgrade(id: number) {
