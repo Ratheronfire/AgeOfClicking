@@ -15,6 +15,13 @@
         <mat-card-subtitle>{{worker.cost | longNumber}} Gold</mat-card-subtitle>
       </button>
 
+      <mat-card class="hunger-card">
+          <mat-card-title>
+            Food Supply
+          </mat-card-title>
+        <mat-progress-bar mode="determinate" [value]="50" color="primary"></mat-progress-bar>
+      </mat-card>
+
       <div *ngFor="let resourceWorker of getAccessibleResourceWorkers(worker)">
         <mat-card [ngClass]="{'resource-disabled': !canHarvest(resourceWorker.resourceEnum)}"
         *ngIf="shouldShowResource(resourceWorker.resourceEnum)" matTooltip="{{getTooltipMessage(resourceWorker.resourceEnum)}}" matTooltipPosition="right">

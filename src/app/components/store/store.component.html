@@ -27,7 +27,7 @@ Amount to sell:<mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div *ngFor="let resource of resourcesOfType(resourceType, false, adminService.filterAccessible)">
+      <div *ngFor="let resource of getResources(resourceType, false, adminService.filterAccessible)">
         <button class="sell-button" color="accent" mat-flat-button *ngIf="resource.sellable" (click)="sellResource(resource)"
           [disabled]="!canSellResource(resource)">
           {{(sellAmount == -1 ? resource.amount : sellAmount) | longNumber}} {{resource.name | titlecase }} -

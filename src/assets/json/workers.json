@@ -3,80 +3,83 @@
     "id": 0,
     "cost": 250,
     "resourceType": "WOOD",
-    "workerCount": 0,
-    "freeWorkers": 0,
     "resourceWorkers": {
       "OAK": {
         "resourceEnum": "OAK",
         "workable": true,
-        "recurringCost": 5,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 5
       },
       "PINE": {
         "resourceEnum": "PINE",
         "workable": false,
-        "recurringCost": 10,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 10
       },
       "BIRCH": {
         "resourceEnum": "BIRCH",
         "workable": false,
-        "recurringCost": 20,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 20
       },
       "EUCALYPTUS": {
         "resourceEnum": "EUCALYPTUS",
         "workable": false,
-        "recurringCost": 25,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 25
       },
       "WILLOW": {
         "resourceEnum": "WILLOW",
         "workable": false,
-        "recurringCost": 40,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 40
       },
       "TEAK": {
         "resourceEnum": "TEAK",
         "workable": false,
-        "recurringCost": 50,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 50
       },
       "ENTSOUL": {
         "resourceEnum": "ENTSOUL",
         "workable": false,
-        "recurringCost": 60,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 60
       },
       "REANIMATEDENT": {
         "resourceEnum": "REANIMATEDENT",
         "workable": false,
-        "recurringCost": 150,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 150
+      }
+    }
+  },
+  "FOOD": {
+    "id": 3,
+    "cost": 500,
+    "resourceType": "FOOD",
+    "resourceWorkers": {
+      "WHEAT": {
+        "resourceEnum": "WHEAT",
+        "workable": true,
+        "recurringCost": 5
+      },
+      "BREAD": {
+        "resourceEnum": "BREAD",
+        "workable": false,
+        "recurringCost": 7
+      },
+      "RAWHERRING": {
+        "resourceEnum": "RAWHERRING",
+        "workable": false,
+        "recurringCost": 8
+      },
+      "HERRING": {
+        "resourceEnum": "HERRING",
+        "workable": false,
+        "recurringCost": 12
+      },
+      "RAWSTEAK": {
+        "resourceEnum": "RAWSTEAK",
+        "workable": false,
+        "recurringCost": 15
+      },
+      "STEAK": {
+        "resourceEnum": "STEAK",
+        "workable": false,
+        "recurringCost": 17
       }
     }
   },
@@ -84,71 +87,41 @@
     "id": 2,
     "cost": 650,
     "resourceType": "MINERAL",
-    "workerCount": 0,
-    "freeWorkers": 0,
     "resourceWorkers": {
       "STONE": {
         "resourceEnum": "STONE",
         "workable": true,
-        "recurringCost": 10,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 10
       },
       "GRAPHITE": {
         "resourceEnum": "GRAPHITE",
         "workable": false,
-        "recurringCost": 15,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 15
       },
       "LIMESTONE": {
         "resourceEnum": "LIMESTONE",
         "workable": false,
-        "recurringCost": 20,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 20
       },
       "MARBLE": {
         "resourceEnum": "MARBLE",
         "workable": false,
-        "recurringCost": 30,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 30
       },
       "QUARTZ": {
         "resourceEnum": "QUARTZ",
         "workable": false,
-        "recurringCost": 45,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 45
       },
       "OBSIDIAN": {
         "resourceEnum": "OBSIDIAN",
         "workable": false,
-        "recurringCost": 55,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 55
       },
       "DIAMOND": {
         "resourceEnum": "DIAMOND",
         "workable": false,
-        "recurringCost": 70,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 70
       }
     }
   },
@@ -156,143 +129,81 @@
     "id": 1,
     "cost": 1000,
     "resourceType": "METAL",
-    "workerCount": 0,
-    "freeWorkers": 0,
     "resourceWorkers": {
       "COPPERORE": {
         "resourceEnum": "COPPERORE",
         "workable": false,
-        "recurringCost": 5,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 5
       },
       "TINORE": {
         "resourceEnum": "TINORE",
         "workable": false,
-        "recurringCost": 5,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 5
       },
       "BRONZEINGOT": {
         "resourceEnum": "BRONZEINGOT",
         "workable": false,
-        "recurringCost": 10,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 10
       },
       "IRONORE": {
         "resourceEnum": "IRONORE",
         "workable": false,
-        "recurringCost": 15,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 15
       },
       "IRONINGOT": {
         "resourceEnum": "IRONINGOT",
         "workable": false,
-        "recurringCost": 25,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 25
       },
       "STEELINGOT": {
         "resourceEnum": "STEELINGOT",
         "workable": false,
-        "recurringCost": 40,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 40
       },
       "GOLDORE": {
         "resourceEnum": "GOLDORE",
         "workable": false,
-        "recurringCost": 35,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 35
       },
       "GOLDINGOT": {
         "resourceEnum": "GOLDINGOT",
         "workable": false,
-        "recurringCost": 60,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 60
       },
       "LATINUMORE": {
         "resourceEnum": "LATINUMORE",
         "workable": false,
-        "recurringCost": 75,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 75
       },
       "LATINUMINGOT": {
         "resourceEnum": "LATINUMINGOT",
         "workable": false,
-        "recurringCost": 95,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 95
       },
       "UNBELIEVIUMORE": {
         "resourceEnum": "UNBELIEVIUMORE",
         "workable": false,
-        "recurringCost": 120,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 120
       },
       "LUSTRIALORE": {
         "resourceEnum": "LUSTRIALORE",
         "workable": false,
-        "recurringCost": 120,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 120
       },
       "SPECTRUSORE": {
         "resourceEnum": "SPECTRUSORE",
         "workable": false,
-        "recurringCost": 120,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 120
       },
       "TEMPROUSINGOT": {
         "resourceEnum": "TEMPROUSINGOT",
         "workable": false,
-        "recurringCost": 200,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 200
       },
       "REFINEDTEMPROUS": {
         "resourceEnum": "REFINEDTEMPROUS",
         "workable": false,
-        "recurringCost": 500,
-        "workerCount": 0,
-        "workerYield": 1,
-        "lastHarvestTime": 0,
-        "sliderSettingValid": true
+        "recurringCost": 500
       }
     }
   }

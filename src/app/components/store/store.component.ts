@@ -28,8 +28,8 @@ export class StoreComponent implements OnInit {
     return this.storeService.canSellResource(resource, +this.sellAmount);
   }
 
-  resourcesOfType(resourceType: ResourceType, filterBySellable: boolean, filterByAccessible): Resource[] {
-    return this.resourcesService.getResources(resourceType, filterBySellable, filterByAccessible);
+  getResources(resourceType: ResourceType, filterBySellable: boolean, filterByAccessible): Resource[] {
+    return this.resourcesService.getResources(resourceType, undefined, filterBySellable, filterByAccessible);
   }
 
   sellResource(resource: Resource) {

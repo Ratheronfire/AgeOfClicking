@@ -31,13 +31,28 @@
 
 .workers mat-card {
   position: relative;
-  cursor: pointer;
   margin: .5em;
   padding: .4em 0;
   height: 3.6em;
   width: 100%;
   border-radius: 4px;
   background: antiquewhite;
+}
+
+.workers mat-card.hunger-card {
+  height: 1.3em;
+}
+
+.hunger-card mat-card-title {
+  font-size: 18px;
+}
+
+.hunger-card mat-progress-bar {
+  position: absolute;
+  top: 0;
+
+  height: 100%;
+  opacity: 0.5;
 }
 
 .workers button {

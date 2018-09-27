@@ -39,7 +39,12 @@ export enum ResourceTileType {
   IronForge = 'IRONFORGE',
   GoldForge = 'GOLDFORGE',
   LatinumForge = 'LATINUMFORGE',
-  TemprousDistillery = 'TEMPROUSDISTILLERY'
+  TemprousDistillery = 'TEMPROUSDISTILLERY',
+  WheatFarm = 'WHEATFARM',
+  OakDock = 'OAKDOCK',
+  OakOven = 'OAKOVEN',
+  StoneOven = 'STONEOVEN',
+  CowFarm = 'COWFARM'
 }
 
 export enum BuildingTileType {
@@ -56,7 +61,11 @@ export enum BuildingTileType {
   EnemyPortal = 'ENEMYPORTAL',
   WoodMarket = 'WOODMARKET',
   MineralMarket = 'MINERALMARKET',
-  MetalMarket = 'METALMARKET'
+  MetalMarket = 'METALMARKET',
+  OakDock = 'OAKDOCK',
+  OakOven = 'OAKOVEN',
+  StoneOven = 'STONEOVEN',
+  CowFarm = 'COWFARM'
 }
 
 export enum BuildingSubType {
