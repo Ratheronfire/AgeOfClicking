@@ -17,6 +17,7 @@ import { UpgradesComponent } from './components/upgrades/upgrades.component';
 import { MapComponent } from './components/map/map.component';
 import { SettingsComponent } from './components/settings/settings.component';
 import { AdminDebugComponent } from './components/admin-debug/admin-debug.component';
+import { AboutDialogComponent } from './components/about-dialog/about-dialog/about-dialog.component';
 import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { CropDirective } from './directives/crop/crop.directive';
 import { MapDirective } from './directives/map/map.directive';
@@ -49,7 +50,8 @@ import { SnapDirective } from './directives/snap/snap.directive';
     BuildingsComponent,
     TileDetailComponent,
     FighterDetailComponent,
-    SnapDirective
+    SnapDirective,
+    AboutDialogComponent
   ],
   imports: [
     BrowserModule,
@@ -61,6 +63,7 @@ import { SnapDirective } from './directives/snap/snap.directive';
     ColorPickerModule
   ],
   entryComponents: [
+    AboutDialogComponent,
     SaveDialogComponent
   ],
   providers: [],

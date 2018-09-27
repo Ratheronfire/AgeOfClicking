@@ -1,4 +1,7 @@
-<h3>Version {{settingsService.gameVersion}}</h3>
+<h3>
+  Version {{settingsService.gameVersion}} -
+  <a (click)="openAboutDialog()">About</a>
+</h3>
 
 <mat-accordion multi="true">
   <mat-expansion-panel expanded="true">

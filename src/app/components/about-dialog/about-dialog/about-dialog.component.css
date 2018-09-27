@@ -2,13 +2,17 @@ h1 {
   font-size: 1.2em;
   color: #999;
   margin-bottom: 0;
-  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
+
 
 h2 {
   font-size: 2em;
   margin-top: 0;
   padding-top: 0;
+}
+
+* {
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 a {
@@ -18,31 +22,17 @@ a {
   display: inline-block;
   background-color: #eee;
   border-radius: 4px;
-  cursor: pointer;
 }
 
-a:visited, a:link {
+nav a:visited, a:link {
   color: #607d8b;
 }
 
-a:hover {
+nav a:hover {
   color: #039be5;
   background-color: #cfd8dc;
 }
 
-a.active {
+nav a.active {
   color: #039be5;
-}
-
-mat-panel-title {
-  display: grid;
-}
-
-.color-input {
-    color: rgb(108, 88, 88);
-    font-weight: bolder;
-}
-
-.full-width {
-  width: 100%;
 }
