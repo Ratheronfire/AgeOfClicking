@@ -132,7 +132,7 @@ export class EnemyService implements Tick, AfterViewInit {
     const spawnPoint = this.activePortalTile;
     const enemyType = this.enemyTypes[enemyIndex];
 
-    const cappedScore = Math.min(3000, this.resourcesService.getPlayerScore() / 50000);
+    const cappedScore = Math.min(3000, this.resourcesService.playerScore / 50000);
     const difficultyModifier = Math.max(1, Math.random() * cappedScore);
 
     const animationSpeed = Math.min(0.008, 0.003 + difficultyModifier / 10000);

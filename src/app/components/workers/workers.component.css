@@ -41,6 +41,7 @@
 
 .workers mat-card.hunger-card {
   height: 1.3em;
+  width: 95%;
 }
 
 .hunger-card mat-card-title {

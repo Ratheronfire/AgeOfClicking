@@ -124,5 +124,6 @@ export class SaveData {
 
   settings: SettingsData;
 
+  foodStockpile: number;
   gameVersion: string;
 }

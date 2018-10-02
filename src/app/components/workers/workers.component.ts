@@ -91,4 +91,16 @@ export class WorkersComponent implements OnInit {
   set workersPaused(value: boolean) {
     this.workersService.workersPaused = value;
   }
+
+  get foodStockpile(): number {
+    return this.workersService.foodStockpile;
+  }
+
+  get foodCapacity(): number {
+    return this.workersService.foodCapacity;
+  }
+
+  get foodPercentage(): number {
+    return Math.floor(this.workersService.foodStockpile / this.workersService.foodCapacity * 100);
+  }
 }

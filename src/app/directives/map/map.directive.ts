@@ -224,7 +224,7 @@ export class MapDirective implements AfterViewInit, Tick {
     }
 
     for (const resourceAnimation of this.mapService.resourceAnimations) {
-      const resourceTileName = this.resourcesService.resources.get(resourceAnimation.resourceEnum).name.toLowerCase().replace(' ', '-');
+      const resourceTileName = this.resourcesService.resources.get(resourceAnimation.resourceEnum).name.toLowerCase().replace(/ /g, '-');
       this.drawTile(resourceAnimation.position, resourceTileName, 0.5);
 
       this.context.fillStyle = this.settingsService.resourceAnimationColors[resourceAnimation.animationType];

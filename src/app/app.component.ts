@@ -30,13 +30,13 @@ export class AppComponent {
     this._mobileQueryListener = () => changeDetectorRef.detectChanges();
     this.mobileQuery.addListener(this._mobileQueryListener);
 
-    window.Game = window.Game || {};
-    window.Game.Resources = window.Game.Resources || {};
-    window.Game.Resources.getResources = this.getResourceNames.bind(this);
-    window.Game.Resources.add = this.addToResource.bind(this);
-    window.Game.Upgrades = window.Game.Upgrades || {};
-    window.Game.Upgrades.getUpgrades = this.getUpgrades.bind(this);
-    window.Game.Upgrades.purchase = this.purchaseUpgrade.bind(this);
+    // window.Game = window.Game || {};
+    // window.Game.Resources = window.Game.Resources || {};
+    // window.Game.Resources.getResources = this.getResourceNames.bind(this);
+    // window.Game.Resources.add = this.addToResource.bind(this);
+    // window.Game.Upgrades = window.Game.Upgrades || {};
+    // window.Game.Upgrades.getUpgrades = this.getUpgrades.bind(this);
+    // window.Game.Upgrades.purchase = this.purchaseUpgrade.bind(this);
 
     window.onbeforeunload = event => {
       const message = 'Are you sure you want to leave this page? Unsaved data will be lost.';

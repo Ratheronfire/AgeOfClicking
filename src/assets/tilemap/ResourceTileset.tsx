@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset name="ResourceTileset" tilewidth="48" tileheight="48" tilecount="29" columns="0">
+<tileset name="ResourceTileset" tilewidth="48" tileheight="48" tilecount="32" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="48" height="48" source="../sprites/oak_tree.png"/>
@@ -87,5 +87,14 @@
  </tile>
  <tile id="28">
   <image width="48" height="48" source="../sprites/wheat_farm.png"/>
+ </tile>
+ <tile id="30">
+  <image width="48" height="48" source="../sprites/raw_potato_farm.png"/>
+ </tile>
+ <tile id="31">
+  <image width="48" height="48" source="../sprites/rice_farm.png"/>
+ </tile>
+ <tile id="32">
+  <image width="48" height="48" source="../sprites/fishing_spot.png"/>
  </tile>
 </tileset>

@@ -10,15 +10,15 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div *ngIf="!settingsService.slimInterface">
-      <mat-card class="upgrade" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)">
+      <mat-card class="upgrade full" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)">
         <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)'
           (click)='purchaseUpgrade(upgrade.id)'>
-          <mat-card-title>
+          <p class="title">
             <b>
               <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
             </b>
             {{upgrade.name}}
-          </mat-card-title>
+          </p>
         </button>
         <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
         <mat-card-content>
@@ -35,7 +35,7 @@
     </div>
 
     <div *ngIf="settingsService.slimInterface">
-      <button mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)"
+      <button class="slim" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)"
         color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
         <div class="title" matTooltip="{{upgrade.description}}" matTooltipPosition="above">
           <b>

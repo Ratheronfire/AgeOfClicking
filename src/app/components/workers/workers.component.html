@@ -1,5 +1,13 @@
 <ul class="workers">
   <mat-checkbox [(ngModel)]="workersPaused" color="accent">Pause Workers</mat-checkbox>
+
+  <mat-card class="hunger-card">
+    <mat-card-title>
+      Food Supply - {{foodStockpile | longNumber}}/{{foodCapacity | longNumber}}
+    </mat-card-title>
+    <mat-progress-bar mode="determinate" [value]="foodPercentage" [color]="foodPercentage < 20 ? 'warn' : 'accent'"></mat-progress-bar>
+  </mat-card>
+
   <mat-accordion multi="true">
     <mat-expansion-panel expanded="true" *ngFor="let worker of getWorkers(true, true, true)">
       <mat-expansion-panel-header>
@@ -14,13 +22,6 @@
         <mat-card-title>{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
         <mat-card-subtitle>{{worker.cost | longNumber}} Gold</mat-card-subtitle>
       </button>
-
-      <mat-card class="hunger-card">
-          <mat-card-title>
-            Food Supply
-          </mat-card-title>
-        <mat-progress-bar mode="determinate" [value]="50" color="primary"></mat-progress-bar>
-      </mat-card>
 
       <div *ngFor="let resourceWorker of getAccessibleResourceWorkers(worker)">
         <mat-card [ngClass]="{'resource-disabled': !canHarvest(resourceWorker.resourceEnum)}"

@@ -101,8 +101,8 @@ export class Upgrade {
         continue;
       }
 
-      let resourcesToUpgrade = [this.resourcesService.resources.get(upgradeEffect.resourceEnum)];
-      let workersToUpgrade = [this.workersService.getResourceWorker(upgradeEffect.resourceEnum)];
+      let resourcesToUpgrade = [];
+      let workersToUpgrade = [];
 
       if (upgradeEffect.upgradeIsForWholeType) {
         resourcesToUpgrade = this.resourcesService.getResources(upgradeEffect.resourceType);
@@ -113,6 +113,9 @@ export class Upgrade {
           workersToUpgrade = workersToUpgrade.filter(worker =>
             this.resourcesService.resources.get(worker.resourceEnum).resourceTier <= upgradeEffect.maxTier);
         }
+      } else {
+        resourcesToUpgrade.push(this.resourcesService.resources.get(upgradeEffect.resourceEnum));
+        workersToUpgrade.push(this.workersService.getResourceWorker(upgradeEffect.resourceEnum));
       }
 
       for (const resourceToUpgrade of resourcesToUpgrade) {

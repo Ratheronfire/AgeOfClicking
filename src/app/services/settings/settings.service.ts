@@ -143,6 +143,8 @@ export class SettingsService implements Tick {
     this.mapService.resourceAnimations = [];
     this.mapService.projectiles = [];
 
+    this.workersService.foodStockpile = 0;
+
     this.autosaveInterval = 60000;
     this.setAutosave();
 
@@ -199,6 +201,7 @@ export class SettingsService implements Tick {
         mapLowFramerate: this.mapLowFramerate,
         resourceAnimationColors: this.resourceAnimationColors
       },
+      foodStockpile: this.workersService.foodStockpile,
       gameVersion: this.gameVersion
     };
 
@@ -484,6 +487,8 @@ export class SettingsService implements Tick {
           this.resourceAnimationColors = saveData.settings.resourceAnimationColors;
         }
       }
+
+      this.workersService.foodStockpile = saveData.foodStockpile ? saveData.foodStockpile : 0;
 
       this.mapService.calculateResourceConnections();
 

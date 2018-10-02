@@ -40,8 +40,20 @@ export enum ResourceEnum {
   RefinedTemprous = 'REFINEDTEMPROUS',
   Wheat = 'WHEAT',
   Bread = 'BREAD',
+  RawPotato = 'RAWPOTATO',
+  Potato = 'POTATO',
+  Rice = 'RICE',
+  JellyDonut = 'JELLYDONUT',
   RawHerring = 'RAWHERRING',
   Herring = 'HERRING',
+  RawBass = 'RAWBASS',
+  Bass = 'BASS',
+  RawShark = 'RAWSHARK',
+  Shark = 'SHARK',
+  RawChicken = 'RAWCHICKEN',
+  Chicken = 'CHICKEN',
   RawSteak = 'RAWSTEAK',
-  Steak = 'STEAK'
+  Steak = 'STEAK',
+  RawDragonMeat = 'RAWDRAGONMEAT',
+  DragonMeat = 'DRAGONMEAT'
 }

@@ -1,5 +1,6 @@
 import { Resource } from './resource';
 import { Tick } from './../services/tick/tick.service';
+import { WorkersService } from './../services/workers/workers.service';
 import { ResourcesService } from './../services/resources/resources.service';
 import { MapService } from './../services/map/map.service';
 import { MessagesService } from './../services/messages/messages.service';
@@ -31,16 +32,23 @@ export class Worker implements Tick {
 
   minimumInterval = 1000;
 
+  priorityOrder = 0;
+
+  workersService: WorkersService;
   resourcesService: ResourcesService;
   mapService: MapService;
   messagesService: MessagesService;
 
   public constructor(cost: number, resourceType: ResourceType, resourceWorkers: Map<string, ResourceWorker>,
-                     resourcesService: ResourcesService, mapService: MapService, messagesService: MessagesService) {
+                     priorityOrder = 0, workersService: WorkersService, resourcesService: ResourcesService,
+                     mapService: MapService, messagesService: MessagesService) {
     this.cost = cost;
     this.resourceType = resourceType;
     this.resourceWorkers = resourceWorkers;
 
+    this.priorityOrder = priorityOrder;
+
+    this.workersService = workersService;
     this.resourcesService = resourcesService;
     this.mapService = mapService;
     this.messagesService = messagesService;
@@ -60,10 +68,16 @@ export class Worker implements Tick {
         workerOutput *= this.minimumInterval / resource.harvestMilliseconds;
       }
 
-      this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-resourceWorker.recurringCost * resourceWorker.workerCount);
+      const amountToConsume = resourceWorker.recurringCost * resourceWorker.workerCount;
+      this.workersService.foodStockpile -= amountToConsume;
+      if (this.workersService.foodStockpile < 0) {
+        const foodConsumed = amountToConsume + this.workersService.foodStockpile;
+        workerOutput *= (foodConsumed / amountToConsume);
+        this.workersService.foodStockpile = 0;
+      }
 
       if (!this.canAffordToHarvest(resource.resourceEnum)) {
-        this.log(`No more money available for ${resource.name}.`);
+        this.log(`No more food available for ${resource.name}.`);
       }
 
       this.mapService.spawnHarvestedResourceAnimation(resource, workerOutput, false);
@@ -105,7 +119,7 @@ export class Worker implements Tick {
   }
 
   canAffordToHarvest(resourceEnum: ResourceEnum): boolean {
-    return this.resourceWorkers.get(resourceEnum).recurringCost <= this.resourcesService.resources.get(ResourceEnum.Gold).amount;
+    return this.resourceWorkers.get(resourceEnum).recurringCost <= this.workersService.foodStockpile;
   }
 
   updateResourceWorker(resourceEnum: ResourceEnum, newResourceWorkerCount: number) {
