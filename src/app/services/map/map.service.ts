@@ -5,7 +5,8 @@ import { ResourcesService } from '../resources/resources.service';
 import { StoreService } from './../store/store.service';
 import { Tick } from './../tick/tick.service';
 import { ResourceEnum } from './../../objects/resourceData';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, TileCropDetail, ResourceTile, Market } from '../../objects/tile';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile,
+  TileCropDetail, ResourceTile, Market, ResourceTileType } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
 import { ResourceAnimation, Projectile, Actor, Fighter, ResourceAnimationType } from '../../objects/entity';
 import { Vector } from '../../objects/vector';
@@ -28,13 +29,9 @@ export enum CursorTool {
 export class MapService implements Tick {
   public tileTypes = baseTiles.tileTypes;
 
-  public mapTiles = baseTiles.mapTiles;
-  public buildingTiles = baseTiles.buildingTiles;
-  public resourceTiles = baseTiles.resourceTiles;
-
-  public mapTileArray: MapTile[] = [];
-  public buildingTileArray: BuildingTile[] = [];
-  public resourceTileArray: ResourceTile[] = [];
+  public mapTiles: Map<string, MapTile> = new Map<string, MapTile>();
+  public buildingTiles: Map<string, BuildingTile> = new Map<string, BuildingTile>();
+  public resourceTiles: Map<string, ResourceTile> = new Map<string, ResourceTile>();
 
   cursorTool: CursorTool;
 
@@ -75,30 +72,33 @@ export class MapService implements Tick {
   canvasPixelHeight: number;
 
   constructor(protected resourcesService: ResourcesService,
-              protected storeService: StoreService) { }
+              protected storeService: StoreService) {
+    for (const tileTypeString in MapTileType) {
+      if (typeof tileTypeString === 'string') {
+        const tileType = MapTileType[tileTypeString];
+        this.mapTiles.set(tileType, baseTiles.mapTiles[tileType]);
+      }
+    }
+
+    for (const tileTypeString in BuildingTileType) {
+      if (typeof tileTypeString === 'string') {
+        const tileType = BuildingTileType[tileTypeString];
+        this.buildingTiles.set(tileType, baseTiles.buildingTiles[tileType]);
+      }
+    }
+
+    for (const tileTypeString in ResourceTileType) {
+      if (typeof tileTypeString === 'string') {
+        const tileType = ResourceTileType[tileTypeString];
+        this.resourceTiles.set(tileType, baseTiles.resourceTiles[tileType]);
+      }
+    }
+  }
 
   initializeMap() {
     const _tiledMap: Tile[] = [];
     let mapTileIds: number[], resourceTileIds: number[], buildingTileIds: number[], flagTileIds: number[];
     let _mapWidth: number, _mapHeight: number;
-
-    for (const key in this.mapTiles) {
-      if (this.mapTiles.hasOwnProperty(key)) {
-        this.mapTileArray.push(this.mapTiles[key]);
-      }
-    }
-
-    for (const key in this.buildingTiles) {
-      if (this.buildingTiles.hasOwnProperty(key)) {
-        this.buildingTileArray.push(this.buildingTiles[key]);
-      }
-    }
-
-    for (const key in this.resourceTiles) {
-      if (this.resourceTiles.hasOwnProperty(key)) {
-        this.resourceTileArray.push(this.resourceTiles[key]);
-      }
-    }
 
     const xmlRequest = new XMLHttpRequest();
     xmlRequest.onload = function() {
@@ -211,7 +211,7 @@ export class MapService implements Tick {
         resourceTile.buildingPath = tilePath;
 
         if (resourceTile.buildingPath.length && !resourceTile.buildingPath.some(tile => tile.health <= 0)) {
-          const resources = this.resourceTiles[resourceTile.resourceTileType].resourceEnums
+          const resources = this.resourceTiles.get(resourceTile.resourceTileType).resourceEnums
             .map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
           for (const resource of resources) {
             resource.pathAvailable = true;
@@ -268,8 +268,8 @@ export class MapService implements Tick {
       const neighborDistance = tileDistances[currentNode.id] + 1;
 
       for (const neighbor of this.getNeighborTiles(currentNode)) {
-        const pathable = neighbor.buildingTileType && this.buildingTiles[neighbor.buildingTileType].resourcePathable;
-        const walkable = this.mapTiles[neighbor.mapTileType].walkable || pathable;
+        const pathable = neighbor.buildingTileType && this.buildingTiles.get(neighbor.buildingTileType).resourcePathable;
+        const walkable = this.mapTiles.get(neighbor.mapTileType).walkable || pathable;
 
         if (!visitedTiles.includes(neighbor) && (!onlyPathable || pathable) && (!onlyWalkable || walkable) &&
             tileDistances[neighbor.id] > neighborDistance) {
@@ -299,7 +299,7 @@ export class MapService implements Tick {
   }
 
   spawnHarvestedResourceAnimation(resource: Resource, multiplier: number = 1, spawnedByPlayer: boolean) {
-    const matchingTiles = this.getTilesForResource(resource).filter(_tile => _tile.buildingPath.length > 0);
+    const matchingTiles = this.getResourceTiles(resource.resourceEnum).filter(_tile => _tile.buildingPath.length > 0);
 
     if (!resource.canAfford(multiplier)) {
       return;
@@ -383,7 +383,8 @@ export class MapService implements Tick {
     let tiles = this.tiledMap.filter(tile => tile.resourceTileType !== undefined);
 
     if (resourceEnum !== undefined) {
-      const matchingTypes = this.resourceTileArray.filter(tile => tile.resourceEnums.includes(resourceEnum)).map(tile => tile.tileType);
+      const matchingTypes = Array.from(this.resourceTiles.values()).filter(
+        tile => tile.resourceEnums.includes(resourceEnum)).map(tile => tile.tileType);
       tiles = tiles.filter(tile => matchingTypes.includes(tile.resourceTileType));
     }
 
@@ -403,12 +404,5 @@ export class MapService implements Tick {
 
   getTileCropDetail(tileId: number): TileCropDetail {
     return {x: 0, y: 0, width: 16, height: 16};
-  }
-
-  getTilesForResource(resource: Resource) {
-    const matchingTypes = this.resourceTileArray.filter(tile => tile.resourceEnums.includes(resource.resourceEnum))
-      .map(tile => tile.tileType);
-
-    return this.tiledMap.filter(tile => matchingTypes.includes(tile.resourceTileType));
   }
 }

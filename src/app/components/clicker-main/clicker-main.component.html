@@ -1,7 +1,14 @@
 <ul class="resources noselect">
-  <mat-accordion multi="true">
+  <button mat-raised-button disabled="true" class="resource-button currency-button" [ngClass]="{'warn': resourceIsBeingStolen(goldResource)}">
+    <mat-card-title>{{goldResource.name | titlecase }}</mat-card-title>
+    <mat-card-subtitle>{{goldResource.amount | longNumber}}</mat-card-subtitle>
+
+    <img class="resource-img" src="{{goldResource.iconPath}}" alt="{{goldResource.name}}" *ngIf="goldResource.iconPath !== ''">
+  </button>
+
+  <mat-accordion multi="true" *ngIf="organizeLeftPanelByType">
     <mat-expansion-panel expanded="true" *ngFor="let resourceType of resourceTypes | enumToArray">
-      <mat-expansion-panel-header>
+      <mat-expansion-panel-header *ngIf="resourceType !== 'Currency'">
         <mat-panel-title>
           {{resourceType}}
         </mat-panel-title>
@@ -12,20 +19,54 @@
       <div class='button-container' *ngFor="let resource of getResources(resourceType, adminService.filterAccessible)"
         matTooltip="{{getTooltipMessage(resource)}}" matTooltipPosition="right">
         <button mat-raised-button class="resource-button" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
-          [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'>
+          [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'
+          *ngIf="resource.resourceType != 'CURRENCY'">
           <div class="key-container" *ngIf="resource.bindIndex >= 0">
             <img src="./assets/sprites/key.png">
             <p>{{resource.bindIndex}}</p>
           </div>
 
           <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
-          <mat-card-subtitle>{{resource.amount | number:'1.0-0'}}</mat-card-subtitle>
+          <mat-card-subtitle>{{resource.amount | longNumber}}</mat-card-subtitle>
           <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [value]="resource.progressBarValue"></mat-progress-bar>
 
           <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
-          <div class='travelling-count' *ngIf="resource.amountTravelling > 0">{{resource.amountTravelling}} Travelling</div>
+          <div class='travelling-count' *ngIf="resource.amountTravelling > 0">{{resource.amountTravelling}}
+            Travelling</div>
         </button>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
+
+  <mat-accordion multi="true" *ngIf="!organizeLeftPanelByType">
+      <mat-expansion-panel expanded="true" *ngFor="let resourceTier of tiers">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            Tier {{resourceTier + 1}}
+          </mat-panel-title>
+          <mat-panel-description>
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        <div class='button-container' *ngFor="let resource of getResources(undefined, [resourceTier], adminService.filterAccessible)"
+          matTooltip="{{getTooltipMessage(resource)}}" matTooltipPosition="right">
+          <button mat-raised-button class="resource-button" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
+            [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'
+            *ngIf="resource.resourceType != 'CURRENCY'">
+            <div class="key-container" *ngIf="resource.bindIndex >= 0">
+              <img src="./assets/sprites/key.png">
+              <p>{{resource.bindIndex}}</p>
+            </div>
+
+            <mat-card-title>{{resource.name | titlecase }}</mat-card-title>
+            <mat-card-subtitle>{{resource.amount | longNumber}}</mat-card-subtitle>
+            <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [value]="resource.progressBarValue"></mat-progress-bar>
+
+            <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
+            <div class='travelling-count' *ngIf="resource.amountTravelling > 0">{{resource.amountTravelling}}
+              Travelling</div>
+          </button>
+        </div>
+      </mat-expansion-panel>
+    </mat-accordion>
 </ul>

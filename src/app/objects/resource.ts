@@ -32,6 +32,9 @@ export class Resource {
   sellsFor = 0;
   autoSellCutoff = 0;
 
+  edible = false;
+  foodMultiplier = 1;
+
   resourceDescription: string;
   workerVerb: string;
   workerNoun: string;
@@ -45,9 +48,9 @@ export class Resource {
   resourcesService: ResourcesService;
 
   public constructor(name: string, resourceType: ResourceType, resourceEnum: ResourceEnum, iconPath: string,
-                     resourceConsumes: ResourceConsume[], harvestable: boolean, harvestMilliseconds: number, sellable: boolean,
-                     sellsFor: number, resourceDescription: string, workerVerb: string, workerNoun: string, resourceTier: number,
-                     resourcesService: ResourcesService) {
+                     resourceConsumes: ResourceConsume[], harvestable: boolean, harvestYield: number = 1, harvestMilliseconds: number,
+                     sellable: boolean, sellsFor: number, resourceDescription: string, workerVerb: string, workerNoun: string,
+                     resourceTier: number, edible: boolean, foodMultiplier: number, resourcesService: ResourcesService) {
     this.name = name;
     this.resourceType = resourceType;
     this.resourceEnum = resourceEnum;
@@ -57,6 +60,7 @@ export class Resource {
     this.resourceConsumes = resourceConsumes;
 
     this.harvestable = harvestable;
+    this.harvestYield = harvestYield;
     this.harvestMilliseconds = harvestMilliseconds;
     this.pathAvailable = false;
 
@@ -68,6 +72,9 @@ export class Resource {
     this.workerNoun = workerNoun;
 
     this.resourceTier = resourceTier;
+
+    this.edible = edible;
+    this.foodMultiplier = foodMultiplier;
 
     this.resourcesService = resourcesService;
   }

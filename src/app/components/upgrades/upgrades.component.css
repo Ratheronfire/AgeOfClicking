@@ -14,6 +14,14 @@
   height: 30px !important;
 }
 
+.upgrades .full .title {
+  white-space: pre-line;
+
+  font-size: 24px;
+  font-weight: 400;
+  margin: 2px;
+}
+
 .upgrades mat-card-subtitle {
   position: absolute;
   top: 10px;
@@ -24,9 +32,6 @@
 .upgrades button {
   position: relative;
   cursor: pointer;
-  margin: .5em;
-  padding: .4em 0;
-  height: 3.6em;
   width: 100%;
   border-radius: 4px;
 }

@@ -70,6 +70,7 @@ h1.game-app-name {
 
 .game-sidenav-container mat-sidenav {
   width: 500px;
+  overflow-x: hidden;
 }
 
 .game-is-mobile .game-sidenav-container mat-sidenav {
@@ -96,7 +97,7 @@ h1.game-app-name {
 }
 
 app-clicker-main {
-  overflow-y: scroll;
+  overflow: auto;
   max-height: 100%;
 }
 

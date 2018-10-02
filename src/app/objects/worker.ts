@@ -1,4 +1,6 @@
+import { Resource } from './resource';
 import { Tick } from './../services/tick/tick.service';
+import { WorkersService } from './../services/workers/workers.service';
 import { ResourcesService } from './../services/resources/resources.service';
 import { MapService } from './../services/map/map.service';
 import { MessagesService } from './../services/messages/messages.service';
@@ -13,6 +15,8 @@ export interface ResourceWorker {
   workerCount: number;
   workerYield: number;
 
+  lastHarvestTime: number;
+
   sliderSetting: number;
   sliderSettingValid: boolean;
 }
@@ -26,16 +30,25 @@ export class Worker implements Tick {
 
   resourceWorkers: Map<string, ResourceWorker>;
 
+  minimumInterval = 1000;
+
+  priorityOrder = 0;
+
+  workersService: WorkersService;
   resourcesService: ResourcesService;
   mapService: MapService;
   messagesService: MessagesService;
 
   public constructor(cost: number, resourceType: ResourceType, resourceWorkers: Map<string, ResourceWorker>,
-                     resourcesService: ResourcesService, mapService: MapService, messagesService: MessagesService) {
+                     priorityOrder = 0, workersService: WorkersService, resourcesService: ResourcesService,
+                     mapService: MapService, messagesService: MessagesService) {
     this.cost = cost;
     this.resourceType = resourceType;
     this.resourceWorkers = resourceWorkers;
 
+    this.priorityOrder = priorityOrder;
+
+    this.workersService = workersService;
     this.resourcesService = resourcesService;
     this.mapService = mapService;
     this.messagesService = messagesService;
@@ -45,17 +58,31 @@ export class Worker implements Tick {
     for (const resourceWorker of this.getResourceWorkers()) {
       const resource = this.resourcesService.resources.get(resourceWorker.resourceEnum);
 
-      if (resourceWorker.workerCount === 0 || !this.canAffordToHarvest(resource.resourceEnum)) {
+      if (resourceWorker.workerCount === 0 || elapsed - resourceWorker.lastHarvestTime < this.getWorkInterval(resource) ||
+          !this.canAffordToHarvest(resource.resourceEnum)) {
         continue;
       }
 
-      this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-resourceWorker.recurringCost * resourceWorker.workerCount);
-
-      if (!this.canAffordToHarvest(resource.resourceEnum)) {
-        this.log(`No more money available for ${resource.name}.`);
+      let workerOutput = resourceWorker.workerYield * resourceWorker.workerCount;
+      if (resource.harvestMilliseconds < this.minimumInterval) {
+        workerOutput *= this.minimumInterval / resource.harvestMilliseconds;
       }
 
-      this.mapService.spawnHarvestedResourceAnimation(resource, resourceWorker.workerYield * resourceWorker.workerCount, false);
+      const amountToConsume = resourceWorker.recurringCost * resourceWorker.workerCount;
+      this.workersService.foodStockpile -= amountToConsume;
+      if (this.workersService.foodStockpile < 0) {
+        const foodConsumed = amountToConsume + this.workersService.foodStockpile;
+        workerOutput *= (foodConsumed / amountToConsume);
+        this.workersService.foodStockpile = 0;
+      }
+
+      if (!this.canAffordToHarvest(resource.resourceEnum)) {
+        this.log(`No more food available for ${resource.name}.`);
+      }
+
+      this.mapService.spawnHarvestedResourceAnimation(resource, workerOutput, false);
+
+      resourceWorker.lastHarvestTime = elapsed;
     }
   }
 
@@ -92,7 +119,7 @@ export class Worker implements Tick {
   }
 
   canAffordToHarvest(resourceEnum: ResourceEnum): boolean {
-    return this.resourceWorkers.get(resourceEnum).recurringCost <= this.resourcesService.resources.get(ResourceEnum.Gold).amount;
+    return this.resourceWorkers.get(resourceEnum).recurringCost <= this.workersService.foodStockpile;
   }
 
   updateResourceWorker(resourceEnum: ResourceEnum, newResourceWorkerCount: number) {
@@ -107,6 +134,10 @@ export class Worker implements Tick {
 
     this.freeWorkers = newFreeWorkers;
     resourceWorker.workerCount = newResourceWorkerCount;
+  }
+
+  getWorkInterval(resource: Resource): number {
+    return Math.max(resource.harvestMilliseconds, this.minimumInterval);
   }
 
   private log(message: string) {

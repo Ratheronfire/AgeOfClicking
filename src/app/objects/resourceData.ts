@@ -1,6 +1,7 @@
 export enum ResourceType {
   Currency = 'CURRENCY',
   Wood = 'WOOD',
+  Food = 'FOOD',
   Mineral = 'MINERAL',
   Metal = 'METAL'
 }
@@ -36,5 +37,23 @@ export enum ResourceEnum {
   LustrialOre = 'LUSTRIALORE',
   SpectrusOre = 'SPECTRUSORE',
   TemprousIngot = 'TEMPROUSINGOT',
-  RefinedTemprous = 'REFINEDTEMPROUS'
+  RefinedTemprous = 'REFINEDTEMPROUS',
+  Wheat = 'WHEAT',
+  Bread = 'BREAD',
+  RawPotato = 'RAWPOTATO',
+  Potato = 'POTATO',
+  Rice = 'RICE',
+  JellyDonut = 'JELLYDONUT',
+  RawHerring = 'RAWHERRING',
+  Herring = 'HERRING',
+  RawBass = 'RAWBASS',
+  Bass = 'BASS',
+  RawShark = 'RAWSHARK',
+  Shark = 'SHARK',
+  RawChicken = 'RAWCHICKEN',
+  Chicken = 'CHICKEN',
+  RawSteak = 'RAWSTEAK',
+  Steak = 'STEAK',
+  RawDragonMeat = 'RAWDRAGONMEAT',
+  DragonMeat = 'DRAGONMEAT'
 }

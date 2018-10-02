@@ -31,14 +31,25 @@
     "30": "GOLDFORGE",
     "31": "LATINUMFORGE",
     "32": "TEMPROUSDISTILLERY",
-    "69": "HOME",
-    "70": "WALL",
-    "71": "ROAD",
-    "72": "BRIDGE",
-    "73": "ENEMYPORTAL",
-    "74": "WOODMARKET",
-    "75": "MINERALMARKET",
-    "76": "METALMARKET"
+    "33": "WHEATFARM",
+    "35": "RAWPOTATOFARM",
+    "36": "RICEFARM",
+    "37": "FISHINGSPOT",
+    "74": "HOME",
+    "75": "WALL",
+    "76": "ROAD",
+    "77": "BRIDGE",
+    "78": "ENEMYPORTAL",
+    "79": "WOODMARKET",
+    "80": "MINERALMARKET",
+    "81": "METALMARKET",
+    "83": "OAKOVEN",
+    "84": "STONEOVEN",
+    "86": "MARBLEOVEN",
+    "87": "TEMPROUSOVEN",
+    "88": "CHICKENFARM",
+    "89": "COWFARM",
+    "90": "DRAGONFARM"
   },
   "mapTiles": {
     "GRASS": {
@@ -161,17 +172,14 @@
       "repairCostPerPoint": 0.3,
       "upgradeBuilding": "IRONFORGE",
       "resourceCosts": [{
-        "resourceEnum": "GOLD",
-        "resourceCost": 150
+        "resourceEnum": "BRONZEINGOT",
+        "resourceCost": 20
       }, {
         "resourceEnum": "STONE",
         "resourceCost": 50
       }, {
         "resourceEnum": "PINE",
         "resourceCost": 75
-      }, {
-        "resourceEnum": "BRONZEINGOT",
-        "resourceCost": 20
       }],
       "buildableSurfaces": [
         "GRASS"
@@ -362,6 +370,191 @@
       "resourceCosts": [],
       "buildableSurfaces": [],
       "resourcePathable": true
+    },
+    "OAKOVEN": {
+      "tileType": "OAKOVEN",
+      "subType": "RESOURCE",
+      "name": "Oak Oven",
+      "description": "Capable of heating up some basic kinds of food.",
+      "placeable": true,
+      "maxPlaceable": -1,
+      "baseHealth": 50,
+      "repairResourceEnum": "OAK",
+      "repairCostPerPoint": 2,
+      "upgradeBuilding": "STONEOVEN",
+      "resourceCosts": [{
+        "resourceEnum": "OAK",
+        "resourceCost": 50
+      }, {
+        "resourceEnum": "STONE",
+        "resourceCost": 25
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "OAKOVEN",
+      "resourcePathable": true
+    },
+    "STONEOVEN": {
+      "tileType": "STONEOVEN",
+      "subType": "RESOURCE",
+      "name": "Stone Oven",
+      "description": "Its hardened stone structure allows you to cook more filling and nutritious meals.",
+      "placeable": false,
+      "maxPlaceable": -1,
+      "baseHealth": 75,
+      "repairResourceEnum": "STONE",
+      "repairCostPerPoint": 3,
+      "upgradeBuilding": "MARBLEOVEN",
+      "resourceCosts": [{
+        "resourceEnum": "PINE",
+        "resourceCost": 75
+      }, {
+        "resourceEnum": "STONE",
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "STONEOVEN",
+      "resourcePathable": true
+    },
+    "MARBLEOVEN": {
+      "tileType": "MARBLEOVEN",
+      "subType": "RESOURCE",
+      "name": "Marble Oven",
+      "description": "Some would say that marble ovens are needlessly lavish. I say they have no imagination.",
+      "placeable": false,
+      "maxPlaceable": -1,
+      "baseHealth": 75,
+      "repairResourceEnum": "MARBLE",
+      "repairCostPerPoint": 3,
+      "upgradeBuilding": "TEMPROUSOVEN",
+      "resourceCosts": [{
+        "resourceEnum": "MARBLE",
+        "resourceCost": 600
+      }, {
+        "resourceEnum": "GOLDINGOT",
+        "resourceCost": 200
+      }, {
+        "resourceEnum": "WILLOW",
+        "resourceCost": 250
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "MARBLEOVEN",
+      "resourcePathable": true
+    },
+    "TEMPROUSOVEN": {
+      "tileType": "TEMPROUSOVEN",
+      "subType": "RESOURCE",
+      "name": "Temprous Oven",
+      "description": "Utilizes the power of time itself to cook your food before you even find it!",
+      "placeable": false,
+      "maxPlaceable": -1,
+      "baseHealth": 150,
+      "repairResourceEnum": "TEMPROUSINGOT",
+      "repairCostPerPoint": 5,
+      "resourceCosts": [{
+        "resourceEnum": "TEMPROUSINGOT",
+        "resourceCost": 2350
+      }, {
+        "resourceEnum": "ENTSOUL",
+        "resourceCost": 60
+      }, {
+        "resourceEnum": "DIAMOND",
+        "resourceCost": 250
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "TEMPROUSOVEN",
+      "resourcePathable": true
+    },
+    "CHICKENFARM": {
+      "tileType": "CHICKENFARM",
+      "subType": "RESOURCE",
+      "name": "Chicken Farm",
+      "description": "A small farm to provide a source of food for your workers.",
+      "placeable": true,
+      "maxPlaceable": -1,
+      "baseHealth": 50,
+      "repairResourceEnum": "EUCALYPTUS",
+      "repairCostPerPoint": 3,
+      "upgradeBuilding": "COWFARM",
+      "resourceCosts": [{
+        "resourceEnum": "EUCALYPTUS",
+        "resourceCost": 350
+      }, {
+        "resourceEnum": "IRONINGOT",
+        "resourceCost": 100
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "CHICKENFARM",
+      "resourcePathable": true
+    },
+    "COWFARM": {
+      "tileType": "COWFARM",
+      "subType": "RESOURCE",
+      "name": "Cow Farm",
+      "description": "A larger farm that can feed more workers.",
+      "placeable": false,
+      "maxPlaceable": -1,
+      "baseHealth": 100,
+      "repairResourceEnum": "WILLOW",
+      "repairCostPerPoint": 4,
+      "upgradeBuilding": "DRAGONFARM",
+      "resourceCosts": [{
+        "resourceEnum": "RAWCHICKEN",
+        "resourceCost": 20
+      }, {
+        "resourceEnum": "STEELINGOT",
+        "resourceCost": 600
+      }, {
+        "resourceEnum": "WILLOW",
+        "resourceCost": 425
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "COWFARM",
+      "resourcePathable": true
+    },
+    "DRAGONFARM": {
+      "tileType": "DRAGONFARM",
+      "subType": "RESOURCE",
+      "name": "Dragon Farm",
+      "description": "Fun for the whole family!",
+      "placeable": false,
+      "maxPlaceable": -1,
+      "baseHealth": 150,
+      "repairResourceEnum": "TEMPROUSINGOT",
+      "repairCostPerPoint": 5,
+      "resourceCosts": [{
+        "resourceEnum": "RAWSTEAK",
+        "resourceCost": 30
+      }, {
+        "resourceEnum": "TEMPROUSINGOT",
+        "resourceCost": 1200
+      }, {
+        "resourceEnum": "DIAMOND",
+        "resourceCost": 500
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": true,
+      "resourceTileType": "DRAGONFARM",
+      "resourcePathable": true
     }
   },
   "resourceTiles": {
@@ -532,6 +725,78 @@
       "name": "Temprous Distillery",
       "placeable": true,
       "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT", "LATINUMINGOT", "TEMPROUSINGOT", "REFINEDTEMPROUS"]
+    },
+    "FISHINGSPOT": {
+      "tileType": "FISHINGSPOT",
+      "name": "Fishing Spot",
+      "placeable": false,
+      "resourceEnums": ["RAWHERRING", "RAWBASS", "RAWSHARK"]
+    },
+    "WHEATFARM": {
+      "tileType": "WHEATFARM",
+      "name": "Wheat Farm",
+      "placeable": true,
+      "resourceEnums": ["WHEAT"]
+    },
+    "RAWPOTATOFARM": {
+      "tileType": "RAWPOTATOFARM",
+      "name": "Raw Potato Farm",
+      "placeable": true,
+      "resourceEnums": ["RAWPOTATO"]
+    },
+    "RICEFARM": {
+      "tileType": "RICEFARM",
+      "name": "Rice Farm",
+      "placeable": true,
+      "resourceEnums": ["RICE"]
+    },
+    "OAKDOCK": {
+      "tileType": "OAKDOCK",
+      "name": "Oak Dock",
+      "placeable": true,
+      "resourceEnums": ["RAWHERRING"]
+    },
+    "OAKOVEN": {
+      "tileType": "OAKOVEN",
+      "name": "Oak Oven",
+      "placeable": true,
+      "resourceEnums": ["BREAD", "POTATO", "HERRING"]
+    },
+    "STONEOVEN": {
+      "tileType": "STONEOVEN",
+      "name": "Stone Oven",
+      "placeable": true,
+      "resourceEnums": ["BREAD", "POTATO", "HERRING", "JELLYDONUT", "HERRING", "BASS"]
+    },
+    "MARBLEOVEN": {
+      "tileType": "MARBLEOVEN",
+      "name": "Marble Oven",
+      "placeable": true,
+      "resourceEnums": ["BREAD", "POTATO", "HERRING", "JELLYDONUT", "HERRING", "BASS", "SHARK"]
+    },
+    "TEMPROUSOVEN": {
+      "tileType": "TEMPROUSOVEN",
+      "name": "Temprous Oven",
+      "placeable": true,
+      "resourceEnums": ["BREAD", "POTATO", "HERRING", "JELLYDONUT", "HERRING", "BASS", "SHARK", "CHICKEN", "STEAK", "DRAGONMEAT"]
+    },
+    "CHICKENFARM": {
+      "tileType": "CHICKENFARM",
+      "name": "Chicken Farm",
+      "placeable": true,
+      "resourceEnums": ["RAWCHICKEN"]
+    },
+    "COWFARM": {
+      "tileType": "COWFARM",
+      "name": "Cow Farm",
+      "placeable": true,
+      "resourceEnums": ["RAWCHICKEN", "RAWSTEAK"]
+    },
+    "DRAGONFARM": {
+      "tileType": "DRAGONFARM",
+      "name": "Dragon Farm",
+      "placeable": true,
+      "resourceEnums": ["RAWCHICKEN", "RAWSTEAK", "RAWDRAGONMEAT"]
     }
   }
 }

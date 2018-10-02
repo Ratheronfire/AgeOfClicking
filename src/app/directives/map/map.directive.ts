@@ -133,8 +133,8 @@ export class MapDirective implements AfterViewInit, Tick {
 
     if (focusedTile.buildingTileType || focusedTile.resourceTileType) {
       this.mapService.focusedTile = focusedTile;
-      this.mapService.focusedBuildingTile = this.mapService.buildingTiles[focusedTile.buildingTileType];
-      this.mapService.focusedResourceTile = this.mapService.resourceTiles[focusedTile.resourceTileType];
+      this.mapService.focusedBuildingTile = this.mapService.buildingTiles.get(focusedTile.buildingTileType);
+      this.mapService.focusedResourceTile = this.mapService.resourceTiles.get(focusedTile.resourceTileType);
       this.mapService.focusedResources = this.mapService.focusedResourceTile ?
         this.mapService.focusedResourceTile.resourceEnums.map(rEnum => this.resourcesService.resources.get(rEnum)) : undefined;
     } else {
@@ -199,36 +199,33 @@ export class MapDirective implements AfterViewInit, Tick {
         continue;
       }
 
-      const mapTileImage = this.imageElements[tile.mapTileType.toLowerCase()];
-      this.drawTile(tile.position, mapTileImage);
+      const mapTileName = tile.mapTileType.toLowerCase();
+      this.drawTile(tile.position, mapTileName);
 
       if (tile.buildingTileType) {
-        const buildingTileImage = this.imageElements[tile.buildingTileType.toLowerCase()];
-        this.drawTile(tile.position, buildingTileImage);
+        const buildingTileName = tile.buildingTileType.toLowerCase();
+        this.drawTile(tile.position, buildingTileName);
       }
 
       if (tile.resourceTileType) {
-        const resourceTileImage = this.imageElements[tile.resourceTileType.toLowerCase().replace(' ', '-')];
-        this.drawTile(tile.position, resourceTileImage, 1, tile.health / tile.maxHealth);
+        const resourceTileName = tile.resourceTileType.toLowerCase().replace(' ', '-');
+        this.drawTile(tile.position, resourceTileName, 1, tile.health / tile.maxHealth);
       }
 
       if (tile.health === 0) {
         this.context.globalAlpha = 0.5;
-        this.drawTile(tile.position, this.imageElements['disabled']);
+        this.drawTile(tile.position, 'disabled');
         this.context.globalAlpha = 1;
       } else if (tile.buildingTileType && !tile.buildingRemovable && this.mapService.cursorTool === CursorTool.ClearBuildings) {
         this.context.globalAlpha = 0.5;
-        this.drawTile(tile.position, this.imageElements['locked']);
+        this.drawTile(tile.position, 'locked');
         this.context.globalAlpha = 1;
       }
     }
 
     for (const resourceAnimation of this.mapService.resourceAnimations) {
-      const resourceTileImage = this.imageElements[
-          this.resourcesService.resources.get(resourceAnimation.resourceEnum).name.toLowerCase().replace(' ', '-')];
-      this.context.drawImage(resourceTileImage, resourceAnimation.x, resourceAnimation.y,
-          this.mapService.tilePixelSize / 2, this.mapService.tilePixelSize / 2);
-        this.drawTile(resourceAnimation.position, resourceTileImage, 0.5);
+      const resourceTileName = this.resourcesService.resources.get(resourceAnimation.resourceEnum).name.toLowerCase().replace(/ /g, '-');
+      this.drawTile(resourceAnimation.position, resourceTileName, 0.5);
 
       this.context.fillStyle = this.settingsService.resourceAnimationColors[resourceAnimation.animationType];
 
@@ -237,25 +234,21 @@ export class MapDirective implements AfterViewInit, Tick {
     }
 
     for (const enemy of this.enemyService.enemies) {
-      const enemyTileImage = this.imageElements[enemy.name.toLowerCase().replace(' ', '-')];
-      this.context.drawImage(enemyTileImage, enemy.x, enemy.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
-      this.drawTile(enemy.position, enemyTileImage, 1, enemy.health / enemy.maxHealth);
+      const enemyTileName = enemy.name.toLowerCase().replace(' ', '-');
+      this.drawTile(enemy.position, enemyTileName, 1, enemy.health / enemy.maxHealth);
     }
 
     for (const fighter of this.fighterService.fighters) {
-      const fighterTileImage = this.imageElements[fighter.name.toLowerCase().replace(' ', '-')];
-      this.context.drawImage(fighterTileImage, fighter.x, fighter.y, this.mapService.tilePixelSize, this.mapService.tilePixelSize);
-      this.drawTile(fighter.position, fighterTileImage, 1, fighter.health / fighter.maxHealth);
+      const fighterTileName = fighter.name.toLowerCase().replace(' ', '-');
+      this.drawTile(fighter.position, fighterTileName, 1, fighter.health / fighter.maxHealth);
     }
 
     for (const projectile of this.mapService.projectiles) {
-      const projectileTileImage = this.imageElements[projectile.name.toLowerCase().replace(' ', '-')];
+      const projectileTileName = projectile.name.toLowerCase().replace(' ', '-');
 
       this.context.translate(projectile.x, projectile.y);
       this.context.rotate(projectile.rotation);
-      this.context.drawImage(projectileTileImage, -this.mapService.tilePixelSize / 2, -this.mapService.tilePixelSize / 2,
-                             this.mapService.tilePixelSize, this.mapService.tilePixelSize);
-      this.drawTile(new Vector(-this.mapService.tilePixelSize / 2, -this.mapService.tilePixelSize / 2), projectileTileImage);
+      this.drawTile(new Vector(-this.mapService.tilePixelSize / 2, -this.mapService.tilePixelSize / 2), projectileTileName);
       this.context.rotate(-projectile.rotation);
       this.context.translate(-projectile.x, -projectile.y);
     }
@@ -299,7 +292,8 @@ export class MapDirective implements AfterViewInit, Tick {
                       targetPosition.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight);
   }
 
-  drawTile(position: Vector, image: HTMLImageElement, scale: number = 1, healthRatio: number = 1) {
+  drawTile(position: Vector, imageName: string, scale: number = 1, healthRatio: number = 1) {
+    const image = this.imageElements[imageName] ? this.imageElements[imageName] : this.imageElements['placeholder'];
     this.context.drawImage(image, position.x, position.y, this.mapService.tilePixelSize * scale, this.mapService.tilePixelSize * scale);
 
     if (healthRatio > 0 && healthRatio < 1) {

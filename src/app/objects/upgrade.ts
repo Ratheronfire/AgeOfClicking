@@ -31,6 +31,21 @@ export interface UpgradeEffect {
 }
 
 export class Upgrade {
+  static UpgradeVariableNames = {
+    'HARVESTABILITY': 'Harvestability',
+    'HARVEST_YIELD': 'Harvest Yield',
+    'HARVEST_MILLISECONDS': 'Harvest Time',
+    'WORKABLE': 'Workability',
+    'WORKER_YIELD': 'Worker Yield',
+    'WORKER_COST': 'Worker Cost',
+    'Harvestability': 'Harvestability',
+    'HarvestYield': 'Harvest Yield',
+    'HarvestMilliseconds': 'Harvest Time',
+    'Workable': 'Workability',
+    'WorkerYield': 'Worker Yield',
+    'WorkerCost': 'Worker Cost'
+  };
+
   id: number;
   name: string;
   description: string;
@@ -79,15 +94,15 @@ export class Upgrade {
     this.purchased = true;
   }
 
-  public applyUpgrade() {
+  public applyUpgrade(applySilently = false) {
     for (const upgradeEffect of this.upgradeEffects) {
       if (upgradeEffect.upgradeVariable === UpgradeVariable.WorkerCost) {
         this.workersService.workers.get(upgradeEffect.resourceType).cost *= upgradeEffect.upgradeFactor;
         continue;
       }
 
-      let resourcesToUpgrade = [this.resourcesService.resources.get(upgradeEffect.resourceEnum)];
-      let workersToUpgrade = [this.workersService.getResourceWorker(upgradeEffect.resourceEnum)];
+      let resourcesToUpgrade = [];
+      let workersToUpgrade = [];
 
       if (upgradeEffect.upgradeIsForWholeType) {
         resourcesToUpgrade = this.resourcesService.getResources(upgradeEffect.resourceType);
@@ -98,6 +113,9 @@ export class Upgrade {
           workersToUpgrade = workersToUpgrade.filter(worker =>
             this.resourcesService.resources.get(worker.resourceEnum).resourceTier <= upgradeEffect.maxTier);
         }
+      } else {
+        resourcesToUpgrade.push(this.resourcesService.resources.get(upgradeEffect.resourceEnum));
+        workersToUpgrade.push(this.workersService.getResourceWorker(upgradeEffect.resourceEnum));
       }
 
       for (const resourceToUpgrade of resourcesToUpgrade) {
@@ -137,7 +155,9 @@ export class Upgrade {
       }
     }
 
-    this.log('Purchased upgrade: ' + this.name);
+    if (!applySilently) {
+      this.log('Purchased upgrade: ' + this.name);
+    }
   }
 
   public canAfford(): boolean {

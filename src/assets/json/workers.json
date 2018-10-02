@@ -3,267 +3,79 @@
     "id": 0,
     "cost": 250,
     "resourceType": "WOOD",
-    "workerCount": 0,
-    "freeWorkers": 0,
+    "priorityOrder": 1,
     "resourceWorkers": {
-      "OAK": {
-        "resourceEnum": "OAK",
-        "workable": true,
-        "recurringCost": 5,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "PINE": {
-        "resourceEnum": "PINE",
-        "workable": false,
-        "recurringCost": 10,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "BIRCH": {
-        "resourceEnum": "BIRCH",
-        "workable": false,
-        "recurringCost": 20,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "EUCALYPTUS": {
-        "resourceEnum": "EUCALYPTUS",
-        "workable": false,
-        "recurringCost": 25,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "WILLOW": {
-        "resourceEnum": "WILLOW",
-        "workable": false,
-        "recurringCost": 40,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "TEAK": {
-        "resourceEnum": "TEAK",
-        "workable": false,
-        "recurringCost": 50,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "ENTSOUL": {
-        "resourceEnum": "ENTSOUL",
-        "workable": false,
-        "recurringCost": 60,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "REANIMATEDENT": {
-        "resourceEnum": "REANIMATEDENT",
-        "workable": false,
-        "recurringCost": 150,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      }
+      "OAK":           {"resourceEnum": "OAK",          "workable": true,  "recurringCost": 5},
+      "PINE":          {"resourceEnum": "PINE",         "workable": false, "recurringCost": 5},
+      "BIRCH":         {"resourceEnum": "BIRCH",        "workable": false, "recurringCost": 6},
+      "EUCALYPTUS":    {"resourceEnum": "EUCALYPTUS",   "workable": false, "recurringCost": 7},
+      "WILLOW":        {"resourceEnum": "WILLOW",       "workable": false, "recurringCost": 8},
+      "TEAK":          {"resourceEnum": "TEAK",         "workable": false, "recurringCost": 9},
+      "ENTSOUL":       {"resourceEnum": "ENTSOUL",      "workable": false, "recurringCost": 10},
+      "REANIMATEDENT": {"resourceEnum": "REANIMATEDENT","workable": false, "recurringCost": 15}
+    }
+  },
+  "FOOD": {
+    "id": 3,
+    "cost": 500,
+    "resourceType": "FOOD",
+    "priorityOrder": 0,
+    "resourceWorkers": {
+      "WHEAT":           {"resourceEnum": "WHEAT",         "workable": true,  "workerYield": 25, "recurringCost": 1},
+      "RAWPOTATO":       {"resourceEnum": "RAWPOTATO",     "workable": true,  "workerYield": 20, "recurringCost": 1},
+      "RICE":            {"resourceEnum": "RICE",          "workable": true,  "workerYield": 20, "recurringCost": 1},
+      "BREAD":           {"resourceEnum": "BREAD",         "workable": true,  "workerYield": 25, "recurringCost": 1},
+      "POTATO":          {"resourceEnum": "POTATO",        "workable": false, "workerYield": 20, "recurringCost": 1},
+      "JELLYDONUT":      {"resourceEnum": "JELLYDONUT",    "workable": false, "workerYield": 20, "recurringCost": 1},
+      "RAWHERRING":      {"resourceEnum": "RAWHERRING",    "workable": false, "workerYield": 20, "recurringCost": 2},
+      "RAWBASS":         {"resourceEnum": "RAWBASS",       "workable": false, "workerYield": 15, "recurringCost": 2},
+      "RAWSHARK":        {"resourceEnum": "RAWSHARK",      "workable": false, "workerYield": 10, "recurringCost": 2},
+      "HERRING":         {"resourceEnum": "HERRING",       "workable": false, "workerYield": 20, "recurringCost": 2},
+      "BASS":            {"resourceEnum": "BASS",          "workable": false, "workerYield": 15, "recurringCost": 2},
+      "SHARK":           {"resourceEnum": "SHARK",         "workable": false, "workerYield": 10, "recurringCost": 2},
+      "RAWCHICKEN":      {"resourceEnum": "RAWCHICKEN",    "workable": false, "workerYield": 12, "recurringCost": 3},
+      "RAWSTEAK":        {"resourceEnum": "RAWSTEAK",      "workable": false, "workerYield": 10, "recurringCost": 3},
+      "RAWDRAGONMEAT":   {"resourceEnum": "RAWDRAGONMEAT", "workable": false, "workerYield": 5,  "recurringCost": 3},
+      "CHICKEN":         {"resourceEnum": "CHICKEN",       "workable": false, "workerYield": 12, "recurringCost": 3},
+      "STEAK":           {"resourceEnum": "STEAK",         "workable": false, "workerYield": 10, "recurringCost": 3},
+      "DRAGONMEAT":      {"resourceEnum": "DRAGONMEAT",    "workable": false, "workerYield": 5,  "recurringCost": 3}
     }
   },
   "MINERAL": {
     "id": 2,
     "cost": 650,
+    "priorityOrder": 1,
     "resourceType": "MINERAL",
-    "workerCount": 0,
-    "freeWorkers": 0,
     "resourceWorkers": {
-      "STONE": {
-        "resourceEnum": "STONE",
-        "workable": true,
-        "recurringCost": 10,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "GRAPHITE": {
-        "resourceEnum": "GRAPHITE",
-        "workable": false,
-        "recurringCost": 15,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "LIMESTONE": {
-        "resourceEnum": "LIMESTONE",
-        "workable": false,
-        "recurringCost": 20,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "MARBLE": {
-        "resourceEnum": "MARBLE",
-        "workable": false,
-        "recurringCost": 30,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "QUARTZ": {
-        "resourceEnum": "QUARTZ",
-        "workable": false,
-        "recurringCost": 45,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "OBSIDIAN": {
-        "resourceEnum": "OBSIDIAN",
-        "workable": false,
-        "recurringCost": 55,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "DIAMOND": {
-        "resourceEnum": "DIAMOND",
-        "workable": false,
-        "recurringCost": 70,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      }
+      "STONE":     {"resourceEnum": "STONE",     "workable": true,  "recurringCost": 5},
+      "GRAPHITE":  {"resourceEnum": "GRAPHITE",  "workable": false, "recurringCost": 6},
+      "LIMESTONE": {"resourceEnum": "LIMESTONE", "workable": false, "recurringCost": 7},
+      "MARBLE":    {"resourceEnum": "MARBLE",    "workable": false, "recurringCost": 8},
+      "QUARTZ":    {"resourceEnum": "QUARTZ",    "workable": false, "recurringCost": 9},
+      "OBSIDIAN":  {"resourceEnum": "OBSIDIAN",  "workable": false, "recurringCost": 10},
+      "DIAMOND":   {"resourceEnum": "DIAMOND",   "workable": false, "recurringCost": 10}
     }
   },
   "METAL": {
     "id": 1,
     "cost": 1000,
     "resourceType": "METAL",
-    "workerCount": 0,
-    "freeWorkers": 0,
+    "priorityOrder": 1,
     "resourceWorkers": {
-      "COPPERORE": {
-        "resourceEnum": "COPPERORE",
-        "workable": false,
-        "recurringCost": 5,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "TINORE": {
-        "resourceEnum": "TINORE",
-        "workable": false,
-        "recurringCost": 5,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "BRONZEINGOT": {
-        "resourceEnum": "BRONZEINGOT",
-        "workable": false,
-        "recurringCost": 10,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "IRONORE": {
-        "resourceEnum": "IRONORE",
-        "workable": false,
-        "recurringCost": 15,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "IRONINGOT": {
-        "resourceEnum": "IRONINGOT",
-        "workable": false,
-        "recurringCost": 25,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "STEELINGOT": {
-        "resourceEnum": "STEELINGOT",
-        "workable": false,
-        "recurringCost": 40,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "GOLDORE": {
-        "resourceEnum": "GOLDORE",
-        "workable": false,
-        "recurringCost": 35,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "GOLDINGOT": {
-        "resourceEnum": "GOLDINGOT",
-        "workable": false,
-        "recurringCost": 60,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "LATINUMORE": {
-        "resourceEnum": "LATINUMORE",
-        "workable": false,
-        "recurringCost": 75,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "LATINUMINGOT": {
-        "resourceEnum": "LATINUMINGOT",
-        "workable": false,
-        "recurringCost": 95,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "UNBELIEVIUMORE": {
-        "resourceEnum": "UNBELIEVIUMORE",
-        "workable": false,
-        "recurringCost": 120,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "LUSTRIALORE": {
-        "resourceEnum": "LUSTRIALORE",
-        "workable": false,
-        "recurringCost": 120,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "SPECTRUSORE": {
-        "resourceEnum": "SPECTRUSORE",
-        "workable": false,
-        "recurringCost": 120,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "TEMPROUSINGOT": {
-        "resourceEnum": "TEMPROUSINGOT",
-        "workable": false,
-        "recurringCost": 200,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      },
-      "REFINEDTEMPROUS": {
-        "resourceEnum": "REFINEDTEMPROUS",
-        "workable": false,
-        "recurringCost": 500,
-        "workerCount": 0,
-        "workerYield": 1,
-        "sliderSettingValid": true
-      }
-    }
-  }
+      "COPPERORE":       {"resourceEnum": "COPPERORE",      "workable": false,"recurringCost": 7},
+      "TINORE":          {"resourceEnum": "TINORE",         "workable": false,"recurringCost": 7},
+      "BRONZEINGOT":     {"resourceEnum": "BRONZEINGOT",    "workable": false,"recurringCost": 8},
+      "IRONORE":         {"resourceEnum": "IRONORE",        "workable": false,"recurringCost": 8},
+      "IRONINGOT":       {"resourceEnum": "IRONINGOT",      "workable": false,"recurringCost": 9},
+      "STEELINGOT":      {"resourceEnum": "STEELINGOT",     "workable": false,"recurringCost": 10},
+      "GOLDORE":         {"resourceEnum": "GOLDORE",        "workable": false,"recurringCost": 11},
+      "GOLDINGOT":       {"resourceEnum": "GOLDINGOT",      "workable": false,"recurringCost": 12},
+      "LATINUMORE":      {"resourceEnum": "LATINUMORE",     "workable": false,"recurringCost": 13},
+      "LATINUMINGOT":    {"resourceEnum": "LATINUMINGOT",   "workable": false,"recurringCost": 15},
+      "UNBELIEVIUMORE":  {"resourceEnum": "UNBELIEVIUMORE", "workable": false,"recurringCost": 17},
+      "LUSTRIALORE":     {"resourceEnum": "LUSTRIALORE",    "workable": false,"recurringCost": 17},
+      "SPECTRUSORE":     {"resourceEnum": "SPECTRUSORE",    "workable": false,"recurringCost": 17},
+      "TEMPROUSINGOT":   {"resourceEnum": "TEMPROUSINGOT",  "workable": false,"recurringCost": 20},
+      "REFINEDTEMPROUS": {"resourceEnum": "REFINEDTEMPROUS","workable": false,"recurringCost": 25}
+    }  }
 }

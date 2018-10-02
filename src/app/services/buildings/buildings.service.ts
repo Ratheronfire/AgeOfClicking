@@ -15,7 +15,7 @@ export class BuildingsService {
               protected mapService: MapService) { }
 
   public createBuilding(tile: Tile, buildingType: BuildingTileType): boolean {
-    const buildingTile: BuildingTile = this.mapService.buildingTiles[buildingType];
+    const buildingTile: BuildingTile = this.mapService.buildingTiles.get(buildingType);
 
     if (tile.buildingTileType !== undefined ||
         tile.resourceTileType !== undefined ||
@@ -79,7 +79,7 @@ export class BuildingsService {
       return false;
     }
 
-    const buildingTile = this.mapService.buildingTiles[tile.buildingTileType];
+    const buildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
 
     if (buildingTile.placesResourceTile) {
       tile.resourceTileType = undefined;
@@ -99,7 +99,7 @@ export class BuildingsService {
   }
 
   public canRepairBuilding(tile: Tile): boolean {
-    const buildingTile: BuildingTile = this.mapService.buildingTiles[tile.buildingTileType];
+    const buildingTile: BuildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
     const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);
 
     return repairResource.amount >= buildingTile.repairCostPerPoint * (tile.maxHealth - tile.health);
@@ -109,7 +109,7 @@ export class BuildingsService {
     if (!this.canRepairBuilding(tile)) {
       return;
     }
-    const buildingTile: BuildingTile = this.mapService.buildingTiles[tile.buildingTileType];
+    const buildingTile: BuildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
     const healAmount = tile.maxHealth - tile.health;
 
     const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);

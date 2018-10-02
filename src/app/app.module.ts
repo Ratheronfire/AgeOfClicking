@@ -5,7 +5,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ZoomableCanvasComponent } from '@durwella/zoomable-canvas';
 
 import { MaterialImportModule } from './material-import/material-import.module';
-import { PipeModule } from 'src/app/pipe/pipe.module';
+import { PipeModule } from './pipes/pipe.module';
+import { LongNumberPipe } from './pipes/long-number-pipe';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppComponent } from './app.component';

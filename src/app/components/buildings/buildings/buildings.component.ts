@@ -34,7 +34,7 @@ export class BuildingsComponent implements OnInit {
   }
 
   canAffordBuilding(buildingType: BuildingTileType): boolean {
-    return this.buildingsService.canAffordBuilding(this.buildingTiles[buildingType]);
+    return this.buildingsService.canAffordBuilding(this.buildingTiles.get(buildingType));
   }
 
   createBuilding(tile: Tile, buildingType: BuildingTileType) {
@@ -50,7 +50,7 @@ export class BuildingsComponent implements OnInit {
   }
 
   getBuildingTileArray(filterByPlaceable: boolean): BuildingTile[] {
-    let tiles = this.mapService.buildingTileArray;
+    let tiles = Array.from(this.mapService.buildingTiles.values());
 
     if (filterByPlaceable) {
       tiles = tiles.filter(tile => tile.placeable);
