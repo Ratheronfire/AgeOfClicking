@@ -34,6 +34,7 @@ import { SnapDirective } from './directives/snap/snap.directive';
   declarations: [
     AppComponent,
     ZoomableCanvasComponent,
+    LongNumberPipe,
     ClickerMainComponent,
     MessagesComponent,
     WorkersComponent,

@@ -26,8 +26,8 @@ const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3'];
-  gameVersion = 'Alpha 3.3';
+  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3', 'Alpha 3.4'];
+  gameVersion = 'Alpha 3.4';
 
   bindSelected = new FormControl();
 
