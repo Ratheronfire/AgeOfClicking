@@ -1,7 +1,6 @@
 import { Directive, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 
-import { Entity } from '../../objects/entity';
-import { Tile, ResourceTile, BuildingTile } from '../../objects/tile';
+import { MapTileType } from '../../objects/tile';
 import { Vector } from '../../objects/vector';
 import { ResourcesService } from './../../services/resources/resources.service';
 import { SettingsService } from './../../services/settings/settings.service';
@@ -20,6 +19,9 @@ export class MapDirective implements AfterViewInit, Tick {
   canvas;
   context: CanvasRenderingContext2D;
   canvasContainer: Element;
+
+  canvasPixelWidth: number;
+  canvasPixelHeight: number;
 
   lastEnemyReprosessTime = Date.now();
   enemyReprocessDelay = 2000;
@@ -45,9 +47,9 @@ export class MapDirective implements AfterViewInit, Tick {
               protected mapService: MapService) { }
 
   ngAfterViewInit() {
-    this.canvas = d3.select('canvas');
+    this.canvas = d3.select('canvas#map');
     this.context = this.canvas.node().getContext('2d');
-    this.canvasContainer = document.getElementById('canvas-container');
+    this.canvasContainer = document.getElementById('map-canvas-container');
 
     this.tileTooltip = document.getElementById('tile-tooltip');
     this.fighterTooltip = document.getElementById('fighter-tooltip');
@@ -67,8 +69,8 @@ export class MapDirective implements AfterViewInit, Tick {
     this.canvas.call(d3.zoom()
         .filter(this.scrollFilter(this))
         .scaleExtent([1, 5])
-        .translateExtent([[0, 0], [this.mapService.gridWidth * this.mapService.tilePixelSize,
-                                   this.mapService.gridHeight * this.mapService.tilePixelSize]])
+        .translateExtent([[0, 0], [this.mapService.chunkWidth * this.mapService.tilePixelSize  * this.mapService.totalChunkX,
+                                   this.mapService.chunkHeight * this.mapService.tilePixelSize * this.mapService.totalChunkY]])
         .on('zoom', this.zoomed(this)));
 
     this.canvas.on('mousedown mousemove mouseup', this.clickTile(this));
@@ -102,7 +104,7 @@ export class MapDirective implements AfterViewInit, Tick {
       coordinates[0] = Math.floor(self.transform.invertX(coordinates[0]) / self.mapService.tilePixelSize);
       coordinates[1] = Math.floor(self.transform.invertY(coordinates[1]) / self.mapService.tilePixelSize);
 
-      const tile = self.mapService.tiledMap[coordinates[0] + coordinates[1] * self.mapService.mapWidth];
+      const tile = self.mapService.getTile(coordinates[0], coordinates[1]);
 
       let shouldUpdateEnemies = false;
 
@@ -129,7 +131,7 @@ export class MapDirective implements AfterViewInit, Tick {
   }
 
   updateTileTooltip(coordinates: number[]) {
-    const focusedTile = this.mapService.tiledMap[coordinates[0] + coordinates[1] * this.mapService.mapWidth];
+    const focusedTile = this.mapService.getTile(coordinates[0], coordinates[1]);
 
     if (focusedTile.buildingTileType || focusedTile.resourceTileType) {
       this.mapService.focusedTile = focusedTile;
@@ -146,7 +148,7 @@ export class MapDirective implements AfterViewInit, Tick {
   }
 
   updateFighterTooltip(coordinates: number[]) {
-    const focusedTile = this.mapService.tiledMap[coordinates[0] + coordinates[1] * this.mapService.mapWidth];
+    const focusedTile = this.mapService.getTile(coordinates[0], coordinates[1]);
     const focusedFighter = this.fighterService.fighters.find(fighter => fighter.currentTile === focusedTile);
 
     if (focusedFighter) {
@@ -161,8 +163,8 @@ export class MapDirective implements AfterViewInit, Tick {
   resizeCanvas() {
     this.element.nativeElement.width = this.canvasContainer.clientWidth;
     this.element.nativeElement.height = window.innerHeight - this.headerPixels;
-    this.mapService.canvasPixelWidth = this.canvasContainer.clientWidth;
-    this.mapService.canvasPixelHeight = window.innerHeight - this.headerPixels;
+    this.canvasPixelWidth = this.canvasContainer.clientWidth;
+    this.canvasPixelHeight = window.innerHeight - this.headerPixels;
   }
 
   refreshCanvas(self: MapDirective) {
@@ -178,7 +180,7 @@ export class MapDirective implements AfterViewInit, Tick {
       self.resizeCanvas();
 
       self.context.save();
-      self.context.clearRect(0, 0, self.mapService.canvasPixelWidth, self.mapService.canvasPixelHeight);
+      self.context.clearRect(0, 0, self.canvasPixelWidth, self.canvasPixelHeight);
       self.context.translate(self.transform.x, self.transform.y);
       self.context.scale(self.transform.k, self.transform.k);
       self.drawCanvas();
@@ -187,39 +189,50 @@ export class MapDirective implements AfterViewInit, Tick {
   }
 
   drawCanvas() {
-    const upperLeftPixel = [(-this.transform.x - this.mapService.tilePixelSize * 5) / this.transform.k,
-                            (-this.transform.y - this.mapService.tilePixelSize * 5) / this.transform.k];
+    const upperLeftPixel =
+      [(-this.transform.x - this.mapService.tilePixelSize * 5) / this.transform.k,
+       (-this.transform.y - this.mapService.tilePixelSize * 5) / this.transform.k];
     const lowerRightPixel =
-      [upperLeftPixel[0] + (this.mapService.canvasPixelWidth + this.mapService.tilePixelSize * 5) / this.transform.k,
-      upperLeftPixel[1] + (this.mapService.canvasPixelHeight + this.mapService.tilePixelSize * 5) / this.transform.k];
+      [upperLeftPixel[0] + (this.canvasPixelWidth + this.mapService.tilePixelSize * 5) / this.transform.k,
+       upperLeftPixel[1] + (this.canvasPixelHeight + this.mapService.tilePixelSize * 5) / this.transform.k];
 
-    for (const tile of this.mapService.tiledMap) {
-      if (tile.x < upperLeftPixel[0] || tile.x > lowerRightPixel[0] ||
-          tile.y < upperLeftPixel[1] || tile.y > lowerRightPixel[1]) {
-        continue;
-      }
+    const upperLeftTile =
+      [Math.max(0, Math.floor(upperLeftPixel[0] / this.mapService.tilePixelSize)),
+       Math.max(0, Math.floor(upperLeftPixel[1] / this.mapService.tilePixelSize))];
+    const lowerRightTile =
+      [Math.floor(lowerRightPixel[0] / this.mapService.tilePixelSize),
+       Math.floor(lowerRightPixel[1] / this.mapService.tilePixelSize)];
 
-      const mapTileName = tile.mapTileType.toLowerCase();
-      this.drawTile(tile.position, mapTileName);
+    for (let y = upperLeftTile[1]; y <= lowerRightTile[1]; y++) {
+      for (let x = upperLeftTile[0]; x <= lowerRightTile[0]; x++) {
+        const tile = this.mapService.getTile(x, y);
 
-      if (tile.buildingTileType) {
-        const buildingTileName = tile.buildingTileType.toLowerCase();
-        this.drawTile(tile.position, buildingTileName);
-      }
+        if (!tile) {
+          continue;
+        }
 
-      if (tile.resourceTileType) {
-        const resourceTileName = tile.resourceTileType.toLowerCase().replace(' ', '-');
-        this.drawTile(tile.position, resourceTileName, 1, tile.health / tile.maxHealth);
-      }
+        const mapTileName = tile.mapTileType.toLowerCase();
+        this.drawTile(tile.position, mapTileName);
 
-      if (tile.health === 0) {
-        this.context.globalAlpha = 0.5;
-        this.drawTile(tile.position, 'disabled');
-        this.context.globalAlpha = 1;
-      } else if (tile.buildingTileType && !tile.buildingRemovable && this.mapService.cursorTool === CursorTool.ClearBuildings) {
-        this.context.globalAlpha = 0.5;
-        this.drawTile(tile.position, 'locked');
-        this.context.globalAlpha = 1;
+        if (tile.buildingTileType) {
+          const buildingTileName = tile.buildingTileType.toLowerCase();
+          this.drawTile(tile.position, buildingTileName);
+        }
+
+        if (tile.resourceTileType) {
+          const resourceTileName = tile.resourceTileType.toLowerCase().replace(' ', '-');
+          this.drawTile(tile.position, resourceTileName, 1, tile.health / tile.maxHealth);
+        }
+
+        if (tile.health === 0) {
+          this.context.globalAlpha = 0.5;
+          this.drawTile(tile.position, 'disabled');
+          this.context.globalAlpha = 1;
+        } else if (tile.buildingTileType && !tile.buildingRemovable && this.mapService.cursorTool === CursorTool.ClearBuildings) {
+          this.context.globalAlpha = 0.5;
+          this.drawTile(tile.position, 'locked');
+          this.context.globalAlpha = 1;
+        }
       }
     }
 

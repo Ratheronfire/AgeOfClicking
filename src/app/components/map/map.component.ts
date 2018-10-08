@@ -41,27 +41,11 @@ export class MapComponent implements OnInit {
     this.mapService.fighterListVisible = fighterVisibility;
   }
 
-  get canvasWidth(): number {
-    return this.mapService.canvasWidth;
-  }
-
-  get canvasHeight(): number {
-    return this.mapService.canvasHeight;
-  }
-
   get deleteMode(): boolean {
     return this.mapService.deleteMode;
   }
 
   set deleteMode(value) {
     this.mapService.deleteMode = value;
-  }
-
-  get rowCount(): number {
-    return this.mapService.getRowCount();
-  }
-
-  get columnCount(): number {
-    return this.mapService.getColumnCount();
   }
 }

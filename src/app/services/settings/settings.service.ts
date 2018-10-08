@@ -25,8 +25,8 @@ const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3'];
-  gameVersion = 'Alpha 3.3';
+  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3', 'Alpha 3.4'];
+  gameVersion = 'Alpha 3.4';
 
   bindSelected = new FormControl();
 
@@ -234,8 +234,8 @@ export class SettingsService implements Tick {
       saveData.workers.push(workerData);
     }
 
-    for (const tile of this.mapService.tiledMap) {
-      if (tile.buildingTileType === undefined && tile.buildingTileType !== BuildingTileType.EnemyPortal) {
+    for (const tile of this.mapService.tileMap) {
+      if (!tile || tile.buildingTileType === undefined && tile.buildingTileType !== BuildingTileType.EnemyPortal) {
         continue;
       }
 
@@ -370,7 +370,7 @@ export class SettingsService implements Tick {
 
       if (saveData.tiles !== undefined) {
         for (const tileData of saveData.tiles) {
-          const tile = this.mapService.tiledMap.find(_tile => _tile.id === tileData.id);
+          const tile = this.mapService.tileMap.find(_tile => _tile.id === tileData.id);
 
           if (tile === undefined) {
             continue;
@@ -394,7 +394,7 @@ export class SettingsService implements Tick {
           tile => tile.buildingTileType && this.mapService.buildingTiles.get(tile.buildingTileType).subType === BuildingSubType.Market);
 
         for (const tileData of marketTiles) {
-          const tile = this.mapService.tiledMap[tileData.id];
+          const tile = this.mapService.tileMap[tileData.id];
           let resourceType;
           switch (tileData.buildingTileType) {
             case BuildingTileType.WoodMarket: {
@@ -569,6 +569,8 @@ export class SettingsService implements Tick {
     }
 
     if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.1')) {
+      saveData.purchasedUpgrades = saveData.upgrades.map(upgrade => upgrade.id);
+
       for (const resourceData of saveData.resources) {
         resourceData.resourceEnum = legacyResourceIds[resourceData.id];
       }
@@ -605,8 +607,8 @@ export class SettingsService implements Tick {
       saveData.settings.highestTierReached = accessedTiers.sort()[accessedTiers.length - 1];
     }
 
-    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.1')) {
-      saveData.purchasedUpgrades = saveData.upgrades.map(upgrade => upgrade.id);
+    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.3')) {
+      saveData.tiles = [];
     }
 
     return saveData;

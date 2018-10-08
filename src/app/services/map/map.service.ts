@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+
 import { Observable, of } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
@@ -14,6 +15,9 @@ import { Vector } from '../../objects/vector';
 declare var require: any;
 const Jimp = require('jimp');
 const baseTiles = require('../../../assets/json/tileTypes.json');
+
+import * as prng from 'prng-parkmiller-js';
+import * as SimplexNoise from 'simplex-noise';
 
 export enum CursorTool {
   PlaceBuildings = 'PLACEBUILDINGS',
@@ -44,12 +48,15 @@ export class MapService implements Tick {
   focusedResourceTile: ResourceTile;
   focusedResources: Resource[];
 
-  public enemySpawnTiles: Tile[] = [];
+  chunkWidth = 100;
+  chunkHeight = 100;
 
-  mapWidth: number;
-  mapHeight: number;
+  totalChunkX = 7;
+  totalChunkY = 7;
 
-  public tiledMap: Tile[] = [];
+  elevationMap: number[] = [];
+
+  public tileMap: Tile[] = [];
   resourceAnimations: ResourceAnimation[] = [];
   projectiles: Projectile[] = [];
 
@@ -62,14 +69,7 @@ export class MapService implements Tick {
   highFramerate = 25;
   lowFramerate = 125;
 
-  canvasWidth = 750;
-  canvasHeight = 750;
-
   tilePixelSize = 16;
-  gridWidth = 150;
-  gridHeight = 150;
-  canvasPixelWidth: number;
-  canvasPixelHeight: number;
 
   constructor(protected resourcesService: ResourcesService,
               protected storeService: StoreService) {
@@ -96,79 +96,99 @@ export class MapService implements Tick {
   }
 
   initializeMap() {
-    const _tiledMap: Tile[] = [];
-    let mapTileIds: number[], resourceTileIds: number[], buildingTileIds: number[], flagTileIds: number[];
-    let _mapWidth: number, _mapHeight: number;
+    // this.generateChunk(0, 0);
 
-    const xmlRequest = new XMLHttpRequest();
-    xmlRequest.onload = function() {
-      const xmlDoc = new DOMParser().parseFromString(xmlRequest.responseText, 'text/xml');
-      const layers = xmlDoc.getElementsByTagName('layer');
-      let mapLayer: Element, resourceLayer: Element, buildingLayer: Element, flagLayer: Element;
+    // // Creating neighbor chunks
+    // for (const neighborPosition of [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]) {
+    //   if (!this.getChunk(neighborPosition[0], neighborPosition[1])) {
+    //     this.generateChunk(neighborPosition[0], neighborPosition[1]);
+    //   }
+    // }
 
-      for (let i = 0; i < layers.length; i++) {
-        switch (layers[i].attributes['name'].value) {
-          case 'Map Layer':
-            mapLayer = layers[i];
-            break;
-          case 'Resource Layer':
-            resourceLayer = layers[i];
-            break;
-          case 'Building Layer':
-            buildingLayer = layers[i];
-            break;
-          case 'Flag Layer':
-            flagLayer = layers[i];
-            break;
-        }
+    for (let y = 0; y < this.totalChunkY; y++) {
+      for (let x = 0; x < this.totalChunkX; x++) {
+        this.generateChunk(x, y);
       }
+    }
+  }
 
-      _mapWidth = +mapLayer.attributes.getNamedItem('width').value;
-      _mapHeight = +mapLayer.attributes.getNamedItem('height').value;
+  generateChunk(chunkX: number, chunkY: number) {
+    const mapGen = new SimplexNoise('abc');
+    const resourceGen = new SimplexNoise('123');
 
-      mapTileIds = mapLayer.textContent.split(',').map(tileId => +tileId);
-      resourceTileIds = resourceLayer.textContent.split(',').map(tileId => +tileId);
-      buildingTileIds = buildingLayer.textContent.split(',').map(tileId => +tileId);
-      flagTileIds = flagLayer.textContent.split(',').map(tileId => +tileId);
-    };
+    const chunkTopLeft = new Vector(chunkX * this.chunkWidth, chunkY * this.chunkHeight);
+    const chunkBottomRight = new Vector(chunkTopLeft.x + this.chunkWidth, chunkTopLeft.y + this.chunkHeight);
 
-    xmlRequest.open('GET', './assets/tilemap/map.tmx', false);
-    xmlRequest.send();
+    // Creating the map itself
+    for (let y = chunkTopLeft.y; y < chunkBottomRight.y; y++) {
+      for (let x = chunkTopLeft.x; x < chunkBottomRight.x; x++) {
+        const noiseValue = this.adjustedNoise(x, y, mapGen);
 
-    for (let i = 0; i < mapTileIds.length; i++) {
-      const mapTileId = mapTileIds[i];
-      const resourceTileId = resourceTileIds[i];
-      const buildingTileId = buildingTileIds[i];
-      const flagTileId = flagTileIds[i];
-
-      const position = new Vector(16 * (_tiledMap.length % _mapWidth), 16 * Math.floor(_tiledMap.length / _mapWidth));
-      const tileCropDetail = {x: 0, y: 0, width: 16, height: 16};
-
-      let resourceTileType, buildingTileType;
-
-      if (resourceTileId > 0) {
-        resourceTileType = this.tileTypes[resourceTileId];
+        const tile = new Tile(y * this.chunkWidth + x, this.getBiome(noiseValue), undefined, undefined, true,
+                              new Vector(16 * x, 16 * y), undefined, 50, noiseValue, this.resourcesService);
+        this.setTile(x, y, tile);
       }
-
-      if (buildingTileId > 0) {
-        buildingTileType = this.tileTypes[buildingTileId];
-      }
-
-      const tile = new Tile(_tiledMap.length, this.tileTypes[mapTileId],
-        resourceTileType, buildingTileType, false, position, tileCropDetail, 50, this.resourcesService);
-
-      const flagTileType = this.tileTypes[flagTileId];
-      if (flagTileType === BuildingTileType.EnemyPortal) {
-        this.enemySpawnTiles.push(tile);
-      }
-      _tiledMap.push(tile);
     }
 
-    this.tiledMap = _tiledMap;
-    this.mapWidth = _mapWidth;
-    this.mapHeight = _mapHeight;
+    // Placing home (unless one already exists)
+    // We want to place the home closer to the center of the map.
+    if (Math.abs(this.totalChunkX / 2 - chunkX) < 2 && Math.abs(this.totalChunkY / 2 - chunkY) < 2) {
+      // Remove duplicate homes.
+      this.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home).map(_homeTile => {
+        _homeTile.buildingTileType = undefined;
+      })
 
-    this.calculateResourceConnections();
+      const homeTile = this.getRandomTile([MapTileType.Grass]);
+      homeTile.buildingTileType = BuildingTileType.Home;
+    }
+
+    // Placing resources
+    for (let y = chunkTopLeft.y; y < chunkBottomRight.y; y++) {
+      for (let x = chunkTopLeft.x; x < chunkBottomRight.x; x++) {
+        const adjustX = x / this.chunkWidth - 0.5, adjustY = y / this.chunkHeight - 0.5;
+        const noiseValue = this.noise(adjustX, adjustY, resourceGen);
+
+        let maxNoise = 0;
+        const scanRange = 2;
+
+        for (let ny = y - scanRange; ny < y + scanRange; ny++) {
+          for (let nx = x - scanRange; nx < x + scanRange; nx++) {
+            const neighborTile = this.getTile(nx, ny);
+            if (neighborTile && neighborTile.noiseValue > maxNoise) {
+              maxNoise = neighborTile.noiseValue;
+            }
+          }
+        }
+
+        const tile = this.getTile(x, y);
+        if (tile.noiseValue === maxNoise) {
+          let resourceDiceRoll = Math.random();
+
+          let naturalResources = Array.from(this.resourceTiles.values());
+          naturalResources = naturalResources.filter(resource => resource.spawnsOn.includes(tile.mapTileType));
+
+          for (const resource of naturalResources) {
+            resourceDiceRoll -= resource.spawnRate;
+            if (resourceDiceRoll <= 0) {
+              tile.resourceTileType = resource.tileType;
+              break;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  clearChunk(chunkX: number, chunkY: number) {
+    const chunkTopLeft = new Vector(chunkX * this.chunkWidth, chunkY * this.chunkHeight);
+    const chunkBottomRight = new Vector(chunkTopLeft.x + this.chunkWidth, chunkTopLeft.y + this.chunkHeight);
+
+    // TODO: Store building data outside of tile map, simulate offscreen production
+    for (let y = chunkTopLeft.y; y < chunkBottomRight.y; y++) {
+      for (let x = chunkTopLeft.x; x < chunkBottomRight.x; x++) {
+        this.setTile(x, y, undefined);
+      }
+    }
   }
 
   tick(elapsed: number, deltaTime: number) {
@@ -180,7 +200,7 @@ export class MapService implements Tick {
       }
     }
 
-    for (const tile of this.tiledMap.filter(_tile => _tile.market)) {
+    for (const tile of this.tileMap.filter(_tile => _tile.market)) {
       tile.market.tick(elapsed, deltaTime);
     }
 
@@ -193,6 +213,69 @@ export class MapService implements Tick {
     this.projectiles = this.projectiles.filter(projectile => !projectile.hitTarget);
   }
 
+  adjustedNoise(x: number, y: number, generator: SimplexNoise): number {
+    const nx = x / this.chunkWidth - 0.5, ny = y / this.chunkHeight - 0.5;
+    const noiseValue = this.noise(1 * nx, 1 * ny, generator) +
+                0.25 * this.noise(4 * nx, 4 * ny, generator) +
+               0.125 * this.noise(8 * nx, 8 * ny, generator);
+    return noiseValue ** 6;
+  }
+
+  noise(x: number, y: number, generator: SimplexNoise): number {
+    return generator.noise2D(x, y) / 2 + 0.5;
+  }
+
+  getBiome(noiseValue: number): MapTileType {
+    if (noiseValue <= 0.25) {
+      return MapTileType.Water;
+    } else if (noiseValue < 0.9999999) {
+      return MapTileType.Grass;
+    } else {
+      return MapTileType.Mountain;
+    }
+  }
+
+  updatePaths(updatedTile: Tile, onlyPathable: boolean) {
+    const visitedTiles: Tile[] = [];
+    const tileQueue: Tile[] = [];
+    let currentTile: Tile;
+
+    tileQueue.push(updatedTile);
+
+    const homeTile = this.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+
+    while (tileQueue.length) {
+      currentTile = tileQueue.pop();
+
+      const neighborTiles = this.getNeighborTiles(currentTile);
+      visitedTiles.push(currentTile);
+
+      for (const neighbor of neighborTiles) {
+        const buildingTile = this.buildingTiles.get(neighbor.buildingTileType);
+        if (!visitedTiles.includes(neighbor) &&
+            (!onlyPathable || ((buildingTile && buildingTile.resourcePathable)) || neighbor.resourceTileType)) {
+          tileQueue.push(neighbor);
+        }
+      }
+
+      if (!currentTile.resourceTileType) {
+        continue;
+      }
+
+      this.findPath(currentTile, homeTile, true, true).subscribe(tilePath => {
+        currentTile.buildingPath = tilePath;
+
+        const pathAvailable = currentTile.buildingPath.length && !currentTile.buildingPath.some(tile => tile.health <= 0);
+        const resources = this.resourceTiles.get(currentTile.resourceTileType).resourceEnums
+            .map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
+
+        for (const resource of resources) {
+          resource.pathAvailable = pathAvailable;
+        }
+      });
+    }
+  }
+
   calculateResourceConnections() {
     const resourceTiles = this.getResourceTiles();
 
@@ -200,7 +283,7 @@ export class MapService implements Tick {
       resource.pathAvailable = false;
     }
 
-    const homeTile = this.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+    const homeTile = this.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
 
     for (const resourceTile of resourceTiles) {
       if (resourceTile.health <= 0) {
@@ -220,7 +303,7 @@ export class MapService implements Tick {
       });
     }
 
-    for (const marketTile of this.tiledMap.filter(tile => tile.market)) {
+    for (const marketTile of this.tileMap.filter(tile => tile.market)) {
       marketTile.market.calculateConnection();
     }
   }
@@ -230,8 +313,10 @@ export class MapService implements Tick {
     const visitedTiles: Tile[] = [];
 
     let tileQueue: Tile[] = [];
-    const tileDistances = this.tiledMap.map(_ => Infinity);
-    const tileHeuristicDistances = this.tiledMap.map(_ => Infinity);
+
+    const tileDistances = this.tileMap.map(_ => Infinity);
+    const tileHeuristicDistances = this.tileMap.map(_ => Infinity);
+
     const nodeMap = new Map<Tile, Tile>();
 
     let currentNode: Tile;
@@ -289,7 +374,7 @@ export class MapService implements Tick {
   }
 
   getRandomTile(tileTypes?: MapTileType[]): Tile {
-    let tiles = this.tiledMap;
+    let tiles = this.tileMap;
 
     if (tileTypes) {
       tiles = tiles.filter(tile => tileTypes.some(tileType => tileType === tile.mapTileType));
@@ -345,8 +430,8 @@ export class MapService implements Tick {
 
     const tiles: Tile[] = [];
     for (const position of neighborPositions) {
-      if (position.x >= 0 && position.x < this.mapWidth &&
-          position.y >= 0 && position.y < this.mapHeight) {
+      if (position.x >= 0 && position.x < this.totalChunkX * this.chunkWidth &&
+          position.y >= 0 && position.y < this.totalChunkY * this.chunkHeight) {
         tiles.push(this.getTile(position.x, position.y));
       }
     }
@@ -354,25 +439,24 @@ export class MapService implements Tick {
     return tiles;
   }
 
-  getRowCount(): number {
-    return this.mapHeight;
-  }
-
-  getColumnCount(): number {
-    return this.mapWidth;
-  }
-
   getTileCoordinates(tile: Tile) {
-    const tileIndex = this.tiledMap.indexOf(tile);
-
     return {
-      x: tileIndex % this.mapWidth,
-      y: Math.floor(tileIndex / this.mapWidth)
+      x: Math.floor(tile.x / this.tilePixelSize),
+      y: Math.floor(tile.y / this.tilePixelSize)
     };
   }
 
+  getChunkOffset(x: number, y: number) {
+    const chunkIndex = Math.floor(x / this.chunkWidth) + this.totalChunkX * Math.floor(y / this.chunkHeight);
+    return chunkIndex * this.chunkWidth * this.chunkHeight;
+  }
+
   getTile(x: number, y: number) {
-    return this.tiledMap[x + y * this.mapWidth];
+    return this.tileMap[this.getChunkOffset(x, y) + y * this.chunkWidth + x];
+  }
+
+  setTile(x: number, y: number, tile: Tile) {
+    this.tileMap[this.getChunkOffset(x, y) + y * this.chunkWidth + x] = tile;
   }
 
   clampTileCoordinates(x: number, y: number) {
@@ -380,29 +464,14 @@ export class MapService implements Tick {
   }
 
   getResourceTiles(resourceEnum?: ResourceEnum): Tile[] {
-    let tiles = this.tiledMap.filter(tile => tile.resourceTileType !== undefined);
+    let tiles = this.tileMap.filter(tile => tile.resourceTileType);
 
-    if (resourceEnum !== undefined) {
+    if (resourceEnum) {
       const matchingTypes = Array.from(this.resourceTiles.values()).filter(
         tile => tile.resourceEnums.includes(resourceEnum)).map(tile => tile.tileType);
       tiles = tiles.filter(tile => matchingTypes.includes(tile.resourceTileType));
     }
 
     return tiles;
-  }
-
-  getTileType(tileId: number): MapTileType {
-    if (tileId in [37, 38, 39, 40, 41, 42, 43, 44, 54, 55, 56, 57, 58, 59, 60, 61, 71, 72, 73, 74, 75, 76, 77, 78, 88,
-      89, 90, 91, 92, 93, 94, 95, 105, 106, 107, 108, 109, 110, 111, 112, 123, 124, 125, 126, 127, 128, 129, 130]) {
-      return MapTileType.Grass;
-    } else if (tileId in [53, 122]) {
-      return MapTileType.Water;
-    }
-
-    return MapTileType.Mountain;
-  }
-
-  getTileCropDetail(tileId: number): TileCropDetail {
-    return {x: 0, y: 0, width: 16, height: 16};
   }
 }
