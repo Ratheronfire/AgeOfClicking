@@ -52,6 +52,10 @@ export class SettingsComponent implements AfterViewInit {
     this.settingsService.resourceBindChange(event);
   }
 
+  openAboutDialog() {
+    this.settingsService.openAboutDialog();
+  }
+
   exportSave() {
     this.settingsService.openSaveDialog(this.settingsService.exportSave());
   }

@@ -2,6 +2,7 @@ import { FormControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
 import { MatSnackBar, MatDialog, MatSelectChange } from '@angular/material';
 
+import { AboutDialogComponent } from './../../components/about-dialog/about-dialog/about-dialog.component';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
 import { ResourcesService } from './../resources/resources.service';
 import { UpgradesService } from './../upgrades/upgrades.service';
@@ -100,6 +101,20 @@ export class SettingsService implements Tick {
         if (this.importSave(result)) {
           this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
           this.log('Game successfully loaded!');
+        }
+      }
+    });
+  }
+
+  openAboutDialog() {
+    const dialogRef = this.dialog.open(AboutDialogComponent, {
+      width: '750px',
+      height: '550px'
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        if (this.importSave(result)) {
         }
       }
     });
