@@ -30,7 +30,9 @@
     "hammerjs": "^2.0.8",
     "jimp": "^0.3.5",
     "ngx-color-picker": "^6.6.0",
+    "prng-parkmiller-js": "^0.1.1",
     "rxjs": "^6.0.0",
+    "simplex-noise": "^2.4.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

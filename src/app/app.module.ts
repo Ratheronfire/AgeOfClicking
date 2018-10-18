@@ -29,6 +29,7 @@ import { BuildingsComponent } from './components/buildings/buildings/buildings.c
 import { TileDetailComponent } from './components/tile-detail/tile-detail.component';
 import { FighterDetailComponent } from './components/fighter-detail/fighter-detail.component';
 import { SnapDirective } from './directives/snap/snap.directive';
+import { MinimapDirective } from './directives/minimap/minimap.directive';
 
 @NgModule({
   declarations: [
@@ -53,6 +54,7 @@ import { SnapDirective } from './directives/snap/snap.directive';
     TileDetailComponent,
     FighterDetailComponent,
     SnapDirective,
+    MinimapDirective
     AboutDialogComponent
   ],
   imports: [

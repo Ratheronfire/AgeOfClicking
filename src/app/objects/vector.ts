@@ -19,6 +19,10 @@ export class Vector {
     return new Vector(this.x - other.x, this.y - other.y);
   }
 
+  multiply(scalar: number) {
+    return new Vector(this.x * scalar, this.y * scalar);
+  }
+
   static get identity(): Vector {
     return new Vector(1, 1);
   }

@@ -10,6 +10,7 @@ import { MapService } from '../map/map.service';
 })
 export class BuildingsService {
   selectedBuilding: BuildingTile;
+  totalBuildingsPlaced = new Map<BuildingTileType, number>();
 
   constructor(protected resourcesService: ResourcesService,
               protected mapService: MapService) { }
@@ -22,6 +23,12 @@ export class BuildingsService {
         !buildingTile.buildableSurfaces.some(bs => bs === tile.mapTileType) ||
         !this.canAffordBuilding(buildingTile)) {
       return false;
+    }
+
+    if (!this.totalBuildingsPlaced.has(buildingType)) {
+      this.totalBuildingsPlaced.set(buildingType, 1);
+    } else {
+      this.totalBuildingsPlaced.set(buildingType, this.totalBuildingsPlaced.get(buildingType) + 1);
     }
 
     for (const resourceCost of buildingTile.resourceCosts) {
@@ -37,7 +44,6 @@ export class BuildingsService {
 
     tile.buildingRemovable = true;
     tile.buildingTileType = buildingType;
-    this.mapService.calculateResourceConnections();
 
     if (buildingTile.subType === BuildingSubType.Market) {
       let resourceType: ResourceType;
@@ -57,12 +63,13 @@ export class BuildingsService {
       tile.market = new Market(this.mapService, this.resourcesService, resourceType, tile, true);
     }
 
+    this.mapService.updatePaths(tile, true);
+
     return true;
   }
 
   public canAffordBuilding(buildingTile: BuildingTile): boolean {
-    if (buildingTile.maxPlaceable > 0 &&
-        this.mapService.tiledMap.filter(tile => tile.buildingTileType === buildingTile.tileType).length >= buildingTile.maxPlaceable) {
+    if (buildingTile.maxPlaceable > 0 && this.totalBuildingsPlaced.get(buildingTile.tileType) >= buildingTile.maxPlaceable) {
       return false;
     }
     for (const resourceCost of buildingTile.resourceCosts) {
@@ -79,6 +86,12 @@ export class BuildingsService {
       return false;
     }
 
+    if (!this.totalBuildingsPlaced.has(tile.buildingTileType)) {
+      this.totalBuildingsPlaced.set(tile.buildingTileType, 0);
+    } else {
+      this.totalBuildingsPlaced.set(tile.buildingTileType, this.totalBuildingsPlaced.get(tile.buildingTileType) - 1);
+    }
+
     const buildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
 
     if (buildingTile.placesResourceTile) {
@@ -93,7 +106,7 @@ export class BuildingsService {
       this.resourcesService.resources.get(resourceCost.resourceEnum).addAmount(resourceCost.resourceCost * 0.85);
     }
 
-    this.mapService.calculateResourceConnections();
+    this.mapService.updatePaths(tile, true);
 
     return true;
   }
@@ -116,6 +129,6 @@ export class BuildingsService {
     repairResource.addAmount(-buildingTile.repairCostPerPoint * healAmount);
     tile.health = tile.maxHealth;
 
-    this.mapService.calculateResourceConnections();
+    this.mapService.updatePaths(tile, true);
   }
 }

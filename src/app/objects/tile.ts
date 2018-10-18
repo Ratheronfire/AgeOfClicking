@@ -58,6 +58,7 @@ export enum BuildingTileType {
   Road = 'ROAD',
   Home = 'HOME',
   Bridge = 'BRIDGE',
+  Tunnel = 'TUNNEL',
   CrackedForge = 'CRACKEDFORGE',
   StoneForge = 'STONEFORGE',
   IronForge = 'IRONFORGE',
@@ -127,6 +128,10 @@ export interface ResourceTile {
   name: string;
   placeable: boolean;
 
+  spawnsOn: MapTileType[];
+  isNaturalResource: boolean;
+  spawnRate: number;
+
   resourceEnums: ResourceEnum[];
 }
 
@@ -158,13 +163,15 @@ export class Tile {
 
   position: Vector;
 
+  noiseValue: number;
+
   tileCropDetail: TileCropDetail;
 
   resourcesService: ResourcesService;
 
   public constructor(id: number, mapTileType: MapTileType, resourceTileType: ResourceTileType, buildingTileType: BuildingTileType,
         buildingRemovable: boolean, position: Vector, tileCropDetail: TileCropDetail,
-        health: number = -1, resourcesService: ResourcesService) {
+        health: number = -1, noiseValue: number, resourcesService: ResourcesService) {
     this.id = id;
 
     this.mapTileType = mapTileType;
@@ -180,6 +187,9 @@ export class Tile {
     this.health = health;
     this.maxHealth = health;
     this.position = position;
+
+    this.noiseValue = noiseValue;
+
     this.tileCropDetail = tileCropDetail;
 
     this.resourcesService = resourcesService;
@@ -277,7 +287,7 @@ export class Market {
 
     this.soldResources = resourcesService.getResources(resourceType);
 
-    this.homeTile = mapService.tiledMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+    this.homeTile = mapService.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
     this.owningTile = owningTile;
 
     this.calculateConnection();

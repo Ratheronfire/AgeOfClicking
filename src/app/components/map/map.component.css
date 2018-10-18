@@ -38,11 +38,26 @@ nav a.active {
   color: #039be5;
 }
 
-#canvas-container {
+#map-canvas-container {
   display: flex;
   height: 100%;
   position: relative;
   overflow: hidden;
+}
+
+#minimap-canvas-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+
+  width: 375px;
+  height: 375px;
+}
+
+#minimap-canvas-container canvas {
+  position: absolute;
+
+  background: transparent;
 }
 
 .cursor-tools {

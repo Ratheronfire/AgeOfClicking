@@ -41,7 +41,7 @@ export class EnemyService implements Tick, AfterViewInit {
               protected messagesService: MessagesService) { }
 
   ngAfterViewInit() {
-    this.openPortal(this.mapService.enemySpawnTiles[0]);
+    this.openPortal();
   }
 
   tick(elapsed: number, deltaTime: number) {
@@ -85,7 +85,7 @@ export class EnemyService implements Tick, AfterViewInit {
       enemy.targetIndex = enemy.targets.length - 1;
     }
 
-    this.mapService.findPath(enemy.currentTile, enemy.targets[enemy.targetIndex].tile, false, true, 250).subscribe(tilePath => {
+    this.mapService.findPath(enemy.currentTile, enemy.targets[enemy.targetIndex].tile, false, true).subscribe(tilePath => {
       enemy.tilePath = tilePath;
 
       if (!enemy.tilePath.length) {
@@ -101,26 +101,27 @@ export class EnemyService implements Tick, AfterViewInit {
     });
   }
 
-  openPortal(tile: Tile) {
-    for (const existingTile of this.mapService.tiledMap.filter(_tile => _tile.buildingTileType === BuildingTileType.EnemyPortal)) {
+  openPortal() {
+    for (const existingTile of this.mapService.tileMap.filter(_tile => _tile.buildingTileType === BuildingTileType.EnemyPortal)) {
       existingTile.buildingTileType = undefined;
     }
+
+    const tile = this.mapService.getRandomTile([MapTileType.Grass]);
 
     tile.buildingTileType = BuildingTileType.EnemyPortal;
     this.activePortalTile = tile;
   }
 
   getTilePosition(enemy: Enemy) {
-    const x = Math.floor(enemy.x / 16) * 16;
-    const y = Math.floor(enemy.y / 16) * 16;
+    const x = Math.floor(enemy.x / this.mapService.tilePixelSize);
+    const y = Math.floor(enemy.y / this.mapService.tilePixelSize);
 
-    return this.mapService.tiledMap.filter(tile => tile.x === x && tile.y === y)[0];
+    return this.mapService.getTile(x, y);
   }
 
   spawnEnemy() {
     if (Math.random() > 0.2) {
-      const spawnIndex = Math.floor(Math.random() *  this.mapService.enemySpawnTiles.length);
-      this.openPortal(this.mapService.enemySpawnTiles[spawnIndex]);
+      this.openPortal();
     }
 
     if (this.enemies.length >= this.maxEnemyCount || !this.enemiesActive) {
@@ -152,7 +153,7 @@ export class EnemyService implements Tick, AfterViewInit {
 
   findTargets(enemy: Enemy) {
     for (const buildingType of enemy.targetableBuildingTypes) {
-      for (const tile of this.mapService.tiledMap.filter(_tile => _tile.buildingTileType === buildingType)) {
+      for (const tile of this.mapService.tileMap.filter(_tile => _tile.buildingTileType === buildingType)) {
         if (!enemy.targets.some(target => target.tile === tile)) {
           enemy.targets.push({tile: tile, accessible: true, wanderTarget: false});
         }

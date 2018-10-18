@@ -1,56 +1,4 @@
 {
-  "tileTypes": {
-    "1": "GRASS",
-    "2": "WATER",
-    "3": "MOUNTAIN",
-    "5": "OAKTREE",
-    "6": "PINETREE",
-    "7": "BIRCHTREE",
-    "8": "EUCALYPTUSTREE",
-    "9": "WILLOWTREE",
-    "10": "TEAKTREE",
-    "11": "DEADENT",
-    "12": "STONEMINE",
-    "13": "GRAPHITEMINE",
-    "14": "LIMESTONEMINE",
-    "15": "MARBLEMINE",
-    "16": "QUARTZMINE",
-    "17": "OBSIDIANMINE",
-    "18": "DIAMONDMINE",
-    "19": "COPPERMINE",
-    "20": "TINMINE",
-    "21": "IRONMINE",
-    "22": "GOLDMINE",
-    "23": "LATINUMMINE",
-    "24": "UNBELIEVIUMMINE",
-    "25": "LUSTRIALMINE",
-    "26": "SPECTRUSMINE",
-    "27": "CRACKEDFORGE",
-    "28": "STONEFORGE",
-    "29": "IRONFORGE",
-    "30": "GOLDFORGE",
-    "31": "LATINUMFORGE",
-    "32": "TEMPROUSDISTILLERY",
-    "33": "WHEATFARM",
-    "35": "RAWPOTATOFARM",
-    "36": "RICEFARM",
-    "37": "FISHINGSPOT",
-    "74": "HOME",
-    "75": "WALL",
-    "76": "ROAD",
-    "77": "BRIDGE",
-    "78": "ENEMYPORTAL",
-    "79": "WOODMARKET",
-    "80": "MINERALMARKET",
-    "81": "METALMARKET",
-    "83": "OAKOVEN",
-    "84": "STONEOVEN",
-    "86": "MARBLEOVEN",
-    "87": "TEMPROUSOVEN",
-    "88": "CHICKENFARM",
-    "89": "COWFARM",
-    "90": "DRAGONFARM"
-  },
   "mapTiles": {
     "GRASS": {
       "tileType": "GRASS",
@@ -119,6 +67,25 @@
       ],
       "resourcePathable": true
     },
+    "TUNNEL": {
+      "tileType": "TUNNEL",
+      "subType": "MISC",
+      "name": "Tunnel",
+      "description": "Allows access to resources buried within rock.",
+      "placeable": true,
+      "maxPlaceable": -1,
+      "baseHealth": 50,
+      "repairResourceEnum": "STONE",
+      "repairCostPerPoint": 0.2,
+      "resourceCosts": [{
+        "resourceEnum": "STONE",
+        "resourceCost": 35
+      }],
+      "buildableSurfaces": [
+        "MOUNTAIN"
+      ],
+      "resourcePathable": true
+    },
     "BRIDGE": {
       "tileType": "BRIDGE",
       "subType": "MISC",
@@ -127,10 +94,10 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "PINE",
+      "repairResourceEnum": "OAK",
       "repairCostPerPoint": 0.25,
       "resourceCosts": [{
-        "resourceEnum": "PINE",
+        "resourceEnum": "OAK",
         "resourceCost": 40
       }],
       "buildableSurfaces": [
@@ -562,240 +529,351 @@
       "tileType": "OAKTREE",
       "name": "Oak Tree",
       "placeable": false,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.65,
       "resourceEnums": ["OAK"]
     },
     "PINETREE": {
       "tileType": "PINETREE",
       "name": "Pine Tree",
       "placeable": false,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.45,
       "resourceEnums": ["PINE"]
     },
     "BIRCHTREE": {
       "tileType": "BIRCHTREE",
       "name": "Birch Tree",
       "placeable": false,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.20,
       "resourceEnums": ["BIRCH"]
     },
     "EUCALYPTUSTREE": {
       "tileType": "EUCALYPTUSTREE",
       "name": "Eucalptus Tree",
       "placeable": false,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.15,
       "resourceEnums": ["EUCALYPTUS"]
     },
     "WILLOWTREE": {
       "tileType": "WILLOWTREE",
       "name": "Willow Tree",
       "placeable": false,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.10,
       "resourceEnums": ["WILLOW"]
     },
     "TEAKTREE": {
       "tileType": "TEAKTREE",
       "name": "Teak Tree",
       "placeable": false,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.05,
       "resourceEnums": ["TEAK"]
     },
     "DEADENT": {
       "tileType": "DEADENT",
       "name": "Dead Ent",
       "placeable": false,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.01,
       "resourceEnums": ["ENTSOUL", "REANIMATEDENT"]
     },
     "STONEMINE": {
       "tileType": "STONEMINE",
       "name": "Stone Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.80,
       "resourceEnums": ["STONE"]
     },
     "GRAPHITEMINE": {
       "tileType": "GRAPHITEMINE",
       "name": "Graphite Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.15,
       "resourceEnums": ["GRAPHITE"]
     },
     "LIMESTONEMINE": {
       "tileType": "LIMESTONEMINE",
       "name": "Limestone Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.10,
       "resourceEnums": ["LIMESTONE"]
     },
     "MARBLEMINE": {
       "tileType": "MARBLEMINE",
       "name": "Marble Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.05,
       "resourceEnums": ["MARBLE"]
     },
     "QUARTZMINE": {
       "tileType": "QUARTZMINE",
       "name": "Quartz Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.03,
       "resourceEnums": ["QUARTZ"]
     },
     "OBSIDIANMINE": {
       "tileType": "OBSIDIANMINE",
       "name": "Obsidian Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.02,
       "resourceEnums": ["OBSIDIAN"]
     },
     "DIAMONDMINE": {
       "tileType": "DIAMONDMINE",
       "name": "Diamond Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.01,
       "resourceEnums": ["DIAMOND"]
     },
     "COPPERMINE": {
       "tileType": "COPPERMINE",
       "name": "Copper Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.25,
       "resourceEnums": ["COPPERORE"]
     },
     "TINMINE": {
       "tileType": "TINMINE",
       "name": "Tin Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.25,
       "resourceEnums": ["TINORE"]
     },
     "IRONMINE": {
       "tileType": "IRONMINE",
       "name": "Iron Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.15,
       "resourceEnums": ["IRONORE"]
     },
     "GOLDMINE": {
       "tileType": "GOLDMINE",
       "name": "Gold Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.10,
       "resourceEnums": ["GOLDORE"]
     },
     "LATINUMMINE": {
       "tileType": "LATINUMMINE",
       "name": "Latinum Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.05,
       "resourceEnums": ["LATINUMORE"]
     },
     "UNBELIEVIUMMINE": {
       "tileType": "UNBELIEVIUMMINE",
       "name": "Unbelievium Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.03,
       "resourceEnums": ["UNBELIEVIUMORE"]
     },
     "LUSTRIALMINE": {
       "tileType": "LUSTRIALMINE",
       "name": "Lustrial Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.03,
       "resourceEnums": ["LUSTRIALORE"]
     },
     "SPECTRUSMINE": {
       "tileType": "SPECTRUSMINE",
       "name": "Spectrus Mine",
       "placeable": false,
+      "spawnsOn": ["MOUNTAIN"],
+      "isNaturalResource": true,
+      "spawnRate": 0.03,
       "resourceEnums": ["SPECTRUSORE"]
     },
     "CRACKEDFORGE": {
       "tileType": "CRACKEDFORGE",
       "name": "Cracked Forge",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BRONZEINGOT"]
     },
     "STONEFORGE": {
       "tileType": "STONEFORGE",
       "name": "Stone Forge",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BRONZEINGOT", "IRONINGOT"]
     },
     "IRONFORGE": {
       "tileType": "IRONFORGE",
       "name": "Iron Forge",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT"]
     },
     "GOLDFORGE": {
       "tileType": "GOLDFORGE",
       "name": "Gold Forge",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT", "LATINUMINGOT"]
     },
     "LATINUMFORGE": {
       "tileType": "LATINUMFORGE",
       "name": "Latinum Forge",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT", "LATINUMINGOT", "TEMPROUSINGOT"]
     },
     "TEMPROUSDISTILLERY": {
       "tileType": "TEMPROUSDISTILLERY",
       "name": "Temprous Distillery",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BRONZEINGOT", "IRONINGOT", "STEELINGOT", "GOLDINGOT", "LATINUMINGOT", "TEMPROUSINGOT", "REFINEDTEMPROUS"]
     },
     "FISHINGSPOT": {
       "tileType": "FISHINGSPOT",
       "name": "Fishing Spot",
       "placeable": false,
+      "spawnsOn": ["WATER"],
+      "isNaturalResource": true,
+      "spawnRate": 0.10,
       "resourceEnums": ["RAWHERRING", "RAWBASS", "RAWSHARK"]
     },
     "WHEATFARM": {
       "tileType": "WHEATFARM",
       "name": "Wheat Farm",
       "placeable": true,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.10,
       "resourceEnums": ["WHEAT"]
     },
     "RAWPOTATOFARM": {
       "tileType": "RAWPOTATOFARM",
       "name": "Raw Potato Farm",
       "placeable": true,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.10,
       "resourceEnums": ["RAWPOTATO"]
     },
     "RICEFARM": {
       "tileType": "RICEFARM",
       "name": "Rice Farm",
       "placeable": true,
+      "spawnsOn": ["GRASS"],
+      "isNaturalResource": true,
+      "spawnRate": 0.10,
       "resourceEnums": ["RICE"]
-    },
-    "OAKDOCK": {
-      "tileType": "OAKDOCK",
-      "name": "Oak Dock",
-      "placeable": true,
-      "resourceEnums": ["RAWHERRING"]
     },
     "OAKOVEN": {
       "tileType": "OAKOVEN",
       "name": "Oak Oven",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BREAD", "POTATO", "HERRING"]
     },
     "STONEOVEN": {
       "tileType": "STONEOVEN",
       "name": "Stone Oven",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BREAD", "POTATO", "HERRING", "JELLYDONUT", "HERRING", "BASS"]
     },
     "MARBLEOVEN": {
       "tileType": "MARBLEOVEN",
       "name": "Marble Oven",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BREAD", "POTATO", "HERRING", "JELLYDONUT", "HERRING", "BASS", "SHARK"]
     },
     "TEMPROUSOVEN": {
       "tileType": "TEMPROUSOVEN",
       "name": "Temprous Oven",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["BREAD", "POTATO", "HERRING", "JELLYDONUT", "HERRING", "BASS", "SHARK", "CHICKEN", "STEAK", "DRAGONMEAT"]
     },
     "CHICKENFARM": {
       "tileType": "CHICKENFARM",
       "name": "Chicken Farm",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["RAWCHICKEN"]
     },
     "COWFARM": {
       "tileType": "COWFARM",
       "name": "Cow Farm",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["RAWCHICKEN", "RAWSTEAK"]
     },
     "DRAGONFARM": {
       "tileType": "DRAGONFARM",
       "name": "Dragon Farm",
       "placeable": true,
+      "spawnsOn": [],
+      "isNaturalResource": false,
+      "spawnRate": 0,
       "resourceEnums": ["RAWCHICKEN", "RAWSTEAK", "RAWDRAGONMEAT"]
     }
   }
