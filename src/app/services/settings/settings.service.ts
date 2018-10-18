@@ -370,9 +370,9 @@ export class SettingsService implements Tick {
 
       if (saveData.tiles !== undefined) {
         for (const tileData of saveData.tiles) {
-          const tile = this.mapService.tileMap.find(_tile => _tile.id === tileData.id);
+          const tile = this.mapService.tileMap.find(_tile => _tile && _tile.id === tileData.id);
 
-          if (tile === undefined) {
+          if (!tile || [BuildingTileType.Home, BuildingTileType.EnemyPortal].includes(tileData.buildingTileType)) {
             continue;
           }
 

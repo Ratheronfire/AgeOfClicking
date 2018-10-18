@@ -50,8 +50,9 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <div id="minimap-canvas-container" class="minimap">
-      <canvas id="minimap" class="noselect" appMinimap></canvas>
+  <div id="minimap-canvas-container" class="minimap" appMinimap>
+      <canvas id="minimap_background" class="noselect"></canvas>
+      <canvas id="minimap_foreground" class="noselect"></canvas>
   </div>
 
   <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>

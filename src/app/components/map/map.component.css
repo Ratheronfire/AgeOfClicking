@@ -45,15 +45,19 @@ nav a.active {
   overflow: hidden;
 }
 
-.minimap {
+#minimap-canvas-container {
   position: absolute;
   top: 0;
   right: 0;
 
   width: 500px;
   height: 500px;
+}
 
-  background: white;
+#minimap-canvas-container canvas {
+  position: absolute;
+
+  background: transparent;
 }
 
 .cursor-tools {

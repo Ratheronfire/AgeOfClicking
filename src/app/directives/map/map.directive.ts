@@ -1,6 +1,6 @@
 import { Directive, ElementRef, Renderer2, AfterViewInit } from '@angular/core';
 
-import { MapTileType } from '../../objects/tile';
+import { MapTileType, BuildingTileType } from '../../objects/tile';
 import { Vector } from '../../objects/vector';
 import { ResourcesService } from './../../services/resources/resources.service';
 import { SettingsService } from './../../services/settings/settings.service';
@@ -20,9 +20,6 @@ export class MapDirective implements AfterViewInit, Tick {
   context: CanvasRenderingContext2D;
   canvasContainer: Element;
 
-  canvasPixelWidth: number;
-  canvasPixelHeight: number;
-
   lastEnemyReprosessTime = Date.now();
   enemyReprocessDelay = 2000;
 
@@ -31,9 +28,6 @@ export class MapDirective implements AfterViewInit, Tick {
 
   headerPixels = 64;
 
-  imageElements = {};
-
-  transform = d3.zoomIdentity;
   refreshTimer;
   lowFramerateActive = false;
 
@@ -54,17 +48,9 @@ export class MapDirective implements AfterViewInit, Tick {
     this.tileTooltip = document.getElementById('tile-tooltip');
     this.fighterTooltip = document.getElementById('fighter-tooltip');
 
-    const imageElementContainer = document.getElementById('tile-images');
-    for (let i = 0; i < imageElementContainer.children.length; i++) {
-      const imageElement = imageElementContainer.children[i];
-      this.imageElements[imageElement.id] = imageElement;
-    }
-
     this.context.font = 'bold 4px Arial';
 
     this.resizeCanvas();
-
-    this.transform.k = 2;
 
     this.canvas.call(d3.zoom()
         .filter(this.scrollFilter(this))
@@ -76,6 +62,9 @@ export class MapDirective implements AfterViewInit, Tick {
     this.canvas.on('mousedown mousemove mouseup', this.clickTile(this));
 
     this.refreshTimer = d3.interval(this.refreshCanvas(this), 25);
+
+    const homeTile = this.mapService.tileMap.find(tile => tile && tile.buildingTileType === BuildingTileType.Home);
+    this.mapService.setCameraCenter(homeTile.position.multiply(-1));
   }
 
   tick(elapsed: number) {
@@ -189,19 +178,14 @@ export class MapDirective implements AfterViewInit, Tick {
   }
 
   drawCanvas() {
-    const upperLeftPixel =
-      [(-this.transform.x - this.mapService.tilePixelSize * 5) / this.transform.k,
-       (-this.transform.y - this.mapService.tilePixelSize * 5) / this.transform.k];
-    const lowerRightPixel =
-      [upperLeftPixel[0] + (this.canvasPixelWidth + this.mapService.tilePixelSize * 5) / this.transform.k,
-       upperLeftPixel[1] + (this.canvasPixelHeight + this.mapService.tilePixelSize * 5) / this.transform.k];
+    const cameraBounds = this.mapService.mapCameraBounds;
 
     const upperLeftTile =
-      [Math.max(0, Math.floor(upperLeftPixel[0] / this.mapService.tilePixelSize)),
-       Math.max(0, Math.floor(upperLeftPixel[1] / this.mapService.tilePixelSize))];
+      [Math.max(0, Math.floor(cameraBounds[0].x / this.mapService.tilePixelSize)),
+       Math.max(0, Math.floor(cameraBounds[0].y / this.mapService.tilePixelSize))];
     const lowerRightTile =
-      [Math.floor(lowerRightPixel[0] / this.mapService.tilePixelSize),
-       Math.floor(lowerRightPixel[1] / this.mapService.tilePixelSize)];
+      [Math.floor(cameraBounds[1].x / this.mapService.tilePixelSize),
+       Math.floor(cameraBounds[1].y / this.mapService.tilePixelSize)];
 
     for (let y = upperLeftTile[1]; y <= lowerRightTile[1]; y++) {
       for (let x = upperLeftTile[0]; x <= lowerRightTile[0]; x++) {
@@ -306,7 +290,9 @@ export class MapDirective implements AfterViewInit, Tick {
   }
 
   drawTile(position: Vector, imageName: string, scale: number = 1, healthRatio: number = 1) {
-    const image = this.imageElements[imageName] ? this.imageElements[imageName] : this.imageElements['placeholder'];
+    const imageElements = this.mapService.imageElements;
+    const image = imageElements[imageName] ? imageElements[imageName] : imageElements['placeholder'];
+
     this.context.drawImage(image, position.x, position.y, this.mapService.tilePixelSize * scale, this.mapService.tilePixelSize * scale);
 
     if (healthRatio > 0 && healthRatio < 1) {
@@ -315,5 +301,29 @@ export class MapDirective implements AfterViewInit, Tick {
       this.context.fillStyle = 'black';
       this.context.strokeRect(position.x, position.y + this.mapService.tilePixelSize, this.mapService.tilePixelSize, -2);
     }
+  }
+
+  get transform() {
+    return this.mapService.transform;
+  }
+
+  set transform(value) {
+    this.mapService.transform = value;
+  }
+
+  get canvasPixelWidth(): number {
+    return this.mapService.canvasPixelWidth;
+  }
+
+  set canvasPixelWidth(value: number) {
+    this.mapService.canvasPixelWidth = value;
+  }
+
+  get canvasPixelHeight(): number {
+    return this.mapService.canvasPixelHeight;
+  }
+
+  set canvasPixelHeight(value: number) {
+    this.mapService.canvasPixelHeight = value;
   }
 }

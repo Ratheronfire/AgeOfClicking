@@ -6,8 +6,7 @@ import { ResourcesService } from '../resources/resources.service';
 import { StoreService } from './../store/store.service';
 import { Tick } from './../tick/tick.service';
 import { ResourceEnum } from './../../objects/resourceData';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile,
-  TileCropDetail, ResourceTile, Market, ResourceTileType } from '../../objects/tile';
+import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, ResourceTile, Market, ResourceTileType } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
 import { ResourceAnimation, Projectile, Actor, Fighter, ResourceAnimationType } from '../../objects/entity';
 import { Vector } from '../../objects/vector';
@@ -18,6 +17,8 @@ const baseTiles = require('../../../assets/json/tileTypes.json');
 
 import * as prng from 'prng-parkmiller-js';
 import * as SimplexNoise from 'simplex-noise';
+
+import * as d3 from 'd3-zoom';
 
 export enum CursorTool {
   PlaceBuildings = 'PLACEBUILDINGS',
@@ -48,11 +49,11 @@ export class MapService implements Tick {
   focusedResourceTile: ResourceTile;
   focusedResources: Resource[];
 
-  chunkWidth = 100;
-  chunkHeight = 100;
+  chunkWidth = 70;
+  chunkHeight = 70;
 
-  totalChunkX = 7;
-  totalChunkY = 7;
+  totalChunkX = 3;
+  totalChunkY = 3;
 
   elevationMap: number[] = [];
 
@@ -70,6 +71,15 @@ export class MapService implements Tick {
   lowFramerate = 125;
 
   tilePixelSize = 16;
+
+  homeSpawned = false;
+
+  // Shared canvas elements
+  transform = d3.zoomIdentity;
+  imageElements = {};
+
+  canvasPixelWidth: number;
+  canvasPixelHeight: number;
 
   constructor(protected resourcesService: ResourcesService,
               protected storeService: StoreService) {
@@ -93,17 +103,25 @@ export class MapService implements Tick {
         this.resourceTiles.set(tileType, baseTiles.resourceTiles[tileType]);
       }
     }
+
+    const imageElementContainer = document.getElementById('tile-images');
+    for (let i = 0; i < imageElementContainer.children.length; i++) {
+      const imageElement = imageElementContainer.children[i];
+      this.imageElements[imageElement.id] = imageElement;
+    }
   }
 
   initializeMap() {
-    // this.generateChunk(0, 0);
-
     // // Creating neighbor chunks
     // for (const neighborPosition of [[-1, -1], [0, -1], [1, -1], [-1, 0], [1, 0], [-1, 1], [0, 1], [1, 1]]) {
     //   if (!this.getChunk(neighborPosition[0], neighborPosition[1])) {
     //     this.generateChunk(neighborPosition[0], neighborPosition[1]);
     //   }
     // }
+
+    this.tileMap = [];
+
+    this.homeSpawned = false;
 
     for (let y = 0; y < this.totalChunkY; y++) {
       for (let x = 0; x < this.totalChunkX; x++) {
@@ -123,8 +141,9 @@ export class MapService implements Tick {
     for (let y = chunkTopLeft.y; y < chunkBottomRight.y; y++) {
       for (let x = chunkTopLeft.x; x < chunkBottomRight.x; x++) {
         const noiseValue = this.adjustedNoise(x, y, mapGen);
+        const tileId = this.getChunkOffset(x, y) + y * this.chunkWidth + x;
 
-        const tile = new Tile(y * this.chunkWidth + x, this.getBiome(noiseValue), undefined, undefined, true,
+        const tile = new Tile(tileId, this.getBiome(noiseValue), undefined, undefined, true,
                               new Vector(16 * x, 16 * y), undefined, 50, noiseValue, this.resourcesService);
         this.setTile(x, y, tile);
       }
@@ -132,14 +151,11 @@ export class MapService implements Tick {
 
     // Placing home (unless one already exists)
     // We want to place the home closer to the center of the map.
-    if (Math.abs(this.totalChunkX / 2 - chunkX) < 2 && Math.abs(this.totalChunkY / 2 - chunkY) < 2) {
-      // Remove duplicate homes.
-      this.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home).map(_homeTile => {
-        _homeTile.buildingTileType = undefined;
-      })
-
+    if (Math.abs(this.totalChunkX / 2 - chunkX) < 2 && Math.abs(this.totalChunkY / 2 - chunkY) < 2 && !this.homeSpawned) {
       const homeTile = this.getRandomTile([MapTileType.Grass]);
       homeTile.buildingTileType = BuildingTileType.Home;
+
+      this.homeSpawned = true;
     }
 
     // Placing resources
@@ -333,8 +349,8 @@ export class MapService implements Tick {
         break;
       }
 
-      currentNode = tileQueue.sort((a, b) => tileHeuristicDistances[a.id] - tileHeuristicDistances[b.id])[0];
-      tileQueue = tileQueue.filter(tile => tile !== currentNode);
+      tileQueue = tileQueue.sort((a, b) => tileHeuristicDistances[a.id] - tileHeuristicDistances[b.id]);
+      currentNode = tileQueue.pop();
 
       if (currentNode === targetTile) {
         const buildingPath: Tile[] = [];
@@ -374,13 +390,13 @@ export class MapService implements Tick {
   }
 
   getRandomTile(tileTypes?: MapTileType[]): Tile {
-    let tiles = this.tileMap;
+    let tile: Tile;
 
-    if (tileTypes) {
-      tiles = tiles.filter(tile => tileTypes.some(tileType => tileType === tile.mapTileType));
-    }
+    do {
+      tile = this.tileMap[Math.floor(Math.random() * this.tileMap.length)];
+    } while (!tile || !(!tileTypes || tileTypes.includes(tile.mapTileType)));
 
-    return tiles[Math.floor(Math.random() * tiles.length)];
+    return tile;
   }
 
   spawnHarvestedResourceAnimation(resource: Resource, multiplier: number = 1, spawnedByPlayer: boolean) {
@@ -459,6 +475,33 @@ export class MapService implements Tick {
     this.tileMap[this.getChunkOffset(x, y) + y * this.chunkWidth + x] = tile;
   }
 
+  setCameraCenter(center: Vector) {
+    const bounds = this.mapCameraBounds;
+
+    const oldCenter = bounds[1].add(bounds[0]).multiply(0.5);
+    const centerOffset = oldCenter.subtract(bounds[0]);
+
+    this.transform.x = center.x + centerOffset.x;
+    this.transform.y = center.y + centerOffset.y;
+
+    const newBounds = this.mapCameraBounds;
+
+    const upperLeftBorder = [0, 0];
+    const bottomRightBorder = [-this.totalChunkX * this.chunkWidth * this.tilePixelSize,
+      -this.totalChunkY * this.chunkHeight * this.tilePixelSize];
+
+    if (this.transform.x > upperLeftBorder[0]) {
+      this.transform.x = upperLeftBorder[0];
+    } else if (-newBounds[1].x < bottomRightBorder[0]) {
+      this.transform.x = (-newBounds[0].x + bottomRightBorder[0] + newBounds[1].x) * this.transform.k;
+    }
+    if (this.transform.y > upperLeftBorder[1]) {
+      this.transform.y = upperLeftBorder[1];
+    } else if (-newBounds[1].y < bottomRightBorder[1]) {
+      this.transform.y = (-newBounds[0].y + bottomRightBorder[1] + newBounds[1].y) * this.transform.k;
+    }
+  }
+
   clampTileCoordinates(x: number, y: number) {
     return [Math.floor(x / this.tilePixelSize), Math.floor(y / this.tilePixelSize)];
   }
@@ -473,5 +516,16 @@ export class MapService implements Tick {
     }
 
     return tiles;
+  }
+
+  get mapCameraBounds(): Vector[] {
+    const upperLeftPixel =
+     new Vector((-this.transform.x - this.tilePixelSize * 5) / this.transform.k,
+                (-this.transform.y - this.tilePixelSize * 5) / this.transform.k);
+    const lowerRightPixel =
+      new Vector(upperLeftPixel.x + (this.canvasPixelWidth + this.tilePixelSize * 5) / this.transform.k,
+                 upperLeftPixel.y + (this.canvasPixelHeight + this.tilePixelSize * 5) / this.transform.k);
+
+    return [upperLeftPixel, lowerRightPixel];
   }
 }
