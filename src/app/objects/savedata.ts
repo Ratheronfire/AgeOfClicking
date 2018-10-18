@@ -112,6 +112,8 @@ export interface SettingsData {
   harvestDetailColor?: string;
   workerDetailColor?: string;
   resourceAnimationColors;
+
+  prngSeed: number;
 }
 
 export class SaveData {

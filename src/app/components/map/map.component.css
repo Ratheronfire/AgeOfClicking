@@ -50,8 +50,8 @@ nav a.active {
   top: 0;
   right: 0;
 
-  width: 500px;
-  height: 500px;
+  width: 375px;
+  height: 375px;
 }
 
 #minimap-canvas-container canvas {

@@ -137,7 +137,10 @@ export class SettingsService implements Tick {
     this.resourcesService.loadBaseResources();
     this.upgradesService.loadBaseUpgrades();
     this.workersService.loadBaseWorkers();
+
+    this.mapService.seedRng(Math.random());
     this.mapService.initializeMap();
+
     this.enemyService.enemies = [];
     this.fighterService.fighters = [];
     this.mapService.resourceAnimations = [];
@@ -199,7 +202,8 @@ export class SettingsService implements Tick {
         slimInterface: this.slimInterface,
         organizeLeftPanelByType: this.organizeLeftPanelByType,
         mapLowFramerate: this.mapLowFramerate,
-        resourceAnimationColors: this.resourceAnimationColors
+        resourceAnimationColors: this.resourceAnimationColors,
+        prngSeed: this.mapService.prngSeed
       },
       foodStockpile: this.workersService.foodStockpile,
       gameVersion: this.gameVersion
@@ -317,6 +321,44 @@ export class SettingsService implements Tick {
 
       if (!saveData.gameVersion) {
         throw new Error('Save data is incompatible with the current version.');
+      }
+
+      if (saveData.settings !== undefined) {
+        this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
+        this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
+
+        this.resourcesService.highestTierReached = saveData.settings.highestTierReached ? saveData.settings.highestTierReached : 0;
+
+        this.workersService.workersPaused = saveData.settings.workersPaused ? saveData.settings.workersPaused : false;
+        this.upgradesService.hidePurchasedUpgrades =
+          saveData.settings.hidePurchasedUpgrades ? saveData.settings.hidePurchasedUpgrades : false;
+
+        this.resourceBinds = saveData.settings.resourceBinds ? saveData.settings.resourceBinds : defaultResourceBinds;
+        this.bindSelected.setValue(this.resourceBinds);
+        this.resourceBindChange({'source': null, 'value': this.resourceBinds});
+
+        this.messagesService.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
+          [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
+            MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
+            MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
+
+        this.enemyService.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
+
+        this.slimInterface = saveData.settings.slimInterface ? saveData.settings.slimInterface : false;
+        this.organizeLeftPanelByType = saveData.settings.organizeLeftPanelByType ? saveData.settings.organizeLeftPanelByType : true;
+
+        this.mapLowFramerate = saveData.settings.mapLowFramerate ? saveData.settings.mapLowFramerate : false;
+
+        this.harvestDetailColor = saveData.settings.harvestDetailColor ? saveData.settings.harvestDetailColor : '#a4ff89';
+        this.workerDetailColor = saveData.settings.workerDetailColor ? saveData.settings.workerDetailColor : '#ae89ff';
+        if (saveData.settings.resourceAnimationColors) {
+          this.resourceAnimationColors = saveData.settings.resourceAnimationColors;
+        }
+
+        if (saveData.settings.prngSeed) {
+          this.mapService.seedRng(saveData.settings.prngSeed);
+          this.mapService.initializeMap();
+        }
       }
 
       if (saveData.resources !== undefined) {
@@ -455,41 +497,7 @@ export class SettingsService implements Tick {
         }
       }
 
-      if (saveData.settings !== undefined) {
-        this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
-        this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
-
-        this.resourcesService.highestTierReached = saveData.settings.highestTierReached ? saveData.settings.highestTierReached : 0;
-
-        this.workersService.workersPaused = saveData.settings.workersPaused ? saveData.settings.workersPaused : false;
-        this.upgradesService.hidePurchasedUpgrades =
-          saveData.settings.hidePurchasedUpgrades ? saveData.settings.hidePurchasedUpgrades : false;
-
-        this.resourceBinds = saveData.settings.resourceBinds ? saveData.settings.resourceBinds : defaultResourceBinds;
-        this.bindSelected.setValue(this.resourceBinds);
-        this.resourceBindChange({'source': null, 'value': this.resourceBinds});
-
-        this.messagesService.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
-          [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
-            MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
-            MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
-
-        this.enemyService.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
-
-        this.slimInterface = saveData.settings.slimInterface ? saveData.settings.slimInterface : false;
-        this.organizeLeftPanelByType = saveData.settings.organizeLeftPanelByType ? saveData.settings.organizeLeftPanelByType : true;
-
-        this.mapLowFramerate = saveData.settings.mapLowFramerate ? saveData.settings.mapLowFramerate : false;
-
-        this.harvestDetailColor = saveData.settings.harvestDetailColor ? saveData.settings.harvestDetailColor : '#a4ff89';
-        this.workerDetailColor = saveData.settings.workerDetailColor ? saveData.settings.workerDetailColor : '#ae89ff';
-        if (saveData.settings.resourceAnimationColors) {
-          this.resourceAnimationColors = saveData.settings.resourceAnimationColors;
-        }
-      }
-
       this.workersService.foodStockpile = saveData.foodStockpile ? saveData.foodStockpile : 0;
-
       this.mapService.calculateResourceConnections();
 
       return true;
@@ -600,7 +608,9 @@ export class SettingsService implements Tick {
         enemyData.resourcesHeld = newResourcesHeld;
       }
 
-      saveData.settings.resourceBinds = saveData.settings.resourceBinds.map(resourceId => legacyResourceIds[resourceId]);
+      if (saveData.settings.resourceBinds) {
+        saveData.settings.resourceBinds = saveData.settings.resourceBinds.map(resourceId => legacyResourceIds[resourceId]);
+      }
 
       const accessedTiers = saveData.resources.filter(resource => resource.amount).map(resource =>
         this.resourcesService.resources.get(resource.resourceEnum).resourceTier);

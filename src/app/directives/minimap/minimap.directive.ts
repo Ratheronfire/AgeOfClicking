@@ -34,6 +34,7 @@ export class MinimapDirective implements AfterViewInit {
     this.canvasContainer = document.getElementById('minimap-canvas-container');
 
     this.renderMinimapBackground();
+    this.mapService.onMapUpdate.subscribe(_ => this.renderMinimapBackground());
 
     this.foregroundCanvas.call(d3.zoom()
     .filter(this.scrollFilter(this))
@@ -42,7 +43,7 @@ export class MinimapDirective implements AfterViewInit {
                                this.mapService.chunkHeight * this.mapService.tilePixelSize * this.mapService.totalChunkY]])
     .on('zoom', this.zoomed(this)));
 
-  this.foregroundCanvas.on('mousedown mousemove mouseup', this.clickTile(this));
+  this.foregroundCanvas.on('mousedown mousemove', this.clickTile(this));
 
   this.refreshTimer = d3.interval(this.renderMinimapForeground(this), 25);
   }
@@ -55,13 +56,12 @@ export class MinimapDirective implements AfterViewInit {
 
   zoomed(self: MinimapDirective) {
     return function(elapsed) {
-      self.transform = d3.event.transform;
     };
   }
 
   clickTile(self: MinimapDirective) {
     return function(elapsed) {
-      if (!d3.event.buttons && d3.event.type !== 'mouseup') {
+      if (!d3.event.buttons) {
         return;
       }
 
@@ -118,11 +118,13 @@ export class MinimapDirective implements AfterViewInit {
 
       self.foregroundContext.clearRect(0, 0, self.element.nativeElement.width, self.element.nativeElement.height);
 
+      if (homeTile) {
       const homeImage = self.mapService.imageElements['home'];
       self.foregroundContext.drawImage(homeImage, homeTile.x / self.mapService.tilePixelSize - 8,
                                         homeTile.y / self.mapService.tilePixelSize - 8, 16, 16);
+      }
 
-      const mapCameraBounds = self.mapService.mapCameraBounds;
+      const mapCameraBounds = self.mapService.getMapCameraBounds();
 
       self.foregroundContext.fillStyle = 'gray';
       self.foregroundContext.globalAlpha = 0.5;
@@ -138,7 +140,7 @@ export class MinimapDirective implements AfterViewInit {
                                       mapCameraBounds[0].y / self.mapService.tilePixelSize,
                                      (mapCameraBounds[1].x - mapCameraBounds[0].x) / self.mapService.tilePixelSize,
                                      (mapCameraBounds[1].y - mapCameraBounds[0].y) / self.mapService.tilePixelSize);
-    }
+    };
   }
 
   get transform() {

@@ -16,7 +16,7 @@ const baseWorkers = require('../../../assets/json/workers.json');
 })
 export class WorkersService implements Tick {
   public workers = new Map<string, Worker>();
-  workersPaused = false;
+  workersPaused: boolean;
 
   foodStockpile = 0;
   foodCollectAmount = 1000;

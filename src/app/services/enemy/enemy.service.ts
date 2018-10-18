@@ -85,7 +85,7 @@ export class EnemyService implements Tick, AfterViewInit {
       enemy.targetIndex = enemy.targets.length - 1;
     }
 
-    this.mapService.findPath(enemy.currentTile, enemy.targets[enemy.targetIndex].tile, false, true, 250).subscribe(tilePath => {
+    this.mapService.findPath(enemy.currentTile, enemy.targets[enemy.targetIndex].tile, false, true).subscribe(tilePath => {
       enemy.tilePath = tilePath;
 
       if (!enemy.tilePath.length) {
@@ -113,10 +113,10 @@ export class EnemyService implements Tick, AfterViewInit {
   }
 
   getTilePosition(enemy: Enemy) {
-    const x = Math.floor(enemy.x / 16) * 16;
-    const y = Math.floor(enemy.y / 16) * 16;
+    const x = Math.floor(enemy.x / this.mapService.tilePixelSize);
+    const y = Math.floor(enemy.y / this.mapService.tilePixelSize);
 
-    return this.mapService.tileMap.filter(tile => tile.x === x && tile.y === y)[0];
+    return this.mapService.getTile(x, y);
   }
 
   spawnEnemy() {

@@ -75,10 +75,10 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "OAK",
+      "repairResourceEnum": "STONE",
       "repairCostPerPoint": 0.2,
       "resourceCosts": [{
-        "resourceEnum": "OAK",
+        "resourceEnum": "STONE",
         "resourceCost": 35
       }],
       "buildableSurfaces": [
@@ -94,10 +94,10 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "PINE",
+      "repairResourceEnum": "OAK",
       "repairCostPerPoint": 0.25,
       "resourceCosts": [{
-        "resourceEnum": "PINE",
+        "resourceEnum": "OAK",
         "resourceCost": 40
       }],
       "buildableSurfaces": [
@@ -531,7 +531,7 @@
       "placeable": false,
       "spawnsOn": ["GRASS"],
       "isNaturalResource": true,
-      "spawnRate": 0.25,
+      "spawnRate": 0.65,
       "resourceEnums": ["OAK"]
     },
     "PINETREE": {
@@ -540,7 +540,7 @@
       "placeable": false,
       "spawnsOn": ["GRASS"],
       "isNaturalResource": true,
-      "spawnRate": 0.15,
+      "spawnRate": 0.45,
       "resourceEnums": ["PINE"]
     },
     "BIRCHTREE": {
@@ -549,7 +549,7 @@
       "placeable": false,
       "spawnsOn": ["GRASS"],
       "isNaturalResource": true,
-      "spawnRate": 0.10,
+      "spawnRate": 0.20,
       "resourceEnums": ["BIRCH"]
     },
     "EUCALYPTUSTREE": {
@@ -558,7 +558,7 @@
       "placeable": false,
       "spawnsOn": ["GRASS"],
       "isNaturalResource": true,
-      "spawnRate": 0.10,
+      "spawnRate": 0.15,
       "resourceEnums": ["EUCALYPTUS"]
     },
     "WILLOWTREE": {
@@ -567,7 +567,7 @@
       "placeable": false,
       "spawnsOn": ["GRASS"],
       "isNaturalResource": true,
-      "spawnRate": 0.05,
+      "spawnRate": 0.10,
       "resourceEnums": ["WILLOW"]
     },
     "TEAKTREE": {
@@ -576,7 +576,7 @@
       "placeable": false,
       "spawnsOn": ["GRASS"],
       "isNaturalResource": true,
-      "spawnRate": 0.02,
+      "spawnRate": 0.05,
       "resourceEnums": ["TEAK"]
     },
     "DEADENT": {
@@ -594,7 +594,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.20,
+      "spawnRate": 0.80,
       "resourceEnums": ["STONE"]
     },
     "GRAPHITEMINE": {
@@ -603,7 +603,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.10,
+      "spawnRate": 0.15,
       "resourceEnums": ["GRAPHITE"]
     },
     "LIMESTONEMINE": {
@@ -612,7 +612,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.05,
+      "spawnRate": 0.10,
       "resourceEnums": ["LIMESTONE"]
     },
     "MARBLEMINE": {
@@ -657,7 +657,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.15,
+      "spawnRate": 0.25,
       "resourceEnums": ["COPPERORE"]
     },
     "TINMINE": {
@@ -666,7 +666,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.15,
+      "spawnRate": 0.25,
       "resourceEnums": ["TINORE"]
     },
     "IRONMINE": {
@@ -675,7 +675,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.10,
+      "spawnRate": 0.15,
       "resourceEnums": ["IRONORE"]
     },
     "GOLDMINE": {
@@ -684,7 +684,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.05,
+      "spawnRate": 0.10,
       "resourceEnums": ["GOLDORE"]
     },
     "LATINUMMINE": {
@@ -693,7 +693,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.03,
+      "spawnRate": 0.05,
       "resourceEnums": ["LATINUMORE"]
     },
     "UNBELIEVIUMMINE": {
@@ -702,7 +702,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.01,
+      "spawnRate": 0.03,
       "resourceEnums": ["UNBELIEVIUMORE"]
     },
     "LUSTRIALMINE": {
@@ -711,7 +711,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.01,
+      "spawnRate": 0.03,
       "resourceEnums": ["LUSTRIALORE"]
     },
     "SPECTRUSMINE": {
@@ -720,7 +720,7 @@
       "placeable": false,
       "spawnsOn": ["MOUNTAIN"],
       "isNaturalResource": true,
-      "spawnRate": 0.01,
+      "spawnRate": 0.03,
       "resourceEnums": ["SPECTRUSORE"]
     },
     "CRACKEDFORGE": {

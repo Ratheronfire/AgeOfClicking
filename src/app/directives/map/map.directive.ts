@@ -64,6 +64,7 @@ export class MapDirective implements AfterViewInit, Tick {
     this.refreshTimer = d3.interval(this.refreshCanvas(this), 25);
 
     const homeTile = this.mapService.tileMap.find(tile => tile && tile.buildingTileType === BuildingTileType.Home);
+
     this.mapService.setCameraCenter(homeTile.position.multiply(-1));
   }
 
@@ -178,7 +179,7 @@ export class MapDirective implements AfterViewInit, Tick {
   }
 
   drawCanvas() {
-    const cameraBounds = this.mapService.mapCameraBounds;
+    const cameraBounds = this.mapService.getMapCameraBounds(5);
 
     const upperLeftTile =
       [Math.max(0, Math.floor(cameraBounds[0].x / this.mapService.tilePixelSize)),
