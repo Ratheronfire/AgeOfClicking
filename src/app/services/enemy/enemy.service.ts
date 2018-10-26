@@ -41,12 +41,12 @@ export class EnemyService implements Tick, AfterViewInit {
               protected messagesService: MessagesService) { }
 
   ngAfterViewInit() {
-    this.openPortal();
+    // this.openPortal();
   }
 
   tick(elapsed: number, deltaTime: number) {
     if (elapsed - this.lastSpawnTime >= this.spawnInterval) {
-      this.spawnEnemy();
+      // this.spawnEnemy();
       this.lastSpawnTime = elapsed;
     }
 
@@ -102,7 +102,7 @@ export class EnemyService implements Tick, AfterViewInit {
   }
 
   openPortal() {
-    for (const existingTile of this.mapService.tileMap.filter(_tile => _tile.buildingTileType === BuildingTileType.EnemyPortal)) {
+    for (const existingTile of this.mapService._tileMap.filter(_tile => _tile.buildingTileType === BuildingTileType.EnemyPortal)) {
       existingTile.buildingTileType = undefined;
     }
 
@@ -153,7 +153,7 @@ export class EnemyService implements Tick, AfterViewInit {
 
   findTargets(enemy: Enemy) {
     for (const buildingType of enemy.targetableBuildingTypes) {
-      for (const tile of this.mapService.tileMap.filter(_tile => _tile.buildingTileType === buildingType)) {
+      for (const tile of this.mapService._tileMap.filter(_tile => _tile.buildingTileType === buildingType)) {
         if (!enemy.targets.some(target => target.tile === tile)) {
           enemy.targets.push({tile: tile, accessible: true, wanderTarget: false});
         }
@@ -161,7 +161,7 @@ export class EnemyService implements Tick, AfterViewInit {
     }
 
     if (enemy.targets[enemy.targetIndex].wanderTarget ||
-      enemy.tilePath.some(tile => !tile.buildingTileType || !this.mapService.mapTiles.get(tile.mapTileType).walkable)) {
+      enemy.tilePath.some(tile => !tile.buildingTileType || !this.mapService.mapTileData.get(tile.mapTileType).walkable)) {
       this.finishTask(enemy);
     }
   }

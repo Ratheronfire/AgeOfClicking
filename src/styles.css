@@ -69,7 +69,7 @@ mat-sidenav-container.game-sidenav-container mat-sidenav-content {
   overflow-x: hidden;
 }
 
-.game-is-mobile app-clicker-main.resource-list {
+.game-is-mobile app-harvest.resource-list {
   width: 100%;
   overflow: hidden;
 }

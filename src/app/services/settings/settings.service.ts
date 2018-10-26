@@ -238,7 +238,7 @@ export class SettingsService implements Tick {
       saveData.workers.push(workerData);
     }
 
-    for (const tile of this.mapService.tileMap) {
+    for (const tile of this.mapService._tileMap) {
       if (!tile || tile.buildingTileType === undefined && tile.buildingTileType !== BuildingTileType.EnemyPortal) {
         continue;
       }
@@ -412,7 +412,7 @@ export class SettingsService implements Tick {
 
       if (saveData.tiles !== undefined) {
         for (const tileData of saveData.tiles) {
-          const tile = this.mapService.tileMap.find(_tile => _tile && _tile.id === tileData.id);
+          const tile = this.mapService._tileMap.find(_tile => _tile && _tile.id === tileData.id);
 
           if (!tile || [BuildingTileType.Home, BuildingTileType.EnemyPortal].includes(tileData.buildingTileType)) {
             continue;
@@ -433,10 +433,10 @@ export class SettingsService implements Tick {
         }
 
         const marketTiles = saveData.tiles.filter(
-          tile => tile.buildingTileType && this.mapService.buildingTiles.get(tile.buildingTileType).subType === BuildingSubType.Market);
+          tile => tile.buildingTileType && this.mapService.buildingTileData.get(tile.buildingTileType).subType === BuildingSubType.Market);
 
         for (const tileData of marketTiles) {
-          const tile = this.mapService.tileMap[tileData.id];
+          const tile = this.mapService._tileMap[tileData.id];
           let resourceType;
           switch (tileData.buildingTileType) {
             case BuildingTileType.WoodMarket: {
@@ -570,7 +570,7 @@ export class SettingsService implements Tick {
       saveData.settings.resourceAnimationColors[ResourceAnimationType.Sold] = '#ffc089';
 
       saveData.tiles.map(tileData => {
-        const isMarket = this.mapService.buildingTiles.get(tileData.buildingTileType).subType === BuildingSubType.Market;
+        const isMarket = this.mapService.buildingTileData.get(tileData.buildingTileType).subType === BuildingSubType.Market;
         tileData.statLevels = isMarket ? {'MAXHEALTH': 1, 'SELLAMOUNT': 1, 'SELLRATE': 1} : {'MAXHEALTH': 1};
         tileData.statCosts = isMarket ? {'MAXHEALTH': 1500, 'SELLAMOUNT': 1500, 'SELLRATE': 1500} : {'MAXHEALTH': 1500};
       });

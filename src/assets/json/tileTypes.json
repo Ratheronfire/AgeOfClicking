@@ -1,4 +1,16 @@
 {
+  "tileIndices": {
+    "GRASS": 14,
+    "MOUNTAIN": 18,
+    "WATER": 36,
+    "HOME": 0,
+    "WALL": 1,
+    "ROAD": 2,
+    "TUNNEL": 3,
+    "BRIDGE": 4,
+    "CRACKEDFORGE": 5,
+    "STONEFORGE": 6
+  },
   "mapTiles": {
     "GRASS": {
       "tileType": "GRASS",

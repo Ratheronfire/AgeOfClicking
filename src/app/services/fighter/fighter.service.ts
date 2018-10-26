@@ -4,7 +4,7 @@ import { Fighter } from '../../objects/entity';
 import { Tile } from '../../objects/tile';
 import { Resource } from './../../objects/resource';
 import { ResourceEnum } from './../../objects/resourceData';
-import { MapTile } from './../../objects/tile';
+import { MapTileData } from './../../objects/tile';
 import { Vector } from '../../objects/vector';
 import { ResourcesService } from '../resources/resources.service';
 import { EnemyService } from './../enemy/enemy.service';
@@ -51,7 +51,7 @@ export class FighterService implements Tick {
 
   createFighter(tile: Tile, fighterType: Fighter) {
     const goldResource: Resource = this.resourcesService.resources.get(ResourceEnum.Gold);
-    const mapTile: MapTile = this.mapService.mapTiles.get(tile.mapTileType);
+    const mapTile: MapTileData = this.mapService.mapTileData.get(tile.mapTileType);
     const overlaps = this.fighters.filter(_fighter => !_fighter.moveable && _fighter.currentTile === tile);
 
     if (goldResource.amount < fighterType.cost || !mapTile.walkable || overlaps.length) {

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 
-import { BuildingTile, BuildingTileType, Tile } from '../../../objects/tile';
+import { BuildingTileData, BuildingTileType, Tile } from '../../../objects/tile';
 import { Resource } from '../../../objects/resource';
 import { ResourceType, ResourceEnum } from '../../../objects/resourceData';
 import { ResourcesService } from '../../../services/resources/resources.service';
@@ -24,7 +24,7 @@ export class BuildingsComponent implements OnInit {
   ngOnInit() {
   }
 
-  selectBuilding(buildingTile: BuildingTile) {
+  selectBuilding(buildingTile: BuildingTileData) {
     if (this.selectedBuilding === buildingTile) {
       this.selectedBuilding = undefined;
     } else {
@@ -46,11 +46,11 @@ export class BuildingsComponent implements OnInit {
   }
 
   get buildingTiles() {
-    return this.mapService.buildingTiles;
+    return this.mapService.buildingTileData;
   }
 
-  getBuildingTileArray(filterByPlaceable: boolean): BuildingTile[] {
-    let tiles = Array.from(this.mapService.buildingTiles.values());
+  getBuildingTileArray(filterByPlaceable: boolean): BuildingTileData[] {
+    let tiles = Array.from(this.mapService.buildingTileData.values());
 
     if (filterByPlaceable) {
       tiles = tiles.filter(tile => tile.placeable);
@@ -63,7 +63,7 @@ export class BuildingsComponent implements OnInit {
     return this.resourcesService.resources.get(resourceEnum);
   }
 
-  get selectedBuilding(): BuildingTile {
+  get selectedBuilding(): BuildingTileData {
     return this.buildingsService.selectedBuilding;
   }
 

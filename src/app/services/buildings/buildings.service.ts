@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import { ResourceType } from './../../objects/resourceData';
-import { Tile, BuildingTileType, BuildingTile, BuildingSubType, Market } from '../../objects/tile';
+import { Tile, BuildingTileType, BuildingTileData, BuildingSubType, Market } from '../../objects/tile';
 import { ResourcesService } from './../resources/resources.service';
 import { MapService } from '../map/map.service';
 
@@ -9,14 +9,14 @@ import { MapService } from '../map/map.service';
   providedIn: 'root'
 })
 export class BuildingsService {
-  selectedBuilding: BuildingTile;
+  selectedBuilding: BuildingTileData;
   totalBuildingsPlaced = new Map<BuildingTileType, number>();
 
   constructor(protected resourcesService: ResourcesService,
               protected mapService: MapService) { }
 
   public createBuilding(tile: Tile, buildingType: BuildingTileType): boolean {
-    const buildingTile: BuildingTile = this.mapService.buildingTiles.get(buildingType);
+    const buildingTile: BuildingTileData = this.mapService.buildingTileData.get(buildingType);
 
     if (tile.buildingTileType !== undefined ||
         tile.resourceTileType !== undefined ||
@@ -68,7 +68,7 @@ export class BuildingsService {
     return true;
   }
 
-  public canAffordBuilding(buildingTile: BuildingTile): boolean {
+  public canAffordBuilding(buildingTile: BuildingTileData): boolean {
     if (buildingTile.maxPlaceable > 0 && this.totalBuildingsPlaced.get(buildingTile.tileType) >= buildingTile.maxPlaceable) {
       return false;
     }
@@ -92,7 +92,7 @@ export class BuildingsService {
       this.totalBuildingsPlaced.set(tile.buildingTileType, this.totalBuildingsPlaced.get(tile.buildingTileType) - 1);
     }
 
-    const buildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
+    const buildingTile = this.mapService.buildingTileData.get(tile.buildingTileType);
 
     if (buildingTile.placesResourceTile) {
       tile.resourceTileType = undefined;
@@ -112,7 +112,7 @@ export class BuildingsService {
   }
 
   public canRepairBuilding(tile: Tile): boolean {
-    const buildingTile: BuildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
+    const buildingTile: BuildingTileData = this.mapService.buildingTileData.get(tile.buildingTileType);
     const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);
 
     return repairResource.amount >= buildingTile.repairCostPerPoint * (tile.maxHealth - tile.health);
@@ -122,7 +122,7 @@ export class BuildingsService {
     if (!this.canRepairBuilding(tile)) {
       return;
     }
-    const buildingTile: BuildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
+    const buildingTile: BuildingTileData = this.mapService.buildingTileData.get(tile.buildingTileType);
     const healAmount = tile.maxHealth - tile.health;
 
     const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);

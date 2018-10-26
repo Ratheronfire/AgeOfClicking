@@ -1,6 +1,4 @@
 <div id="map-canvas-container" tabindex="1">
-  <canvas id="map" class="noselect" appNoScroll appMap oncontextmenu="return false"></canvas>
-
   <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools"
     (valueChange)="clearFocus()">
     <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
@@ -49,11 +47,6 @@
       Fighter Details
     </mat-button-toggle>
   </mat-button-toggle-group>
-
-  <div id="minimap-canvas-container" class="minimap" appMinimap oncontextmenu="return false">
-      <canvas id="minimap_background" class="noselect"></canvas>
-      <canvas id="minimap_foreground" class="noselect"></canvas>
-  </div>
 
   <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>
   <app-fighter *ngIf="mapService.fighterListVisible"></app-fighter>

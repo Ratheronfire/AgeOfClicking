@@ -5,19 +5,19 @@ import { timer } from 'rxjs';
 import { ResourcesService } from '../resources/resources.service';
 import { WorkersService } from '../workers/workers.service';
 import { MapService, CursorTool } from '../map/map.service';
-import { EnemyService } from './../enemy/enemy.service';
+import { EnemyService } from '../enemy/enemy.service';
 import { MessagesService } from '../messages/messages.service';
 import { SettingsService } from '../settings/settings.service';
 import { AdminService } from '../admin/admin.service';
-import { Tick } from './../tick/tick.service';
+import { Tick } from '../tick/tick.service';
 import { Resource } from '../../objects/resource';
-import { ResourceType } from './../../objects/resourceData';
+import { ResourceType } from '../../objects/resourceData';
 import { MessageSource } from '../../objects/message';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ClickerMainService implements Tick {
+export class HarvestService implements Tick {
   timeElapsed: number;
 
   resourceTypes = ResourceType;

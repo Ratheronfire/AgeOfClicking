@@ -5,12 +5,13 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ZoomableCanvasComponent } from '@durwella/zoomable-canvas';
 
 import { MaterialImportModule } from './material-import/material-import.module';
+import { PhaserModule } from 'phaser-component-library';
 import { PipeModule } from './pipes/pipe.module';
 import { LongNumberPipe } from './pipes/long-number-pipe';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppComponent } from './app.component';
-import { ClickerMainComponent } from './components/clicker-main/clicker-main.component';
+import { HarvestComponent } from './components/harvest/harvest.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { WorkersComponent } from './components/workers/workers.component';
 import { StoreComponent } from './components/store/store.component';
@@ -34,7 +35,7 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
   declarations: [
     AppComponent,
     ZoomableCanvasComponent,
-    ClickerMainComponent,
+    HarvestComponent,
     MessagesComponent,
     WorkersComponent,
     StoreComponent,
@@ -61,6 +62,7 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialImportModule,
+    PhaserModule,
     PipeModule,
     ColorPickerModule
   ],

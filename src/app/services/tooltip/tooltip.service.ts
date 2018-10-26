@@ -104,7 +104,7 @@ export class TooltipService {
 
     const requiredBuilding = this.requiredBuildings[resource.resourceEnum];
     if (requiredBuilding) {
-      const building = this.mapService.buildingTiles.get(requiredBuilding);
+      const building = this.mapService.buildingTileData.get(requiredBuilding);
       tooltip += `\nNeeded Building: ${building.name}.`;
     }
 

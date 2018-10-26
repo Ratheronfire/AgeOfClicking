@@ -1,3 +1,4 @@
+import { BuildingNode, ResourceNode } from './../../objects/tile';
 import { Injectable, EventEmitter } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
@@ -6,7 +7,8 @@ import { ResourcesService } from '../resources/resources.service';
 import { StoreService } from './../store/store.service';
 import { Tick } from './../tick/tick.service';
 import { ResourceEnum } from './../../objects/resourceData';
-import { Tile, MapTileType, BuildingTileType, MapTile, BuildingTile, ResourceTile, Market, ResourceTileType } from '../../objects/tile';
+import { MapTileType, BuildingTileType, MapTileData, BuildingTileData, ResourceTileData,
+  Market, ResourceTileType } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
 import { ResourceAnimation, Projectile, Actor, Fighter, ResourceAnimationType } from '../../objects/entity';
 import { Vector } from '../../objects/vector';
@@ -34,30 +36,32 @@ export enum CursorTool {
 export class MapService implements Tick {
   public tileTypes = baseTiles.tileTypes;
 
-  public mapTiles: Map<string, MapTile> = new Map<string, MapTile>();
-  public buildingTiles: Map<string, BuildingTile> = new Map<string, BuildingTile>();
-  public resourceTiles: Map<string, ResourceTile> = new Map<string, ResourceTile>();
+  public mapTileData: Map<string, MapTileData> = new Map<string, MapTileData>();
+  public buildingTileData: Map<string, BuildingTileData> = new Map<string, BuildingTileData>();
+  public resourceTileData: Map<string, ResourceTileData> = new Map<string, ResourceTileData>();
+
+  mapManager: Phaser.Game;
 
   cursorTool: CursorTool;
 
   buildingListVisible = false;
   fighterListVisible = false;
 
-  focusedTile: Tile;
+  focusedTile: MapTileData;
   focusedFighter: Fighter;
-  focusedBuildingTile: BuildingTile;
-  focusedResourceTile: ResourceTile;
+  focusedBuildingTile: BuildingTileData;
+  focusedResourceTile: ResourceTileData;
   focusedResources: Resource[];
 
   chunkWidth = 75;
   chunkHeight = 75;
 
-  totalChunkX = 5;
-  totalChunkY = 5;
+  totalChunkX = 2;
+  totalChunkY = 2;
 
   elevationMap: number[] = [];
 
-  public tileMap: Tile[] = [];
+  public _tileMap: MapTileData[] = [];
   resourceAnimations: ResourceAnimation[] = [];
   projectiles: Projectile[] = [];
 
@@ -72,19 +76,49 @@ export class MapService implements Tick {
 
   tilePixelSize = 16;
 
+  imageElements = {};
+
+  canvasPixelWidth: number;
+  canvasPixelHeight: number;
+
+  // Map generation/rng variables
+
   rng: any;
 
   prngSeed: number;
   mapSeed: number;
   resourceSeed: number;
 
-  // Shared canvas elements
-  public onMapUpdate: EventEmitter<any> = new EventEmitter<any>();
-  transform = d3.zoomIdentity;
-  imageElements = {};
+  // Phaser variables
 
-  canvasPixelWidth: number;
-  canvasPixelHeight: number;
+  canvasContainer: HTMLElement;
+
+  tileIndices = {
+    'GRASS': 14, 'MOUNTAIN': 18, 'WATER': 36, 'HOME': 0, 'WALL': 1, 'ROAD': 2, 'TUNNEL': 3, 'BRIDGE': 4, 'CRACKEDFORGE': 5, 'STONEFORGE': 6,
+    'IRONFORGE': 7, 'GOLDFORGE': 8, 'LATINUMFORGE': 9, 'TEMPROUSDISTILLERY': 10, 'OAKOVEN': 11, 'STONEOVEN': 12, 'MARBLEOVEN': 13,
+    'TEMPROUSOVEN': 14, 'CHICKENFARM': 15, 'COWFARM': 16, 'DRAGONFARM': 17, 'WOODMARKET': 18, 'MINERALMARKET': 19, 'METALMARKET': 20,
+    'ENEMYPORTAL': 21, 'COIN': 0, 'OAK': 1, 'PINE': 2, 'BIRCH': 3, 'EUCALYPTUS': 4, 'WILLOW': 5, 'TEAK': 6, 'ENTSOUL': 7,
+    'REANIMATEDENT': 8, 'STONE': 9, 'GRAPHITE': 10, 'LIMESTONE': 11, 'MARBLE': 12, 'QUARTZ': 13, 'OBSIDIAN': 14, 'DIAMOND': 15,
+    'COPPERORE': 16, 'TINORE': 17, 'IRONORE': 18, 'GOLDORE': 19, 'LATINUMORE': 20, 'UNBELIEVIUMORE': 21, 'LUSTRIALORE': 22,
+    'SPECTRUSORE': 23, 'BRONZEINGOT': 24, 'IRONINGOT': 25, 'STEELINGOT': 26, 'GOLDINGOT': 27, 'LATINUMINGOT': 28, 'TEMPROUSINGOT': 29,
+    'REFINEDTEMPROUS': 30, 'WHEAT': 31, 'BREAD': 32, 'RAWPOTATO': 33, 'POTATO': 34, 'RICE': 35, 'JELLYDONUT': 36, 'RAWHERRING': 37,
+    'HERRING': 38, 'RAWBASS': 39, 'BASS': 40, 'RAWSHARK': 41, 'SHARK': 42, 'RAWCHICKEN': 43, 'CHICKEN': 44, 'RAWSTEAK': 45, 'STEAK': 46,
+    'RAWDRAGONMEAT': 47, 'DRAGONMEAT': 48, 'OAKTREE': 0, 'PINETREE': 1, 'BIRCHTREE': 2, 'EUCALYPTUSTREE': 3, 'WILLOWTREE': 4, 'TEAKTREE': 5,
+    'DEADENT': 6, 'STONEMINE': 7, 'GRAPHITEMINE': 8, 'LIMESTONEMINE': 9, 'MARBLEMINE': 10, 'QUARTZMINE': 11, 'OBSIDIANMINE': 12,
+    'DIAMONDMINE': 13, 'COPPERMINE': 14, 'TINMINE': 15, 'IRONMINE': 16, 'GOLDMINE': 17, 'LATINUMMINE': 18, 'UNBELIEVIUMMINE': 19,
+    'LUSTRIALMINE': 20, 'SPECTRUSMINE': 21, 'WHEATFARM': 22, 'RAWPOTATOFARM': 23, 'RICEFARM': 24, 'FISHINGSPOT': 25
+  };
+
+  tileMap: Phaser.Tilemaps.Tilemap;
+  mapLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  resourceLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  buildingLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+
+  cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl;
+
+  pointerTileX: number;
+  pointerTileY: number;
+  dragStartPoint: Phaser.Math.Vector2;
 
   constructor(protected resourcesService: ResourcesService,
               protected storeService: StoreService) {
@@ -93,21 +127,21 @@ export class MapService implements Tick {
     for (const tileTypeString in MapTileType) {
       if (typeof tileTypeString === 'string') {
         const tileType = MapTileType[tileTypeString];
-        this.mapTiles.set(tileType, baseTiles.mapTiles[tileType]);
+        this.mapTileData.set(tileType, baseTiles.mapTiles[tileType]);
       }
     }
 
     for (const tileTypeString in BuildingTileType) {
       if (typeof tileTypeString === 'string') {
         const tileType = BuildingTileType[tileTypeString];
-        this.buildingTiles.set(tileType, baseTiles.buildingTiles[tileType]);
+        this.buildingTileData.set(tileType, baseTiles.buildingTiles[tileType]);
       }
     }
 
     for (const tileTypeString in ResourceTileType) {
       if (typeof tileTypeString === 'string') {
         const tileType = ResourceTileType[tileTypeString];
-        this.resourceTiles.set(tileType, baseTiles.resourceTiles[tileType]);
+        this.resourceTileData.set(tileType, baseTiles.resourceTiles[tileType]);
       }
     }
 
@@ -115,6 +149,104 @@ export class MapService implements Tick {
     for (let i = 0; i < imageElementContainer.children.length; i++) {
       const imageElement = imageElementContainer.children[i];
       this.imageElements[imageElement.id] = imageElement;
+    }
+
+    this.mapManager = new Phaser.Game({
+      width: 1920, height: 1080, zoom: 1, parent: 'map-canvas-container',
+      scene: {
+        preload: _ => this.preload(),
+        create:  _ => this.create(),
+        update:  (time, delta) => this.update(time, delta)
+      }
+    });
+  }
+
+  preload() {
+    this.canvasContainer = this.mapManager.canvas.parentElement;
+    this.resize();
+
+    for (const imageElement in this.imageElements) {
+      if (this.imageElements[imageElement]) {
+        this.scene.load.image(imageElement, this.imageElements[imageElement].src);
+      }
+    }
+
+    this.scene.load.image('map', '../../../assets/sprites/map.png');
+    this.scene.load.image('buildings', '../../../assets/sprites/buildings.png');
+    this.scene.load.image('resources', '../../../assets/sprites/resources.png');
+    this.scene.load.image('resourceSpawns', '../../../assets/sprites/resourceSpawns.png');
+  }
+
+  create() {
+    this.tileMap = this.scene.make.tilemap({
+      tileWidth: 16, tileHeight: 16,
+      width: this.totalChunkX * this.chunkWidth,
+      height: this.totalChunkY * this.chunkHeight
+    });
+
+    this.initializeMap();
+
+    const cursors = this.scene.input.keyboard.createCursorKeys();
+
+    const controlConfig = {
+      camera: this.scene.cameras.main,
+      up: cursors.up,
+      down: cursors.down,
+      left: cursors.left,
+      right: cursors.right,
+      acceleration: 0.8,
+      drag: 0.1,
+      maxSpeed: 5
+    };
+
+    this.cameraControls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
+
+    this.scene.cameras.main.setBounds(0, 0, this.totalChunkX * this.chunkWidth * this.tilePixelSize,
+                                            this.totalChunkY * this.chunkHeight  * this.tilePixelSize);
+
+    this.canvasContainer.onmousewheel = event => this.zoomMap(event);
+  }
+
+  update(time, delta) {
+    this.resize();
+
+    this.cameraControls.update(delta);
+
+    const camera = this.scene.cameras.main;
+    const pointer = this.scene.input.activePointer;
+
+    const cursorWorldPoint = pointer.positionToCamera(camera) as Phaser.Math.Vector2;
+
+    this.pointerTileX = this.mapLayer.worldToTileX(cursorWorldPoint.x);
+    this.pointerTileY = this.mapLayer.worldToTileY(cursorWorldPoint.y);
+
+    if (this.scene.input.manager.activePointer.justDown) {
+      const tile = this.mapLayer.getTileAt(this.pointerTileX, this.pointerTileY);
+      if (tile) {
+        console.log(tile.properties);
+      }
+
+      this.dragStartPoint = new Phaser.Math.Vector2(pointer.position.x + camera.scrollX, pointer.position.y + camera.scrollY);
+    }
+
+    if (this.scene.input.manager.activePointer.isDown) {
+      const cursorScreenPoint = this.scene.input.activePointer.position;
+
+      this.scene.cameras.main.scrollX = this.dragStartPoint.x - cursorScreenPoint.x;
+      this.scene.cameras.main.scrollY = this.dragStartPoint.y - cursorScreenPoint.y;
+    }
+  }
+
+  resize() {
+    this.mapManager.resize(this.canvasContainer.clientWidth, this.canvasContainer.clientHeight);
+    this.scene.cameras.resize(this.canvasContainer.clientWidth, this.canvasContainer.clientHeight);
+  }
+
+  zoomMap(event) {
+    const newScale = this.scene.cameras.main.zoom - event.deltaY / 65;
+
+    if (newScale > 0.5 && newScale < 4) {
+      this.scene.cameras.main.zoomTo(newScale, 50);
     }
   }
 
@@ -127,7 +259,15 @@ export class MapService implements Tick {
   }
 
   initializeMap() {
-    this.tileMap = [];
+    this.tileMap.removeAllLayers();
+
+    const mapTileset = this.tileMap.addTilesetImage('map', 'map', 16, 16);
+    const resourceTileset = this.tileMap.addTilesetImage('resourceSpawns', 'resourceSpawns', 16, 16);
+    const buildingTileset = this.tileMap.addTilesetImage('buildings', 'buildings', 16, 16);
+
+    this.mapLayer = this.tileMap.createBlankDynamicLayer('mapLayer', mapTileset);
+    this.resourceLayer = this.tileMap.createBlankDynamicLayer('resourceLayer', resourceTileset);
+    this.buildingLayer = this.tileMap.createBlankDynamicLayer('buildingLayer', buildingTileset);
 
     for (let y = 0; y < this.totalChunkY; y++) {
       for (let x = 0; x < this.totalChunkX; x++) {
@@ -141,46 +281,50 @@ export class MapService implements Tick {
                                                                    this.totalChunkX * 0.6 * this.chunkWidth,
                                                                    this.totalChunkY * 0.4 * this.chunkHeight,
                                                                    this.totalChunkY * 0.6 * this.chunkHeight);
-    homeTile.buildingTileType = BuildingTileType.Home;
-    homeTile.buildingRemovable = false;
+    this.setBuildingTile(homeTile.x, homeTile.y, BuildingTileType.Home, false, 50);
+
+    this.scene.cameras.main.centerOn(homeTile.x, homeTile.y);
 
     // Placing an oak tree & stone mine near the home, to ensure they're always available.
     // We want to vary up their positions a bit to feel more natural.
-    let grassTiles: Tile[] = [], mountainTiles: Tile[] = [];
-    const placedRoads: Tile[] = [];
+    let grassTiles: Phaser.Tilemaps.Tile[] = [], mountainTiles: Phaser.Tilemaps.Tile[] = [];
+    const placedRoads: Phaser.Tilemaps.Tile[] = [];
 
-    let oakTile: Tile, stoneTile: Tile;
+    let oakTile: Phaser.Tilemaps.Tile, stoneTile: Phaser.Tilemaps.Tile;
     let currentTile = homeTile;
 
     for (let i = 0; i < this.rng.nextIntRange(7, 16); i++) {
       let neighbors = this.getNeighborTiles(currentTile);
 
-      const existingOakTile = neighbors.find(tile => tile.resourceTileType === ResourceTileType.OakTree);
+      const existingOakTile = neighbors.find(tile => tile.properties['resourceNode'] &&
+        tile.properties['resourceNode'].tileType === ResourceTileType.OakTree);
       if (existingOakTile) {
         oakTile = existingOakTile;
       }
 
-      const existingStoneTile = neighbors.find(tile => tile.resourceTileType === ResourceTileType.StoneMine);
+      const existingStoneTile = neighbors.find(tile => tile.properties['resourceNode'] &&
+        tile.properties['resourceNode'].tileType === ResourceTileType.StoneMine);
       if (existingStoneTile) {
         stoneTile = existingStoneTile;
       }
 
-      grassTiles = grassTiles.concat(neighbors.filter(tile => tile.mapTileType === MapTileType.Grass));
-      mountainTiles = mountainTiles.concat(neighbors.filter(tile => tile.mapTileType === MapTileType.Mountain));
+      grassTiles = grassTiles.concat(neighbors.filter(tile => tile.properties['tileType'] === MapTileType.Grass));
+      mountainTiles = mountainTiles.concat(neighbors.filter(tile => tile.properties['tileType'] === MapTileType.Mountain));
 
-      neighbors = neighbors.filter(tile => !tile.buildingTileType && !tile.resourceTileType && tile.mapTileType === MapTileType.Grass);
+      neighbors = neighbors.filter(
+        tile => !tile.properties['buildingNode'] && !tile.properties['resourceNode'] && tile.properties['tileType'] === MapTileType.Grass);
 
       if (!neighbors.length) {
         currentTile = grassTiles[this.rng.nextIntRange(0, grassTiles.length - 1)];
       } else {
         currentTile = neighbors[this.rng.nextIntRange(0, neighbors.length - 1)];
       }
-      currentTile.buildingTileType = BuildingTileType.Road;
+      this.setBuildingTile(currentTile.x, currentTile.y, BuildingTileType.Road, false, 50);
       placedRoads.push(currentTile);
     }
 
-    grassTiles = grassTiles.filter(tile => !tile.buildingTileType && !tile.resourceTileType);
-    mountainTiles = mountainTiles.filter(tile => !tile.buildingTileType && !tile.resourceTileType);
+    grassTiles = grassTiles.filter(tile => !tile.properties['buildingNode'] && !tile.properties['resourceNode']);
+    mountainTiles = mountainTiles.filter(tile => !tile.properties['buildingNode'] && !tile.properties['resourceNode']);
 
     if (!oakTile) {
       oakTile = grassTiles[this.rng.nextIntRange(0, grassTiles.length - 1)];
@@ -192,32 +336,29 @@ export class MapService implements Tick {
                                             grassTiles[this.rng.nextIntRange(0, grassTiles.length - 1)];
     }
 
-    oakTile.resourceTileType = ResourceTileType.OakTree;
-    stoneTile.resourceTileType = ResourceTileType.StoneMine;
+    this.setResourceTile(oakTile.x, oakTile.y, ResourceTileType.OakTree, 50);
+    this.setResourceTile(stoneTile.x, stoneTile.y, ResourceTileType.StoneMine, 50);
 
     this.updatePaths(homeTile, true);
 
     for (const roadTile of placedRoads) {
-      if (!oakTile.buildingPath.includes(roadTile) && !stoneTile.buildingPath.includes(roadTile)) {
-        roadTile.buildingTileType = undefined;
-      } else {
-        roadTile.buildingRemovable = false;
+      if (!oakTile.properties['resourceNode'].path.includes(roadTile) && !stoneTile.properties['resourceNode'].path.includes(roadTile)) {
+        this.clearBuildingTile(roadTile.x, roadTile.y);
       }
     }
 
     // Final sweep to make sure all spawnable resources exist at least once.
-    let naturalResources = Array.from(this.resourceTiles.values());
+    let naturalResources = Array.from(this.resourceTileData.values());
     naturalResources = naturalResources.filter(resource => resource.isNaturalResource);
-    naturalResources = naturalResources.filter(resource => !this.tileMap.some(tile => tile.resourceTileType === resource.tileType));
+    naturalResources = naturalResources.filter(resource =>
+      !this.resourceLayer.findTile(tile => tile.properties['tileType'] === resource.tileType));
 
     for (const missingResource of naturalResources) {
       const resourceTile = this.getRandomTile(missingResource.spawnsOn, true);
-      resourceTile.resourceTileType = missingResource.tileType;
+      this.setResourceTile(resourceTile.x, resourceTile.y, missingResource.tileType, 50);
     }
 
     this.calculateResourceConnections();
-
-    this.onMapUpdate.emit();
   }
 
   generateChunk(chunkX: number, chunkY: number) {
@@ -232,17 +373,19 @@ export class MapService implements Tick {
       for (let x = chunkTopLeft.x; x < chunkBottomRight.x; x++) {
         const noiseValue = this.adjustedNoise(x, y, mapGen);
         const tileId = this.getChunkOffset(x, y) + y * this.chunkWidth + x;
+        const tileType = this.getBiome(noiseValue);
 
-        const tile = new Tile(tileId, this.getBiome(noiseValue), undefined, undefined, true,
-                              new Vector(16 * x, 16 * y), undefined, 50, noiseValue, this.resourcesService);
-        this.setTile(x, y, tile);
+        const tile = this.mapLayer.putTileAt(this.tileIndices[tileType], x, y);
+        tile.properties['id'] = tileId;
+        tile.properties['height'] = noiseValue;
+        tile.properties['tileType'] = tileType;
       }
     }
 
-    const centerVector = new Vector(this.totalChunkX * this.chunkWidth * this.tilePixelSize / 2,
+    const centerVector = new Phaser.Math.Vector2(this.totalChunkX * this.chunkWidth * this.tilePixelSize / 2,
       this.totalChunkY * this.chunkHeight * this.tilePixelSize / 2);
     const maxTier = Math.max(...this.resourcesService.getResources().map(resource => resource.resourceTier));
-    const tierRingSize = centerVector.magnitude / maxTier;
+    const tierRingSize = centerVector.length() / maxTier;
 
     // Placing resources
     for (let y = chunkTopLeft.y; y < chunkBottomRight.y; y++) {
@@ -256,20 +399,21 @@ export class MapService implements Tick {
         // Check nearby tiles to see if this tile is higher than all of them
         for (let ny = y - scanRange; ny < y + scanRange; ny++) {
           for (let nx = x - scanRange; nx < x + scanRange; nx++) {
-            const neighborTile = this.getTile(nx, ny);
-            if (neighborTile && neighborTile.noiseValue > maxNoise) {
-              maxNoise = neighborTile.noiseValue;
+            const neighborTile = this.getMapTile(nx, ny);
+            if (neighborTile && neighborTile.height > maxNoise) {
+              maxNoise = neighborTile.height;
             }
           }
         }
 
-        const tile = this.getTile(x, y);
-        if (tile.noiseValue === maxNoise) {
-          const distanceToCenter = new Vector(Math.abs(tile.x - centerVector.x), Math.abs(tile.y - centerVector.y)).magnitude;
+        const tile = this.getMapTile(x, y);
+        if (tile.properties['height'] === maxNoise) {
+          const distanceToCenter = new Phaser.Math.Vector2(Math.abs(tile.x - centerVector.x),
+                                                           Math.abs(tile.y - centerVector.y)).length();
           const tierValue = Math.floor(distanceToCenter / tierRingSize);
 
-          let naturalResources = Array.from(this.resourceTiles.values());
-          naturalResources = naturalResources.filter(resource => resource.spawnsOn.includes(tile.mapTileType));
+          let naturalResources = Array.from(this.resourceTileData.values());
+          naturalResources = naturalResources.filter(resource => resource.spawnsOn.includes(tile.properties['tileType']));
           naturalResources = naturalResources.filter(resource => {
             const resourceTiers = resource.resourceEnums.map(resourceEnum =>
               this.resourcesService.resources.get(resourceEnum).resourceTier);
@@ -286,7 +430,7 @@ export class MapService implements Tick {
           for (const resource of naturalResources) {
             resourceDiceRoll -= resource.spawnRate;
             if (resourceDiceRoll <= 0) {
-              tile.resourceTileType = resource.tileType;
+              this.setResourceTile(tile.x, tile.y, resource.tileType, 50);
               break;
             }
           }
@@ -302,12 +446,16 @@ export class MapService implements Tick {
     // TODO: Store building data outside of tile map, simulate offscreen production
     for (let y = chunkTopLeft.y; y < chunkBottomRight.y; y++) {
       for (let x = chunkTopLeft.x; x < chunkBottomRight.x; x++) {
-        this.setTile(x, y, undefined);
+        this.clearLayeredTile(x, y);
       }
     }
   }
 
   tick(elapsed: number, deltaTime: number) {
+    if (!this.mapLayer) {
+      return;
+    }
+
     for (const resourceAnimation of this.resourceAnimations) {
       resourceAnimation.tick(elapsed, deltaTime);
 
@@ -316,8 +464,11 @@ export class MapService implements Tick {
       }
     }
 
-    for (const tile of this.tileMap.filter(_tile => _tile.market)) {
-      tile.market.tick(elapsed, deltaTime);
+    for (const tile of this.buildingLayer.getTilesWithin()) {
+      const buildingNode = tile.properties['buildingNode'];
+      if (buildingNode && buildingNode.market) {
+        tile.properties['buildingNode'].tick(elapsed, deltaTime);
+      }
     }
 
     this.resourceAnimations = this.resourceAnimations.filter(animation => !animation.pathingDone);
@@ -351,14 +502,15 @@ export class MapService implements Tick {
     }
   }
 
-  updatePaths(updatedTile: Tile, onlyPathable: boolean) {
-    const visitedTiles: Tile[] = [];
-    const tileQueue: Tile[] = [];
-    let currentTile: Tile;
+  updatePaths(updatedTile: Phaser.Tilemaps.Tile, onlyPathable: boolean) {
+    const visitedTiles: Phaser.Tilemaps.Tile[] = [];
+    const tileQueue: Phaser.Tilemaps.Tile[] = [];
+    let currentTile: Phaser.Tilemaps.Tile;
 
     tileQueue.push(updatedTile);
 
-    const homeTile = this.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+    const homeTile = this.mapLayer.findTile(tile => tile.properties['buildingNode'] &&
+      tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
     while (tileQueue.length) {
       currentTile = tileQueue.pop();
@@ -367,22 +519,28 @@ export class MapService implements Tick {
       visitedTiles.push(currentTile);
 
       for (const neighbor of neighborTiles) {
-        const buildingTile = this.buildingTiles.get(neighbor.buildingTileType);
+        let buildingTile: BuildingTileData;
+        if (neighbor.properties['buildingNode']) {
+          buildingTile = this.buildingTileData.get(neighbor.properties['buildingNode'].tileType);
+        }
+
         if (!visitedTiles.includes(neighbor) &&
-            (!onlyPathable || ((buildingTile && buildingTile.resourcePathable)) || neighbor.resourceTileType)) {
+            (!onlyPathable || ((buildingTile && buildingTile.resourcePathable)) || neighbor.properties['resourceNode'])) {
           tileQueue.push(neighbor);
         }
       }
 
-      if (!currentTile.resourceTileType) {
+      if (!currentTile.properties['resourceNode']) {
         continue;
       }
 
       this.findPath(currentTile, homeTile, true, true).subscribe(tilePath => {
-        currentTile.buildingPath = tilePath;
+        const resourceNode: ResourceNode = currentTile.properties['resourceNode'];
+        resourceNode.path = tilePath;
 
-        const pathAvailable = currentTile.buildingPath.length && !currentTile.buildingPath.some(tile => tile.health <= 0);
-        const resources = this.resourceTiles.get(currentTile.resourceTileType).resourceEnums
+        const pathAvailable = resourceNode.path.length &&
+          !resourceNode.path.some(tile => tile.properties['buildingNode'] && tile.properties['buildingNode'].health <= 0);
+        const resources = this.resourceTileData.get(resourceNode.tileType).resourceEnums
             .map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
 
         for (const resource of resources) {
@@ -399,18 +557,16 @@ export class MapService implements Tick {
       resource.pathAvailable = false;
     }
 
-    const homeTile = this.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+    const homeTile = this.mapLayer.findTile(tile => tile.properties['buildingNode'] &&
+      tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
     for (const resourceTile of resourceTiles) {
-      if (resourceTile.health <= 0) {
-        continue;
-      }
-
       this.findPath(resourceTile, homeTile, true, true).subscribe(tilePath => {
-        resourceTile.buildingPath = tilePath;
+        const resourceNode = resourceTile.properties['resourceNode'];
+        resourceNode.path = tilePath;
 
-        if (resourceTile.buildingPath.length && !resourceTile.buildingPath.some(tile => tile.health <= 0)) {
-          const resources = this.resourceTiles.get(resourceTile.resourceTileType).resourceEnums
+        if (resourceNode.path.length && !resourceNode.path.some(tile => tile.health <= 0)) {
+          const resources = this.resourceTileData.get(resourceNode.tileType).resourceEnums
             .map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
           for (const resource of resources) {
             resource.pathAvailable = true;
@@ -419,25 +575,30 @@ export class MapService implements Tick {
       });
     }
 
-    for (const marketTile of this.tileMap.filter(tile => tile.market)) {
-      marketTile.market.calculateConnection();
+    for (const marketTile of this.mapLayer.getTilesWithin()) {
+      const buildingNode: BuildingNode = marketTile.properties['buildingNode'];
+      if (buildingNode && buildingNode.market) {
+        buildingNode.market.calculateConnection();
+      }
     }
   }
 
-  findPath(startTile: Tile, targetTile: Tile, onlyPathable: boolean, onlyWalkable: boolean,
-      maxAttempts: number = Infinity): Observable<Tile[]> {
-    const visitedTiles: Tile[] = [];
+  findPath(startTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile, onlyPathable: boolean, onlyWalkable: boolean,
+      maxAttempts: number = Infinity): Observable<Phaser.Tilemaps.Tile[]> {
+    const visitedTiles: Phaser.Tilemaps.Tile[] = [];
 
-    let tileQueue: Tile[] = [];
+    let tileQueue: Phaser.Tilemaps.Tile[] = [];
 
-    const tileDistances = this.tileMap.map(_ => Infinity);
-    const tileHeuristicDistances = this.tileMap.map(_ => Infinity);
+    const tileDistances = Array.apply(null, {length: this.mapLayer.tilesTotal}).map(_ => Infinity);
+    const tileHeuristicDistances = Array.apply(null, {length: this.mapLayer.tilesTotal}).map(_ => Infinity);
 
-    const nodeMap = new Map<Tile, Tile>();
+    const nodeMap = new Map<Phaser.Tilemaps.Tile, Phaser.Tilemaps.Tile>();
 
-    let currentNode: Tile;
+    const targetPosition = new Phaser.Math.Vector2(targetTile.x, targetTile.y);
 
-    tileDistances[startTile.id] = 0;
+    let currentNode: Phaser.Tilemaps.Tile;
+
+    tileDistances[startTile.properties['id']] = 0;
 
     tileQueue.push(startTile);
 
@@ -449,11 +610,11 @@ export class MapService implements Tick {
         break;
       }
 
-      tileQueue = tileQueue.sort((a, b) => tileHeuristicDistances[a.id] - tileHeuristicDistances[b.id]);
+      tileQueue = tileQueue.sort((a, b) => tileHeuristicDistances[a.properties['id']] - tileHeuristicDistances[b.properties['id']]);
       currentNode = tileQueue.pop();
 
       if (currentNode === targetTile) {
-        const buildingPath: Tile[] = [];
+        const buildingPath: Phaser.Tilemaps.Tile[] = [];
 
         let backtrackNode = currentNode;
         while (backtrackNode !== startTile) {
@@ -466,18 +627,21 @@ export class MapService implements Tick {
         return of(buildingPath.reverse());
       }
 
-      const neighborDistance = tileDistances[currentNode.id] + 1;
+      const neighborDistance = tileDistances[currentNode.properties['id']] + 1;
 
       for (const neighbor of this.getNeighborTiles(currentNode)) {
-        const pathable = neighbor.buildingTileType && this.buildingTiles.get(neighbor.buildingTileType).resourcePathable;
-        const walkable = this.mapTiles.get(neighbor.mapTileType).walkable || pathable;
+        const pathable = neighbor.properties['buildingNode'] &&
+          this.buildingTileData.get(neighbor.properties['buildingNode'].tileType).resourcePathable;
+        const walkable = this.mapTileData.get(neighbor.properties['tileType']).walkable || pathable;
 
         if (!visitedTiles.includes(neighbor) && (!onlyPathable || pathable) && (!onlyWalkable || walkable) &&
-            tileDistances[neighbor.id] > neighborDistance) {
+            tileDistances[neighbor.properties['id']] > neighborDistance) {
           nodeMap.set(neighbor, currentNode);
 
-          tileDistances[neighbor.id] = neighborDistance;
-          tileHeuristicDistances[neighbor.id] = neighborDistance + targetTile.position.subtract(neighbor.position).magnitude;
+          tileDistances[neighbor.properties['id']] = neighborDistance;
+
+          const neighborPosition = new Phaser.Math.Vector2(neighbor.x, neighbor.y);
+          tileHeuristicDistances[neighbor.properties['id']] = neighborDistance + targetPosition.distance(neighborPosition);
 
           tileQueue.push(neighbor);
         }
@@ -490,20 +654,20 @@ export class MapService implements Tick {
   }
 
   spawnHarvestedResourceAnimation(resource: Resource, multiplier: number = 1, spawnedByPlayer: boolean) {
-    const matchingTiles = this.getResourceTiles(resource.resourceEnum).filter(_tile => _tile.buildingPath.length > 0);
+    const matchingTiles = this.getResourceTiles(resource.resourceEnum).filter(_tile => _tile.properties['resourceNode'].path.length);
 
     if (!resource.canAfford(multiplier)) {
       return;
     }
 
-    resource.deductResourceConsumes(multiplier);
+      resource.deductResourceConsumes(multiplier);
 
     const tile = matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
     if (tile === undefined) {
       return;
     }
 
-    const tilePathCopy = tile.buildingPath.map(_tile => _tile);
+    const tilePathCopy = tile.properties['resourceNode'].path.map(_tile => _tile);
     const animationType = spawnedByPlayer ? ResourceAnimationType.PlayerSpawned : ResourceAnimationType.WorkerSpawned;
 
     const resourceAnimation = new ResourceAnimation(new Vector(tile.x, tile.y), tile,
@@ -524,48 +688,36 @@ export class MapService implements Tick {
     this.projectiles.push(projectile);
   }
 
-  getRandomTile(tileTypes?: MapTileType[], avoidResources = false, minX = 0, maxX = Infinity, minY = 0, maxY = Infinity): Tile {
-    let tiles = this.tileMap;
-    if (minX > 0 || minY > 0 || maxX < Infinity || maxY < Infinity) {
-      tiles = tiles.filter(_tile => _tile.x / this.tilePixelSize >= minX && _tile.x / this.tilePixelSize <= maxX &&
-        _tile.y / this.tilePixelSize >= minY && _tile.y / this.tilePixelSize <= maxY);
-    }
-
-    let tile: Tile;
+  getRandomTile(mapTileTypes?: MapTileType[], avoidResources = false,
+      minX = 0, maxX = Infinity, minY = 0, maxY = Infinity): Phaser.Tilemaps.Tile {
+    const tiles = this.mapLayer.getTilesWithin(minX, minY, maxX - minX, maxY - minY);
+    let tile: Phaser.Tilemaps.Tile;
 
     do {
       tile = tiles[Math.floor(this.rng.nextDouble() * tiles.length)];
-    } while (!tile || !(!tileTypes || tileTypes.includes(tile.mapTileType)) || (avoidResources && tile.resourceTileType));
+    } while (!tile || !(!mapTileTypes || mapTileTypes.includes(tile.properties['tileType'])) ||
+      (avoidResources && tile.properties['resourceNode']));
 
     return tile;
   }
 
-  getNeighborTiles(tile: Tile): Tile[] {
-    const tileCoordinates = this.getTileCoordinates(tile);
-
+  getNeighborTiles(tile: Phaser.Tilemaps.Tile): Phaser.Tilemaps.Tile[] {
     const neighborPositions = [
-      {x: tileCoordinates.x - 1, y: tileCoordinates.y},
-      {x: tileCoordinates.x + 1, y: tileCoordinates.y},
-      {x: tileCoordinates.x, y: tileCoordinates.y - 1},
-      {x: tileCoordinates.x, y: tileCoordinates.y + 1}
+      {x: tile.x - 1, y: tile.y},
+      {x: tile.x + 1, y: tile.y},
+      {x: tile.x, y: tile.y - 1},
+      {x: tile.x, y: tile.y + 1}
     ];
 
-    const tiles: Tile[] = [];
+    const tiles: Phaser.Tilemaps.Tile[] = [];
     for (const position of neighborPositions) {
       if (position.x >= 0 && position.x < this.totalChunkX * this.chunkWidth &&
           position.y >= 0 && position.y < this.totalChunkY * this.chunkHeight) {
-        tiles.push(this.getTile(position.x, position.y));
+        tiles.push(this.getMapTile(position.x, position.y));
       }
     }
 
     return tiles;
-  }
-
-  getTileCoordinates(tile: Tile) {
-    return {
-      x: Math.floor(tile.x / this.tilePixelSize),
-      y: Math.floor(tile.y / this.tilePixelSize)
-    };
   }
 
   getChunkOffset(x: number, y: number) {
@@ -573,15 +725,53 @@ export class MapService implements Tick {
     return chunkIndex * this.chunkWidth * this.chunkHeight;
   }
 
-  getTile(x: number, y: number) {
-    return this.tileMap[this.getChunkOffset(x, y) + y * this.chunkWidth + x];
+  getMapTile(x: number, y: number): Phaser.Tilemaps.Tile {
+    return this.mapLayer.getTileAt(x, y);
   }
 
-  setTile(x: number, y: number, tile: Tile) {
-    this.tileMap[this.getChunkOffset(x, y) + y * this.chunkWidth + x] = tile;
+  setMapTile(x: number, y: number, tile: Phaser.Tilemaps.Tile) {
+    this.mapLayer.putTileAt(tile, x, y);
   }
 
-  setCameraCenter(center: Vector) {
+  clearMapTile(x: number, y: number) {
+    this.mapLayer.removeTileAt(x, y);
+  }
+
+  setBuildingTile(x: number, y: number, tileType: BuildingTileType, removable: boolean, health: number) {
+    this.buildingLayer.putTileAt(this.tileIndices[tileType], x, y);
+
+    const mapTile = this.mapLayer.getTileAt(x, y);
+    mapTile.properties['buildingNode'] = new BuildingNode(tileType, removable, health, this.resourcesService);
+  }
+
+  clearBuildingTile(x: number, y: number) {
+    this.buildingLayer.removeTileAt(x, y);
+
+    const mapTile = this.mapLayer.getTileAt(x, y);
+    mapTile.properties['buildingNode'] = null;
+  }
+
+  setResourceTile(x: number, y: number, tileType: ResourceTileType, health: number) {
+    this.resourceLayer.putTileAt(this.tileIndices[tileType], x, y);
+
+    const mapTile = this.mapLayer.getTileAt(x, y);
+    mapTile.properties['resourceNode'] = new ResourceNode(tileType, health);
+  }
+
+  clearResourceTile(x: number, y: number) {
+    this.resourceLayer.removeTileAt(x, y);
+
+    const mapTile = this.mapLayer.getTileAt(x, y);
+    mapTile.properties['resourceNode'] = null;
+  }
+
+  clearLayeredTile(x: number, y: number) {
+    this.clearMapTile(x, y);
+    this.clearBuildingTile(x, y);
+    this.clearResourceTile(x, y);
+  }
+
+  setCameraCenter(center: Phaser.Math.Vector2) {
     const bounds = this.getMapCameraBounds();
 
     const oldCenter = bounds[1].add(bounds[0]).multiply(0.5);
@@ -593,7 +783,7 @@ export class MapService implements Tick {
     const newBounds = this.getMapCameraBounds();
 
     const upperLeftBorder = [0, 0];
-    const bottomRightBorder = [-this.totalChunkX * this.chunkWidth * this.tilePixelSize,
+    const bottomRightBorder = [-this.totalChunkX * this.chunkWidth  * this.tilePixelSize,
                                -this.totalChunkY * this.chunkHeight * this.tilePixelSize];
 
     // Adjust the camera to stay in-bounds
@@ -613,13 +803,13 @@ export class MapService implements Tick {
     return [Math.floor(x / this.tilePixelSize), Math.floor(y / this.tilePixelSize)];
   }
 
-  getResourceTiles(resourceEnum?: ResourceEnum): Tile[] {
-    let tiles = this.tileMap.filter(tile => tile.resourceTileType);
+  getResourceTiles(resourceEnum?: ResourceEnum): Phaser.Tilemaps.Tile[] {
+    let tiles = this.mapLayer.filterTiles(tile => tile.properties['resourceNode']);
 
     if (resourceEnum) {
-      const matchingTypes = Array.from(this.resourceTiles.values()).filter(
+      const matchingTypes = Array.from(this.resourceTileData.values()).filter(
         tile => tile.resourceEnums.includes(resourceEnum)).map(tile => tile.tileType);
-      tiles = tiles.filter(tile => matchingTypes.includes(tile.resourceTileType));
+      tiles = tiles.filter(tile => matchingTypes.includes(tile.properties['resourceNode'].tileType));
     }
 
     return tiles;
@@ -634,5 +824,9 @@ export class MapService implements Tick {
                  upperLeftPixel.y + (this.canvasPixelHeight + this.tilePixelSize * extendedBorder) / this.transform.k);
 
     return [upperLeftPixel, lowerRightPixel];
+  }
+
+  get scene(): Phaser.Scene {
+    return this.mapManager.scene.scenes[0];
   }
 }

@@ -70,7 +70,7 @@ export class MinimapDirective implements AfterViewInit {
       coordinates[0] *= -self.mapService.tilePixelSize * self.transform.k;
       coordinates[1] *= -self.mapService.tilePixelSize * self.transform.k;
 
-      self.mapService.setCameraCenter(new Vector(coordinates[0], coordinates[1]));
+      self.mapService.setCameraCenter(new Phaser.Math.Vector2(coordinates[0], coordinates[1]));
     };
   }
 
@@ -82,7 +82,7 @@ export class MinimapDirective implements AfterViewInit {
     this.backgroundCanvas.attr('width', this.canvasContainer.clientWidth);
     this.backgroundCanvas.attr('height', this.canvasContainer.clientHeight);
 
-    for (const tile of this.mapService.tileMap) {
+    for (const tile of this.mapService._tileMap) {
       if (!tile) {
         continue;
       }
@@ -114,7 +114,7 @@ export class MinimapDirective implements AfterViewInit {
       self.foregroundCanvas.attr('width', self.canvasContainer.clientWidth);
       self.foregroundCanvas.attr('height', self.canvasContainer.clientHeight);
 
-      const homeTile = self.mapService.tileMap.find(tile => tile && tile.buildingTileType === BuildingTileType.Home);
+      const homeTile = self.mapService._tileMap.find(tile => tile && tile.buildingTileType === BuildingTileType.Home);
 
       self.foregroundContext.clearRect(0, 0, self.element.nativeElement.width, self.element.nativeElement.height);
 

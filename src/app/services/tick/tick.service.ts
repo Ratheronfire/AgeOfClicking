@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { ClickerMainService } from './../clicker-main/clicker-main.service';
+import { HarvestService } from '../harvest/harvest.service';
 import { WorkersService } from './../workers/workers.service';
 import { EnemyService } from './../enemy/enemy.service';
 import { FighterService } from './../fighter/fighter.service';
@@ -17,11 +17,11 @@ export interface Tick {
   providedIn: 'root'
 })
 export class TickService {
-  tickObjects = [this.clickerMainService, this.workersService, this.enemyService,
+  tickObjects = [this.harvestService, this.workersService, this.enemyService,
                 this.fighterService, this.settingsService, this.mapService];
   timeElapsed: number;
 
-  constructor(protected clickerMainService: ClickerMainService,
+  constructor(protected harvestService: HarvestService,
               protected workersService: WorkersService,
               protected enemyService: EnemyService,
               protected fighterService: FighterService,

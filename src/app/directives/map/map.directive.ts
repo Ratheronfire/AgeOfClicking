@@ -63,9 +63,9 @@ export class MapDirective implements AfterViewInit, Tick {
 
     this.refreshTimer = d3.interval(this.refreshCanvas(this), 25);
 
-    const homeTile = this.mapService.tileMap.find(tile => tile && tile.buildingTileType === BuildingTileType.Home);
+    const homeTile = this.mapService._tileMap.find(tile => tile && tile.buildingTileType === BuildingTileType.Home);
 
-    this.mapService.setCameraCenter(homeTile.position.multiply(-1));
+    this.mapService.setCameraCenter(homeTile.center.scale(-1));
   }
 
   tick(elapsed: number) {
@@ -125,8 +125,8 @@ export class MapDirective implements AfterViewInit, Tick {
 
     if (focusedTile.buildingTileType || focusedTile.resourceTileType) {
       this.mapService.focusedTile = focusedTile;
-      this.mapService.focusedBuildingTile = this.mapService.buildingTiles.get(focusedTile.buildingTileType);
-      this.mapService.focusedResourceTile = this.mapService.resourceTiles.get(focusedTile.resourceTileType);
+      this.mapService.focusedBuildingTile = this.mapService.buildingTileData.get(focusedTile.buildingTileType);
+      this.mapService.focusedResourceTile = this.mapService.resourceTileData.get(focusedTile.resourceTileType);
       this.mapService.focusedResources = this.mapService.focusedResourceTile ?
         this.mapService.focusedResourceTile.resourceEnums.map(rEnum => this.resourcesService.resources.get(rEnum)) : undefined;
     } else {
@@ -197,25 +197,25 @@ export class MapDirective implements AfterViewInit, Tick {
         }
 
         const mapTileName = tile.mapTileType.toLowerCase();
-        this.drawTile(tile.position, mapTileName);
+        this.drawTile(tile.center, mapTileName);
 
         if (tile.buildingTileType) {
           const buildingTileName = tile.buildingTileType.toLowerCase();
-          this.drawTile(tile.position, buildingTileName);
+          this.drawTile(tile.center, buildingTileName);
         }
 
         if (tile.resourceTileType) {
           const resourceTileName = tile.resourceTileType.toLowerCase().replace(' ', '-');
-          this.drawTile(tile.position, resourceTileName, 1, tile.health / tile.maxHealth);
+          this.drawTile(tile.center, resourceTileName, 1, tile.health / tile.maxHealth);
         }
 
         if (tile.health === 0) {
           this.context.globalAlpha = 0.5;
-          this.drawTile(tile.position, 'disabled');
+          this.drawTile(tile.center, 'disabled');
           this.context.globalAlpha = 1;
         } else if (tile.buildingTileType && !tile.buildingRemovable && this.mapService.cursorTool === CursorTool.ClearBuildings) {
           this.context.globalAlpha = 0.5;
-          this.drawTile(tile.position, 'locked');
+          this.drawTile(tile.center, 'locked');
           this.context.globalAlpha = 1;
         }
       }
@@ -252,7 +252,7 @@ export class MapDirective implements AfterViewInit, Tick {
     }
 
     if (this.mapService.focusedTile) {
-      const tooltipPosition = this.getTooltipPosition(this.mapService.focusedTile.position);
+      const tooltipPosition = this.getTooltipPosition(this.mapService.focusedTile.center);
       this.tileTooltip.style.setProperty('--detail-tooltip-left', tooltipPosition.x + 'px');
       this.tileTooltip.style.setProperty('--detail-tooltip-top', tooltipPosition.y + 'px');
 
@@ -285,12 +285,12 @@ export class MapDirective implements AfterViewInit, Tick {
     }
   }
 
-  getTooltipPosition(targetPosition: Vector): Vector {
-    return new Vector((targetPosition.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x,
+  getTooltipPosition(targetPosition: Vector | Phaser.Math.Vector2): Phaser.Math.Vector2 {
+    return new Phaser.Math.Vector2((targetPosition.x + this.mapService.tilePixelSize) * this.transform.k + this.transform.x,
                       targetPosition.y * this.transform.k + this.transform.y - this.tileTooltip.clientHeight);
   }
 
-  drawTile(position: Vector, imageName: string, scale: number = 1, healthRatio: number = 1) {
+  drawTile(position: Vector | Phaser.Math.Vector2, imageName: string, scale: number = 1, healthRatio: number = 1) {
     const imageElements = this.mapService.imageElements;
     const image = imageElements[imageName] ? imageElements[imageName] : imageElements['placeholder'];
 
