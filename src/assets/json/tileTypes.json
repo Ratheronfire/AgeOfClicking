@@ -38,7 +38,9 @@
       "maxPlaceable": 1,
       "baseHealth": 50,
       "resourceCosts": [],
-      "buildableSurfaces": [],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
       "resourcePathable": true
     },
     "WALL": {
@@ -347,7 +349,9 @@
       "placeable": false,
       "maxPlaceable": -1,
       "resourceCosts": [],
-      "buildableSurfaces": [],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
       "resourcePathable": true
     },
     "OAKOVEN": {

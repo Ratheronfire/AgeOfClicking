@@ -16,19 +16,19 @@
       <mat-icon class="corner" id="arrow-lower-right" (click)="snapSetting = 'lowerRight'">arrow_forward</mat-icon>
     </a>
   </div>
-  <div *ngIf="focusedBuildingTile">
-    <mat-card-title>{{focusedBuildingTile.name}}</mat-card-title>
-    <mat-card-subtitle>{{focusedBuildingTile.description}}</mat-card-subtitle>
+  <div *ngIf="focusedBuildingNode">
+    <mat-card-title>{{focusedBuildingData.name}}</mat-card-title>
+    <mat-card-subtitle>{{focusedBuildingData.description}}</mat-card-subtitle>
     <div class="repair-container">
-      {{focusedTile.health}}/{{focusedTile.maxHealth}} Health
-      <div *ngIf="focusedTile.health < focusedTile.maxHealth">
+      {{focusedBuildingNode.health}}/{{focusedBuildingNode.maxHealth}} Health
+      <div *ngIf="focusedBuildingNode.health < focusedBuildingNode.maxHealth">
         <button mat-raised-button (click)="repairBuilding(focusedTile)" color="accent" [disabled]="!canRepairBuilding(focusedTile)">
           Repair
           <div class="resource-list">
-            <div matTooltip="{{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}} {{getResource(focusedBuildingTile.repairResourceEnum).name | titlecase}}"
+            <div matTooltip="{{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth - focusedBuildingNode.health)}} {{getResource(focusedBuildingData.repairResourceEnum).name | titlecase}}"
               matTooltipPosition="below">
-              <img src="{{getResource(focusedBuildingTile.repairResourceEnum).iconPath}}" alt="{{getResource(focusedBuildingTile.repairResourceEnum).name}}">
-              {{focusedBuildingTile.repairCostPerPoint * (focusedTile.maxHealth - focusedTile.health)}}
+              <img src="{{getResource(focusedBuildingData.repairResourceEnum).iconPath}}" alt="{{getResource(focusedBuildingData.repairResourceEnum).name}}">
+              {{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth - focusedBuildingNode.health)}}
             </div>
           </div>
         </button>
@@ -36,13 +36,13 @@
     </div>
   </div>
 
-  <div *ngIf="!focusedBuildingTile && focusedResourceTile">
-    <mat-card-title>{{focusedResourceTile.name}}</mat-card-title>
+  <div *ngIf="!focusedBuildingNode && focusedResourceNode">
+    <mat-card-title>{{focusedResourceData.name}}</mat-card-title>
   </div>
 
   <mat-card-content *ngIf="focusedTile">
-    <div *ngIf="focusedResourceTile" class="resource-list">
-      Travel Time: {{focusedTile.buildingPath.length / this.mapService.tileAnimationSpeed / 1000 | longNumber}}
+    <div *ngIf="focusedResourceNode" class="resource-list">
+      Travel Time: {{focusedResourceNode.path.length / this.mapService.tileAnimationSpeed / 1000 | longNumber}}
       Seconds
       <br />
       Produces:
@@ -50,15 +50,15 @@
         <img src="{{resource.iconPath}}" alt="{{resource.name}}"> {{resource.name | titlecase}}
       </div>
     </div>
-    <div *ngIf="focusedBuildingTile && focusedBuildingTile.upgradeBuilding">
+    <div *ngIf="focusedBuildingNode && focusedBuildingData.upgradeBuilding">
       <h3>Upgrade</h3>
-      <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(this.mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding))">
-        <div class="title" matTooltip="{{this.mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding).description}}"
+      <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(upgradedBuildingData)">
+        <div class="title" matTooltip="{{upgradedBuildingData.description}}"
           matTooltipPosition="above">
-          {{this.mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding).name}}
+          {{upgradedBuildingData.name}}
         </div>
         <div class="resource-list">
-          <div *ngFor="let resourceCost of mapService.buildingTiles.get(focusedBuildingTile.upgradeBuilding).resourceCosts"
+          <div *ngFor="let resourceCost of upgradedBuildingData.resourceCosts"
             matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below">
             <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">

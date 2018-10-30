@@ -23,7 +23,8 @@ export class SettingsComponent implements AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.loadGame();
+    // TODO: Uncomment after updating settings service
+    // this.loadGame();
     this.setAutosave();
   }
 

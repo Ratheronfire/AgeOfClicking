@@ -1,0 +1,419 @@
+{
+  "application": {
+    "name": "FannyPack Sprite Sheets",
+    "version": "0.2.0",
+    "url": "https://github.com/groundh0g/FannyPack"
+  },
+  "packer": {
+    "name": "Basic",
+    "version": "0.1.0",
+    "stats": "Processed 49 frames in 1.186 seconds.",
+    "width": 256,
+    "height": 512,
+    "filename": "resources.png"
+  },
+  "dataExporter": {
+    "name": "JSON",
+    "version": "0.1.0",
+    "exportedOn": "Fri Oct 26 2018 19:16:39 GMT-0400 (Eastern Daylight Time)"
+  },
+  "imageExporter": {
+    "name": "PNG",
+    "version": "0.1.0",
+    "exportedOn": "Fri Oct 26 2018 19:16:39 GMT-0400 (Eastern Daylight Time)"
+  },
+  "sprites": [
+    {
+      "name": "01_coin",
+      "x": 2,
+      "y": 2,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "02_oak",
+      "x": 52,
+      "y": 2,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "03_pine",
+      "x": 102,
+      "y": 2,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "04_birch",
+      "x": 152,
+      "y": 2,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "05_eucalyptus",
+      "x": 202,
+      "y": 2,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "06_willow",
+      "x": 2,
+      "y": 52,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "07_teak",
+      "x": 52,
+      "y": 52,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "08_ent_soul",
+      "x": 102,
+      "y": 52,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "09_reanimated_ent",
+      "x": 152,
+      "y": 52,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "10_stone",
+      "x": 202,
+      "y": 52,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "11_graphite",
+      "x": 2,
+      "y": 102,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "12_limestone",
+      "x": 52,
+      "y": 102,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "13_marble",
+      "x": 102,
+      "y": 102,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "14_quartz",
+      "x": 152,
+      "y": 102,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "15_obsidian",
+      "x": 202,
+      "y": 102,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "16_diamond",
+      "x": 2,
+      "y": 152,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "17_copper_ore",
+      "x": 52,
+      "y": 152,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "18_tin_ore",
+      "x": 102,
+      "y": 152,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "19_iron_ore",
+      "x": 152,
+      "y": 152,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "20_gold_ore",
+      "x": 202,
+      "y": 152,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "21_latinum_ore",
+      "x": 2,
+      "y": 202,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "22_unbelievium_ore",
+      "x": 52,
+      "y": 202,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "23_lustrial_ore",
+      "x": 102,
+      "y": 202,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "24_spectrus_ore",
+      "x": 152,
+      "y": 202,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "25_bronze_ingot",
+      "x": 202,
+      "y": 202,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "26_iron_ingot",
+      "x": 2,
+      "y": 252,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "27_steel_ingot",
+      "x": 52,
+      "y": 252,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "28_gold_ingot",
+      "x": 102,
+      "y": 252,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "29_latinum_ingot",
+      "x": 152,
+      "y": 252,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "30_temprous_ingot",
+      "x": 202,
+      "y": 252,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "31_refined_temprous",
+      "x": 2,
+      "y": 302,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "32_wheat",
+      "x": 52,
+      "y": 302,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "33_bread",
+      "x": 102,
+      "y": 302,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "34_raw_potato",
+      "x": 152,
+      "y": 302,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "35_potato",
+      "x": 202,
+      "y": 302,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "36_rice",
+      "x": 2,
+      "y": 352,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "37_jelly_donut",
+      "x": 52,
+      "y": 352,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "38_raw_herring",
+      "x": 102,
+      "y": 352,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "39_herring",
+      "x": 152,
+      "y": 352,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "40_raw_bass",
+      "x": 202,
+      "y": 352,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "41_bass",
+      "x": 2,
+      "y": 402,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "42_raw_shark",
+      "x": 52,
+      "y": 402,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "43_shark",
+      "x": 102,
+      "y": 402,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "44_raw_chicken",
+      "x": 152,
+      "y": 402,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "45_chicken",
+      "x": 202,
+      "y": 402,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "46_raw_steak",
+      "x": 2,
+      "y": 452,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "47_steak",
+      "x": 52,
+      "y": 452,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "48_raw_dragon_meat",
+      "x": 102,
+      "y": 452,
+      "w": 48,
+      "h": 48,
+      "r": false
+    },
+    {
+      "name": "49_dragon_meat",
+      "x": 152,
+      "y": 452,
+      "w": 48,
+      "h": 48,
+      "r": false
+    }
+  ]
+}

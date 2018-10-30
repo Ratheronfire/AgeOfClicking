@@ -1,5 +1,5 @@
 import { ResourceEnum } from './resourceData';
-import { BuildingTileType, Tile } from './tile';
+import { BuildingTileType } from './tile';
 import { Vector } from './vector';
 import { tilePixelSize } from '../globals';
 import { Tick } from './../services/tick/tick.service';
@@ -23,31 +23,26 @@ export enum ResourceAnimationType {
   Sold = 'SOLD'
 }
 
-export class Entity implements Tick {
+export class Entity extends Phaser.GameObjects.PathFollower implements Tick {
   name: string;
 
-  position: Vector;
-  spawnPosition: Vector;
-  currentTile: Tile;
+  spawnPosition: Phaser.Math.Vector2;
+  currentTile: Phaser.Tilemaps.Tile;
 
-  tilePath: Tile[];
-  pathStep: number;
-  pathingDone = false;
+  tilePath: Phaser.Tilemaps.Tile[];
   animationSpeed: number;
 
   health: number;
   maxHealth: number;
 
-  public constructor(name: string, position: Vector, currentTile: Tile, health: number, animationSpeed = 0.003, tilePath: Tile[] = []) {
+  public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile, health: number, animationSpeed = 0.003,
+                     scene: Phaser.Scene, texture: string, frame: string | number, path?: Phaser.Curves.Path) {
+    super(scene, path, x, y, texture, frame);
+
     this.name = name;
 
-    this.position = position;
-    this.spawnPosition = new Vector(position.x, position.y);
+    this.spawnPosition = new Phaser.Math.Vector2(x, y);
     this.currentTile = currentTile;
-
-    this.tilePath = tilePath;
-    this.pathStep = 0;
-    this.pathingDone = false;
 
     this.health = health;
     this.maxHealth = health;
@@ -57,51 +52,8 @@ export class Entity implements Tick {
 
   tick(elapsed: number, deltaTime: number) { }
 
-  public get x(): number {
-    return this.position.x;
-  }
-
-  public set x(value: number) {
-    this.position.x = value;
-  }
-
-  public get y(): number {
-    return this.position.y;
-  }
-
-  public set y(value: number) {
-    this.position.y = value;
-  }
-
-  updatePathPosition(deltaTime: number) {
-    if (this.tilePath === undefined || this.pathStep >= this.tilePath.length - 1) {
-      return;
-    }
-
-    let totalDistance = this.animationSpeed * deltaTime;
-
-    while (totalDistance > 0) {
-      const stepDistance = Math.min(1, totalDistance);
-      totalDistance -= 1;
-
-      const currentTile = this.tilePath[this.pathStep];
-      const destinationTile = this.tilePath[this.pathStep + 1];
-
-      this.x += (destinationTile.x - currentTile.x) * stepDistance;
-      this.y += (destinationTile.y - currentTile.y) * stepDistance;
-
-      const offset = this.position.subtract(new Vector(currentTile.x, currentTile.y));
-
-      if (Math.abs(offset.x) >= tilePixelSize || Math.abs(offset.y) >= tilePixelSize) {
-        this.pathStep++;
-        this.currentTile = destinationTile;
-
-        if (this.pathStep === this.tilePath.length - 1) {
-            this.pathingDone = true;
-            break;
-        }
-      }
-    }
+  get position(): Phaser.Math.Vector2 {
+    return new Phaser.Math.Vector2(this.x, this.y);
   }
 }
 
@@ -110,9 +62,10 @@ export class Actor extends Entity {
   defense: number;
   attackRange: number;
 
-  public constructor(name: string, position: Vector, currentTile: Tile, health: number,
-      animationSpeed = 0.003, attack: number, defense: number, attackRange: number) {
-    super(name, position, currentTile, health, animationSpeed);
+  public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile, health: number,
+      animationSpeed = 0.003, attack: number, defense: number, attackRange: number,
+      scene: Phaser.Scene, texture: string, frame: string | number) {
+    super(name, x, y, currentTile, health, animationSpeed, scene, texture, frame);
 
     this.attack = attack;
     this.defense = defense;
@@ -121,7 +74,7 @@ export class Actor extends Entity {
 }
 
 interface Target {
-  tile: Tile;
+  tile: Phaser.Tilemaps.Tile;
   accessible: boolean;
   wanderTarget: boolean;
 }
@@ -138,11 +91,11 @@ export class Enemy extends Actor {
   stealMax: number;
   resourceCapacity: number;
 
-  public constructor(name: string, position: Vector, currentTile: Tile,
+  public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile,
       health: number, animationSpeed = 0.003, attack: number, defense: number,
       attackRange: number, targetableBuildingTypes: BuildingTileType[], resourcesToSteal: ResourceEnum[],
-      stealMax: number, resourceCapacity: number) {
-    super(name, position, currentTile, health, animationSpeed, attack, defense, attackRange);
+      stealMax: number, resourceCapacity: number, scene: Phaser.Scene, texture: string, frame: string | number) {
+    super(name, x, y, currentTile, health, animationSpeed, attack, defense, attackRange, scene, texture, frame);
 
     this.targetableBuildingTypes = targetableBuildingTypes;
     this.targets = [];
@@ -174,11 +127,12 @@ export class Fighter extends Actor {
   enemyService: EnemyService;
   mapService: MapService;
 
-  public constructor(name: string, position: Vector, currentTile: Tile,
-      health: number, animationSpeed, attack: number, defense: number,
-      attackRange: number, description: string, cost: number, moveable: boolean, fireMilliseconds: number,
+  public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile,
+      health: number, animationSpeed, attack: number, defense: number, attackRange: number,
+      description: string, cost: number, moveable: boolean, fireMilliseconds: number,
+      scene: Phaser.Scene, texture: string, frame: string | number,
       resourcesService: ResourcesService, enemyService: EnemyService, mapService: MapService) {
-    super(name, position, currentTile, health, animationSpeed, attack, defense, attackRange);
+    super(name, x, y, currentTile, health, animationSpeed, attack, defense, attackRange, scene, texture, frame);
 
     this.description = description;
 
@@ -306,9 +260,9 @@ export class Projectile extends Entity {
   timeSinceSpawn = 0;
   lifeSpan = 5000;
 
-  public constructor(name: string, position: Vector, currentTile: Tile,
-      animationSpeed = 0.003, owner: Actor, target: Actor) {
-    super(name, position, currentTile, 1, animationSpeed);
+  public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile,
+      animationSpeed = 0.003, owner: Actor, target: Actor, scene: Phaser.Scene, texture: string, frame: string | number) {
+    super(name, x, y, currentTile, 1, animationSpeed, scene, texture, frame);
 
     this.owner = owner;
     this.target = target;
@@ -324,7 +278,7 @@ export class Projectile extends Entity {
     const distance = this.target.position.subtract(this.position);
     const totalDistance = this.target.position.subtract(this.spawnPosition);
 
-    if (distance.magnitude < tilePixelSize) {
+    if (distance.length() < tilePixelSize) {
       this.target.health -= this.owner.attack;
       this.hitTarget = true;
     }
@@ -336,7 +290,10 @@ export class Projectile extends Entity {
     totalDistance.x *= this.animationSpeed * deltaTime;
     totalDistance.y *= this.animationSpeed * deltaTime;
 
-    this.position = this.position.add(totalDistance);
+    const newPosition = this.position.add(totalDistance);
+    this.x = newPosition.x;
+    this.y = newPosition.y;
+
     this.rotation = angle;
   }
 }
@@ -352,10 +309,11 @@ export class ResourceAnimation extends Entity {
   resourcesService: ResourcesService;
   storeService: StoreService;
 
-  public constructor(position: Vector, currentTile: Tile, animationSpeed = 0.003, tilePath: Tile[],
-    animationType: ResourceAnimationType, resourceEnum: ResourceEnum, multiplier: number, spawnedByPlayer: boolean,
+  public constructor(x: number, y: number, currentTile: Phaser.Tilemaps.Tile, animationSpeed = 0.003,
+      path: Phaser.Curves.Path, animationType: ResourceAnimationType, resourceEnum: ResourceEnum,
+      multiplier: number, spawnedByPlayer: boolean, scene: Phaser.Scene, texture: string, frame: string | number,
       resourcesService: ResourcesService, storeService: StoreService) {
-    super('', position, currentTile, -1, animationSpeed, tilePath);
+    super('', x, y, currentTile, -1, animationSpeed, scene, texture, frame, path);
 
     this.animationType = animationType;
 
@@ -365,13 +323,17 @@ export class ResourceAnimation extends Entity {
 
     this.resourcesService = resourcesService;
     this.storeService = storeService;
-  }
 
-  tick(elapsed: number, deltaTime: number) {
-    this.updatePathPosition(deltaTime);
+    this.startFollow((path.curves.length - 1) * 1000 / this.animationSpeed);
   }
 
   finishAnimation() {
     this.resourcesService.resources.get(this.resourceEnum).finishResourceAnimation(this.multiplier, this.animationType);
+
+    this.destroy();
+  }
+
+  get pathingDone(): boolean {
+    return this.pathTween.progress >= 1;
   }
 }
