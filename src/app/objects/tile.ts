@@ -224,9 +224,9 @@ export class Market {
   mapService: MapService;
   resourcesService: ResourcesService;
 
-  homeTile: Tile;
-  owningTile: Tile;
-  tilePath: Tile[];
+  homeTile: Phaser.Tilemaps.Tile;
+  owningTile: Phaser.Tilemaps.Tile;
+  tilePath: Phaser.Tilemaps.Tile[];
   soldResources: Resource[];
   currentResource = 0;
 
@@ -238,14 +238,16 @@ export class Market {
   sellInterval = 1000;
   sellQuantity = 50;
 
-  public constructor(mapService: MapService, resourcesService: ResourcesService, resourceType: ResourceType, owningTile: Tile,
-      shouldInitStats: boolean) {
-    if (shouldInitStats) {
-      owningTile.statLevels[TileStat.SellAmount] = 1;
-      owningTile.statLevels[TileStat.SellRate] = 1;
+  public constructor(mapService: MapService, resourcesService: ResourcesService, resourceType: ResourceType,
+      owningTile: Phaser.Tilemaps.Tile, shouldInitStats: boolean) {
+    const buildingNode: BuildingNode = owningTile.properties['buildingNode'];
 
-      owningTile.statCosts[TileStat.SellAmount] = 1500;
-      owningTile.statCosts[TileStat.SellRate] = 1500;
+    if (shouldInitStats) {
+      buildingNode.statLevels[TileStat.SellAmount] = 1;
+      buildingNode.statLevels[TileStat.SellRate] = 1;
+
+      buildingNode.statCosts[TileStat.SellAmount] = 1500;
+      buildingNode.statCosts[TileStat.SellRate] = 1500;
     }
 
     this.mapService = mapService;
@@ -253,7 +255,8 @@ export class Market {
 
     this.soldResources = resourcesService.getResources(resourceType);
 
-    this.homeTile = mapService._tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+    this.homeTile = mapService.mapLayer.findTile(
+      tile => tile.properties['buildingNode'] && tile.properties['buildingNode'].tileType === BuildingTileType.Home);
     this.owningTile = owningTile;
 
     this.calculateConnection();
@@ -297,7 +300,7 @@ export class Market {
 
   public calculateConnection() {
     this.mapService.findPath(this.homeTile, this.owningTile, true, true).subscribe(path => {
-      this.tilePath = path;
+      this.tilePath = path.reverse();
     });
   }
 

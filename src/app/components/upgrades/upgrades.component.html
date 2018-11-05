@@ -26,7 +26,7 @@
           <div class="resource-list">
             <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
               matTooltipPosition="below">
-              <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
+              <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
               {{resourceCost.resourceCost | longNumber}}
             </div>
           </div>
@@ -46,7 +46,7 @@
         <div class="resource-list">
           <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below">
-            <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
+            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost | longNumber}}
           </div>
         </div>

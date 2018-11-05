@@ -22,12 +22,13 @@
     <div class="repair-container">
       {{focusedBuildingNode.health}}/{{focusedBuildingNode.maxHealth}} Health
       <div *ngIf="focusedBuildingNode.health < focusedBuildingNode.maxHealth">
-        <button mat-raised-button (click)="repairBuilding(focusedTile)" color="accent" [disabled]="!canRepairBuilding(focusedTile)">
+        <button mat-raised-button (click)="repairBuilding(focusedBuildingNode)" color="accent" [disabled]="!canRepairBuilding(focusedBuildingNode)">
           Repair
           <div class="resource-list">
             <div matTooltip="{{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth - focusedBuildingNode.health)}} {{getResource(focusedBuildingData.repairResourceEnum).name | titlecase}}"
               matTooltipPosition="below">
-              <img src="{{getResource(focusedBuildingData.repairResourceEnum).iconPath}}" alt="{{getResource(focusedBuildingData.repairResourceEnum).name}}">
+              <img id="{{getResource(focusedBuildingData.repairResourceEnum).name | resourceId}}" class="resource-img slim-icon"
+                src="../../../assets/sprites/transparent.png" alt="{{getResource(focusedBuildingData.repairResourceEnum).name}}">
               {{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth - focusedBuildingNode.health)}}
             </div>
           </div>
@@ -40,19 +41,19 @@
     <mat-card-title>{{focusedResourceData.name}}</mat-card-title>
   </div>
 
-  <mat-card-content *ngIf="focusedTile">
+  <mat-card-content *ngIf="focusedBuildingNode">
     <div *ngIf="focusedResourceNode" class="resource-list">
       Travel Time: {{focusedResourceNode.path.length / this.mapService.tileAnimationSpeed / 1000 | longNumber}}
       Seconds
       <br />
       Produces:
       <div *ngFor="let resource of focusedResources">
-        <img src="{{resource.iconPath}}" alt="{{resource.name}}"> {{resource.name | titlecase}}
+          <img id="{{resource.name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{resource.name}}"> {{resource.name | titlecase}}
       </div>
     </div>
     <div *ngIf="focusedBuildingNode && focusedBuildingData.upgradeBuilding">
       <h3>Upgrade</h3>
-      <button mat-raised-button (click)="upgradeBuilding(focusedTile)" color="accent" [disabled]="!canAffordUpgrade(upgradedBuildingData)">
+      <button mat-raised-button (click)="upgradeBuilding(focusedBuildingNode)" color="accent" [disabled]="!canAffordUpgrade(upgradedBuildingData)">
         <div class="title" matTooltip="{{upgradedBuildingData.description}}"
           matTooltipPosition="above">
           {{upgradedBuildingData.name}}
@@ -61,15 +62,16 @@
           <div *ngFor="let resourceCost of upgradedBuildingData.resourceCosts"
             matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below">
-            <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
+            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon"
+              src="../../../assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost}}
           </div>
         </div>
       </button>
     </div>
 
-    <div *ngIf="focusedTile.market">
-      Profit (Average of recent sales): {{focusedTile.market.averageRecentProfit | longNumber}} {{getResource('GOLD').name | titlecase}}/Second
+    <div *ngIf="marketNode">
+      Profit (Average of recent sales): {{marketNode.averageRecentProfit | longNumber}} {{getResource('GOLD').name | titlecase}}/Second
     </div>
 
     <h3>Stats</h3>
@@ -78,75 +80,75 @@
           <tr class="stat-row">
             <td>
               <p>
-                Max Health: {{focusedTile.maxHealth | longNumber}}
+                Max Health: {{focusedBuildingNode.maxHealth | longNumber}}
               </p>
             </td>
             <td>
               <b>
-                Level {{focusedTile.statLevels['MAXHEALTH']}}
+                Level {{focusedBuildingNode.statLevels['MAXHEALTH']}}
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('MAXHEALTH')"
-                [disabled]="!focusedTile.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedTile.statLevels['MAXHEALTH'] + 1}}: {{focusedTile.getUpgradedStat('MAXHEALTH') | longNumber}} Max Health"
+              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedBuildingNode.upgradeStat('MAXHEALTH')"
+                [disabled]="!focusedBuildingNode.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedBuildingNode.statLevels['MAXHEALTH'] + 1}}: {{focusedBuildingNode.getUpgradedStat('MAXHEALTH') | longNumber}} Max Health"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
-                    {{focusedTile.statCosts['MAXHEALTH'] | longNumber}}
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                    {{focusedBuildingNode.statCosts['MAXHEALTH'] | longNumber}}
                   </div>
                 </div>
               </button>
             </td>
           </tr>
 
-          <tr class="stat-row" *ngIf="focusedTile.market">
+          <tr class="stat-row" *ngIf="marketNode">
             <td>
               <p>
-                Sell Rate: {{1000 / focusedTile.market.sellInterval | longNumber}} Sale{{focusedTile.market.sellInterval === 1000 ? '' : 's'}}/Second
+                Sell Rate: {{1000 / marketNode.sellInterval | longNumber}} Sale{{marketNode.sellInterval === 1000 ? '' : 's'}}/Second
               </p>
             </td>
             <td>
               <b>
-                Level {{focusedTile.statLevels['SELLRATE']}}
+                Level {{focusedBuildingNode.statLevels['SELLRATE']}}
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('SELLRATE')"
-                [disabled]="!focusedTile.canUpgradeStat('SELLRATE')" matTooltip="Level {{focusedTile.statLevels['SELLRATE'] + 1}}: {{1000 / focusedTile.getUpgradedStat('SELLRATE') | longNumber}} Sales/Second"
+              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedBuildingNode.upgradeStat('SELLRATE')"
+                [disabled]="!focusedBuildingNode.canUpgradeStat('SELLRATE')" matTooltip="Level {{focusedBuildingNode.statLevels['SELLRATE'] + 1}}: {{1000 / focusedBuildingNode.getUpgradedStat('SELLRATE') | longNumber}} Sales/Second"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
-                    {{focusedTile.statCosts['SELLRATE'] | longNumber}}
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                    {{focusedBuildingNode.statCosts['SELLRATE'] | longNumber}}
                   </div>
                 </div>
               </button>
             </td>
           </tr>
 
-          <tr class="stat-row" *ngIf="focusedTile.market">
+          <tr class="stat-row" *ngIf="marketNode">
             <td>
               <p>
-                Sell Amount: {{focusedTile.market.sellQuantity | longNumber}} Items/Sale
+                Sell Amount: {{marketNode.sellQuantity | longNumber}} Items/Sale
               </p>
             </td>
             <td>
               <b>
-                Level {{focusedTile.statLevels['SELLAMOUNT']}}
+                Level {{focusedBuildingNode.statLevels['SELLAMOUNT']}}
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedTile.upgradeStat('SELLAMOUNT')"
-                [disabled]="!focusedTile.canUpgradeStat('SELLAMOUNT')" matTooltip="Level {{focusedTile.statLevels['SELLAMOUNT'] + 1}}: {{focusedTile.getUpgradedStat('SELLAMOUNT') | longNumber}} Items/Sale"
+              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedBuildingNode.upgradeStat('SELLAMOUNT')"
+                [disabled]="!focusedBuildingNode.canUpgradeStat('SELLAMOUNT')" matTooltip="Level {{focusedBuildingNode.statLevels['SELLAMOUNT'] + 1}}: {{focusedBuildingNode.getUpgradedStat('SELLAMOUNT') | longNumber}} Items/Sale"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
-                    {{focusedTile.statCosts['SELLAMOUNT'] | longNumber}}
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                    {{focusedBuildingNode.statCosts['SELLAMOUNT'] | longNumber}}
                   </div>
                 </div>
               </button>

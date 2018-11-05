@@ -7,7 +7,6 @@ import { ZoomableCanvasComponent } from '@durwella/zoomable-canvas';
 import { MaterialImportModule } from './material-import/material-import.module';
 import { PhaserModule } from 'phaser-component-library';
 import { PipeModule } from './pipes/pipe.module';
-import { LongNumberPipe } from './pipes/long-number-pipe';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppComponent } from './app.component';
@@ -53,7 +52,6 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
     TileDetailComponent,
     FighterDetailComponent,
     SnapDirective,
-    LongNumberPipe,
     MinimapDirective
   ],
   imports: [

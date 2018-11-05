@@ -1,14 +1,10 @@
 import { Injectable } from '@angular/core';
 
-import { Fighter } from '../../objects/entity';
-import { Tile } from '../../objects/tile';
+import { Fighter, FighterData } from '../../objects/entity';
 import { Resource } from './../../objects/resource';
 import { ResourceEnum } from './../../objects/resourceData';
-import { MapTileData } from './../../objects/tile';
-import { Vector } from '../../objects/vector';
 import { ResourcesService } from '../resources/resources.service';
 import { EnemyService } from './../enemy/enemy.service';
-import { MapService } from '../map/map.service';
 import { Tick } from '../tick/tick.service';
 
 declare var require: any;
@@ -18,13 +14,12 @@ const baseFighterTypes = require('../../../assets/json/fighters.json');
   providedIn: 'root'
 })
 export class FighterService implements Tick {
-  public fighterTypes: Fighter[] = baseFighterTypes;
+  public fighterTypes: FighterData[] = baseFighterTypes;
   public fighters: Fighter[] = [];
-  public selectedFighterType: Fighter;
+  public selectedFighterType: FighterData;
 
   constructor(protected resourcesService: ResourcesService,
-              protected enemyService: EnemyService,
-              protected mapService: MapService) {
+              protected enemyService: EnemyService) {
   }
 
   tick(elapsed: number, deltaTime: number) {
@@ -49,21 +44,16 @@ export class FighterService implements Tick {
     }
   }
 
-  createFighter(tile: Tile, fighterType: Fighter) {
+  canAffordFighter(fighterType: FighterData) {
     const goldResource: Resource = this.resourcesService.resources.get(ResourceEnum.Gold);
-    const mapTile: MapTileData = this.mapService.mapTileData.get(tile.mapTileType);
-    const overlaps = this.fighters.filter(_fighter => !_fighter.moveable && _fighter.currentTile === tile);
+    return goldResource.amount < fighterType.cost;
+  }
 
-    if (goldResource.amount < fighterType.cost || !mapTile.walkable || overlaps.length) {
+  purchaseFigher(fighterType: FighterData) {
+    if (!this.canAffordFighter(fighterType)) {
       return;
     }
 
     this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-fighterType.cost);
-
-    const fighter = new Fighter(fighterType.name, new Vector(tile.x, tile.y), tile, fighterType.health, 0.003, fighterType.attack,
-      fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.moveable, 1000,
-      this.resourcesService, this.enemyService, this.mapService);
-
-    this.fighters.push(fighter);
   }
 }

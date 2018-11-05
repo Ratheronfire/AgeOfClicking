@@ -3,9 +3,8 @@ import { Injectable, AfterViewInit } from '@angular/core';
 import { timer } from 'rxjs';
 
 import { Resource } from '../../objects/resource';
-import { Enemy } from './../../objects/entity';
+import { Enemy, EnemyData } from './../../objects/entity';
 import { Vector } from '../../objects/vector';
-import { MapService } from '../map/map.service';
 import { Tile, BuildingTileType, MapTileType } from '../../objects/tile';
 import { MessageSource } from '../../objects/message';
 import { BuildingsService } from '../buildings/buildings.service';
@@ -20,7 +19,7 @@ const baseEnemyTypes = require('../../../assets/json/enemies.json');
   providedIn: 'root'
 })
 export class EnemyService implements Tick, AfterViewInit {
-  public enemyTypes: Enemy[] = baseEnemyTypes;
+  public enemyTypes: EnemyData[] = baseEnemyTypes;
   public enemies: Enemy[] = [];
   activePortalTile: Tile;
 
@@ -37,7 +36,6 @@ export class EnemyService implements Tick, AfterViewInit {
 
   constructor(protected resourcesService: ResourcesService,
               protected buildingsService: BuildingsService,
-              protected mapService: MapService,
               protected messagesService: MessagesService) { }
 
   ngAfterViewInit() {

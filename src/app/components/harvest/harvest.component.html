@@ -3,7 +3,7 @@
     <mat-card-title>{{goldResource.name | titlecase }}</mat-card-title>
     <mat-card-subtitle>{{goldResource.amount | longNumber}}</mat-card-subtitle>
 
-    <img class="resource-img" src="{{goldResource.iconPath}}" alt="{{goldResource.name}}" *ngIf="goldResource.iconPath !== ''">
+    <img id="{{goldResource.name | resourceId}}" class="resource-img" src="../../../assets/sprites/transparent.png" alt="{{goldResource.name}}">
   </button>
 
   <mat-accordion multi="true" *ngIf="organizeLeftPanelByType">
@@ -30,7 +30,7 @@
           <mat-card-subtitle>{{resource.amount | longNumber}}</mat-card-subtitle>
           <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [value]="resource.progressBarValue"></mat-progress-bar>
 
-          <img class="resource-img" src="{{resource.iconPath}}" alt="{{resource.name}}" *ngIf="resource.iconPath !== ''">
+          <img id="{{resource.name | resourceId}}" class="resource-img" src="../../../assets/sprites/transparent.png" alt="{{resource.name}}">
           <div class='travelling-count' *ngIf="resource.amountTravelling > 0">{{resource.amountTravelling}}
             Travelling</div>
         </button>

@@ -1,26 +1,25 @@
-import { BuildingNode, ResourceNode, BuildingSubType } from './../../objects/tile';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import { Observable, of } from 'rxjs';
 
 import { ResourcesService } from '../resources/resources.service';
 import { StoreService } from './../store/store.service';
 import { BuildingsService } from '../buildings/buildings.service';
+import { FighterService } from './../fighter/fighter.service';
+import { EnemyService } from './../enemy/enemy.service';
 import { Tick } from './../tick/tick.service';
 import { ResourceEnum, ResourceType } from './../../objects/resourceData';
 import { MapTileType, BuildingTileType, MapTileData, BuildingTileData, ResourceTileData,
-  Market, ResourceTileType } from '../../objects/tile';
+  Market, ResourceTileType, BuildingNode, ResourceNode, BuildingSubType } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
-import { ResourceAnimation, Projectile, Actor, Fighter, ResourceAnimationType } from '../../objects/entity';
+import { ResourceAnimation, Projectile, Actor, Fighter, ResourceAnimationType, FighterData, EnemyData, Enemy } from '../../objects/entity';
 import { Vector } from '../../objects/vector';
 
 declare var require: any;
-const Jimp = require('jimp');
 const baseTiles = require('../../../assets/json/tileTypes.json');
 
 import * as prng from 'prng-parkmiller-js';
 import * as SimplexNoise from 'simplex-noise';
-
 
 export enum CursorTool {
   PlaceBuildings = 'PLACEBUILDINGS',
@@ -34,8 +33,6 @@ export enum CursorTool {
   providedIn: 'root'
 })
 export class MapService implements Tick {
-  public tileTypes = baseTiles.tileTypes;
-
   public mapTileData: Map<string, MapTileData> = new Map<string, MapTileData>();
   public buildingTileData: Map<string, BuildingTileData> = new Map<string, BuildingTileData>();
   public resourceTileData: Map<string, ResourceTileData> = new Map<string, ResourceTileData>();
@@ -50,33 +47,17 @@ export class MapService implements Tick {
   focusedTile: Phaser.Tilemaps.Tile;
   focusedFighter: Fighter;
 
-  chunkWidth = 75;
-  chunkHeight = 75;
+  chunkWidth = 50;
+  chunkHeight = 50;
 
   totalChunkX = 4;
   totalChunkY = 4;
 
-  elevationMap: number[] = [];
-
-  public _tileMap: MapTileData[] = [];
-  resourceAnimations: ResourceAnimation[] = [];
-  projectiles: Projectile[] = [];
-
-  deleteMode = false;
-
-  tileAnimationSpeed = 0.003;
-  enemyAnimationSpeed = 0.003;
-  projectileAnimationSpeed = 0.003;
-
-  highFramerate = 25;
-  lowFramerate = 125;
+  resourceAnimationSpeed = 5;
+  enemyAnimationSpeed = 5;
+  projectileAnimationSpeed = 10;
 
   tilePixelSize = 16;
-
-  imageElements = {};
-
-  canvasPixelWidth: number;
-  canvasPixelHeight: number;
 
   // Map generation/rng variables
 
@@ -94,16 +75,16 @@ export class MapService implements Tick {
     'GRASS': 14, 'MOUNTAIN': 18, 'WATER': 36, 'HOME': 0, 'WALL': 1, 'ROAD': 2, 'TUNNEL': 3, 'BRIDGE': 4, 'CRACKEDFORGE': 5, 'STONEFORGE': 6,
     'IRONFORGE': 7, 'GOLDFORGE': 8, 'LATINUMFORGE': 9, 'TEMPROUSDISTILLERY': 10, 'OAKOVEN': 11, 'STONEOVEN': 12, 'MARBLEOVEN': 13,
     'TEMPROUSOVEN': 14, 'CHICKENFARM': 15, 'COWFARM': 16, 'DRAGONFARM': 17, 'WOODMARKET': 18, 'MINERALMARKET': 19, 'METALMARKET': 20,
-    'ENEMYPORTAL': 21, 'COIN': 0, 'OAK': 1, 'PINE': 2, 'BIRCH': 3, 'EUCALYPTUS': 4, 'WILLOW': 5, 'TEAK': 6, 'ENTSOUL': 7,
-    'REANIMATEDENT': 8, 'STONE': 9, 'GRAPHITE': 10, 'LIMESTONE': 11, 'MARBLE': 12, 'QUARTZ': 13, 'OBSIDIAN': 14, 'DIAMOND': 15,
-    'COPPERORE': 16, 'TINORE': 17, 'IRONORE': 18, 'GOLDORE': 19, 'LATINUMORE': 20, 'UNBELIEVIUMORE': 21, 'LUSTRIALORE': 22,
-    'SPECTRUSORE': 23, 'BRONZEINGOT': 24, 'IRONINGOT': 25, 'STEELINGOT': 26, 'GOLDINGOT': 27, 'LATINUMINGOT': 28, 'TEMPROUSINGOT': 29,
-    'REFINEDTEMPROUS': 30, 'WHEAT': 31, 'BREAD': 32, 'RAWPOTATO': 33, 'POTATO': 34, 'RICE': 35, 'JELLYDONUT': 36, 'RAWHERRING': 37,
-    'HERRING': 38, 'RAWBASS': 39, 'BASS': 40, 'RAWSHARK': 41, 'SHARK': 42, 'RAWCHICKEN': 43, 'CHICKEN': 44, 'RAWSTEAK': 45, 'STEAK': 46,
-    'RAWDRAGONMEAT': 47, 'DRAGONMEAT': 48, 'OAKTREE': 0, 'PINETREE': 1, 'BIRCHTREE': 2, 'EUCALYPTUSTREE': 3, 'WILLOWTREE': 4, 'TEAKTREE': 5,
-    'DEADENT': 6, 'STONEMINE': 7, 'GRAPHITEMINE': 8, 'LIMESTONEMINE': 9, 'MARBLEMINE': 10, 'QUARTZMINE': 11, 'OBSIDIANMINE': 12,
-    'DIAMONDMINE': 13, 'COPPERMINE': 14, 'TINMINE': 15, 'IRONMINE': 16, 'GOLDMINE': 17, 'LATINUMMINE': 18, 'UNBELIEVIUMMINE': 19,
-    'LUSTRIALMINE': 20, 'SPECTRUSMINE': 21, 'WHEATFARM': 22, 'RAWPOTATOFARM': 23, 'RICEFARM': 24, 'FISHINGSPOT': 25
+    'ENEMYPORTAL': 21, 'GOLD': 0, 'OAK': 1, 'EUCALYPTUS': 2, 'STONE': 3, 'COPPERORE': 4, 'IRONINGOT': 5, 'JELLYDONUT': 6, 'PINE': 7,
+    'BIRCH': 8, 'WILLOW': 9, 'GRAPHITE': 10, 'TINORE': 11, 'STEELINGOT': 12, 'RAWHERRING': 13, 'TEAK': 14, 'ENTSOUL': 15,
+    'REANIMATEDENT': 16, 'LIMESTONE': 17, 'IRONORE': 18, 'GOLDINGOT': 19, 'HERRING': 20, 'MARBLE': 21, 'QUARTZ': 22,
+    'OBSIDIAN': 23, 'DIAMOND': 24, 'GOLDORE': 25, 'LATINUMINGOT': 26, 'RAWBASS': 27, 'LATINUMORE': 28, 'UNBELIEVIUMORE': 29,
+    'LUSTRIALORE': 30, 'SPECTRUSORE': 31, 'BRONZEINGOT': 32, 'TEMPROUSINGOT': 33, 'BASS': 34, 'REFINEDTEMPROUS': 35,
+    'WHEAT': 36, 'BREAD': 37, 'RAWPOTATO': 38, 'POTATO': 39, 'RICE': 40, 'RAWSHARK': 41, 'SHARK': 42, 'RAWCHICKEN': 43, 'CHICKEN': 44,
+    'RAWSTEAK': 45, 'STEAK': 46, 'RAWDRAGONMEAT': 47, 'DRAGONMEAT': 48, 'OAKTREE': 0, 'PINETREE': 1, 'BIRCHTREE': 2, 'EUCALYPTUSTREE': 3,
+    'WILLOWTREE': 4, 'TEAKTREE': 5, 'DEADENT': 6, 'STONEMINE': 7, 'GRAPHITEMINE': 8, 'LIMESTONEMINE': 9, 'MARBLEMINE': 10, 'QUARTZMINE': 11,
+    'OBSIDIANMINE': 12, 'DIAMONDMINE': 13, 'COPPERMINE': 14, 'TINMINE': 15, 'IRONMINE': 16, 'GOLDMINE': 17, 'LATINUMMINE': 18,
+    'UNBELIEVIUMMINE': 19, 'LUSTRIALMINE': 20, 'SPECTRUSMINE': 21, 'WHEATFARM': 22, 'RAWPOTATOFARM': 23, 'RICEFARM': 24, 'FISHINGSPOT': 25
   };
 
   tileMap: Phaser.Tilemaps.Tilemap;
@@ -111,7 +92,17 @@ export class MapService implements Tick {
   resourceLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   buildingLayer: Phaser.Tilemaps.DynamicTilemapLayer;
 
+  resourceAnimationGroup: Phaser.GameObjects.Group;
+  minimapIconGroup: Phaser.GameObjects.Group;
+  fighterGroup: Phaser.GameObjects.Group;
+  enemyGroup: Phaser.GameObjects.Group;
+
   cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl;
+  minimapPanBox: Phaser.GameObjects.Rectangle;
+
+  mainCamera: Phaser.Cameras.Scene2D.Camera;
+  minimapCamera: Phaser.Cameras.Scene2D.Camera;
+  minimapSize = 500;
 
   isDraggingScreen: boolean;
 
@@ -120,6 +111,8 @@ export class MapService implements Tick {
   dragStartPoint: Phaser.Math.Vector2;
 
   constructor(protected resourcesService: ResourcesService,
+              protected fightersService: FighterService,
+              protected enemyService: EnemyService,
               protected storeService: StoreService,
               protected buildingsService: BuildingsService) {
     this.seedRng(Math.random());
@@ -145,12 +138,6 @@ export class MapService implements Tick {
       }
     }
 
-    const imageElementContainer = document.getElementById('tile-images');
-    for (let i = 0; i < imageElementContainer.children.length; i++) {
-      const imageElement = imageElementContainer.children[i];
-      this.imageElements[imageElement.id] = imageElement;
-    }
-
     this.mapManager = new Phaser.Game({
       width: 1920, height: 1080, zoom: 1, parent: 'map-canvas-container',
       scene: {
@@ -165,27 +152,41 @@ export class MapService implements Tick {
     this.canvasContainer = this.mapManager.canvas.parentElement;
     this.resize();
 
-    for (const imageElement in this.imageElements) {
-      if (this.imageElements[imageElement]) {
-        this.scene.load.image(imageElement, this.imageElements[imageElement].src);
-      }
-    }
-
     this.scene.load.image('map', '../../../assets/sprites/map.png');
     this.scene.load.image('buildings', '../../../assets/sprites/buildings.png');
     this.scene.load.image('resourceSpawns', '../../../assets/sprites/resourceSpawns.png');
+
+    this.scene.load.spritesheet('buildingSprites', '../../../assets/sprites/buildings.png', {
+      frameWidth: 48,
+      frameHeight: 48
+    });
     this.scene.load.spritesheet('resources', '../../../assets/sprites/resources.png', {
-      frameWidth: 16,
-      frameHeight: 16
+      frameWidth: 48,
+      frameHeight: 48
+    });
+    this.scene.load.spritesheet('sentry', '../../../assets/sprites/sentry.png', {
+      frameWidth: 48,
+      frameHeight: 48
+    });
+    this.scene.load.spritesheet('enemy', '../../../assets/sprites/enemy.png', {
+      frameWidth: 48,
+      frameHeight: 48
     });
   }
 
   createMap() {
     this.tileMap = this.scene.make.tilemap({
-      tileWidth: 16, tileHeight: 16,
+      tileWidth: 48, tileHeight: 48,
       width: this.totalChunkX * this.chunkWidth,
       height: this.totalChunkY * this.chunkHeight
     });
+
+    this.mainCamera = this.scene.cameras.main;
+
+    this.resourceAnimationGroup = this.scene.add.group();
+    this.minimapIconGroup = this.scene.add.group();
+    this.fighterGroup = this.scene.add.group();
+    this.enemyGroup = this.scene.add.group();
 
     this.initializeMap();
 
@@ -193,7 +194,7 @@ export class MapService implements Tick {
     const zoomKeys = this.scene.input.keyboard.addKeys('page_up,page_down');
 
     const controlConfig = {
-      camera: this.scene.cameras.main,
+      camera: this.mainCamera,
       up: cursors.up,
       down: cursors.down,
       left: cursors.left,
@@ -208,8 +209,38 @@ export class MapService implements Tick {
 
     this.cameraControls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
-    this.scene.cameras.main.setBounds(0, 0, this.totalChunkX * this.chunkWidth * this.tilePixelSize,
-                                            this.totalChunkY * this.chunkHeight  * this.tilePixelSize, true);
+    const xMax = this.mapLayer.tileToWorldX(this.totalChunkX * this.chunkWidth);
+    const yMax = this.mapLayer.tileToWorldY(this.totalChunkY * this.chunkHeight);
+    this.mainCamera.setBounds(0, 0, xMax, yMax, false).setName('main');
+
+    this.minimapCamera = this.scene.cameras.add(this.mainCamera.width - this.minimapSize, 0,
+      this.minimapSize, this.minimapSize, false, 'mini');
+    this.minimapCamera.zoom = this.minimapSize / xMax;
+    this.minimapCamera.scrollX = xMax / 2 - this.minimapSize / 2;
+    this.minimapCamera.scrollY = yMax / 2 - this.minimapSize / 2;
+
+    this.minimapPanBox = this.scene.add.rectangle(this.mainCamera.scrollX, this.mainCamera.scrollY,
+      this.mainCamera.width, this.mainCamera.height, 0x882277, 0.75);
+    this.mainCamera.ignore(this.minimapPanBox);
+
+    this.mainCamera.on('mousedown', _ => this.clickMap());
+    this.minimapCamera.on('mousedown', _ => this.clickMinimap());
+
+    this.scene.tweens.add({
+      targets: this.tileMap,
+      x: 100,
+      ease: 'Sine.easeInOut',
+      yoyo: false,
+      repeat: -1,
+      duration: 3000
+    });
+
+    this.mainCamera.fadeIn(750);
+    this.minimapCamera.fadeIn(750);
+
+    // debug only
+    this.resourcesService.highestTierReached = 10;
+    this.enemyService.enemiesActive = true;
 
     this.canvasContainer.onmousewheel = event => this.zoomMap(event);
   }
@@ -219,41 +250,67 @@ export class MapService implements Tick {
 
     this.cameraControls.update(delta);
 
-    const camera = this.scene.cameras.main;
     const pointer = this.scene.input.activePointer;
 
-    const cursorWorldPoint = pointer.positionToCamera(camera) as Phaser.Math.Vector2;
+    const cursorWorldPoint = pointer.positionToCamera(this.mainCamera) as Phaser.Math.Vector2;
 
     this.pointerTileX = this.mapLayer.worldToTileX(cursorWorldPoint.x);
     this.pointerTileY = this.mapLayer.worldToTileY(cursorWorldPoint.y);
 
-    const activePointer = this.scene.input.manager.activePointer;
+    this.minimapPanBox.x = this.mainCamera.worldView.x + this.mainCamera.width / 2;
+    this.minimapPanBox.y = this.mainCamera.worldView.y + this.mainCamera.height / 2;
+    this.minimapPanBox.width = this.mainCamera.worldView.width;
+    this.minimapPanBox.height = this.mainCamera.worldView.height;
+    this.minimapPanBox.depth = 2;
 
-    if (activePointer.justDown) {
+    const camerasBelowCursor = this.scene.cameras.getCamerasBelowPointer(pointer);
+
+    if (camerasBelowCursor.includes(this.minimapCamera)) {
+      this.clickMinimap();
+    } else {
+      this.clickMap();
+    }
+  }
+
+  resize() {
+    this.mapManager.resize(this.canvasContainer.clientWidth, this.canvasContainer.clientHeight);
+    this.scene.cameras.resize(this.canvasContainer.clientWidth, this.canvasContainer.clientHeight);
+
+    if (this.minimapCamera) {
+      this.minimapCamera.setViewport(this.canvasContainer.clientWidth - this.minimapSize, 0, this.minimapSize, this.minimapSize);
+    }
+  }
+
+  clickMap() {
+    const pointer = this.scene.input.activePointer;
+
+    if (pointer.justDown) {
       this.isDraggingScreen = false;
 
-      this.dragStartPoint = new Phaser.Math.Vector2(pointer.position.x + camera.scrollX, pointer.position.y + camera.scrollY);
-    } else if (activePointer.isDown) {
-      if (!activePointer.primaryDown) {
+      this.dragStartPoint = new Phaser.Math.Vector2(pointer.position.x + this.mainCamera.scrollX,
+                                                    pointer.position.y + this.mainCamera.scrollY);
+
+    } else if (pointer.isDown) {
+      if (!pointer.primaryDown) {
         const cursorScreenPoint = this.scene.input.activePointer.position;
 
-        this.scene.cameras.main.scrollX = this.dragStartPoint.x - cursorScreenPoint.x;
-        this.scene.cameras.main.scrollY = this.dragStartPoint.y - cursorScreenPoint.y;
+        this.mainCamera.scrollX = this.dragStartPoint.x - cursorScreenPoint.x;
+        this.mainCamera.scrollY = this.dragStartPoint.y - cursorScreenPoint.y;
       }
 
-      if (Math.abs(activePointer.x - activePointer.downX) >= 5 || Math.abs(activePointer.y - activePointer.downY) >= 5) {
+      if (Math.abs(pointer.x - pointer.downX) >= 5 || Math.abs(pointer.y - pointer.downY) >= 5) {
         this.isDraggingScreen = true;
       }
 
-      if (activePointer.primaryDown && this.cursorTool === CursorTool.PlaceBuildings) {
-        this.createBuilding(this.pointerTileX, this.pointerTileY, this.buildingsService.selectedBuilding.tileType, true, 50);
-      } else if (activePointer.primaryDown && this.cursorTool === CursorTool.ClearBuildings) {
+      if (pointer.primaryDown && this.cursorTool === CursorTool.PlaceBuildings) {
+        this.createBuilding(this.pointerTileX, this.pointerTileY, this.buildingsService.selectedBuilding, true, 50);
+      } else if (pointer.primaryDown && this.cursorTool === CursorTool.ClearBuildings) {
         this.clearBuilding(this.pointerTileX, this.pointerTileY);
       }
-    } else if (activePointer.justUp && !this.isDraggingScreen) {
+    } else if (pointer.justUp && !this.isDraggingScreen) {
       switch (this.cursorTool) {
         case CursorTool.PlaceBuildings: {
-          this.createBuilding(this.pointerTileX, this.pointerTileY, this.buildingsService.selectedBuilding.tileType, true, 50);
+          this.createBuilding(this.pointerTileX, this.pointerTileY, this.buildingsService.selectedBuilding, true, 50);
 
           break;
         } case CursorTool.TileDetail: {
@@ -263,22 +320,32 @@ export class MapService implements Tick {
           }
 
           break;
+        } case CursorTool.PlaceFighters: {
+          this.spawnFighter(this.fightersService.selectedFighterType, this.pointerTileX, this.pointerTileY);
         }
       }
     }
   }
 
-  resize() {
-    this.mapManager.resize(this.canvasContainer.clientWidth, this.canvasContainer.clientHeight);
-    this.scene.cameras.resize(this.canvasContainer.clientWidth, this.canvasContainer.clientHeight);
+  clickMinimap() {
+    const pointer = this.scene.input.activePointer;
+    const cursorWorldPoint = pointer.positionToCamera(this.minimapCamera) as Phaser.Math.Vector2;
+
+    if (pointer.primaryDown) {
+      this.mainCamera.centerOn(cursorWorldPoint.x, cursorWorldPoint.y);
+    }
   }
 
   zoomMap(event) {
-    const newScale = this.scene.cameras.main.zoom - event.deltaY / 65 / this.scene.cameras.main.zoom;
+    let newScale = this.scene.cameras.main.zoom - event.deltaY / 65 / this.scene.cameras.main.zoom;
 
-    if (newScale > 0.5 && newScale < 4) {
-      this.scene.cameras.main.zoomTo(newScale, 50);
+    if (newScale > 0.5) {
+      newScale = 0.5;
+    } else if (newScale < 4) {
+      newScale = 4;
     }
+
+    this.scene.cameras.main.zoomTo(newScale, 50);
   }
 
   seedRng(seed: number) {
@@ -291,10 +358,11 @@ export class MapService implements Tick {
 
   initializeMap() {
     this.tileMap.removeAllLayers();
+    this.minimapIconGroup.clear(true);
 
-    const mapTileset = this.tileMap.addTilesetImage('map', 'map', 16, 16);
-    const resourceTileset = this.tileMap.addTilesetImage('resourceSpawns', 'resourceSpawns', 16, 16);
-    const buildingTileset = this.tileMap.addTilesetImage('buildings', 'buildings', 16, 16);
+    const mapTileset = this.tileMap.addTilesetImage('map', 'map', 48, 48);
+    const resourceTileset = this.tileMap.addTilesetImage('resourceSpawns', 'resourceSpawns', 48, 48);
+    const buildingTileset = this.tileMap.addTilesetImage('buildings', 'buildings', 48, 48);
 
     this.mapLayer = this.tileMap.createBlankDynamicLayer('mapLayer', mapTileset);
     this.resourceLayer = this.tileMap.createBlankDynamicLayer('resourceLayer', resourceTileset);
@@ -312,9 +380,18 @@ export class MapService implements Tick {
                                                                    this.totalChunkX * 0.6 * this.chunkWidth,
                                                                    this.totalChunkY * 0.4 * this.chunkHeight,
                                                                    this.totalChunkY * 0.6 * this.chunkHeight);
-    this.createBuilding(homeTile.x, homeTile.y, BuildingTileType.Home, false, 50, true);
+    const homeData = this.buildingTileData.get(BuildingTileType.Home);
+    this.createBuilding(homeTile.x, homeTile.y, homeData, false, 50, true);
 
-    this.scene.cameras.main.centerOn(homeTile.x, homeTile.y);
+    this.mainCamera.centerOn(homeTile.pixelX, homeTile.pixelY);
+
+    const minimapHomeIcon = this.scene.add.sprite(homeTile.pixelX, homeTile.pixelY,
+      'buildingSprites', this.tileIndices[BuildingTileType.Home]);
+    minimapHomeIcon.scaleX = 10;
+    minimapHomeIcon.scaleY = 10;
+    minimapHomeIcon.depth = 1;
+    this.minimapIconGroup.add(minimapHomeIcon);
+    this.mainCamera.ignore(minimapHomeIcon);
 
     // Placing an oak tree & stone mine near the home, to ensure they're always available.
     // We want to vary up their positions a bit to feel more natural.
@@ -350,7 +427,8 @@ export class MapService implements Tick {
       } else {
         currentTile = neighbors[this.rng.nextIntRange(0, neighbors.length - 1)];
       }
-      this.createBuilding(currentTile.x, currentTile.y, BuildingTileType.Road, false, 50, true);
+      const roadData = this.buildingTileData.get(BuildingTileType.Road);
+      this.createBuilding(currentTile.x, currentTile.y, roadData, false, 50, true);
       placedRoads.push(currentTile);
     }
 
@@ -485,22 +563,20 @@ export class MapService implements Tick {
       return;
     }
 
-    for (const resourceAnimation of this.resourceAnimations) {
+    const resourceAnimations = this.resourceAnimationGroup.children.entries.map(anim => anim as ResourceAnimation);
+
+    for (const resourceAnimation of resourceAnimations) {
       resourceAnimation.tick(elapsed, deltaTime);
 
       if (resourceAnimation.pathingDone) {
         resourceAnimation.finishAnimation();
+        this.resourceAnimationGroup.remove(resourceAnimation);
       }
     }
 
-    for (const tile of this.buildingLayer.getTilesWithin()) {
-      const buildingNode = tile.properties['buildingNode'];
-      if (buildingNode && buildingNode.market) {
-        tile.properties['buildingNode'].tick(elapsed, deltaTime);
-      }
+    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['buildingNode'] && _tile.properties['buildingNode'].market)) {
+      tile.properties['buildingNode'].market.tick(elapsed, deltaTime);
     }
-
-    this.resourceAnimations = this.resourceAnimations.filter(animation => !animation.pathingDone);
 
     for (const projectile of this.projectiles) {
       projectile.tick(elapsed, deltaTime);
@@ -689,47 +765,85 @@ export class MapService implements Tick {
       return;
     }
 
-      resource.deductResourceConsumes(multiplier);
+    resource.deductResourceConsumes(multiplier);
 
     const tile = matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
     if (tile === undefined) {
       return;
     }
 
-    const worldX = this.mapLayer.tileToWorldX(tile.x);
-    const worldY = this.mapLayer.tileToWorldY(tile.y);
-
     const tilePath: Phaser.Tilemaps.Tile[] = tile.properties['resourceNode'].path;
-    const pathPoints = tilePath.map(_tile => new Phaser.Math.Vector2(this.mapLayer.tileToWorldX(_tile.x),
-                                                                     this.mapLayer.tileToWorldY(_tile.y)));
+
+    const animationType = spawnedByPlayer ? ResourceAnimationType.PlayerSpawned : ResourceAnimationType.WorkerSpawned;
+
+    this.spawnResourceAnimation(resource.resourceEnum, multiplier, animationType, tile, tilePath, spawnedByPlayer);
+  }
+
+  spawnSoldResourceAnimation(resourceEnum: ResourceEnum, multiplier: number, market: Market) {
+    this.spawnResourceAnimation(resourceEnum, multiplier, ResourceAnimationType.Sold, market.owningTile, market.tilePath, false, market);
+  }
+
+  spawnResourceAnimation(resourceEnum: ResourceEnum, multiplier: number, animationType: ResourceAnimationType,
+                         startTile: Phaser.Tilemaps.Tile, tilePath: Phaser.Tilemaps.Tile[], spawnedByPlayer: boolean, market?: Market) {
+    const worldX = this.mapLayer.tileToWorldX(startTile.x) + startTile.width / 4;
+    const worldY = this.mapLayer.tileToWorldY(startTile.y) + startTile.height / 4;
+
+    const pathPoints = tilePath.map(_tile => new Phaser.Math.Vector2(this.mapLayer.tileToWorldX(_tile.x) + _tile.width / 4,
+                                                                     this.mapLayer.tileToWorldY(_tile.y) + _tile.height / 4));
 
     const path = new Phaser.Curves.Path(worldX, worldY);
     for (const pathPoint of pathPoints) {
       path.lineTo(pathPoint);
     }
 
-    const animationType = spawnedByPlayer ? ResourceAnimationType.PlayerSpawned : ResourceAnimationType.WorkerSpawned;
-    const resourceSpriteIndex = this.tileIndices[resource.resourceEnum];
+    const resourceSpriteIndex = this.tileIndices[resourceEnum];
 
-    const resourceAnimation = new ResourceAnimation(worldX, worldY, tile,
-      5, path, animationType, resource.resourceEnum, multiplier, spawnedByPlayer,
+    const resourceAnimation = new ResourceAnimation(worldX, worldY, startTile,
+      this.resourceAnimationSpeed, path, animationType, resourceEnum, multiplier, spawnedByPlayer,
       this.scene, 'resources', resourceSpriteIndex, this.resourcesService, this.storeService);
 
-    this.resourceAnimations.push(resourceAnimation);
-    this.scene.add.existing(resourceAnimation);
-  }
+    resourceAnimation.setScale(2 / 3, 2 / 3);
 
-  spawnSoldResourceAnimation(resourceEnum: ResourceEnum, multiplier: number, market: Market) {
-    const resourceAnimation = new ResourceAnimation(new Vector(market.homeTile.x, market.homeTile.y),
-      market.homeTile, 0.003, market.tilePath, ResourceAnimationType.Sold,
-      resourceEnum, multiplier, false, this.resourcesService, this.storeService);
-    this.resourceAnimations.push(resourceAnimation);
+    this.scene.tweens.add({
+      targets: resourceAnimation,
+      angle: 30,
+      ease: 'Sine.easeInOut',
+      duration: 750,
+      repeat: -1,
+      yoyo: true
+    });
+
+    this.resourceAnimationGroup.add(resourceAnimation, true);
   }
 
   spawnProjectile(owner: Actor, target: Actor) {
     const projectile = new Projectile('Arrow', new Vector(owner.x, owner.y),
       owner.currentTile, 0.006, owner, target);
     this.projectiles.push(projectile);
+  }
+
+  spawnFighter(fighterType: FighterData, tileX: number, tileY: number) {
+    if (!this.fightersService.canAffordFighter(fighterType)) {
+      return;
+    }
+
+    this.fightersService.purchaseFigher(fighterType);
+
+    const spawnTile = this.mapLayer.getTileAt(tileX, tileY);
+
+    const fighter = new Fighter(fighterType.name, spawnTile.getCenterX(), spawnTile.getCenterY(), spawnTile, fighterType.maxHealth, 1,
+      fighterType.attack, fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.movable,
+      1000, this.scene, 'sentry', 0, this.resourcesService, this.enemyService, this);
+    this.fighterGroup.add(fighter, true);
+  }
+
+  spawnEnemy(enemyType: EnemyData, tileX: number, tileY: number) {
+    const spawnTile = this.mapLayer.getTileAt(tileX, tileY);
+
+    const enemy = new Enemy(enemyType.name, spawnTile.getCenterX(), spawnTile.getCenterY(), spawnTile, enemyType.maxHealth,
+      this.enemyAnimationSpeed, enemyType.attack, enemyType.defense, enemyType.attackRange, enemyType.targetableBuildingTypes,
+      enemyType.resourcesToSteal, enemyType.stealMax, enemyType.resourceCapacity, this.scene, 'enemy', 0);
+    this.enemyGroup.add(enemy, true);
   }
 
   getRandomTile(mapTileTypes?: MapTileType[], avoidResources = false,
@@ -745,14 +859,18 @@ export class MapService implements Tick {
     return tile;
   }
 
-  createBuilding(x: number, y: number, tileType: BuildingTileType, removable: boolean, health: number, createForFree = false) {
-    const buildingData = this.buildingTileData.get(tileType);
+  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean, health: number, createForFree = false) {
+    if (!buildingData) {
+      return;
+    }
+
     const buildingExists = this.buildingLayer.getTileAt(x, y) != null;
+    const resourceExists = this.resourceLayer.getTileAt(x, y) != null;
 
     const mapTile = this.mapLayer.getTileAt(x, y);
     const canPlaceHere = buildingData.buildableSurfaces.includes(mapTile.properties['tileType']);
 
-    if (buildingExists || !canPlaceHere || !(createForFree || this.buildingsService.canAffordBuilding(buildingData))) {
+    if (buildingExists || resourceExists || !canPlaceHere || !(createForFree || this.buildingsService.canAffordBuilding(buildingData))) {
       return;
     }
 
@@ -760,7 +878,7 @@ export class MapService implements Tick {
       this.buildingsService.purchaseBuilding(buildingData);
     }
 
-    const buildingTile = this.setBuildingTile(x, y, tileType, removable, health);
+    const buildingTile = this.setBuildingTile(x, y, buildingData.tileType, removable, health);
 
     if (buildingData.placesResourceTile) {
       this.setResourceTile(x, y, buildingData.resourceTileType, health);
@@ -781,7 +899,7 @@ export class MapService implements Tick {
         }
       }
 
-      buildingTile.properties['marketNode'] = new Market(this, this.resourcesService, resourceType, buildingTile, true);
+      mapTile.properties['buildingNode'].market = new Market(this, this.resourcesService, resourceType, mapTile, true);
     }
 
     this.updatePaths(buildingTile, true);

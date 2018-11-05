@@ -1,10 +1,9 @@
-import { BuildingNode, ResourceNode } from './../../objects/tile';
 import { Component, OnInit } from '@angular/core';
 
 import { MapService } from '../../services/map/map.service';
 import { BuildingsService } from '../../services/buildings/buildings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { BuildingTileData, ResourceTileData, BuildingTileType } from '../../objects/tile';
+import { BuildingTileData, ResourceTileData, BuildingTileType, BuildingNode, ResourceNode, Market } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
 import { ResourceEnum } from '../../objects/resourceData';
 
@@ -62,15 +61,15 @@ export class TileDetailComponent implements OnInit {
 
     this.mapService.clearBuilding(this.focusedTile.x, this.focusedTile.y);
     this.mapService.createBuilding(this.focusedTile.x, this.focusedTile.y,
-      currentBuildingData.upgradeBuilding, true, newBuildingData.baseHealth);
+      newBuildingData, true, newBuildingData.baseHealth);
   }
 
   canRepairBuilding(): boolean {
-    return this.buildingsService.canRepairBuilding(tile);
+    return this.buildingsService.canRepairBuilding(this.focusedTile);
   }
 
   repairBuilding() {
-    this.buildingsService.repairBuilding(tile);
+    this.buildingsService.repairBuilding(this.focusedTile);
   }
 
   get focusedTile(): Phaser.Tilemaps.Tile {
@@ -78,26 +77,34 @@ export class TileDetailComponent implements OnInit {
   }
 
   get focusedBuildingNode(): BuildingNode {
-    return this.focusedTile.properties['buildingNode'];
+    return this.focusedTile ? this.focusedTile.properties['buildingNode'] : null;
   }
 
   get focusedResourceNode(): ResourceNode {
-    return this.focusedTile.properties['resourceNode'];
+    return this.focusedTile ? this.focusedTile.properties['resourceNode'] : null;
+  }
+
+  get marketNode(): Market {
+    return this.focusedBuildingNode ? this.focusedBuildingNode.market : null;
   }
 
   get focusedBuildingData(): BuildingTileData {
-    return this.mapService.buildingTileData.get(this.focusedBuildingNode.tileType);
+    return this.focusedBuildingNode ? this.mapService.buildingTileData.get(this.focusedBuildingNode.tileType) : null;
   }
 
   get focusedResourceData(): ResourceTileData {
-    return this.mapService.resourceTileData.get(this.focusedResourceNode.tileType);
+    return this.focusedResourceNode ? this.mapService.resourceTileData.get(this.focusedResourceNode.tileType): null;
   }
 
   get upgradedBuildingData(): BuildingTileData {
-    return this.mapService.buildingTileData.get(this.focusedBuildingData.upgradeBuilding);
+    return this.focusedBuildingData ? this.mapService.buildingTileData.get(this.focusedBuildingData.upgradeBuilding) : null;
   }
 
   get focusedResources(): Resource[] {
+    if (!this.focusedResourceData) {
+      return [];
+    }
+
     const resourceEnums = this.focusedResourceData.resourceEnums;
 
     return resourceEnums.map(resourceEnum => this.resourcesService.resources.get(resourceEnum));

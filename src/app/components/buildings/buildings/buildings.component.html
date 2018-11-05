@@ -8,7 +8,7 @@ class="buildings">
   <div class="resource-list">
     <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
       matTooltipPosition="below">
-      <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
+        <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
       {{resourceCost.resourceCost | longNumber}}
     </div>
   </div>

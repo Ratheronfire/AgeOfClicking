@@ -1,6 +1,5 @@
-import { ResourceEnum } from './resourceData';
+import { ResourceEnum, ResourceType } from './resourceData';
 import { BuildingTileType } from './tile';
-import { Vector } from './vector';
 import { tilePixelSize } from '../globals';
 import { Tick } from './../services/tick/tick.service';
 import { ResourcesService } from '../services/resources/resources.service';
@@ -21,6 +20,36 @@ export enum ResourceAnimationType {
   PlayerSpawned = 'PLAYERSPAWNED',
   WorkerSpawned = 'WORKERSPAWNED',
   Sold = 'SOLD'
+}
+
+export interface FighterData {
+  name: string;
+  description: string;
+
+  maxHealth: number;
+  cost: number;
+  attack: number;
+  defense: number;
+
+  movable: boolean;
+  attackRange: number;
+}
+
+export interface EnemyData {
+  name: string;
+  description: string;
+
+  maxHealth: number;
+  attack: number;
+  defense: number;
+
+  targetableBuildingTypes: BuildingTileType[];
+  resourcesToSteal: ResourceEnum[];
+  stealMax: number;
+  resourceCapacity: number;
+
+  movable: boolean;
+  attackRange: number;
 }
 
 export class Entity extends Phaser.GameObjects.PathFollower implements Tick {
