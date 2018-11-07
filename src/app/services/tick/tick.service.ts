@@ -18,15 +18,14 @@ export interface Tick {
 })
 export class TickService {
   tickObjects = [this.harvestService, this.workersService, this.enemyService,
-                this.fighterService, this.settingsService, this.mapService];
+                this.fighterService, this.settingsService];
   timeElapsed: number;
 
   constructor(protected harvestService: HarvestService,
               protected workersService: WorkersService,
               protected enemyService: EnemyService,
               protected fighterService: FighterService,
-              protected settingsService: SettingsService,
-              protected mapService: MapService) {
+              protected settingsService: SettingsService) {
     d3.interval(this.tick(this), 25);
   }
 

@@ -7,7 +7,6 @@ import { StoreService } from './../store/store.service';
 import { BuildingsService } from '../buildings/buildings.service';
 import { FighterService } from './../fighter/fighter.service';
 import { EnemyService } from './../enemy/enemy.service';
-import { Tick } from './../tick/tick.service';
 import { ResourceEnum, ResourceType } from './../../objects/resourceData';
 import { MapTileType, BuildingTileType, MapTileData, BuildingTileData, ResourceTileData,
   Market, ResourceTileType, BuildingNode, ResourceNode, BuildingSubType } from '../../objects/tile';
@@ -26,13 +25,14 @@ export enum CursorTool {
   ClearBuildings = 'CLEARBUILDINGS',
   TileDetail = 'TILEDETAIL',
   PlaceFighters = 'PLACEFIGHTERS',
-  FighterDetail = 'FIGHTERDETAIL'
+  FighterDetail = 'FIGHTERDETAIL',
+  PathfindingTest = 'PATHFINDINGTEST'
 }
 
 @Injectable({
   providedIn: 'root'
 })
-export class MapService implements Tick {
+export class MapService {
   public mapTileData: Map<string, MapTileData> = new Map<string, MapTileData>();
   public buildingTileData: Map<string, BuildingTileData> = new Map<string, BuildingTileData>();
   public resourceTileData: Map<string, ResourceTileData> = new Map<string, ResourceTileData>();
@@ -87,6 +87,10 @@ export class MapService implements Tick {
     'UNBELIEVIUMMINE': 19, 'LUSTRIALMINE': 20, 'SPECTRUSMINE': 21, 'WHEATFARM': 22, 'RAWPOTATOFARM': 23, 'RICEFARM': 24, 'FISHINGSPOT': 25
   };
 
+  enemySpawnInterval = 4500;
+  lastEnemySpawnTime = 0;
+  maxEnemyCount: 25;
+
   tileMap: Phaser.Tilemaps.Tilemap;
   mapLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   resourceLayer: Phaser.Tilemaps.DynamicTilemapLayer;
@@ -96,6 +100,7 @@ export class MapService implements Tick {
   minimapIconGroup: Phaser.GameObjects.Group;
   fighterGroup: Phaser.GameObjects.Group;
   enemyGroup: Phaser.GameObjects.Group;
+  pathfindingTestGroup: Phaser.GameObjects.Group;
 
   cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl;
   minimapPanBox: Phaser.GameObjects.Rectangle;
@@ -187,6 +192,7 @@ export class MapService implements Tick {
     this.minimapIconGroup = this.scene.add.group();
     this.fighterGroup = this.scene.add.group();
     this.enemyGroup = this.scene.add.group();
+    this.pathfindingTestGroup = this.scene.add.group();
 
     this.initializeMap();
 
@@ -245,10 +251,10 @@ export class MapService implements Tick {
     this.canvasContainer.onmousewheel = event => this.zoomMap(event);
   }
 
-  updateMap(time, delta) {
+  updateMap(elapsed, deltaTime) {
     this.resize();
 
-    this.cameraControls.update(delta);
+    this.cameraControls.update(deltaTime);
 
     const pointer = this.scene.input.activePointer;
 
@@ -270,6 +276,38 @@ export class MapService implements Tick {
     } else {
       this.clickMap();
     }
+
+    // Updating tilemap GameObjects
+
+    if (!this.mapLayer) {
+      return;
+    }
+
+    const resourceAnimations = this.resourceAnimationGroup.children.entries.map(anim => anim as ResourceAnimation);
+
+    for (const resourceAnimation of resourceAnimations) {
+      if (resourceAnimation.pathingDone) {
+        resourceAnimation.finishAnimation();
+        this.resourceAnimationGroup.remove(resourceAnimation);
+      }
+    }
+
+    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['buildingNode'] && _tile.properties['buildingNode'].market)) {
+      tile.properties['buildingNode'].market.tick(elapsed, deltaTime);
+    }
+
+    if (this.enemyService.enemiesActive && elapsed - this.lastEnemySpawnTime >= this.enemySpawnInterval) {
+      const tile = this.getRandomTile([MapTileType.Grass], true);
+      this.spawnEnemy(this.enemyService.enemyTypes[0], tile);
+
+      this.lastEnemySpawnTime = elapsed;
+    }
+
+    // for (const projectile of this.projectiles) {
+    //   projectile.tick(elapsed, deltaTime);
+    // }
+
+    // this.projectiles = this.projectiles.filter(projectile => !projectile.hitTarget);
   }
 
   resize() {
@@ -322,6 +360,30 @@ export class MapService implements Tick {
           break;
         } case CursorTool.PlaceFighters: {
           this.spawnFighter(this.fightersService.selectedFighterType, this.pointerTileX, this.pointerTileY);
+
+          break;
+        } case CursorTool.PathfindingTest: {
+          this.pathfindingTestGroup.clear(false, true);
+
+          const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
+          const homeTile = this.mapLayer.findTile(_tile => _tile.properties['buildingNode'] &&
+            _tile.properties['buildingNode'].tileType === BuildingTileType.Home);
+
+          this.findPath(tile, homeTile, false, true).subscribe(tilePath => {
+            for (const pathTile of tilePath) {
+              let tileColor = 0x0000ff;
+              if (tilePath.indexOf(pathTile) === 0) {
+                tileColor = 0x00ff00;
+              } else if (tilePath.indexOf(pathTile) === tilePath.length - 1) {
+                tileColor = 0xff0000;
+              }
+
+              const tileHighlight = this.scene.add.rectangle(pathTile.getCenterX(), pathTile.getCenterY(),
+                pathTile.width, pathTile.width, tileColor, 0.5);
+              tileHighlight.setDepth(3);
+              this.pathfindingTestGroup.add(tileHighlight);
+            }
+          });
         }
       }
     }
@@ -558,33 +620,6 @@ export class MapService implements Tick {
     }
   }
 
-  tick(elapsed: number, deltaTime: number) {
-    if (!this.mapLayer) {
-      return;
-    }
-
-    const resourceAnimations = this.resourceAnimationGroup.children.entries.map(anim => anim as ResourceAnimation);
-
-    for (const resourceAnimation of resourceAnimations) {
-      resourceAnimation.tick(elapsed, deltaTime);
-
-      if (resourceAnimation.pathingDone) {
-        resourceAnimation.finishAnimation();
-        this.resourceAnimationGroup.remove(resourceAnimation);
-      }
-    }
-
-    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['buildingNode'] && _tile.properties['buildingNode'].market)) {
-      tile.properties['buildingNode'].market.tick(elapsed, deltaTime);
-    }
-
-    for (const projectile of this.projectiles) {
-      projectile.tick(elapsed, deltaTime);
-    }
-
-    this.projectiles = this.projectiles.filter(projectile => !projectile.hitTarget);
-  }
-
   adjustedNoise(x: number, y: number, generator: SimplexNoise): number {
     const nx = x / this.chunkWidth - 0.5, ny = y / this.chunkHeight - 0.5;
     const noiseValue = this.noise(1 * nx, 1 * ny, generator) +
@@ -694,8 +729,8 @@ export class MapService implements Tick {
 
     let tileQueue: Phaser.Tilemaps.Tile[] = [];
 
-    const tileDistances = Array.apply(null, {length: this.mapLayer.tilesTotal}).map(_ => Infinity);
-    const tileHeuristicDistances = Array.apply(null, {length: this.mapLayer.tilesTotal}).map(_ => Infinity);
+    const tileDistances = [];
+    const tileHeuristicDistances = [];
 
     const nodeMap = new Map<Phaser.Tilemaps.Tile, Phaser.Tilemaps.Tile>();
 
@@ -715,7 +750,7 @@ export class MapService implements Tick {
         break;
       }
 
-      tileQueue = tileQueue.sort((a, b) => tileHeuristicDistances[a.properties['id']] - tileHeuristicDistances[b.properties['id']]);
+      tileQueue = tileQueue.sort((a, b) => tileHeuristicDistances[b.properties['id']] - tileHeuristicDistances[a.properties['id']]);
       currentNode = tileQueue.pop();
 
       if (currentNode === targetTile) {
@@ -738,6 +773,11 @@ export class MapService implements Tick {
         const pathable = neighbor.properties['buildingNode'] &&
           this.buildingTileData.get(neighbor.properties['buildingNode'].tileType).resourcePathable;
         const walkable = this.mapTileData.get(neighbor.properties['tileType']).walkable || pathable;
+
+        if (!tileDistances[neighbor.properties['id']]) {
+          tileDistances[neighbor.properties['id']] = Infinity;
+          tileHeuristicDistances[neighbor.properties['id']] = Infinity;
+        }
 
         if (!visitedTiles.includes(neighbor) && (!onlyPathable || pathable) && (!onlyWalkable || walkable) &&
             tileDistances[neighbor.properties['id']] > neighborDistance) {
@@ -788,13 +828,7 @@ export class MapService implements Tick {
     const worldX = this.mapLayer.tileToWorldX(startTile.x) + startTile.width / 4;
     const worldY = this.mapLayer.tileToWorldY(startTile.y) + startTile.height / 4;
 
-    const pathPoints = tilePath.map(_tile => new Phaser.Math.Vector2(this.mapLayer.tileToWorldX(_tile.x) + _tile.width / 4,
-                                                                     this.mapLayer.tileToWorldY(_tile.y) + _tile.height / 4));
-
-    const path = new Phaser.Curves.Path(worldX, worldY);
-    for (const pathPoint of pathPoints) {
-      path.lineTo(pathPoint);
-    }
+    const path = this.tilesToLinearPath(tilePath);
 
     const resourceSpriteIndex = this.tileIndices[resourceEnum];
 
@@ -837,12 +871,14 @@ export class MapService implements Tick {
     this.fighterGroup.add(fighter, true);
   }
 
-  spawnEnemy(enemyType: EnemyData, tileX: number, tileY: number) {
-    const spawnTile = this.mapLayer.getTileAt(tileX, tileY);
+  spawnEnemy(enemyType: EnemyData, tile: Phaser.Tilemaps.Tile) {
+    if (this.enemyGroup.countActive() > this.maxEnemyCount) {
+      return;
+    }
 
-    const enemy = new Enemy(enemyType.name, spawnTile.getCenterX(), spawnTile.getCenterY(), spawnTile, enemyType.maxHealth,
+    const enemy = new Enemy(enemyType.name, tile.getCenterX(), tile.getCenterY(), tile, enemyType.maxHealth,
       this.enemyAnimationSpeed, enemyType.attack, enemyType.defense, enemyType.attackRange, enemyType.targetableBuildingTypes,
-      enemyType.resourcesToSteal, enemyType.stealMax, enemyType.resourceCapacity, this.scene, 'enemy', 0);
+      enemyType.resourcesToSteal, enemyType.stealMax, enemyType.resourceCapacity, this.scene, 'enemy', 0, this);
     this.enemyGroup.add(enemy, true);
   }
 
@@ -857,6 +893,26 @@ export class MapService implements Tick {
       (avoidResources && tile.properties['resourceNode']));
 
     return tile;
+  }
+
+  tilesToLinearPath(tiles: Phaser.Tilemaps.Tile[]): Phaser.Curves.Path {
+    if (!tiles.length) {
+      return null;
+    }
+
+    const pathPoints = tiles.map(tile => new Phaser.Math.Vector2(this.mapLayer.tileToWorldX(tile.x) + tile.width / 4,
+    this.mapLayer.tileToWorldY(tile.y) + tile.height / 4));
+
+    const startTile = tiles[0];
+    const worldX = this.mapLayer.tileToWorldX(startTile.x) + startTile.width / 4;
+    const worldY = this.mapLayer.tileToWorldY(startTile.y) + startTile.height / 4;
+
+    const path = new Phaser.Curves.Path(worldX, worldY);
+    for (const pathPoint of pathPoints) {
+      path.lineTo(pathPoint);
+    }
+
+    return path;
   }
 
   createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean, health: number, createForFree = false) {

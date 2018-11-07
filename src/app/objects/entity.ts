@@ -1,7 +1,6 @@
 import { ResourceEnum, ResourceType } from './resourceData';
-import { BuildingTileType } from './tile';
+import { BuildingTileType, MapTileType } from './tile';
 import { tilePixelSize } from '../globals';
-import { Tick } from './../services/tick/tick.service';
 import { ResourcesService } from '../services/resources/resources.service';
 import { EnemyService } from './../services/enemy/enemy.service';
 import { StoreService } from './../services/store/store.service';
@@ -52,7 +51,7 @@ export interface EnemyData {
   attackRange: number;
 }
 
-export class Entity extends Phaser.GameObjects.PathFollower implements Tick {
+export class Entity extends Phaser.GameObjects.PathFollower {
   name: string;
 
   spawnPosition: Phaser.Math.Vector2;
@@ -79,8 +78,6 @@ export class Entity extends Phaser.GameObjects.PathFollower implements Tick {
     this.animationSpeed = animationSpeed;
   }
 
-  tick(elapsed: number, deltaTime: number) { }
-
   get position(): Phaser.Math.Vector2 {
     return new Phaser.Math.Vector2(this.x, this.y);
   }
@@ -102,40 +99,107 @@ export class Actor extends Entity {
   }
 }
 
-interface Target {
-  tile: Phaser.Tilemaps.Tile;
-  accessible: boolean;
-  wanderTarget: boolean;
-}
-
 export class Enemy extends Actor {
   targetableBuildingTypes: BuildingTileType[];
-  targets: Target[];
-  targetIndex: number;
-  pathAttempt: number;
+  targets: Phaser.Tilemaps.Tile[] = [];
+  selectedTarget: Phaser.Tilemaps.Tile;
+  wanderMode = false;
+
+  pathAttempt = 0;
+  maxPathRetryCount = 250;
 
   resourcesToSteal: ResourceEnum[];
   resourcesHeld: Map<ResourceEnum, number>;
-  totalHeld: number;
+  totalHeld = 0;
   stealMax: number;
   resourceCapacity: number;
+
+  mapService: MapService;
 
   public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile,
       health: number, animationSpeed = 0.003, attack: number, defense: number,
       attackRange: number, targetableBuildingTypes: BuildingTileType[], resourcesToSteal: ResourceEnum[],
-      stealMax: number, resourceCapacity: number, scene: Phaser.Scene, texture: string, frame: string | number) {
+      stealMax: number, resourceCapacity: number, scene: Phaser.Scene, texture: string, frame: string | number, mapService: MapService) {
     super(name, x, y, currentTile, health, animationSpeed, attack, defense, attackRange, scene, texture, frame);
 
     this.targetableBuildingTypes = targetableBuildingTypes;
-    this.targets = [];
-    this.targetIndex = 0;
-    this.pathAttempt = 0;
 
     this.resourcesToSteal = resourcesToSteal;
     this.resourcesHeld = new Map<ResourceEnum, number>();
     this.totalHeld = 0;
     this.stealMax = stealMax;
     this.resourceCapacity = resourceCapacity;
+
+    this.mapService = mapService;
+
+    this.findTargets();
+    this.pickTarget();
+  }
+
+  findTargets() {
+    for (const buildingType of this.targetableBuildingTypes) {
+      const matchingTiles = this.mapService.mapLayer.filterTiles(tile => tile.properties['buildingNode'] &&
+        tile.properties['buildingNode'].tileType === buildingType);
+
+      for (const tile of matchingTiles) {
+        if (!this.targets.includes(tile)) {
+          this.targets.push(tile);
+        }
+      }
+    }
+
+    if (this.wanderMode) {
+      this.wanderMode = false;
+
+      this.pickTarget();
+    }
+  }
+
+  pickTarget() {
+    if (this.targets.length) {
+      const sortedTargets = this.targets.sort((a, b) => {
+        const enemyPosition = new Phaser.Math.Vector2(this.x, this.y);
+        const aPos = new Phaser.Math.Vector2(a.x, a.y);
+        const bPos = new Phaser.Math.Vector2(b.x, b.y);
+
+        return Math.abs(aPos.distance(enemyPosition)) - Math.abs(bPos.distance(enemyPosition));
+      });
+
+      this.selectedTarget = sortedTargets[0];
+    } else {
+      this.wanderMode = true;
+
+      const randomTarget = this.mapService.getRandomTile([MapTileType.Grass]);
+      this.targets.push(randomTarget);
+      this.selectedTarget = randomTarget;
+    }
+
+    this.mapService.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+  }
+
+  finishTask() {
+    this.targets = this.targets.filter(target => target !== this.selectedTarget);
+
+    this.pickTarget();
+  }
+
+  beginPathing(tilePath: Phaser.Tilemaps.Tile[]) {
+    if (!tilePath.length) {
+      this.pathAttempt++;
+      this.targets.filter(target => target !== this.selectedTarget);
+
+      if (this.pathAttempt > this.maxPathRetryCount) {
+        this.destroy();
+      } else {
+        this.pickTarget();
+      }
+    } else {
+      this.path = this.mapService.tilesToLinearPath(tilePath);
+
+      this.startFollow((this.path.curves.length - 1) * 1000 / this.animationSpeed);
+
+      this.pathTween.setCallback('onComplete', function(self) { self.finishTask(); }, [this]);
+    }
   }
 }
 
