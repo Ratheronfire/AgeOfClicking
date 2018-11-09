@@ -1,10 +1,12 @@
-import { ResourceEnum, ResourceType } from './resourceData';
-import { BuildingTileType, MapTileType } from './tile';
+import { ResourceEnum } from './resourceData';
+import { BuildingTileType, MapTileType, BuildingNode } from './tile';
+import { MessageSource } from './message';
 import { tilePixelSize } from '../globals';
 import { ResourcesService } from '../services/resources/resources.service';
 import { EnemyService } from './../services/enemy/enemy.service';
 import { StoreService } from './../services/store/store.service';
 import { MapService } from './../services/map/map.service';
+import { MessagesService } from './../services/messages/messages.service';
 
 export enum FighterStat {
   Attack = 'ATTACK',
@@ -19,6 +21,19 @@ export enum ResourceAnimationType {
   PlayerSpawned = 'PLAYERSPAWNED',
   WorkerSpawned = 'WORKERSPAWNED',
   Sold = 'SOLD'
+}
+
+export enum EnemyState {
+  /** The enemy is moving towards a specific target. */
+  MovingToTarget = 'MOVINGTOTARGET',
+  /** The enemy has no targets, and is moving randomly. */
+  Wandering = 'WANDERING',
+  /** The enemy is looting resources from the player's home base. */
+  Looting = 'LOOTING',
+  /** The enemy is fighting a player-spawned fighter. */
+  Fighting = 'FIGHTING',
+  /** The enemy is inactive. */
+  Sleeping = 'SLEEPING'
 }
 
 export interface FighterData {
@@ -103,23 +118,31 @@ export class Enemy extends Actor {
   targetableBuildingTypes: BuildingTileType[];
   targets: Phaser.Tilemaps.Tile[] = [];
   selectedTarget: Phaser.Tilemaps.Tile;
-  wanderMode = false;
+  currentState: EnemyState = EnemyState.MovingToTarget;
 
   pathAttempt = 0;
-  maxPathRetryCount = 250;
+  maxPathRetryCount = 25;
 
   resourcesToSteal: ResourceEnum[];
   resourcesHeld: Map<ResourceEnum, number>;
   totalHeld = 0;
+
+  stealInterval = 250;
+  lastStealTime = 0;
+
+  minimumResourceAmount = 500;
   stealMax: number;
   resourceCapacity: number;
 
   mapService: MapService;
+  resourcesService: ResourcesService;
+  messagesService: MessagesService;
 
   public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile,
       health: number, animationSpeed = 0.003, attack: number, defense: number,
       attackRange: number, targetableBuildingTypes: BuildingTileType[], resourcesToSteal: ResourceEnum[],
-      stealMax: number, resourceCapacity: number, scene: Phaser.Scene, texture: string, frame: string | number, mapService: MapService) {
+      stealMax: number, resourceCapacity: number, scene: Phaser.Scene, texture: string, frame: string | number,
+      mapService: MapService, resourcesService: ResourcesService, messagesService: MessagesService) {
     super(name, x, y, currentTile, health, animationSpeed, attack, defense, attackRange, scene, texture, frame);
 
     this.targetableBuildingTypes = targetableBuildingTypes;
@@ -131,9 +154,50 @@ export class Enemy extends Actor {
     this.resourceCapacity = resourceCapacity;
 
     this.mapService = mapService;
+    this.resourcesService = resourcesService;
+    this.messagesService = messagesService;
 
     this.findTargets();
     this.pickTarget();
+
+    this.log('An enemy has appeared!');
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    switch (this.currentState) {
+      case EnemyState.Looting: {
+        if (elapsed - this.lastStealTime > this.stealInterval) {
+          this.lastStealTime = elapsed;
+
+          if (this.totalHeld >= this.resourceCapacity) {
+            this.pickTarget();
+          }
+
+          const resourceIndex = Math.floor(Math.random() * this.resourcesToSteal.length);
+          const resourceToSteal = this.resourcesService.resources.get(this.resourcesToSteal[resourceIndex]);
+
+          if (resourceToSteal.amount > this.minimumResourceAmount) {
+            let amountToSteal = Math.floor(Math.random() * this.stealMax);
+            if (resourceToSteal.amount - amountToSteal < this.minimumResourceAmount) {
+              amountToSteal = resourceToSteal.amount - this.minimumResourceAmount;
+            }
+
+            if (!this.resourcesHeld.get(resourceToSteal.resourceEnum)) {
+              this.resourcesHeld.set(resourceToSteal.resourceEnum, amountToSteal);
+            } else {
+              this.resourcesHeld.set(resourceToSteal.resourceEnum, this.resourcesHeld.get(resourceToSteal.resourceEnum) + amountToSteal);
+            }
+
+            if (amountToSteal > 0) {
+              this.totalHeld += amountToSteal;
+
+              resourceToSteal.addAmount(-amountToSteal);
+              this.log(`An enemy stole ${Math.floor(amountToSteal)} ${resourceToSteal.name}!`);
+            }
+          }
+        }
+      }
+    }
   }
 
   findTargets() {
@@ -148,8 +212,8 @@ export class Enemy extends Actor {
       }
     }
 
-    if (this.wanderMode) {
-      this.wanderMode = false;
+    if (this.currentState === EnemyState.Wandering) {
+      this.currentState = EnemyState.MovingToTarget;
 
       this.pickTarget();
     }
@@ -167,9 +231,9 @@ export class Enemy extends Actor {
 
       this.selectedTarget = sortedTargets[0];
     } else {
-      this.wanderMode = true;
+      this.currentState = EnemyState.Wandering;
 
-      const randomTarget = this.mapService.getRandomTile([MapTileType.Grass]);
+      const randomTarget = this.mapService.getRandomTileOnIsland(this.currentTile.properties['islandId'], [MapTileType.Grass]);
       this.targets.push(randomTarget);
       this.selectedTarget = randomTarget;
     }
@@ -180,18 +244,26 @@ export class Enemy extends Actor {
   finishTask() {
     this.targets = this.targets.filter(target => target !== this.selectedTarget);
 
-    this.pickTarget();
+    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(this.x, this.y);
+
+    const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
+    if (!buildingNode) {
+      this.pickTarget();
+    } else {
+      if (buildingNode.tileType === BuildingTileType.Home) {
+        this.currentState = EnemyState.Looting;
+      }
+    }
   }
 
   beginPathing(tilePath: Phaser.Tilemaps.Tile[]) {
     if (!tilePath.length) {
       this.pathAttempt++;
-      this.targets.filter(target => target !== this.selectedTarget);
 
-      if (this.pathAttempt > this.maxPathRetryCount) {
-        this.destroy();
+      if (this.pathAttempt < this.maxPathRetryCount) {
+        this.finishTask();
       } else {
-        this.pickTarget();
+        this.currentState = EnemyState.Sleeping;
       }
     } else {
       this.path = this.mapService.tilesToLinearPath(tilePath);
@@ -200,6 +272,45 @@ export class Enemy extends Actor {
 
       this.pathTween.setCallback('onComplete', function(self) { self.finishTask(); }, [this]);
     }
+  }
+
+  takeDamage(damageSource: Projectile) {
+    this.health -= damageSource.owner.attack;
+
+    if (this.health <= 0) {
+      this.kill();
+    }
+  }
+
+  kill() {
+    let enemyDefeatedMessage = 'An enemy has been defeated!';
+
+    if (this.totalHeld > 0) {
+      enemyDefeatedMessage += ' Resources recovered:';
+
+      for (const resourceEnum of this.resourcesToSteal) {
+      const stolenAmount = this.resourcesHeld.get(resourceEnum);
+      if (isNaN(stolenAmount) || stolenAmount <= 0) {
+        continue;
+      }
+
+      const resource = this.resourcesService.resources.get(resourceEnum);
+      resource.addAmount(stolenAmount);
+
+      enemyDefeatedMessage += ` ${Math.floor(stolenAmount)} ${resource.name},`;
+    }
+
+    enemyDefeatedMessage = enemyDefeatedMessage.slice(0, enemyDefeatedMessage.length - 1) + '.';
+  }
+
+  this.log(enemyDefeatedMessage);
+
+  this.stopFollow();
+  this.destroy();
+}
+
+  private log(message: string) {
+    this.messagesService.add(MessageSource.Enemy, message);
   }
 }
 
@@ -256,7 +367,7 @@ export class Fighter extends Actor {
   tick(elapsed: number, deltaTime: number) {
     if (elapsed - this.lastFire > this.fireMilliseconds) {
       const enemiesInRange = this.enemyService.enemies.filter(
-        enemy => Math.abs(Math.sqrt((this.x - enemy.x) ** 2 + (this.y - enemy.y) ** 2)) / 16 <= this.attackRange);
+        enemy => Math.abs(Math.sqrt((this.x - enemy.x) ** 2 + (this.y - enemy.y) ** 2)) / 48 <= this.attackRange);
 
       const targetedEnemy = enemiesInRange[Math.floor(Math.random() * enemiesInRange.length)];
 
@@ -363,31 +474,19 @@ export class Projectile extends Entity {
 
   tick(elapsed: number, deltaTime: number) {
     this.timeSinceSpawn += deltaTime;
-    if (this.timeSinceSpawn > this.lifeSpan || !this.target || !this.target.health) {
-      this.hitTarget = true;
-      return;
+    if (this.timeSinceSpawn > this.lifeSpan || !this.target || !this.target.active || !this.target.health) {
+      this.destroy();
     }
+  }
 
-    const distance = this.target.position.subtract(this.position);
-    const totalDistance = this.target.position.subtract(this.spawnPosition);
-
-    if (distance.length() < tilePixelSize) {
-      this.target.health -= this.owner.attack;
-      this.hitTarget = true;
-    }
-
+  fireProjectile() {
     const gradientY = this.target.y - this.y;
     const gradientX = this.target.x - this.x;
-    const angle = Math.atan2(gradientY, gradientX) + (Math.PI / 2);
+    const angleToTarget = Math.atan2(gradientY, gradientX) + (Math.PI / 2);
 
-    totalDistance.x *= this.animationSpeed * deltaTime;
-    totalDistance.y *= this.animationSpeed * deltaTime;
-
-    const newPosition = this.position.add(totalDistance);
-    this.x = newPosition.x;
-    this.y = newPosition.y;
-
-    this.rotation = angle;
+    const physicsBody = this.body as Phaser.Physics.Matter.Sprite;
+    this.angle = Phaser.Math.RAD_TO_DEG * angleToTarget;
+    physicsBody.setVelocity(gradientX * this.animationSpeed, gradientY * this.animationSpeed);
   }
 }
 

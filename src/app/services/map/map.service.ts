@@ -7,6 +7,7 @@ import { StoreService } from './../store/store.service';
 import { BuildingsService } from '../buildings/buildings.service';
 import { FighterService } from './../fighter/fighter.service';
 import { EnemyService } from './../enemy/enemy.service';
+import { MessagesService } from './../messages/messages.service';
 import { ResourceEnum, ResourceType } from './../../objects/resourceData';
 import { MapTileType, BuildingTileType, MapTileData, BuildingTileData, ResourceTileData,
   Market, ResourceTileType, BuildingNode, ResourceNode, BuildingSubType } from '../../objects/tile';
@@ -27,6 +28,15 @@ export enum CursorTool {
   PlaceFighters = 'PLACEFIGHTERS',
   FighterDetail = 'FIGHTERDETAIL',
   PathfindingTest = 'PATHFINDINGTEST'
+}
+
+interface TileCoordinate {
+  x: number;
+  y: number;
+}
+
+interface TileIsland {
+  tiles: TileCoordinate[];
 }
 
 @Injectable({
@@ -55,7 +65,7 @@ export class MapService {
 
   resourceAnimationSpeed = 5;
   enemyAnimationSpeed = 5;
-  projectileAnimationSpeed = 10;
+  projectileAnimationSpeed = 5;
 
   tilePixelSize = 16;
 
@@ -89,17 +99,19 @@ export class MapService {
 
   enemySpawnInterval = 4500;
   lastEnemySpawnTime = 0;
-  maxEnemyCount: 25;
+  maxEnemyCount = 25;
 
   tileMap: Phaser.Tilemaps.Tilemap;
   mapLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   resourceLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   buildingLayer: Phaser.Tilemaps.DynamicTilemapLayer;
 
+  mapIslands: TileIsland[] = [];
+
   resourceAnimationGroup: Phaser.GameObjects.Group;
   minimapIconGroup: Phaser.GameObjects.Group;
   fighterGroup: Phaser.GameObjects.Group;
-  enemyGroup: Phaser.GameObjects.Group;
+  projectileGroup: Phaser.GameObjects.Group;
   pathfindingTestGroup: Phaser.GameObjects.Group;
 
   cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl;
@@ -119,7 +131,8 @@ export class MapService {
               protected fightersService: FighterService,
               protected enemyService: EnemyService,
               protected storeService: StoreService,
-              protected buildingsService: BuildingsService) {
+              protected buildingsService: BuildingsService,
+              protected messagesService: MessagesService) {
     this.seedRng(Math.random());
 
     for (const tileTypeString in MapTileType) {
@@ -149,6 +162,9 @@ export class MapService {
         preload: _ => this.preloadMap(),
         create:  _ => this.createMap(),
         update:  (time, delta) => this.updateMap(time, delta)
+      },
+      physics: {
+        default: 'arcade'
       }
     });
   }
@@ -177,6 +193,10 @@ export class MapService {
       frameWidth: 48,
       frameHeight: 48
     });
+    this.scene.load.spritesheet('arrow', '../../../assets/sprites/arrow.png', {
+      frameWidth: 48,
+      frameHeight: 48
+    });
   }
 
   createMap() {
@@ -192,7 +212,10 @@ export class MapService {
     this.minimapIconGroup = this.scene.add.group();
     this.fighterGroup = this.scene.add.group();
     this.enemyGroup = this.scene.add.group();
+    this.projectileGroup = this.scene.add.group();
     this.pathfindingTestGroup = this.scene.add.group();
+
+    this.scene.physics.add.collider(this.projectileGroup, this.enemyGroup, this.projectileCollide);
 
     this.initializeMap();
 
@@ -246,6 +269,7 @@ export class MapService {
 
     // debug only
     this.resourcesService.highestTierReached = 10;
+    this.resourcesService.getResources().map(resource => resource.amount = 5000);
     this.enemyService.enemiesActive = true;
 
     this.canvasContainer.onmousewheel = event => this.zoomMap(event);
@@ -296,16 +320,25 @@ export class MapService {
       tile.properties['buildingNode'].market.tick(elapsed, deltaTime);
     }
 
-    if (this.enemyService.enemiesActive && elapsed - this.lastEnemySpawnTime >= this.enemySpawnInterval) {
+    if (this.enemyService.enemiesActive && elapsed - this.lastEnemySpawnTime >= this.enemySpawnInterval
+        && this.enemyGroup.countActive() < this.maxEnemyCount) {
       const tile = this.getRandomTile([MapTileType.Grass], true);
       this.spawnEnemy(this.enemyService.enemyTypes[0], tile);
 
       this.lastEnemySpawnTime = elapsed;
     }
 
-    // for (const projectile of this.projectiles) {
-    //   projectile.tick(elapsed, deltaTime);
-    // }
+    for (const enemy of this.enemyGroup.getChildren().filter(_enemy => _enemy.active)) {
+      (enemy as Enemy).tick(elapsed, deltaTime);
+    }
+
+    for (const fighter of this.fighterGroup.getChildren().filter(_fighter => _fighter.active)) {
+      (fighter as Fighter).tick(elapsed, deltaTime);
+    }
+
+    for (const projectile of this.projectileGroup.getChildren().filter(_projectile => _projectile.active)) {
+      (projectile as Projectile).tick(elapsed, deltaTime);
+    }
 
     // this.projectiles = this.projectiles.filter(projectile => !projectile.hitTarget);
   }
@@ -401,9 +434,9 @@ export class MapService {
   zoomMap(event) {
     let newScale = this.scene.cameras.main.zoom - event.deltaY / 65 / this.scene.cameras.main.zoom;
 
-    if (newScale > 0.5) {
+    if (newScale < 0.5) {
       newScale = 0.5;
-    } else if (newScale < 4) {
+    } else if (newScale > 4) {
       newScale = 4;
     }
 
@@ -420,7 +453,15 @@ export class MapService {
 
   initializeMap() {
     this.tileMap.removeAllLayers();
+
+    this.resourceAnimationGroup.clear(true);
     this.minimapIconGroup.clear(true);
+    this.fighterGroup.clear(true);
+    this.enemyGroup.clear(true);
+    this.projectileGroup.clear(true);
+    this.pathfindingTestGroup.clear(true);
+
+    this.mapIslands = [];
 
     const mapTileset = this.tileMap.addTilesetImage('map', 'map', 48, 48);
     const resourceTileset = this.tileMap.addTilesetImage('resourceSpawns', 'resourceSpawns', 48, 48);
@@ -434,6 +475,40 @@ export class MapService {
       for (let x = 0; x < this.totalChunkX; x++) {
         this.generateChunk(x, y);
       }
+    }
+
+    // Parse out island structure
+    const visitedTileIds: number[] = [];
+    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['tileType'] !== MapTileType.Water)) {
+      if (visitedTileIds.includes(tile.properties['id'])) {
+        continue;
+      }
+
+      visitedTileIds.push(tile.properties['id']);
+
+      const islandId = this.mapIslands.length;
+      tile.properties['islandId'] = islandId;
+      this.mapIslands[islandId] = {tiles: [{x: tile.x, y: tile.y}]};
+
+      const neighbors = this.getNeighborTiles(tile).filter(neighbor => neighbor.properties['tileType'] !== MapTileType.Water);
+      while (neighbors.length) {
+        const currentNeighbor = neighbors.pop();
+        visitedTileIds.push(currentNeighbor.properties['id']);
+
+        currentNeighbor.properties['islandId'] = islandId;
+        this.mapIslands[islandId].tiles.push({x: currentNeighbor.x, y: currentNeighbor.y});
+
+        for (const neighbor of this.getNeighborTiles(currentNeighbor)) {
+          if (neighbor.properties['tileType'] !== MapTileType.Water && !visitedTileIds.includes(neighbor.properties['id'])) {
+            neighbors.push(neighbor);
+          }
+        }
+      }
+
+      this.scene.add.text(tile.pixelX, tile.pixelY, islandId.toString(), {
+        fontSize: 128,
+        fill: 'black'
+      });
     }
 
     // Placing home (unless one already exists)
@@ -770,9 +845,14 @@ export class MapService {
       const neighborDistance = tileDistances[currentNode.properties['id']] + 1;
 
       for (const neighbor of this.getNeighborTiles(currentNode)) {
-        const pathable = neighbor.properties['buildingNode'] &&
-          this.buildingTileData.get(neighbor.properties['buildingNode'].tileType).resourcePathable;
-        const walkable = this.mapTileData.get(neighbor.properties['tileType']).walkable || pathable;
+        const tileType: MapTileType = neighbor.properties['tileType'];
+        const buildingNode: BuildingNode = neighbor.properties['buildingNode'];
+        const resourceNode: ResourceNode = neighbor.properties['resourceNode'];
+        const buildingData: BuildingTileData = buildingNode ? this.buildingTileData.get(buildingNode.tileType) : null;
+
+        const pathable = buildingData && buildingData.resourcePathable;
+        const walkable = !resourceNode && (!buildingData || buildingData.subType !== BuildingSubType.Obstacle) &&
+          (this.mapTileData.get(tileType).walkable || pathable);
 
         if (!tileDistances[neighbor.properties['id']]) {
           tileDistances[neighbor.properties['id']] = Infinity;
@@ -820,7 +900,7 @@ export class MapService {
   }
 
   spawnSoldResourceAnimation(resourceEnum: ResourceEnum, multiplier: number, market: Market) {
-    this.spawnResourceAnimation(resourceEnum, multiplier, ResourceAnimationType.Sold, market.owningTile, market.tilePath, false, market);
+    this.spawnResourceAnimation(resourceEnum, multiplier, ResourceAnimationType.Sold, market.homeTile, market.tilePath, false, market);
   }
 
   spawnResourceAnimation(resourceEnum: ResourceEnum, multiplier: number, animationType: ResourceAnimationType,
@@ -851,9 +931,18 @@ export class MapService {
   }
 
   spawnProjectile(owner: Actor, target: Actor) {
-    const projectile = new Projectile('Arrow', new Vector(owner.x, owner.y),
-      owner.currentTile, 0.006, owner, target);
-    this.projectiles.push(projectile);
+    const projectile = new Projectile('Arrow', owner.x, owner.y,
+      owner.currentTile, this.projectileAnimationSpeed, owner, target,
+      this.scene, 'arrow', 0);
+
+    this.scene.physics.add.existing(projectile);
+    this.projectileGroup.add(projectile, true);
+    projectile.fireProjectile();
+  }
+
+  projectileCollide(projectile: Phaser.GameObjects.GameObject, enemy: Phaser.GameObjects.GameObject) {
+    (enemy as Enemy).takeDamage((projectile as Projectile));
+    projectile.destroy();
   }
 
   spawnFighter(fighterType: FighterData, tileX: number, tileY: number) {
@@ -876,10 +965,19 @@ export class MapService {
       return;
     }
 
-    const enemy = new Enemy(enemyType.name, tile.getCenterX(), tile.getCenterY(), tile, enemyType.maxHealth,
-      this.enemyAnimationSpeed, enemyType.attack, enemyType.defense, enemyType.attackRange, enemyType.targetableBuildingTypes,
-      enemyType.resourcesToSteal, enemyType.stealMax, enemyType.resourceCapacity, this.scene, 'enemy', 0, this);
+    const cappedScore = Math.min(3000, this.resourcesService.playerScore / 50000);
+    const difficultyModifier = Math.max(1, Math.random() * cappedScore);
+
+    const animationSpeed = this.enemyAnimationSpeed * Math.min(4, 1 + difficultyModifier / 10000);
+
+    const enemy = new Enemy(enemyType.name, tile.getCenterX(), tile.getCenterY(), tile, enemyType.maxHealth * difficultyModifier,
+      animationSpeed, enemyType.attack * difficultyModifier, enemyType.defense * difficultyModifier, enemyType.attackRange,
+      enemyType.targetableBuildingTypes, enemyType.resourcesToSteal, enemyType.stealMax * difficultyModifier,
+      enemyType.resourceCapacity * difficultyModifier, this.scene, 'enemy', 0, this, this.resourcesService, this.messagesService);
+
+    this.scene.physics.add.existing(enemy);
     this.enemyGroup.add(enemy, true);
+    (enemy.body as Phaser.Physics.Arcade.Body).moves = false;
   }
 
   getRandomTile(mapTileTypes?: MapTileType[], avoidResources = false,
@@ -893,6 +991,27 @@ export class MapService {
       (avoidResources && tile.properties['resourceNode']));
 
     return tile;
+  }
+
+  getRandomIslandId(minimumSize = 1): number {
+    const islands = this.mapIslands.filter(island => island.tiles.length >= minimumSize);
+    const selectedIsland = islands[Math.floor(Math.random() * islands.length)];
+
+    return this.mapIslands.indexOf(selectedIsland);
+  }
+
+  getRandomTileOnIsland(islandId: number, mapTileTypes?: MapTileType[], avoidResources = false): Phaser.Tilemaps.Tile {
+    let islandTiles = this.mapIslands[islandId].tiles.map(tile => this.mapLayer.getTileAt(tile.x, tile.y));
+
+    if (mapTileTypes) {
+      islandTiles = islandTiles.filter(tile => mapTileTypes.includes(tile.properties['tileType']));
+    }
+
+    if (avoidResources) {
+      islandTiles = islandTiles.filter(tile => tile.properties['resourceNode']);
+    }
+
+    return islandTiles[Math.floor(Math.random() * islandTiles.length)];
   }
 
   tilesToLinearPath(tiles: Phaser.Tilemaps.Tile[]): Phaser.Curves.Path {
@@ -1068,6 +1187,14 @@ export class MapService {
     }
 
     return tiles;
+  }
+
+  get enemyGroup(): Phaser.GameObjects.Group {
+    return this.enemyService.enemyGroup;
+  }
+
+  set enemyGroup(value: Phaser.GameObjects.Group) {
+    this.enemyService.enemyGroup = value;
   }
 
   get scene(): Phaser.Scene {

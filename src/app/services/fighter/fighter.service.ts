@@ -46,7 +46,7 @@ export class FighterService implements Tick {
 
   canAffordFighter(fighterType: FighterData) {
     const goldResource: Resource = this.resourcesService.resources.get(ResourceEnum.Gold);
-    return goldResource.amount < fighterType.cost;
+    return goldResource.amount >= fighterType.cost;
   }
 
   purchaseFigher(fighterType: FighterData) {

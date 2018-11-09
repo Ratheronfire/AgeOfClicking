@@ -45,7 +45,7 @@
     },
     "WALL": {
       "tileType": "WALL",
-      "subType": "MISC",
+      "subType": "OBSTACLE",
       "name": "Wall",
       "description": "Keeps invaders out.",
       "placeable": true,
@@ -64,7 +64,7 @@
     },
     "ROAD": {
       "tileType": "ROAD",
-      "subType": "MISC",
+      "subType": "PATH",
       "name": "Road",
       "description": "Allows access between buildings.",
       "placeable": true,
@@ -83,7 +83,7 @@
     },
     "TUNNEL": {
       "tileType": "TUNNEL",
-      "subType": "MISC",
+      "subType": "PATH",
       "name": "Tunnel",
       "description": "Allows access to resources buried within rock.",
       "placeable": true,
@@ -102,7 +102,7 @@
     },
     "BRIDGE": {
       "tileType": "BRIDGE",
-      "subType": "MISC",
+      "subType": "PATH",
       "name": "Bridge",
       "description": "Allows access between islands.",
       "placeable": true,

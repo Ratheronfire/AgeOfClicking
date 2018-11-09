@@ -78,9 +78,15 @@ export enum BuildingTileType {
 }
 
 export enum BuildingSubType {
+  /** A building which creates a resource-spawning node. */
   Resource = 'RESOURCE',
+  /** A building which automatically sells stored resources. */
   Market = 'MARKET',
-  Misc = 'MISC'
+  /** A building that resources and entities can travel on. */
+  Path = 'PATH',
+  /** A building that blocks entity travelling. */
+  Obstacle = 'OBSTACLE',
+  Miscellaneous = 'MISC'
 }
 
 export enum TileStat {
@@ -300,7 +306,7 @@ export class Market {
 
   public calculateConnection() {
     this.mapService.findPath(this.homeTile, this.owningTile, true, true).subscribe(path => {
-      this.tilePath = path.reverse();
+      this.tilePath = path;
     });
   }
 
