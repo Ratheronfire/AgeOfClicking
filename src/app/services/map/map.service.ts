@@ -339,8 +339,6 @@ export class MapService {
     for (const projectile of this.projectileGroup.getChildren().filter(_projectile => _projectile.active)) {
       (projectile as Projectile).tick(elapsed, deltaTime);
     }
-
-    // this.projectiles = this.projectiles.filter(projectile => !projectile.hitTarget);
   }
 
   resize() {
@@ -477,39 +475,7 @@ export class MapService {
       }
     }
 
-    // Parse out island structure
-    const visitedTileIds: number[] = [];
-    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['tileType'] !== MapTileType.Water)) {
-      if (visitedTileIds.includes(tile.properties['id'])) {
-        continue;
-      }
-
-      visitedTileIds.push(tile.properties['id']);
-
-      const islandId = this.mapIslands.length;
-      tile.properties['islandId'] = islandId;
-      this.mapIslands[islandId] = {tiles: [{x: tile.x, y: tile.y}]};
-
-      const neighbors = this.getNeighborTiles(tile).filter(neighbor => neighbor.properties['tileType'] !== MapTileType.Water);
-      while (neighbors.length) {
-        const currentNeighbor = neighbors.pop();
-        visitedTileIds.push(currentNeighbor.properties['id']);
-
-        currentNeighbor.properties['islandId'] = islandId;
-        this.mapIslands[islandId].tiles.push({x: currentNeighbor.x, y: currentNeighbor.y});
-
-        for (const neighbor of this.getNeighborTiles(currentNeighbor)) {
-          if (neighbor.properties['tileType'] !== MapTileType.Water && !visitedTileIds.includes(neighbor.properties['id'])) {
-            neighbors.push(neighbor);
-          }
-        }
-      }
-
-      this.scene.add.text(tile.pixelX, tile.pixelY, islandId.toString(), {
-        fontSize: 128,
-        fill: 'black'
-      });
-    }
+    this.processIslands();
 
     // Placing home (unless one already exists)
     // We want to place the home closer to the center of the map.
@@ -845,14 +811,8 @@ export class MapService {
       const neighborDistance = tileDistances[currentNode.properties['id']] + 1;
 
       for (const neighbor of this.getNeighborTiles(currentNode)) {
-        const tileType: MapTileType = neighbor.properties['tileType'];
-        const buildingNode: BuildingNode = neighbor.properties['buildingNode'];
-        const resourceNode: ResourceNode = neighbor.properties['resourceNode'];
-        const buildingData: BuildingTileData = buildingNode ? this.buildingTileData.get(buildingNode.tileType) : null;
-
-        const pathable = buildingData && buildingData.resourcePathable;
-        const walkable = !resourceNode && (!buildingData || buildingData.subType !== BuildingSubType.Obstacle) &&
-          (this.mapTileData.get(tileType).walkable || pathable);
+        const pathable = this.isTilePathable(neighbor);
+        const walkable = this.isTileWalkable(neighbor);
 
         if (!tileDistances[neighbor.properties['id']]) {
           tileDistances[neighbor.properties['id']] = Infinity;
@@ -1077,11 +1037,45 @@ export class MapService {
       mapTile.properties['buildingNode'].market = new Market(this, this.resourcesService, resourceType, mapTile, true);
     }
 
+    // If we're building a bridge, we need to update the island structure
+    if (!this.mapTileData.get(mapTile.properties['tileType']).walkable) {
+      const islands = this.getNeighborTiles(mapTile).map(tile => tile.properties['islandId'])
+        .filter(id => !isNaN(id) && this.mapIslands[id].tiles.length);
+      const uniqueIslands = [];
+      for (const island of islands) {
+        if (!uniqueIslands.includes(island)) {
+          uniqueIslands.push(island);
+        }
+      }
+
+      const islandId = uniqueIslands.length ? uniqueIslands[0] : this.mapIslands.length;
+      mapTile.properties['islandId'] = islandId;
+
+      if (!uniqueIslands.length) {
+        this.mapIslands[islandId] = {tiles: []};
+      }
+
+      this.mapIslands[islandId].tiles.push({x: mapTile.x, y: mapTile.y});
+
+      for (const oldIslandId of uniqueIslands.filter((_, index) => index > 0)) {
+        const oldIsland = this.mapIslands[oldIslandId];
+
+        for (const tileCoordinate of oldIsland.tiles) {
+          this.mapLayer.getTileAt(tileCoordinate.x, tileCoordinate.y).properties['islandId'] = islandId;
+        }
+
+        this.mapIslands[islandId].tiles = this.mapIslands[islandId].tiles.concat(oldIsland.tiles);
+
+        oldIsland.tiles = [];
+      }
+    }
+
     this.updatePaths(buildingTile, true);
   }
 
   clearBuilding(x: number, y: number) {
     const buildingTile = this.mapLayer.getTileAt(x, y);
+    const mapTile = this.mapLayer.getTileAt(x, y);
     if (!buildingTile || !buildingTile.properties['buildingNode'] || !buildingTile.properties['buildingNode'].removable) {
       return;
     }
@@ -1096,7 +1090,59 @@ export class MapService {
       this.clearResourceTile(x, y);
     }
 
+    // If we're removing a bridge, we need to update the island structure
+    if (!this.mapTileData.get(mapTile.properties['tileType']).walkable) {
+      const neighbors = this.getNeighborTiles(mapTile);
+      for (let i = 0; i < neighbors.length - 1; i++) {
+        for (let j = i + 1; j < neighbors.length; j++) {
+          if (neighbors[i].properties['islandId'] === undefined) {
+            continue;
+          }
+
+          this.findPath(neighbors[i], neighbors[j], false, true).subscribe(tilePath => {
+            if (!tilePath.length) {
+              this.processIslands(neighbors[i]);
+            }
+          });
+        }
+      }
+
+      mapTile.properties['islandId'] = undefined;
+    }
+
     this.updatePaths(buildingTile, true);
+  }
+
+  processIslands(startTile?: Phaser.Tilemaps.Tile) {
+    const tilesToProcess = startTile ? [startTile] : this.mapLayer.filterTiles(_tile => _tile.properties['tileType'] !== MapTileType.Water);
+
+    const visitedTileIds: number[] = [];
+    for (const tile of tilesToProcess) {
+      if (visitedTileIds.includes(tile.properties['id'])) {
+        continue;
+      }
+
+      visitedTileIds.push(tile.properties['id']);
+
+      const islandId = this.mapIslands.length;
+      tile.properties['islandId'] = islandId;
+      this.mapIslands[islandId] = {tiles: [{x: tile.x, y: tile.y}]};
+
+      const neighbors = this.getNeighborTiles(tile).filter(neighbor => neighbor.properties['tileType'] !== MapTileType.Water);
+      while (neighbors.length) {
+        const currentNeighbor = neighbors.pop();
+        visitedTileIds.push(currentNeighbor.properties['id']);
+
+        currentNeighbor.properties['islandId'] = islandId;
+        this.mapIslands[islandId].tiles.push({x: currentNeighbor.x, y: currentNeighbor.y});
+
+        for (const neighbor of this.getNeighborTiles(currentNeighbor)) {
+          if (neighbor.properties['tileType'] !== MapTileType.Water && !visitedTileIds.includes(neighbor.properties['id'])) {
+            neighbors.push(neighbor);
+          }
+        }
+      }
+    }
   }
 
   getNeighborTiles(tile: Phaser.Tilemaps.Tile): Phaser.Tilemaps.Tile[] {
@@ -1187,6 +1233,35 @@ export class MapService {
     }
 
     return tiles;
+  }
+
+  isTilePathable(tile: Phaser.Tilemaps.Tile): boolean {
+    const buildingNode: BuildingNode = tile.properties['buildingNode'];
+    const buildingData: BuildingTileData = buildingNode ? this.buildingTileData.get(buildingNode.tileType) : null;
+
+    return buildingData && buildingData.resourcePathable;
+  }
+
+  isTileWalkable(tile: Phaser.Tilemaps.Tile): boolean {
+    const tileType: MapTileType = tile.properties['tileType'];
+    const buildingNode: BuildingNode = tile.properties['buildingNode'];
+    const resourceNode: ResourceNode = tile.properties['resourceNode'];
+    const buildingData: BuildingTileData = buildingNode ? this.buildingTileData.get(buildingNode.tileType) : null;
+
+    return !resourceNode && (!buildingData || buildingData.subType !== BuildingSubType.Obstacle) &&
+      (this.mapTileData.get(tileType).walkable || (buildingData && buildingData.resourcePathable));
+  }
+
+  updateIslandDebugData() {
+    for (const island of this.mapIslands.filter(_island => _island.tiles.length)) {
+      const islandTint = Math.random() * 0xffffff44;
+
+      for (const tileCoordinate of island.tiles) {
+        const tile = this.mapLayer.getTileAt(tileCoordinate.x, tileCoordinate.y);
+
+        tile.tint = islandTint;
+      }
+    }
   }
 
   get enemyGroup(): Phaser.GameObjects.Group {
