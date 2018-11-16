@@ -1,7 +1,6 @@
 import { ResourceEnum } from './resourceData';
 import { BuildingTileType, MapTileType, BuildingNode } from './tile';
 import { MessageSource } from './message';
-import { tilePixelSize } from '../globals';
 import { ResourcesService } from '../services/resources/resources.service';
 import { EnemyService } from './../services/enemy/enemy.service';
 import { StoreService } from './../services/store/store.service';
@@ -30,6 +29,8 @@ export enum EnemyState {
   Wandering = 'WANDERING',
   /** The enemy is looting resources from the player's home base. */
   Looting = 'LOOTING',
+  /** The enemy is destroying a building. */
+  Destroying = 'DESTROYING',
   /** The enemy is fighting a player-spawned fighter. */
   Fighting = 'FIGHTING',
   /** The enemy is inactive. */
@@ -127,12 +128,14 @@ export class Enemy extends Actor {
   resourcesHeld: Map<ResourceEnum, number>;
   totalHeld = 0;
 
-  stealInterval = 250;
-  lastStealTime = 0;
+  actionInterval = 250;
+  lastActionTime = 0;
 
   minimumResourceAmount = 500;
   stealMax: number;
   resourceCapacity: number;
+
+  lastIslandId: number;
 
   mapService: MapService;
   resourcesService: ResourcesService;
@@ -157,6 +160,9 @@ export class Enemy extends Actor {
     this.resourcesService = resourcesService;
     this.messagesService = messagesService;
 
+    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(this.x, this.y);
+    this.lastIslandId = this.currentTile.properties['islandId'];
+
     this.findTargets();
     this.pickTarget();
 
@@ -164,13 +170,20 @@ export class Enemy extends Actor {
   }
 
   tick(elapsed: number, deltaTime: number) {
+    this.lastIslandId = this.islandId;
+
+    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(this.x, this.y);
+
     switch (this.currentState) {
       case EnemyState.Looting: {
-        if (elapsed - this.lastStealTime > this.stealInterval) {
-          this.lastStealTime = elapsed;
+        if (elapsed - this.lastActionTime > this.actionInterval) {
+          this.lastActionTime = elapsed;
 
-          if (this.totalHeld >= this.resourceCapacity) {
-            this.pickTarget();
+          if (this.totalHeld >= this.resourceCapacity ||
+              !this.resourcesToSteal.some(resource => this.resourcesService.resources.get(resource).amount > this.minimumResourceAmount)) {
+            this.finishTask();
+
+            break;
           }
 
           const resourceIndex = Math.floor(Math.random() * this.resourcesToSteal.length);
@@ -196,6 +209,34 @@ export class Enemy extends Actor {
             }
           }
         }
+
+        break;
+      } case EnemyState.Destroying: {
+        if (elapsed - this.lastActionTime > this.actionInterval) {
+          this.lastActionTime = elapsed;
+
+          const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
+
+          if (!buildingNode) {
+            this.finishTask();
+            break;
+          }
+
+          buildingNode.health -= this.attack;
+          if (buildingNode.health <= 0) {
+            buildingNode.health = 0;
+            this.finishTask();
+          }
+        }
+
+        break;
+      } case EnemyState.Wandering:
+        case EnemyState.MovingToTarget: {
+        if (!this.selectedTarget || this.selectedTarget.properties['islandId'] !== this.islandId) {
+          this.finishTask();
+        }
+
+        break;
       }
     }
   }
@@ -231,28 +272,43 @@ export class Enemy extends Actor {
 
       this.selectedTarget = sortedTargets[0];
     } else {
-      this.currentState = EnemyState.Wandering;
+      const shouldTargetBuilding = Math.random() > 0.25;
 
-      const randomTarget = this.mapService.getRandomTileOnIsland(this.currentTile.properties['islandId'], [MapTileType.Grass]);
+      let randomTarget;
+
+      if (shouldTargetBuilding) {
+        this.currentState = EnemyState.MovingToTarget;
+        randomTarget = this.mapService.getRandomTileOnIsland(this.islandId, [MapTileType.Grass], true, true);
+      } else {
+        this.currentState = EnemyState.Wandering;
+        randomTarget = this.mapService.getRandomTileOnIsland(this.islandId, [MapTileType.Grass, MapTileType.Water], true);
+      }
+
       this.targets.push(randomTarget);
       this.selectedTarget = randomTarget;
     }
 
-    this.mapService.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+    if (!this.selectedTarget) {
+      this.currentState = EnemyState.Sleeping;
+    } else {
+      this.mapService.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+    }
   }
 
   finishTask() {
     this.targets = this.targets.filter(target => target !== this.selectedTarget);
 
-    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(this.x, this.y);
-
     const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
     if (!buildingNode) {
-      this.pickTarget();
+      this.currentState = EnemyState.MovingToTarget;
+    } else if (buildingNode.tileType === BuildingTileType.Home) {
+      this.currentState = this.currentState === EnemyState.Looting ? EnemyState.MovingToTarget : EnemyState.Looting;
     } else {
-      if (buildingNode.tileType === BuildingTileType.Home) {
-        this.currentState = EnemyState.Looting;
-      }
+      this.currentState = this.currentState === EnemyState.Destroying ? EnemyState.MovingToTarget : EnemyState.Destroying;
+    }
+
+    if (this.currentState === EnemyState.MovingToTarget) {
+      this.pickTarget();
     }
   }
 
@@ -289,25 +345,33 @@ export class Enemy extends Actor {
       enemyDefeatedMessage += ' Resources recovered:';
 
       for (const resourceEnum of this.resourcesToSteal) {
-      const stolenAmount = this.resourcesHeld.get(resourceEnum);
-      if (isNaN(stolenAmount) || stolenAmount <= 0) {
-        continue;
+        const stolenAmount = this.resourcesHeld.get(resourceEnum);
+        if (isNaN(stolenAmount) || stolenAmount <= 0) {
+          continue;
+        }
+
+        const resource = this.resourcesService.resources.get(resourceEnum);
+        resource.addAmount(stolenAmount);
+
+        enemyDefeatedMessage += ` ${Math.floor(stolenAmount)} ${resource.name},`;
       }
 
-      const resource = this.resourcesService.resources.get(resourceEnum);
-      resource.addAmount(stolenAmount);
-
-      enemyDefeatedMessage += ` ${Math.floor(stolenAmount)} ${resource.name},`;
+      enemyDefeatedMessage = enemyDefeatedMessage.slice(0, enemyDefeatedMessage.length - 1) + '.';
     }
 
-    enemyDefeatedMessage = enemyDefeatedMessage.slice(0, enemyDefeatedMessage.length - 1) + '.';
+    this.log(enemyDefeatedMessage);
+
+    this.stopFollow();
+    this.destroy();
   }
 
-  this.log(enemyDefeatedMessage);
-
-  this.stopFollow();
-  this.destroy();
-}
+  get islandId(): number {
+    if (this.currentTile && this.currentTile.properties['islandId'] !== undefined) {
+      return this.currentTile.properties['islandId'];
+    } else {
+      return this.lastIslandId;
+    }
+  }
 
   private log(message: string) {
     this.messagesService.add(MessageSource.Enemy, message);

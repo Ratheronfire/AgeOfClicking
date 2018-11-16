@@ -39,8 +39,10 @@
   left: .1em;
 }
 
-.resources .resource-button.mat-disabled {
+.resources .resource-button.mat-disabled,
+.resources .resource-button[disabled] {
   cursor: default;
+  color: black;
 }
 
 .resources .badge {
@@ -67,7 +69,7 @@
 .travelling-count {
   position: absolute;
   top: 22px;
-  right: 3px;
+  left: 50px;
 }
 
 .resource-button {

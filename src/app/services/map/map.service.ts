@@ -27,7 +27,8 @@ export enum CursorTool {
   TileDetail = 'TILEDETAIL',
   PlaceFighters = 'PLACEFIGHTERS',
   FighterDetail = 'FIGHTERDETAIL',
-  PathfindingTest = 'PATHFINDINGTEST'
+  PathfindingTest1 = 'PATHFINDINGTEST1',
+  PathfindingTest2 = 'PATHFINDINGTEST2'
 }
 
 interface TileCoordinate {
@@ -393,7 +394,7 @@ export class MapService {
           this.spawnFighter(this.fightersService.selectedFighterType, this.pointerTileX, this.pointerTileY);
 
           break;
-        } case CursorTool.PathfindingTest: {
+        } case CursorTool.PathfindingTest1: {
           this.pathfindingTestGroup.clear(false, true);
 
           const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
@@ -415,6 +416,32 @@ export class MapService {
               this.pathfindingTestGroup.add(tileHighlight);
             }
           });
+
+          break;
+        } case CursorTool.PathfindingTest2: {
+          this.pathfindingTestGroup.clear(false, true);
+
+          const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
+          const homeTile = this.mapLayer.findTile(_tile => _tile.properties['buildingNode'] &&
+            _tile.properties['buildingNode'].tileType === BuildingTileType.Home);
+
+          this.findPath(tile, homeTile, true, true).subscribe(tilePath => {
+            for (const pathTile of tilePath) {
+              let tileColor = 0x0000ff;
+              if (tilePath.indexOf(pathTile) === 0) {
+                tileColor = 0x00ff00;
+              } else if (tilePath.indexOf(pathTile) === tilePath.length - 1) {
+                tileColor = 0xff0000;
+              }
+
+              const tileHighlight = this.scene.add.rectangle(pathTile.getCenterX(), pathTile.getCenterY(),
+                pathTile.width, pathTile.width, tileColor, 0.5);
+              tileHighlight.setDepth(3);
+              this.pathfindingTestGroup.add(tileHighlight);
+            }
+          });
+
+          break;
         }
       }
     }
@@ -674,7 +701,7 @@ export class MapService {
   }
 
   getBiome(noiseValue: number): MapTileType {
-    if (noiseValue <= 0.25) {
+    if (noiseValue <= 0.12) {
       return MapTileType.Water;
     } else if (noiseValue < 0.9999999) {
       return MapTileType.Grass;
@@ -814,12 +841,14 @@ export class MapService {
         const pathable = this.isTilePathable(neighbor);
         const walkable = this.isTileWalkable(neighbor);
 
+        const tileDestroyed = neighbor.properties['buildingNode'] && neighbor.properties['buildingNode'].health <= 0;
+
         if (!tileDistances[neighbor.properties['id']]) {
           tileDistances[neighbor.properties['id']] = Infinity;
           tileHeuristicDistances[neighbor.properties['id']] = Infinity;
         }
 
-        if (!visitedTiles.includes(neighbor) && (!onlyPathable || pathable) && (!onlyWalkable || walkable) &&
+        if (!visitedTiles.includes(neighbor) && (!onlyPathable || (pathable && !tileDestroyed)) && (!onlyWalkable || walkable) &&
             tileDistances[neighbor.properties['id']] > neighborDistance) {
           nodeMap.set(neighbor, currentNode);
 
@@ -906,13 +935,16 @@ export class MapService {
   }
 
   spawnFighter(fighterType: FighterData, tileX: number, tileY: number) {
-    if (!this.fightersService.canAffordFighter(fighterType)) {
+    const spawnTile = this.mapLayer.getTileAt(tileX, tileY);
+
+    if (!this.fightersService.canAffordFighter(fighterType) || !this.isTileWalkable(spawnTile) ||
+        (spawnTile.properties['buildingNode'] &&
+          !this.buildingTileData.get(spawnTile.properties['buildingNode'].tileType).resourcePathable) ||
+        this.fighterGroup.getChildren().some(_fighter => (_fighter as Fighter).currentTile === spawnTile)) {
       return;
     }
 
     this.fightersService.purchaseFigher(fighterType);
-
-    const spawnTile = this.mapLayer.getTileAt(tileX, tileY);
 
     const fighter = new Fighter(fighterType.name, spawnTile.getCenterX(), spawnTile.getCenterY(), spawnTile, fighterType.maxHealth, 1,
       fighterType.attack, fighterType.defense, fighterType.attackRange, fighterType.description, fighterType.cost, fighterType.movable,
@@ -960,7 +992,8 @@ export class MapService {
     return this.mapIslands.indexOf(selectedIsland);
   }
 
-  getRandomTileOnIsland(islandId: number, mapTileTypes?: MapTileType[], avoidResources = false): Phaser.Tilemaps.Tile {
+  getRandomTileOnIsland(islandId: number, mapTileTypes?: MapTileType[],
+      avoidResources = false, getActiveBuilding = false): Phaser.Tilemaps.Tile {
     let islandTiles = this.mapIslands[islandId].tiles.map(tile => this.mapLayer.getTileAt(tile.x, tile.y));
 
     if (mapTileTypes) {
@@ -968,7 +1001,12 @@ export class MapService {
     }
 
     if (avoidResources) {
-      islandTiles = islandTiles.filter(tile => tile.properties['resourceNode']);
+      islandTiles = islandTiles.filter(tile => !tile.properties['resourceNode']);
+    }
+
+    if (getActiveBuilding) {
+      islandTiles = islandTiles.filter(tile => tile.properties['buildingNode'] &&
+      tile.properties['buildingNode'].health > 0 && tile.properties['buildingNode'].tileType !== BuildingTileType.Home);
     }
 
     return islandTiles[Math.floor(Math.random() * islandTiles.length)];
@@ -1016,7 +1054,7 @@ export class MapService {
     const buildingTile = this.setBuildingTile(x, y, buildingData.tileType, removable, health);
 
     if (buildingData.placesResourceTile) {
-      this.setResourceTile(x, y, buildingData.resourceTileType, health);
+      mapTile.properties['resourceNode'] = new ResourceNode(buildingData.resourceTileType, health);
     }
 
     if (buildingData.subType === BuildingSubType.Market) {
@@ -1095,13 +1133,17 @@ export class MapService {
       const neighbors = this.getNeighborTiles(mapTile);
       for (let i = 0; i < neighbors.length - 1; i++) {
         for (let j = i + 1; j < neighbors.length; j++) {
-          if (neighbors[i].properties['islandId'] === undefined) {
+          if (neighbors[i].properties['islandId'] === undefined || neighbors[j].properties['islandId'] === undefined) {
             continue;
           }
 
           this.findPath(neighbors[i], neighbors[j], false, true).subscribe(tilePath => {
             if (!tilePath.length) {
+              this.mapIslands[neighbors[i].properties['islandId']].tiles = [];
+              this.mapIslands[neighbors[j].properties['islandId']].tiles = [];
+
               this.processIslands(neighbors[i]);
+              this.processIslands(neighbors[j]);
             }
           });
         }
@@ -1261,6 +1303,10 @@ export class MapService {
 
         tile.tint = islandTint;
       }
+    }
+
+    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['islandId'] === undefined)) {
+      tile.tint = 0xffffffff;
     }
   }
 

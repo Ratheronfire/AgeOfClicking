@@ -1,10 +1,10 @@
-<h3>
+<h3 class="button-text-background">
   Version {{settingsService.gameVersion}} -
   <a (click)="openAboutDialog()">About</a>
 </h3>
 
 <mat-accordion multi="true">
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel class="steel" expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon color="primary">save</mat-icon>
@@ -13,7 +13,11 @@
     </mat-expansion-panel-header>
 
     <mat-form-field class="full-width">
-      <mat-select placeholder="Autosave Interval (Minutes)" [(ngModel)]="autosaveInterval" (valueChange)="settingsService.setAutosave()">
+      Autosave Interval (Minutes)
+      <br />
+      <br />
+
+      <mat-select [(ngModel)]="autosaveInterval" (valueChange)="settingsService.setAutosave()">
         <mat-option [value]="-1">Disable</mat-option>
         <mat-option [value]="60000">1</mat-option>
         <mat-option [value]="900000">15</mat-option>
@@ -29,7 +33,7 @@
     <button mat-raised-button (click)="importSave()">Import Save</button>
   </mat-expansion-panel>
 
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel class="steel" expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon color="primary">list</mat-icon>
@@ -44,7 +48,11 @@
     <mat-checkbox [(ngModel)]="organizeLeftPanelByType">Organize Left Pane By Resource Type</mat-checkbox>
 
     <mat-form-field class="full-width">
-      <mat-select placeholder="Resource Shortcuts" [formControl]="bindSelected" multiple (selectionChange)="resourceBindChange($event)">
+      Resource Shortcuts
+      <br />
+      <br />
+
+      <mat-select [formControl]="bindSelected" multiple (selectionChange)="resourceBindChange($event)">
         <mat-option *ngFor="let resource of resourcesService.getResources(false, false, true)" [(value)]="resource.resourceEnum">
           {{resource.name | titlecase}}
         </mat-option>
@@ -56,34 +64,7 @@
 
   </mat-expansion-panel>
 
-  <mat-expansion-panel expanded="true">
-    <mat-expansion-panel-header>
-      <mat-panel-title>
-        <mat-icon color="primary">map</mat-icon>
-        Map
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-
-    <mat-checkbox [(ngModel)]="mapLowFramerate">Limit Framerate</mat-checkbox>
-    <br />
-
-    <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Player Harvest Color" [(colorPicker)]="resourceAnimationColors['PLAYERSPAWNED']"
-        [style.background]="resourceAnimationColors['PLAYERSPAWNED']" [value]="resourceAnimationColors['PLAYERSPAWNED']" />
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Worker Harvest Color" [(colorPicker)]="resourceAnimationColors['WORKERSPAWNED']"
-        [style.background]="resourceAnimationColors['WORKERSPAWNED']" [value]="resourceAnimationColors['WORKERSPAWNED']" />
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <input class="color-input" matInput placeholder="Sold Resource Color" [(colorPicker)]="resourceAnimationColors['SOLD']"
-        [style.background]="resourceAnimationColors['SOLD']" [value]="resourceAnimationColors['SOLD']" />
-    </mat-form-field>
-  </mat-expansion-panel>
-
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel class="steel" expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon color="primary">assessment</mat-icon>
@@ -96,13 +77,21 @@
     <br />
 
     <mat-form-field class="full-width">
+      Log History
+      <br />
+      <br />
+
       <input matInput type="number" placeholder="Log History" min="0" max="10000" [(ngModel)]="messagesService.messageLimit">
     </mat-form-field>
 
     <br />
 
     <mat-form-field class="full-width">
-      <mat-select placeholder="Visible Log Sources" [(ngModel)]="messagesService.visibleSources" (ngModelChange)="messagesService.getFilteredMessages()"
+      Visible Log Sources
+      <br />
+      <br />
+
+      <mat-select [(ngModel)]="messagesService.visibleSources" (ngModelChange)="messagesService.getFilteredMessages()"
         multiple>
         <mat-option *ngFor="let messageSource of messageSources | enumToArray" [(value)]="messageSources[messageSource]">
           {{messageSource | titlecase}}
@@ -111,7 +100,7 @@
     </mat-form-field>
   </mat-expansion-panel>
 
-  <mat-expansion-panel expanded="true">
+  <mat-expansion-panel class="steel" expanded="true">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon color="primary">bug_report</mat-icon>

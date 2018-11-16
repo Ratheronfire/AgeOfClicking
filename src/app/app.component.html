@@ -37,7 +37,7 @@
     </mat-sidenav>
     <mat-sidenav-content>
       <div class="main-pane">
-        <app-harvest class="resource-list" [style.display]="hideResourceList? 'none': ''"></app-harvest>
+        <app-harvest class="resource-list stone" [style.display]="hideResourceList? 'none': ''"></app-harvest>
         <app-map class="map" [style.display]="mobileQuery.matches && !hideResourceList? 'none': ''"></app-map>
       </div>
     </mat-sidenav-content>

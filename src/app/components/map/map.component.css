@@ -89,3 +89,11 @@ nav a.active {
   margin: 0;
   line-height: 0;
 }
+
+.mat-button-toggle mat-icon {
+  color: gray;
+}
+
+.mat-button-toggle-checked mat-icon {
+  color: #ffd740;
+}

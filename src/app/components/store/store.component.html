@@ -1,43 +1,46 @@
-Amount to sell:<mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="sellAmount">
-  <mat-button-toggle value="1" checked="true">
-    1x
-  </mat-button-toggle>
-  <mat-button-toggle value="10">
-    10x
-  </mat-button-toggle>
-  <mat-button-toggle value="100">
-    100x
-  </mat-button-toggle>
-  <mat-button-toggle value="1000">
-    1000x
-  </mat-button-toggle>
-  <mat-button-toggle value="-1">
-    All
-  </mat-button-toggle>
-</mat-button-toggle-group>
+<div style="display: flex">
+  <div class="button-text-background">
+    Amount to sell:
+  </div>
+  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="sellAmount" class="wood">
+    <mat-button-toggle value="1" checked="true" class="button-text">
+      1x
+    </mat-button-toggle>
+    <mat-button-toggle value="10" class="button-text">
+      10x
+    </mat-button-toggle>
+    <mat-button-toggle value="100" class="button-text">
+      100x
+    </mat-button-toggle>
+    <mat-button-toggle value="1000" class="button-text">
+      1000x
+    </mat-button-toggle>
+    <mat-button-toggle value="-1" class="button-text">
+      All
+    </mat-button-toggle>
+  </mat-button-toggle-group>
+</div>
 
 <ul class="store">
   <mat-accordion multi="true">
-    <mat-expansion-panel expanded="true" *ngFor="let resourceType of sellableTypes">
+    <mat-expansion-panel class="steel" expanded="true" *ngFor="let resourceType of sellableTypes">
       <mat-expansion-panel-header>
-        <mat-panel-title>
+        <mat-panel-title  class="button-text-background">
           {{resourceType | titlecase}}
         </mat-panel-title>
-        <mat-panel-description>
-        </mat-panel-description>
       </mat-expansion-panel-header>
 
       <div *ngFor="let resource of getResources(resourceType, false, adminService.filterAccessible)">
-        <button class="sell-button" color="accent" mat-flat-button *ngIf="resource.sellable" (click)="sellResource(resource)"
+        <button class="sell-button wood button-text" color="accent" mat-raised-button *ngIf="resource.sellable" (click)="sellResource(resource)"
           [disabled]="!canSellResource(resource)">
           {{(sellAmount == -1 ? resource.amount : sellAmount) | longNumber}} {{resource.name | titlecase }} -
           {{resource.sellsFor * (+sellAmount === -1 ? resource.amount : sellAmount) | longNumber}} Gold
         </button>
-        <button disabled class="sell-button" color="warn" mat-flat-button *ngIf="!resource.sellable">
+        <button disabled class="sell-button wood button-text" color="warn" mat-raised-button *ngIf="!resource.sellable">
           {{(sellAmount == -1 ? resource.amount : sellAmount) | longNumber}} {{resource.name | titlecase }} -
           Unsellable
         </button>
-        <mat-form-field class="cutoff-input">
+        <mat-form-field class="cutoff-input steel">
           <input matInput placeholder="Autosell Cutoff" type="number" min="0" [disabled]="!resource.sellable" [(ngModel)]="resource.autoSellCutoff" />
         </mat-form-field>
       </div>

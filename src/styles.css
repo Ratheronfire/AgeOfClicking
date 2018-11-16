@@ -69,6 +69,10 @@ mat-sidenav-container.game-sidenav-container mat-sidenav-content {
   overflow-x: hidden;
 }
 
+app-harvest {
+  height: 100%;
+}
+
 .game-is-mobile app-harvest.resource-list {
   width: 100%;
   overflow: hidden;
@@ -100,6 +104,90 @@ app-fighter {
 
 .upgrade-button .mat-button-wrapper {
   display: inline-flex;
+}
+
+app-harvest,
+mat-tab-group.mat-tab-group-dynamic-height div.mat-tab-body-content,
+mat-tab-body#mat-tab-content-0-4 div {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  max-height: 100%;
+}
+
+mat-tab-body.mat-tab-body {
+  overflow: hidden;
+}
+
+/* Button Backgrounds */
+
+.stone,
+mat-tab-group {
+  background-image: url(assets/sprites/stone_background.png);
+  background-repeat: repeat;
+}
+
+.wood,
+mat-tab-header.mat-tab-header {
+  background-image: url(assets/sprites/wood_background.png);
+  background-repeat: repeat;
+}
+
+.steel {
+  background-image: url(assets/sprites/steel_background.png);
+  background-repeat: repeat;
+}
+
+mat-expansion-panel-header.mat-expansion-panel-header,
+mat-expansion-panel-header.mat-expansion-panel-header:hover,
+mat-expansion-panel-header.mat-expansion-panel-header:focus {
+  background-image: url(assets/sprites/wood_background.png);
+  background-repeat: repeat;
+
+  height: 30px;
+
+  border-color: darkslategray;
+  border-style: solid none;
+  border-width: 1px;
+}
+
+div.mat-tab-label-active {
+  opacity: 1;
+}
+
+.wood[disabled] {
+  background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(assets/sprites/wood_background.png);
+}
+
+.wood.warn {
+  background-image: linear-gradient( rgba(1, 0, 0, 0.8), rgba(1, 0, 0, 0.8) ), url(assets/sprites/wood_background.png);
+}
+
+.button-text-background,
+div.mat-sort-header-container,
+div.mat-tab-label {
+  background-color: #523f37;
+  color: wheat;
+
+  border-radius: 5px;
+  padding: 3px;
+}
+
+.button-text {
+  color: black;
+  font-weight: bold;
+}
+
+mat-expansion-panel .mat-expansion-panel-body {
+  padding: 0 24px;
+}
+
+mat-expansion-panel-header.mat-expansion-panel-header mat-panel-title {
+  flex-grow: unset;
+}
+
+.transparent {
+  background: none;
 }
 
 /* Resource Image Sprites */

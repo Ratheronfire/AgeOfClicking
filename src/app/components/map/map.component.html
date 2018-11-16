@@ -1,55 +1,74 @@
 <div id="map-canvas-container" tabindex="1" oncontextmenu="return false;">
   <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools"
     (valueChange)="clearFocus()">
-    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
+    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>Q</p>
       </div>
-      <mat-icon color="primary">add_photo_alternate</mat-icon>
+      <mat-icon class="button-text-background">add_photo_alternate</mat-icon>
       <br />
-      Place Buildings
+      <div class="button-text">
+        Place Buildings
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle value="CLEARBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle value="CLEARBUILDINGS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>W</p>
       </div>
-      <mat-icon color="primary">delete</mat-icon>
+      <mat-icon class="button-text-background">delete</mat-icon>
       <br />
-      Clear Buildings
+      <div class="button-text">
+        Clear Buildings
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle value="TILEDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle value="TILEDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>E</p>
       </div>
-      <mat-icon color="primary">mode_comment</mat-icon>
+      <mat-icon class="button-text-background">mode_comment</mat-icon>
       <br />
-      Tile Details
+      <div class="button-text">
+        Tile Details
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>R</p>
       </div>
-      <mat-icon color="primary">directions_walk</mat-icon>
+      <mat-icon class="button-text-background">directions_walk</mat-icon>
       <br />
-      Place Fighters
+      <div class="button-text">
+        Place Fighters
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>T</p>
       </div>
-      <mat-icon color="primary">directions_run</mat-icon>
+      <mat-icon class="button-text-background">directions_run</mat-icon>
       <br />
-      Fighter Details
+      <div class="button-text">
+        Fighter Details
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle value="PATHFINDINGTEST" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
-      <mat-icon color="primary">bug_report</mat-icon>
+    <mat-button-toggle value="PATHFINDINGTEST1" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
+      <mat-icon class="button-text-background">bug_report</mat-icon>
       <br />
-      Pathing Test
+      <div class="button-text">
+        Pathing Test 1
+      </div>
+    </mat-button-toggle>
+    <mat-button-toggle value="PATHFINDINGTEST2" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
+      <mat-icon class="button-text-background">bug_report</mat-icon>
+      <br />
+      <div class="button-text">
+        Pathing Test 2
+      </div>
     </mat-button-toggle>
   </mat-button-toggle-group>
 
