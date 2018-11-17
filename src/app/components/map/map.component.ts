@@ -26,9 +26,6 @@ export class MapComponent {
 
   clearFocus() {
     this.mapService.focusedTile = undefined;
-    this.mapService.focusedBuildingTile = undefined;
-    this.mapService.focusedResourceTile = undefined;
-    this.mapService.focusedResources = undefined;
     this.mapService.focusedFighter = undefined;
   }
 

@@ -108,6 +108,11 @@ button.delete {
   top: -5px;
 }
 
+.sell-button mat-panel-title {
+  text-align: center;
+  display: block;
+}
+
 .cutoff-input {
   width: 20%;
   height: 40px;

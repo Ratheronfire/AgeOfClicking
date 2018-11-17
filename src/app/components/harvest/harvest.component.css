@@ -14,9 +14,13 @@
   height: 30px !important;
 }
 
+.resources mat-card-title {
+  margin-top: 0;
+}
+
 .resources mat-card-subtitle {
   position: absolute;
-  top: 10px;
+  top: 8px;
   right: 10px;
   font-weight: bold;
 }

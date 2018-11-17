@@ -13,7 +13,7 @@
       <mat-card class="upgrade full wood" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)">
         <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)'
           (click)='purchaseUpgrade(upgrade.id)'>
-          <p class="title">
+          <p class="title button-text">
             <b>
               <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
             </b>
@@ -26,7 +26,7 @@
           <div class="resource-list">
             <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
               matTooltipPosition="below">
-              <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
+              <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
               {{resourceCost.resourceCost | longNumber}}
             </div>
           </div>
@@ -46,7 +46,7 @@
         <div class="resource-list">
           <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below" class="button-text">
-            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
+            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost | longNumber}}
           </div>
         </div>

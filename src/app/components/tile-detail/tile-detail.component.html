@@ -12,7 +12,7 @@
               <div matTooltip="{{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth - focusedBuildingNode.health)}} {{getResource(focusedBuildingData.repairResourceEnum).name | titlecase}}"
                 matTooltipPosition="below">
                 <img id="{{getResource(focusedBuildingData.repairResourceEnum).name | resourceId}}" class="resource-img slim-icon"
-                  src="../../../assets/sprites/transparent.png" alt="{{getResource(focusedBuildingData.repairResourceEnum).name}}">
+                  src="assets/sprites/transparent.png" alt="{{getResource(focusedBuildingData.repairResourceEnum).name}}">
                 {{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth -
                 focusedBuildingNode.health)}}
               </div>
@@ -34,7 +34,7 @@
       <br />
       Produces:
       <div *ngFor="let resource of focusedResources">
-        <img id="{{resource.name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png"
+        <img id="{{resource.name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
           alt="{{resource.name}}"> {{resource.name | titlecase}}
       </div>
     </div>
@@ -55,7 +55,7 @@
         <div class="resource-list">
           <div *ngFor="let resourceCost of upgradedBuildingData.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
             matTooltipPosition="below" class="button-text">
-            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png"
+            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
               alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost}}
           </div>
@@ -83,7 +83,7 @@
               <mat-icon color="primary">arrow_upward</mat-icon>
               <div class="resource-list">
                 <div class="button-text">
-                  <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png"
+                  <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
                     alt="{{getResource('GOLD').name}}">
                   {{focusedBuildingNode.statCosts['MAXHEALTH'] | longNumber}}
                 </div>
@@ -111,7 +111,7 @@
               <mat-icon color="primary">arrow_upward</mat-icon>
               <div class="resource-list">
                 <div class="button-text">
-                  <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png"
+                  <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
                     alt="{{getResource('GOLD').name}}">
                   {{focusedBuildingNode.statCosts['SELLRATE'] | longNumber}}
                 </div>
@@ -138,7 +138,7 @@
               <mat-icon color="primary">arrow_upward</mat-icon>
               <div class="resource-list">
                 <div class="button-text">
-                  <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="../../../assets/sprites/transparent.png"
+                  <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
                     alt="{{getResource('GOLD').name}}">
                   {{focusedBuildingNode.statCosts['SELLAMOUNT'] | longNumber}}
                 </div>

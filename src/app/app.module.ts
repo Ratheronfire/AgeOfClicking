@@ -21,7 +21,6 @@ import { AdminDebugComponent } from './components/admin-debug/admin-debug.compon
 import { AboutDialogComponent } from './components/about-dialog/about-dialog/about-dialog.component';
 import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { CropDirective } from './directives/crop/crop.directive';
-import { MapDirective } from './directives/map/map.directive';
 import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
 import { EnemyComponent } from './components/enemy/enemy.component';
 import { FighterComponent } from './components/fighter/fighter.component';
@@ -29,7 +28,6 @@ import { BuildingsComponent } from './components/buildings/buildings/buildings.c
 import { TileDetailComponent } from './components/tile-detail/tile-detail.component';
 import { FighterDetailComponent } from './components/fighter-detail/fighter-detail.component';
 import { SnapDirective } from './directives/snap/snap.directive';
-import { MinimapDirective } from './directives/minimap/minimap.directive';
 
 @NgModule({
   declarations: [
@@ -45,7 +43,6 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
     MapComponent,
     CropDirective,
     SaveDialogComponent,
-    MapDirective,
     NoScrollDirective,
     EnemyComponent,
     FighterComponent,
@@ -53,7 +50,6 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
     TileDetailComponent,
     FighterDetailComponent,
     SnapDirective,
-    MinimapDirective,
     AboutDialogComponent
   ],
   imports: [

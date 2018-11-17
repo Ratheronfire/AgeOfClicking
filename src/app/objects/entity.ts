@@ -125,6 +125,7 @@ export class Enemy extends Actor {
 
   pathAttempt = 0;
   maxPathRetryCount = 25;
+  tilePath: Phaser.Tilemaps.Tile[] = [];
 
   resourcesToSteal: ResourceEnum[];
   resourcesHeld: Map<ResourceEnum, number>;
@@ -237,7 +238,8 @@ export class Enemy extends Actor {
         break;
       } case EnemyState.Wandering:
         case EnemyState.MovingToTarget: {
-        if (!this.selectedTarget || this.selectedTarget.properties['islandId'] !== this.islandId) {
+        if (!this.selectedTarget || this.selectedTarget.properties['islandId'] !== this.islandId ||
+            this.tilePath.some(tile => !this.mapService.isTileWalkable(tile))) {
           this.finishTask();
         }
 
@@ -279,7 +281,7 @@ export class Enemy extends Actor {
 
       this.selectedTarget = sortedTargets[0];
     } else {
-      const shouldTargetBuilding = Math.random() < 0.15;
+      const shouldTargetBuilding = Math.random() < 0.15 && this.mapService.islandHasActiveTiles(this.islandId);
 
       let randomTarget;
 
@@ -329,6 +331,7 @@ export class Enemy extends Actor {
         this.currentState = EnemyState.Sleeping;
       }
     } else {
+      this.tilePath = tilePath;
       this.path = this.mapService.tilesToLinearPath(tilePath);
 
       this.startFollow((this.path.curves.length - 1) * 1000 / this.animationSpeed);

@@ -3,6 +3,7 @@ import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
 
 import { SettingsService } from '../../services/settings/settings.service';
+import { MapService } from './../../services/map/map.service';
 import { ResourcesService } from './../../services/resources/resources.service';
 import { MessagesService } from './../../services/messages/messages.service';
 import { ResourceEnum } from '../../objects/resourceData';
@@ -18,13 +19,13 @@ export class SettingsComponent implements AfterViewInit {
   resourceBindErrorState = false;
 
   constructor(public settingsService: SettingsService,
+              public mapService: MapService,
               public resourcesService: ResourcesService,
               public messagesService: MessagesService) {
   }
 
   ngAfterViewInit() {
-    // TODO: Uncomment after updating settings service
-    // this.loadGame();
+    this.waitForMapAndLoad();
     this.setAutosave();
   }
 
@@ -36,11 +37,19 @@ export class SettingsComponent implements AfterViewInit {
     this.settingsService.saveGame();
   }
 
-  loadGame() {
-    this.settingsService.loadGame();
+  waitForMapAndLoad() {
+    setTimeout(_ => this.loadGame(), 1000);
+  }
 
-    this.bindSelected.setValue(this.resourceBinds);
-    this.resourceBindChange({'source': null, 'value': this.resourceBinds});
+  loadGame() {
+    if (this.mapService.mapCreated) {
+      this.settingsService.loadGame();
+
+      this.bindSelected.setValue(this.resourceBinds);
+      this.resourceBindChange({'source': null, 'value': this.resourceBinds});
+    } else {
+      setTimeout(_ => this.loadGame(), 1000);
+    }
   }
 
   deleteGame() {

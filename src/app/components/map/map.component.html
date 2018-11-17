@@ -56,20 +56,6 @@
         Fighter Details
       </div>
     </mat-button-toggle>
-    <mat-button-toggle value="PATHFINDINGTEST1" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
-      <mat-icon class="button-text-background">bug_report</mat-icon>
-      <br />
-      <div class="button-text">
-        Pathing Test 1
-      </div>
-    </mat-button-toggle>
-    <mat-button-toggle value="PATHFINDINGTEST2" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
-      <mat-icon class="button-text-background">bug_report</mat-icon>
-      <br />
-      <div class="button-text">
-        Pathing Test 2
-      </div>
-    </mat-button-toggle>
   </mat-button-toggle-group>
 
   <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>
