@@ -73,10 +73,10 @@
       "maxPlaceable": -1,
       "baseHealth": 50,
       "repairResourceEnum": "STONE",
-      "repairCostPerPoint": 0.2,
+      "repairCostPerPoint": 0.1,
       "resourceCosts": [{
         "resourceEnum": "STONE",
-        "resourceCost": 20
+        "resourceCost": 5
       }],
       "buildableSurfaces": [
         "GRASS"
@@ -94,8 +94,8 @@
       "repairResourceEnum": "STONE",
       "repairCostPerPoint": 0.2,
       "resourceCosts": [{
-        "resourceEnum": "STONE",
-        "resourceCost": 35
+        "resourceEnum": "WOOD",
+        "resourceCost": 15
       }],
       "buildableSurfaces": [
         "MOUNTAIN"
@@ -114,7 +114,7 @@
       "repairCostPerPoint": 0.25,
       "resourceCosts": [{
         "resourceEnum": "OAK",
-        "resourceCost": 40
+        "resourceCost": 20
       }],
       "buildableSurfaces": [
         "WATER"
@@ -280,80 +280,6 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "TEMPROUSDISTILLERY",
-      "resourcePathable": true
-    },
-    "WOODMARKET": {
-      "tileType": "WOODMARKET",
-      "subType": "MARKET",
-      "name": "Wood Market",
-      "description": "A marketstand that automatically collects and sells wood resources. (Only one may be placed at a time.)",
-      "placeable": true,
-      "maxPlaceable": 1,
-      "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 1,
-      "resourceCosts": [{
-        "resourceEnum": "GOLD",
-        "resourceCost": 150
-      }],
-      "buildableSurfaces": [
-        "GRASS"
-      ],
-      "placesResourceTile": false,
-      "resourcePathable": true
-    },
-    "MINERALMARKET": {
-      "tileType": "MINERALMARKET",
-      "subType": "MARKET",
-      "name": "Mineral Market",
-      "description": "A marketstand that automatically collects and sells mineral resources. (Only one may be placed at a time.)",
-      "placeable": true,
-      "maxPlaceable": 1,
-      "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 1,
-      "resourceCosts": [{
-        "resourceEnum": "GOLD",
-        "resourceCost": 150
-      }],
-      "buildableSurfaces": [
-        "GRASS"
-      ],
-      "placesResourceTile": false,
-      "resourcePathable": true
-    },
-    "METALMARKET": {
-      "tileType": "METALMARKET",
-      "subType": "MARKET",
-      "name": "Metal Market",
-      "description": "A marketstand that automatically collects and sells metal resources. (Only one may be placed at a time.)",
-      "placeable": true,
-      "maxPlaceable": 1,
-      "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 1,
-      "resourceCosts": [{
-        "resourceEnum": "GOLD",
-        "resourceCost": 150
-      }],
-      "buildableSurfaces": [
-        "GRASS"
-      ],
-      "placesResourceTile": false,
-      "resourcePathable": true
-    },
-    "ENEMYPORTAL": {
-      "tileType": "ENEMYPORTAL",
-      "subType": "MISC",
-      "name": "Enemy Portal",
-      "baseHealth": 50,
-      "description": "",
-      "placeable": false,
-      "maxPlaceable": -1,
-      "resourceCosts": [],
-      "buildableSurfaces": [
-        "GRASS"
-      ],
       "resourcePathable": true
     },
     "OAKOVEN": {
@@ -539,6 +465,66 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "DRAGONFARM",
+      "resourcePathable": true
+    },
+    "WOODMARKET": {
+      "tileType": "WOODMARKET",
+      "subType": "MARKET",
+      "name": "Wood Market",
+      "description": "A marketstand that automatically collects and sells wood resources. (Only one may be placed at a time.)",
+      "placeable": true,
+      "maxPlaceable": 1,
+      "baseHealth": 50,
+      "repairResourceEnum": "GOLD",
+      "repairCostPerPoint": 1,
+      "resourceCosts": [{
+        "resourceEnum": "GOLD",
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": false,
+      "resourcePathable": true
+    },
+    "MINERALMARKET": {
+      "tileType": "MINERALMARKET",
+      "subType": "MARKET",
+      "name": "Mineral Market",
+      "description": "A marketstand that automatically collects and sells mineral resources. (Only one may be placed at a time.)",
+      "placeable": true,
+      "maxPlaceable": 1,
+      "baseHealth": 50,
+      "repairResourceEnum": "GOLD",
+      "repairCostPerPoint": 1,
+      "resourceCosts": [{
+        "resourceEnum": "GOLD",
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": false,
+      "resourcePathable": true
+    },
+    "METALMARKET": {
+      "tileType": "METALMARKET",
+      "subType": "MARKET",
+      "name": "Metal Market",
+      "description": "A marketstand that automatically collects and sells metal resources. (Only one may be placed at a time.)",
+      "placeable": true,
+      "maxPlaceable": 1,
+      "baseHealth": 50,
+      "repairResourceEnum": "GOLD",
+      "repairCostPerPoint": 1,
+      "resourceCosts": [{
+        "resourceEnum": "GOLD",
+        "resourceCost": 150
+      }],
+      "buildableSurfaces": [
+        "GRASS"
+      ],
+      "placesResourceTile": false,
       "resourcePathable": true
     }
   },
