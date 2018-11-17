@@ -1,14 +1,12 @@
 #fighter-tooltip {
-  top: var(--detail-tooltip-top);
-  left: var(--detail-tooltip-left);
+  left: 0;
+  bottom: 0;
 
   position: absolute;
 }
 
 mat-card {
   text-align: center;
-  min-width: 300px;
-  max-width: 400px;
 }
 
 .resource-list div {
@@ -43,83 +41,19 @@ mat-card {
   top: 5px;
 }
 
-.anchor-container {
-  position: absolute;
-  top: 0;
-  left: 0;
+#card-header {
+  float: left;
+  max-width: 250px;
 
-  width: 55px;
-  height: 55px;
+  padding-right: 5px;
 }
 
-.anchor-container #center {
-  position: absolute;
+#card-content {
+  float: right;
 
-  left: 15px;
-  top: 15px;
-}
+  border: burlywood;
+  border-width: 0 0 0 1px;
+  border-style: solid;
 
-.anchor-container .corner {
-  display: none;
-}
-
-.anchor-container:hover .corner {
-  display: inherit;
-}
-
-.anchor-container a {
-  cursor: pointer;
-  color: gray;
-}
-
-.anchor-container a:hover {
-  color: black;
-}
-
-.anchor-container #arrow-upper-left {
-  -webkit-transform: rotate(225deg);
-  -moz-transform: rotate(225deg);
-  -ms-transform: rotate(225deg);
-  -o-transform: rotate(225deg);
-  transform: rotate(225deg);
-
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.anchor-container #arrow-upper-right {
-  -webkit-transform: rotate(315deg);
-  -moz-transform: rotate(315deg);
-  -ms-transform: rotate(315deg);
-  -o-transform: rotate(315deg);
-  transform: rotate(315deg);
-
-  position: absolute;
-  top: 0;
-  right: 0;
-}
-
-.anchor-container #arrow-lower-left {
-  -webkit-transform: rotate(135deg);
-  -moz-transform: rotate(135deg);
-  -ms-transform: rotate(135deg);
-  -o-transform: rotate(135deg);
-  transform: rotate(135deg);
-
-  position: absolute;
-  bottom: 0;
-  left: 0;
-}
-
-.anchor-container #arrow-lower-right {
-  -webkit-transform: rotate(45deg);
-  -moz-transform: rotate(45deg);
-  -ms-transform: rotate(45deg);
-  -o-transform: rotate(45deg);
-  transform: rotate(45deg);
-
-  position: absolute;
-  bottom: 0;
-  right: 0;
+  padding-left: 5px;
 }

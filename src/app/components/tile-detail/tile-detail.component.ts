@@ -14,7 +14,7 @@ import { ResourceEnum } from '../../objects/resourceData';
 })
 export class TileDetailComponent implements OnInit {
   buildingTileTypes = BuildingTileType;
-  snapSetting = 'free';
+  snapSetting = 'lowerLeft';
 
   constructor(public mapService: MapService,
               public buildingsService: BuildingsService,
@@ -65,11 +65,11 @@ export class TileDetailComponent implements OnInit {
   }
 
   canRepairBuilding(): boolean {
-    return this.buildingsService.canRepairBuilding(this.focusedTile);
+    return this.mapService.canRepairBuilding(this.focusedTile);
   }
 
   repairBuilding() {
-    this.buildingsService.repairBuilding(this.focusedTile);
+    this.mapService.repairBuilding(this.focusedTile);
   }
 
   get focusedTile(): Phaser.Tilemaps.Tile {

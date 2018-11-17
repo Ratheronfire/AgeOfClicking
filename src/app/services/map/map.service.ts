@@ -68,7 +68,7 @@ export class MapService {
   enemyAnimationSpeed = 5;
   projectileAnimationSpeed = 5;
 
-  tilePixelSize = 16;
+  tilePixelSize = 48;
 
   // Map generation/rng variables
 
@@ -81,6 +81,8 @@ export class MapService {
   // Phaser variables
 
   canvasContainer: HTMLElement;
+  tileTooltip: HTMLElement;
+  fighterTooltip: HTMLElement;
 
   tileIndices = {
     'GRASS': 14, 'MOUNTAIN': 18, 'WATER': 36, 'HOME': 0, 'WALL': 1, 'ROAD': 2, 'TUNNEL': 3, 'BRIDGE': 4, 'CRACKEDFORGE': 5, 'STONEFORGE': 6,
@@ -115,12 +117,14 @@ export class MapService {
   projectileGroup: Phaser.GameObjects.Group;
   pathfindingTestGroup: Phaser.GameObjects.Group;
 
+  fighterAttackCircle: Phaser.GameObjects.Arc;
+
   cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl;
   minimapPanBox: Phaser.GameObjects.Rectangle;
 
   mainCamera: Phaser.Cameras.Scene2D.Camera;
   minimapCamera: Phaser.Cameras.Scene2D.Camera;
-  minimapSize = 500;
+  minimapSize = 240;
 
   isDraggingScreen: boolean;
 
@@ -172,11 +176,14 @@ export class MapService {
 
   preloadMap() {
     this.canvasContainer = this.mapManager.canvas.parentElement;
+    this.tileTooltip = document.getElementById('tile-tooltip');
+    this.fighterTooltip = document.getElementById('fighter-tooltip');
+
     this.resize();
 
-    this.scene.load.image('map', '../../../assets/sprites/map.png');
-    this.scene.load.image('buildings', '../../../assets/sprites/buildings.png');
-    this.scene.load.image('resourceSpawns', '../../../assets/sprites/resourceSpawns.png');
+    this.scene.load.image('map', '../../../assets/sprites/map-extruded.png');
+    this.scene.load.image('buildings', '../../../assets/sprites/buildings-extruded.png');
+    this.scene.load.image('resourceSpawns', '../../../assets/sprites/resourceSpawns-extruded.png');
 
     this.scene.load.spritesheet('buildingSprites', '../../../assets/sprites/buildings.png', {
       frameWidth: 48,
@@ -216,6 +223,9 @@ export class MapService {
     this.projectileGroup = this.scene.add.group();
     this.pathfindingTestGroup = this.scene.add.group();
 
+    this.fighterAttackCircle = this.scene.add.circle(0, 0, 1, 0xff0000, 0.4);
+    this.fighterAttackCircle.setDepth(3);
+
     this.scene.physics.add.collider(this.projectileGroup, this.enemyGroup, this.projectileCollide);
 
     this.initializeMap();
@@ -243,7 +253,7 @@ export class MapService {
     const yMax = this.mapLayer.tileToWorldY(this.totalChunkY * this.chunkHeight);
     this.mainCamera.setBounds(0, 0, xMax, yMax, false).setName('main');
 
-    this.minimapCamera = this.scene.cameras.add(this.mainCamera.width - this.minimapSize, 0,
+    this.minimapCamera = this.scene.cameras.add(this.mainCamera.width - this.minimapSize, this.mainCamera.height - this.minimapSize,
       this.minimapSize, this.minimapSize, false, 'mini');
     this.minimapCamera.zoom = this.minimapSize / xMax;
     this.minimapCamera.scrollX = xMax / 2 - this.minimapSize / 2;
@@ -296,6 +306,17 @@ export class MapService {
 
     const camerasBelowCursor = this.scene.cameras.getCamerasBelowPointer(pointer);
 
+    if (this.focusedFighter) {
+      this.fighterAttackCircle.visible = true;
+
+      this.fighterAttackCircle.radius = this.focusedFighter.attackRange * this.tilePixelSize;
+      // For some reason, the circle object's x and y are offset from its center slightly...
+      this.fighterAttackCircle.x = this.focusedFighter.x - this.fighterAttackCircle.radius / 2;
+      this.fighterAttackCircle.y = this.focusedFighter.y - this.fighterAttackCircle.radius / 2;
+    } else {
+      this.fighterAttackCircle.visible = false;
+    }
+
     if (camerasBelowCursor.includes(this.minimapCamera)) {
       this.clickMinimap();
     } else {
@@ -317,8 +338,8 @@ export class MapService {
       }
     }
 
-    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['buildingNode'] && _tile.properties['buildingNode'].market)) {
-      tile.properties['buildingNode'].market.tick(elapsed, deltaTime);
+    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['buildingNode'])) {
+      tile.properties['buildingNode'].tick(elapsed, deltaTime);
     }
 
     if (this.enemyService.enemiesActive && elapsed - this.lastEnemySpawnTime >= this.enemySpawnInterval
@@ -347,7 +368,8 @@ export class MapService {
     this.scene.cameras.resize(this.canvasContainer.clientWidth, this.canvasContainer.clientHeight);
 
     if (this.minimapCamera) {
-      this.minimapCamera.setViewport(this.canvasContainer.clientWidth - this.minimapSize, 0, this.minimapSize, this.minimapSize);
+      this.minimapCamera.setViewport(this.canvasContainer.clientWidth - this.minimapSize,
+        this.canvasContainer.clientHeight - this.minimapSize, this.minimapSize, this.minimapSize);
     }
   }
 
@@ -387,11 +409,25 @@ export class MapService {
           const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
           if (tile.properties['resourceNode'] || tile.properties['buildingNode']) {
             this.focusedTile = tile;
+          } else {
+            this.focusedTile = null;
           }
 
           break;
         } case CursorTool.PlaceFighters: {
           this.spawnFighter(this.fightersService.selectedFighterType, this.pointerTileX, this.pointerTileY);
+
+          break;
+        } case CursorTool.FighterDetail: {
+          const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
+          if (tile.properties['resourceNode'] || tile.properties['buildingNode']) {
+            this.focusedTile = tile;
+          }
+
+          this.focusedFighter = this.fighterGroup.getChildren().find(fighter => (fighter as Fighter).currentTile === tile) as Fighter;
+          if (!this.focusedFighter) {
+            this.focusedTile = null;
+          }
 
           break;
         } case CursorTool.PathfindingTest1: {
@@ -488,9 +524,9 @@ export class MapService {
 
     this.mapIslands = [];
 
-    const mapTileset = this.tileMap.addTilesetImage('map', 'map', 48, 48);
-    const resourceTileset = this.tileMap.addTilesetImage('resourceSpawns', 'resourceSpawns', 48, 48);
-    const buildingTileset = this.tileMap.addTilesetImage('buildings', 'buildings', 48, 48);
+    const mapTileset = this.tileMap.addTilesetImage('map', 'map', 48, 48, 1, 2);
+    const resourceTileset = this.tileMap.addTilesetImage('resourceSpawns', 'resourceSpawns', 48, 48, 1, 2);
+    const buildingTileset = this.tileMap.addTilesetImage('buildings', 'buildings', 48, 48, 1, 2);
 
     this.mapLayer = this.tileMap.createBlankDynamicLayer('mapLayer', mapTileset);
     this.resourceLayer = this.tileMap.createBlankDynamicLayer('resourceLayer', resourceTileset);
@@ -517,8 +553,8 @@ export class MapService {
 
     const minimapHomeIcon = this.scene.add.sprite(homeTile.pixelX, homeTile.pixelY,
       'buildingSprites', this.tileIndices[BuildingTileType.Home]);
-    minimapHomeIcon.scaleX = 10;
-    minimapHomeIcon.scaleY = 10;
+    minimapHomeIcon.scaleX = 20;
+    minimapHomeIcon.scaleY = 20;
     minimapHomeIcon.depth = 1;
     this.minimapIconGroup.add(minimapHomeIcon);
     this.mainCamera.ignore(minimapHomeIcon);
@@ -619,8 +655,7 @@ export class MapService {
       }
     }
 
-    const centerVector = new Phaser.Math.Vector2(this.totalChunkX * this.chunkWidth * this.tilePixelSize / 2,
-      this.totalChunkY * this.chunkHeight * this.tilePixelSize / 2);
+    const centerVector = new Phaser.Math.Vector2(this.totalChunkX * this.chunkWidth / 2, this.totalChunkY * this.chunkHeight / 2);
     const maxTier = Math.max(...this.resourcesService.getResources().map(resource => resource.resourceTier));
     const tierRingSize = centerVector.length() / maxTier;
 
@@ -654,7 +689,7 @@ export class MapService {
           naturalResources = naturalResources.filter(resource => {
             const resourceTiers = resource.resourceEnums.map(resourceEnum =>
               this.resourcesService.resources.get(resourceEnum).resourceTier);
-            return resourceTiers.some(tier => tierValue - tier <= 3);
+            return resourceTiers.some(tier => tier <= tierValue + 1 && tierValue - tier <= 2);
           });
 
           if (!naturalResources.length) {
@@ -738,23 +773,25 @@ export class MapService {
         }
       }
 
-      if (!currentTile.properties['resourceNode']) {
-        continue;
+      const resourceNode: ResourceNode = currentTile.properties['resourceNode'];
+      const buildingNode: BuildingNode = currentTile.properties['buildingNode'];
+
+      if (resourceNode) {
+        this.findPath(currentTile, homeTile, true, true).subscribe(tilePath => {
+          resourceNode.path = tilePath;
+
+          const pathAvailable = resourceNode.path.length &&
+            !resourceNode.path.some(tile => tile.properties['buildingNode'] && tile.properties['buildingNode'].health <= 0);
+          const resources = this.resourceTileData.get(resourceNode.tileType).resourceEnums
+              .map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
+
+          for (const resource of resources) {
+            resource.pathAvailable = pathAvailable;
+          }
+        });
+      } else if (buildingNode && buildingNode.market) {
+        buildingNode.market.calculateConnection();
       }
-
-      this.findPath(currentTile, homeTile, true, true).subscribe(tilePath => {
-        const resourceNode: ResourceNode = currentTile.properties['resourceNode'];
-        resourceNode.path = tilePath;
-
-        const pathAvailable = resourceNode.path.length &&
-          !resourceNode.path.some(tile => tile.properties['buildingNode'] && tile.properties['buildingNode'].health <= 0);
-        const resources = this.resourceTileData.get(resourceNode.tileType).resourceEnums
-            .map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
-
-        for (const resource of resources) {
-          resource.pathAvailable = pathAvailable;
-        }
-      });
     }
   }
 
@@ -1155,6 +1192,36 @@ export class MapService {
     this.updatePaths(buildingTile, true);
   }
 
+  repairBuilding(tile: Phaser.Tilemaps.Tile) {
+    const buildingNode: BuildingNode = tile.properties['buildingNode'];
+    if (!buildingNode || !this.canRepairBuilding(tile)) {
+      return false;
+    }
+
+    const buildingData = this.buildingTileData.get(buildingNode.tileType);
+    const repairResource = this.resourcesService.resources.get(buildingData.repairResourceEnum);
+
+    const healAmount = buildingNode.maxHealth - buildingNode.health;
+
+    repairResource.addAmount(-buildingData.repairCostPerPoint * healAmount);
+    buildingNode.health = buildingNode.maxHealth;
+    this.buildingLayer.getTileAt(tile.x, tile.y).tint = 0xffffff;
+
+    this.updatePaths(tile, true);
+  }
+
+  canRepairBuilding(tile: Phaser.Tilemaps.Tile) {
+    const buildingNode: BuildingNode = tile.properties['buildingNode'];
+    if (!buildingNode) {
+      return false;
+    }
+
+    const buildingData = this.buildingTileData.get(buildingNode.tileType);
+    const repairResource = this.resourcesService.resources.get(buildingData.repairResourceEnum);
+
+    return repairResource.amount >= buildingData.repairCostPerPoint * (buildingNode.maxHealth - buildingNode.health);
+  }
+
   processIslands(startTile?: Phaser.Tilemaps.Tile) {
     const tilesToProcess = startTile ? [startTile] : this.mapLayer.filterTiles(_tile => _tile.properties['tileType'] !== MapTileType.Water);
 
@@ -1224,10 +1291,10 @@ export class MapService {
   }
 
   setBuildingTile(x: number, y: number, tileType: BuildingTileType, removable: boolean, health: number): Phaser.Tilemaps.Tile {
-    this.buildingLayer.putTileAt(this.tileIndices[tileType], x, y);
-
+    const buildingTile = this.buildingLayer.putTileAt(this.tileIndices[tileType], x, y);
     const mapTile = this.mapLayer.getTileAt(x, y);
-    mapTile.properties['buildingNode'] = new BuildingNode(tileType, removable, health, this.resourcesService);
+
+    mapTile.properties['buildingNode'] = new BuildingNode(tileType, removable, health, buildingTile, this.scene, this.resourcesService);
 
     return this.buildingLayer.getTileAt(x, y);
   }

@@ -1,3 +1,4 @@
+import { HealthBar } from './healthbar';
 import { ResourceEnum } from './resourceData';
 import { BuildingTileType, MapTileType, BuildingNode } from './tile';
 import { MessageSource } from './message';
@@ -78,6 +79,7 @@ export class Entity extends Phaser.GameObjects.PathFollower {
 
   health: number;
   maxHealth: number;
+  healthBar: HealthBar;
 
   public constructor(name: string, x: number, y: number, currentTile: Phaser.Tilemaps.Tile, health: number, animationSpeed = 0.003,
                      scene: Phaser.Scene, texture: string, frame: string | number, path?: Phaser.Curves.Path) {
@@ -166,6 +168,8 @@ export class Enemy extends Actor {
     this.findTargets();
     this.pickTarget();
 
+    this.healthBar = new HealthBar(this, scene);
+
     this.log('An enemy has appeared!');
   }
 
@@ -222,9 +226,10 @@ export class Enemy extends Actor {
             break;
           }
 
-          buildingNode.health -= this.attack;
+          buildingNode.takeDamage(this.attack);
+
           if (buildingNode.health <= 0) {
-            buildingNode.health = 0;
+            this.mapService.updatePaths(this.currentTile, true);
             this.finishTask();
           }
         }
@@ -239,6 +244,8 @@ export class Enemy extends Actor {
         break;
       }
     }
+
+    this.healthBar.tick(elapsed, deltaTime, this.x, this.y);
   }
 
   findTargets() {
@@ -272,7 +279,7 @@ export class Enemy extends Actor {
 
       this.selectedTarget = sortedTargets[0];
     } else {
-      const shouldTargetBuilding = Math.random() > 0.25;
+      const shouldTargetBuilding = Math.random() < 0.15;
 
       let randomTarget;
 
@@ -333,7 +340,10 @@ export class Enemy extends Actor {
   takeDamage(damageSource: Projectile) {
     this.health -= damageSource.owner.attack;
 
+    this.healthBar.updateHealthbar(this.health / this.maxHealth);
+
     if (this.health <= 0) {
+      this.healthBar.destroy();
       this.kill();
     }
   }
@@ -499,6 +509,23 @@ export class Fighter extends Actor {
     this.statCosts[stat] *= 1.5;
   }
 
+  public takeDamage(amount: number) {
+    this.health -= amount;
+
+    if (this.health <= 0) {
+      this.health = 0;
+      this.kill();
+    }
+  }
+
+  public kill() {
+    if (this.healthBar) {
+      this.healthBar.destroy();
+    }
+
+    this.destroy();
+  }
+
   public canHeal(): boolean {
     return this.resourcesService.resources.get(ResourceEnum.Gold).amount >= this.healCost;
   }
@@ -565,7 +592,7 @@ export class ResourceAnimation extends Entity {
   resourcesService: ResourcesService;
   storeService: StoreService;
 
-  public constructor(x: number, y: number, currentTile: Phaser.Tilemaps.Tile, animationSpeed = 0.003,
+  public constructor(x: number, y: number, currentTile: Phaser.Tilemaps.Tile, animationSpeed,
       path: Phaser.Curves.Path, animationType: ResourceAnimationType, resourceEnum: ResourceEnum,
       multiplier: number, spawnedByPlayer: boolean, scene: Phaser.Scene, texture: string, frame: string | number,
       resourcesService: ResourcesService, storeService: StoreService) {

@@ -37,14 +37,6 @@ export class BuildingsComponent implements OnInit {
     return this.buildingsService.canAffordBuilding(this.buildingTiles.get(buildingType));
   }
 
-  createBuilding(tile: Tile, buildingType: BuildingTileType) {
-    const buildingCreated = this.buildingsService.createBuilding(tile, buildingType);
-  }
-
-  clearBuilding(tile: Tile) {
-    this.buildingsService.clearBuilding(tile);
-  }
-
   get buildingTiles() {
     return this.mapService.buildingTileData;
   }

@@ -33,10 +33,12 @@
       "tileType": "HOME",
       "subType": "MISC",
       "name": "Home",
-      "description": "",
+      "description": "Your harvested resources will be collected and stored here.",
       "placeable": false,
       "maxPlaceable": 1,
       "baseHealth": 50,
+      "repairResourceEnum": "GOLD",
+      "repairCostPerPoint": 0,
       "resourceCosts": [],
       "buildableSurfaces": [
         "GRASS"

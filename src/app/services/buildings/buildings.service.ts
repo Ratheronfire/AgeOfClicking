@@ -54,25 +54,4 @@ export class BuildingsService {
 
     return true;
   }
-
-  public canRepairBuilding(tile: Tile): boolean {
-    const buildingTile: BuildingTileData = this.mapService.buildingTileData.get(tile.buildingTileType);
-    const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);
-
-    return repairResource.amount >= buildingTile.repairCostPerPoint * (tile.maxHealth - tile.health);
-  }
-
-  public repairBuilding(tile: Tile) {
-    if (!this.canRepairBuilding(tile)) {
-      return;
-    }
-    const buildingTile: BuildingTileData = this.mapService.buildingTileData.get(tile.buildingTileType);
-    const healAmount = tile.maxHealth - tile.health;
-
-    const repairResource = this.resourcesService.resources.get(buildingTile.repairResourceEnum);
-    repairResource.addAmount(-buildingTile.repairCostPerPoint * healAmount);
-    tile.health = tile.maxHealth;
-
-    this.mapService.updatePaths(tile, true);
-  }
 }

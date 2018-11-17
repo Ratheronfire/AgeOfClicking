@@ -82,12 +82,31 @@ app-harvest {
   width: 100%;
 }
 
+app-map {
+  position: relative;
+  height: 100%;
+}
+
+.game-is-mobile div#map-canvas-container {
+  position: inherit;
+}
+
 .repair-container .mat-button-wrapper {
   display: flex;
 }
 
-.building button, .fighter button {
+.building button,
+.fighter button {
   width: 100%;
+}
+
+.building.mat-button-toggle-checked .title,
+.fighter.mat-button-toggle-checked .title {
+  background-color: #523f37;
+  color: chartreuse;
+
+  border-radius: 5px;
+  line-height: 2;
 }
 
 .color-picker {

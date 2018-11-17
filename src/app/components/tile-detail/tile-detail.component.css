@@ -1,14 +1,12 @@
 #tile-tooltip {
-  top: var(--detail-tooltip-top);
-  left: var(--detail-tooltip-left);
+  left: 0;
+  bottom: 0;
 
   position: absolute;
 }
 
 mat-card {
   text-align: center;
-  min-width: 300px;
-  max-width: 400px;
 }
 
 .resource-list div {
@@ -72,7 +70,7 @@ mat-card {
   color: gray;
 }
 
-.anchor-container a:hover {
+.anchor-container a .corner:hover {
   color: black;
 }
 
@@ -122,4 +120,21 @@ mat-card {
   position: absolute;
   bottom: 0;
   right: 0;
+}
+
+#card-header {
+  float: left;
+  max-width: 250px;
+
+  padding-right: 5px;
+}
+
+#card-content {
+  float: right;
+
+  border: burlywood;
+  border-width: 0 0 0 1px;
+  border-style: solid;
+
+  padding-left: 5px;
 }

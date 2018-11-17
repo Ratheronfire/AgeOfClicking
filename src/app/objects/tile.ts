@@ -1,3 +1,4 @@
+import { HealthBar } from './healthbar';
 import { Resource } from './resource';
 import { ResourceType, ResourceEnum } from './resourceData';
 import { ResourceCost } from './resourceCost';
@@ -142,11 +143,13 @@ export interface ResourceTileData {
 
 export class BuildingNode {
   tileType: BuildingTileType;
+  owningTile: Phaser.Tilemaps.Tile;
 
   removable: boolean;
 
   health: number;
   maxHealth: number;
+  healthBar: HealthBar;
 
   market?: Market;
 
@@ -155,8 +158,10 @@ export class BuildingNode {
 
   resourcesService: ResourcesService;
 
-  constructor(tileType: BuildingTileType, removable: boolean, health: number, resourcesService: ResourcesService) {
+  constructor(tileType: BuildingTileType, removable: boolean, health: number,
+      owningTile: Phaser.Tilemaps.Tile, scene: Phaser.Scene, resourcesService: ResourcesService) {
     this.tileType = tileType;
+    this.owningTile = owningTile;
 
     this.removable = removable;
 
@@ -166,7 +171,23 @@ export class BuildingNode {
     this.statLevels[TileStat.MaxHealth] = 1;
     this.statCosts[TileStat.MaxHealth] = 1500;
 
+    this.healthBar = new HealthBar(owningTile, scene);
+
     this.resourcesService = resourcesService;
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    this.healthBar.tick(elapsed, deltaTime, this.owningTile.getCenterX(), this.owningTile.getCenterY());
+
+    if (this.market) {
+      this.market.tick(elapsed, deltaTime);
+    }
+
+    if (this.health <= 0) {
+      // Phaser.Tilemaps.Tile.tint seems to be somewhat broken at the moment.
+      // This line tints and broken buildings in a light red color.
+      this.owningTile.tint = 0x9999ff;
+    }
   }
 
   public canUpgradeStat(stat: TileStat): boolean {
@@ -210,6 +231,15 @@ export class BuildingNode {
     this.statLevels[stat]++;
     this.statCosts[stat] *= 1.5;
   }
+
+  takeDamage(number) {
+    this.health -= number;
+    if (this.health < 0) {
+      this.health = 0;
+    }
+
+    this.healthBar.updateHealthbar(this.health / this.maxHealth);
+  }
 }
 
 export class ResourceNode {
@@ -223,6 +253,10 @@ export class ResourceNode {
     this.tileType = tileType;
     this.path = [];
     this.health = health;
+  }
+
+  get travelMilliseconds(): number {
+    return this.path ? (this.path.length - 1) * 1000 : Infinity;
   }
 }
 
