@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-if ng build; then
+if ng build --prod; then
   rm -r ../ratheronfire.github.io/*
 
   cp -r dist/clicker-game/* ../ratheronfire.github.io/
