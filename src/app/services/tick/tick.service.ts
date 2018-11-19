@@ -4,8 +4,6 @@ import { HarvestService } from '../harvest/harvest.service';
 import { WorkersService } from './../workers/workers.service';
 import { SettingsService } from './../settings/settings.service';
 
-declare var d3: any;
-
 export interface Tick {
   tick(elapsed: number, deltaTime: number);
 }
@@ -15,21 +13,21 @@ export interface Tick {
 })
 export class TickService {
   tickObjects = [this.harvestService, this.workersService, this.settingsService];
-  timeElapsed: number;
+  timeElapsed = Date.now();
 
   constructor(protected harvestService: HarvestService,
               protected workersService: WorkersService,
               protected settingsService: SettingsService) {
-    d3.interval(this.tick(this), 25);
+    setInterval(_ => this.tick(), 25);
   }
 
-  tick(self: TickService) {
-    return function(elapsed) {
-      for (const tickObject of self.tickObjects) {
-        tickObject.tick(elapsed, elapsed - self.timeElapsed);
-      }
+  tick() {
+    const elapsed = Date.now();
 
-      self.timeElapsed = elapsed;
-    };
+    for (const tickObject of this.tickObjects) {
+      tickObject.tick(elapsed, elapsed - this.timeElapsed);
+    }
+
+    this.timeElapsed = elapsed;
   }
 }

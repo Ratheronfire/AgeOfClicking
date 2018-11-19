@@ -54,7 +54,7 @@ export class SettingsComponent implements AfterViewInit {
 
   deleteGame() {
     if (confirm('Are you sure you want to delete your save?')) {
-      this.settingsService.deleteSave();
+      this.settingsService.deleteSave(true);
     }
   }
 

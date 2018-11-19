@@ -21,7 +21,7 @@ export class WorkersService implements Tick {
   foodStockpile = 0;
   foodCollectAmount = 1000;
   foodCollectInterval = 100;
-  lastFoodCollectTime = 0;
+  lastFoodCollectTime = Date.now();
 
   constructor(protected resourcesService: ResourcesService,
               protected mapService: MapService,

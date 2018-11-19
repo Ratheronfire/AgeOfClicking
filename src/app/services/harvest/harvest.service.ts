@@ -18,7 +18,7 @@ import { MessageSource } from '../../objects/message';
   providedIn: 'root'
 })
 export class HarvestService implements Tick {
-  timeElapsed: number;
+  timeElapsed = Date.now();
 
   resourceTypes = ResourceType;
 

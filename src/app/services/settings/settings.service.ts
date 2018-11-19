@@ -32,7 +32,7 @@ export class SettingsService implements Tick {
   bindSelected = new FormControl();
 
   autosaveInterval = 60000;
-  lastAutosave = this.autosaveInterval;
+  lastAutosave = Date.now();
   debugMode = false;
 
   resourceBinds = defaultResourceBinds;
@@ -98,7 +98,7 @@ export class SettingsService implements Tick {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
-        if (this.importSave(result)) {
+        if (this.importSave(result, true)) {
           this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
           this.log('Game successfully loaded!');
         }
@@ -114,14 +114,14 @@ export class SettingsService implements Tick {
 
     dialogRef.afterClosed().subscribe(result => {
       if (result !== undefined) {
-        if (this.importSave(result)) {
+        if (this.importSave(result, true)) {
         }
       }
     });
   }
 
   setAutosave() {
-    this.lastAutosave = this.autosaveInterval;
+    this.lastAutosave = Date.now();
   }
 
   saveGame() {
@@ -140,13 +140,17 @@ export class SettingsService implements Tick {
       return;
     }
 
-    if (this.importSave(saveData)) {
+    if (this.importSave(saveData, true)) {
       this.snackbar.open('Game successfully loaded!', '', {duration: 2000});
       this.log('Game successfully loaded!');
     }
   }
 
-  deleteSave() {
+  /** Deletes the save data stored to the browser and resets the game.
+   *  @param manualDeletion True if the delete was triggered by the player (we automatically delete
+   *    the save before loading to ensure we're working from a clean slate).
+   */
+  deleteSave(manualDeletion: boolean) {
     localStorage.removeItem('clickerGameSaveData');
 
     this.resourcesService.loadBaseResources();
@@ -188,8 +192,10 @@ export class SettingsService implements Tick {
       'SOLD': '#ffc089'
     };
 
-    this.snackbar.open('Game save deleted.', '', {duration: 2000});
-    this.log('Game save deleted.');
+    if (manualDeletion) {
+      this.snackbar.open('Game save deleted.', '', {duration: 2000});
+      this.log('Game save deleted.');
+    }
   }
 
   exportSave() {
@@ -321,11 +327,14 @@ export class SettingsService implements Tick {
     return btoa(JSON.stringify(saveData));
   }
 
-  importSave(saveDataString: string): boolean {
-    const backupSave = this.exportSave();
+  importSave(saveDataString: string, backUpFirst: boolean): boolean {
+    let backupSave;
+    if (backUpFirst) {
+      backupSave = this.exportSave();
+    }
 
     try {
-      this.deleteSave();
+      this.deleteSave(false);
 
       let saveData: SaveData = JSON.parse(atob(saveDataString));
       saveData = this.processVersionDifferences(saveData);
@@ -502,12 +511,15 @@ export class SettingsService implements Tick {
 
       return true;
     } catch (error) {
-      this.snackbar.open(`Error loading save data: ${error}`, '', {duration: 5000});
-      this.log('Error loading save data. Printing data to console for debugging.');
-      this.importSave(backupSave);
+      if (backUpFirst) {
+        this.snackbar.open(`Error loading save data: ${error}`, '', {duration: 5000});
+        this.log('Error loading save data. Printing data to console for debugging.');
+        this.importSave(backupSave, false);
 
-      console.log(saveDataString);
-      console.error(error);
+        console.error('Error processesing save data. Printing to console for debugging:\n' + saveDataString + '\n' + error);
+      } else {
+        console.error('Error encountered restoring backed-up save:\n' + error);
+      }
 
       return false;
     }
@@ -625,6 +637,7 @@ export class SettingsService implements Tick {
   }
 
   private log(message: string) {
+    console.log(message);
     this.messagesService.add(MessageSource.Settings, message);
   }
 }
