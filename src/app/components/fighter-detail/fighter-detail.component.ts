@@ -30,7 +30,7 @@ export class FighterDetailComponent implements OnInit {
       return;
     }
 
-    this.focusedFighter.kill();
+    this.focusedFighter.destroy();
 
     this.focusedTile = undefined;
     this.focusedFighter = undefined;

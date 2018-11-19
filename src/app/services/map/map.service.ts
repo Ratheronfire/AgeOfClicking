@@ -514,14 +514,24 @@ export class MapService {
       return;
     }
 
+    if (this.mapLayer) {
+      this.mapLayer.destroy();
+    }
+    if (this.resourceLayer) {
+      this.resourceLayer.destroy();
+    }
+    if (this.buildingLayer) {
+      this.buildingLayer.destroy();
+    }
+
     this.tileMap.removeAllLayers();
 
-    this.resourceAnimationGroup.clear(true);
-    this.minimapIconGroup.clear(true);
-    this.fighterGroup.clear(true);
-    this.enemyGroup.clear(true);
-    this.projectileGroup.clear(true);
-    this.pathfindingTestGroup.clear(true);
+    this.resourceAnimationGroup.clear(true, true);
+    this.minimapIconGroup.clear(true, true);
+    this.fighterGroup.clear(true, true);
+    this.enemyGroup.clear(true, true);
+    this.projectileGroup.clear(true, true);
+    this.pathfindingTestGroup.clear(true, true);
 
     this.mapIslands = [];
 

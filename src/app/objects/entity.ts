@@ -99,6 +99,18 @@ export class Entity extends Phaser.GameObjects.PathFollower {
   get position(): Phaser.Math.Vector2 {
     return new Phaser.Math.Vector2(this.x, this.y);
   }
+
+  destroyTween() {
+    if (!this.pathTween) {
+      return;
+    }
+
+    // Using the nuclear option to 100% ensure the entity & its tween are garbage collected.
+    // This is probably excessive but if it works then I'm happy.
+    this.stopFollow();
+    this.pathTween.stop();
+    this.scene.tweens.killTweensOf(this);
+  }
 }
 
 export class Actor extends Entity {
@@ -175,6 +187,11 @@ export class Enemy extends Actor {
   }
 
   tick(elapsed: number, deltaTime: number) {
+    if (!this.currentTile || !this.mapService.isTileWalkable(this.currentTile)) {
+      // If the enemy spawns on an invalid tile, we'll just move it elsewhere.
+      this.moveToNewTile();
+    }
+
     this.lastIslandId = this.islandId;
 
     this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(this.x, this.y);
@@ -272,13 +289,7 @@ export class Enemy extends Actor {
   pickTarget() {
     if (!this.islandId) {
       // The enemy's position has become invalid, so we'll just move it somewhere random.
-      while (!this.currentTile || !this.islandId) {
-        const newIslandId = this.mapService.getRandomIslandId();
-        this.currentTile = this.mapService.getRandomTileOnIsland(newIslandId, [MapTileType.Grass], true, false);
-      }
-
-      this.x = this.currentTile.getCenterX();
-      this.y = this.currentTile.getCenterY();
+      this.moveToNewTile();
     }
 
     if (this.targets.length) {
@@ -318,7 +329,7 @@ export class Enemy extends Actor {
   finishTask() {
     this.targets = this.targets.filter(target => target !== this.selectedTarget);
 
-    const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
+    const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
     if (!buildingNode) {
       this.currentState = EnemyState.MovingToTarget;
     } else if (buildingNode.tileType === BuildingTileType.Home) {
@@ -358,11 +369,11 @@ export class Enemy extends Actor {
 
     if (this.health <= 0) {
       this.healthBar.destroy();
-      this.kill();
+      this.destroy();
     }
   }
 
-  kill() {
+  destroy() {
     let enemyDefeatedMessage = 'An enemy has been defeated!';
 
     if (this.totalHeld > 0) {
@@ -385,9 +396,22 @@ export class Enemy extends Actor {
 
     this.log(enemyDefeatedMessage);
 
-    this.stopFollow();
+    this.destroyTween();
     this.scene.tweens.killTweensOf(this);
-    this.destroy();
+
+    super.destroy();
+  }
+
+  moveToNewTile() {
+    this.currentTile = null;
+
+    while (!this.currentTile || !this.islandId) {
+      const newIslandId = this.mapService.getRandomIslandId();
+      this.currentTile = this.mapService.getRandomTileOnIsland(newIslandId, [MapTileType.Grass], true, false);
+    }
+
+    this.x = this.currentTile.getCenterX();
+    this.y = this.currentTile.getCenterY();
   }
 
   get islandId(): number {
@@ -529,18 +553,19 @@ export class Fighter extends Actor {
 
     if (this.health <= 0) {
       this.health = 0;
-      this.kill();
+      this.destroy();
     }
   }
 
-  public kill() {
+  public destroy() {
     if (this.healthBar) {
       this.healthBar.destroy();
     }
 
-    this.stopFollow();
+    this.destroyTween();
     this.scene.tweens.killTweensOf(this);
-    this.destroy();
+
+    super.destroy();
   }
 
   public canHeal(): boolean {
@@ -630,8 +655,7 @@ export class ResourceAnimation extends Entity {
   finishAnimation() {
     this.resourcesService.resources.get(this.resourceEnum).finishResourceAnimation(this.multiplier, this.animationType);
 
-    this.stopFollow();
-    this.scene.tweens.killTweensOf(this);
+    this.destroyTween();
     this.destroy();
   }
 

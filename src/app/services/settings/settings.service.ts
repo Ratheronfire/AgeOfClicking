@@ -516,7 +516,8 @@ export class SettingsService implements Tick {
         this.log('Error loading save data. Printing data to console for debugging.');
         this.importSave(backupSave, false);
 
-        console.error('Error processesing save data. Printing to console for debugging:\n' + saveDataString + '\n' + error);
+        console.error(`Error loading save data:\n${error}\nPrinting save data to console for debugging.`);
+        console.warn(saveDataString);
       } else {
         console.error('Error encountered restoring backed-up save:\n' + error);
       }
