@@ -1,13 +1,13 @@
 import { Component, AfterViewInit } from '@angular/core';
-import { FormControl } from '@angular/forms';
 import { MatSelectChange } from '@angular/material';
 
 import { SettingsService } from '../../services/settings/settings.service';
-import { MapService } from './../../services/map/map.service';
-import { ResourcesService } from './../../services/resources/resources.service';
-import { MessagesService } from './../../services/messages/messages.service';
+import { MapService } from '../../services/map/map.service';
+import { ResourcesService } from '../../services/resources/resources.service';
+import { MessagesService } from '../../services/messages/messages.service';
 import { ResourceEnum } from '../../objects/resourceData';
-import { MessageSource } from './../../objects/message';
+import { MessageSource } from '../../objects/message';
+import { Resource } from '../../objects/resource';
 
 @Component({
   selector: 'app-settings',
@@ -56,6 +56,10 @@ export class SettingsComponent implements AfterViewInit {
     if (confirm('Are you sure you want to delete your save?')) {
       this.settingsService.deleteSave();
     }
+  }
+
+  getResources(filterBySellable = false, filterByAccessible = false, filterByHarvestable = false, filterByEdible = false): Resource[] {
+    return this.resourcesService.getResources(null, null, filterBySellable, filterByAccessible, filterByHarvestable, filterByEdible);
   }
 
   resourceBindChange(event: MatSelectChange) {

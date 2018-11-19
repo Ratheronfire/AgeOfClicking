@@ -250,7 +250,7 @@ export class SettingsService implements Tick {
 
     if (this.mapService.mapLayer) {
       for (const tile of this.mapService.mapLayer.getTilesWithin()) {
-        if (!tile || !tile.properties['buildingNode'] && tile.properties['buildingNode'] !== BuildingTileType.EnemyPortal) {
+        if (!tile || !tile.properties['buildingNode']) {
           continue;
         }
 
@@ -425,7 +425,7 @@ export class SettingsService implements Tick {
         for (const tileData of saveData.tiles) {
           const tile = this.mapService.mapLayer.findTile(_tile => _tile && _tile.properties['id'] === tileData.id);
 
-          if (!tile || [BuildingTileType.Home, BuildingTileType.EnemyPortal].includes(tileData.buildingTileType)) {
+          if (!tile || tileData.buildingTileType === BuildingTileType.Home) {
             continue;
           }
 

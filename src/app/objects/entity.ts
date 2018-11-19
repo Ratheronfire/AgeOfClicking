@@ -270,6 +270,17 @@ export class Enemy extends Actor {
   }
 
   pickTarget() {
+    if (!this.islandId) {
+      // The enemy's position has become invalid, so we'll just move it somewhere random.
+      while (!this.currentTile || !this.islandId) {
+        const newIslandId = this.mapService.getRandomIslandId();
+        this.currentTile = this.mapService.getRandomTileOnIsland(newIslandId, [MapTileType.Grass], true, false);
+      }
+
+      this.x = this.currentTile.getCenterX();
+      this.y = this.currentTile.getCenterY();
+    }
+
     if (this.targets.length) {
       const sortedTargets = this.targets.sort((a, b) => {
         const enemyPosition = new Phaser.Math.Vector2(this.x, this.y);
@@ -375,6 +386,7 @@ export class Enemy extends Actor {
     this.log(enemyDefeatedMessage);
 
     this.stopFollow();
+    this.scene.tweens.killTweensOf(this);
     this.destroy();
   }
 
@@ -526,6 +538,8 @@ export class Fighter extends Actor {
       this.healthBar.destroy();
     }
 
+    this.stopFollow();
+    this.scene.tweens.killTweensOf(this);
     this.destroy();
   }
 
@@ -616,6 +630,8 @@ export class ResourceAnimation extends Entity {
   finishAnimation() {
     this.resourcesService.resources.get(this.resourceEnum).finishResourceAnimation(this.multiplier, this.animationType);
 
+    this.stopFollow();
+    this.scene.tweens.killTweensOf(this);
     this.destroy();
   }
 

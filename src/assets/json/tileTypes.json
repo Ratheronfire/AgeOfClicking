@@ -91,10 +91,10 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "STONE",
+      "repairResourceEnum": "OAK",
       "repairCostPerPoint": 0.2,
       "resourceCosts": [{
-        "resourceEnum": "WOOD",
+        "resourceEnum": "OAK",
         "resourceCost": 15
       }],
       "buildableSurfaces": [

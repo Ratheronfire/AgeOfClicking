@@ -230,7 +230,6 @@ export class MapService {
     this.scene.physics.add.collider(this.projectileGroup, this.enemyGroup, this.projectileCollide);
 
     this.initializeMap();
-    this.mapCreated = true;
 
     const cursors = this.scene.input.keyboard.createCursorKeys();
     const zoomKeys = this.scene.input.keyboard.addKeys('page_up,page_down');
@@ -634,6 +633,8 @@ export class MapService {
       const resourceTile = this.getRandomTile(missingResource.spawnsOn, true);
       this.setResourceTile(resourceTile.x, resourceTile.y, missingResource.tileType, 50);
     }
+
+    this.mapCreated = true;
   }
 
   generateChunk(chunkX: number, chunkY: number) {

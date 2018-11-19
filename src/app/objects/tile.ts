@@ -65,17 +65,16 @@ export enum BuildingTileType {
   GoldForge = 'GOLDFORGE',
   LatinumForge = 'LATINUMFORGE',
   TemprousDistillery = 'TEMPROUSDISTILLERY',
-  EnemyPortal = 'ENEMYPORTAL',
-  WoodMarket = 'WOODMARKET',
-  MineralMarket = 'MINERALMARKET',
-  MetalMarket = 'METALMARKET',
   OakOven = 'OAKOVEN',
   StoneOven = 'STONEOVEN',
   MarbleOven = 'MARBLEOVEN',
   TemprousOven = 'TEMPROUSOVEN',
   ChickenFarm = 'CHICKENFARM',
   CowFarm = 'COWFARM',
-  DragonFarm = 'DRAGONFARM'
+  DragonFarm = 'DRAGONFARM',
+  WoodMarket = 'WOODMARKET',
+  MineralMarket = 'MINERALMARKET',
+  MetalMarket = 'METALMARKET'
 }
 
 export enum BuildingSubType {

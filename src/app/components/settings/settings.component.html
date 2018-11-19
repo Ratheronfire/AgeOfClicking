@@ -53,7 +53,7 @@
       <br />
 
       <mat-select [formControl]="bindSelected" multiple (selectionChange)="resourceBindChange($event)">
-        <mat-option *ngFor="let resource of resourcesService.getResources(false, false, true)" [(value)]="resource.resourceEnum">
+        <mat-option *ngFor="let resource of getResources(false, false, true)" [(value)]="resource.resourceEnum">
           {{resource.name | titlecase}}
         </mat-option>
       </mat-select>
