@@ -1,5 +1,5 @@
 <ul class="workers">
-  <mat-checkbox [(ngModel)]="workersPaused" color="accent">Pause Workers</mat-checkbox>
+  <mat-checkbox [(ngModel)]="workersPaused" color="accent" class="button-text-background">Pause Workers</mat-checkbox>
 
   <mat-card class="hunger-card">
     <mat-card-title>
@@ -9,18 +9,18 @@
   </mat-card>
 
   <mat-accordion multi="true">
-    <mat-expansion-panel expanded="true" *ngFor="let worker of getWorkers(true, true, true)">
+    <mat-expansion-panel class="steel" expanded="true" *ngFor="let worker of getWorkers(true, true, true)">
       <mat-expansion-panel-header>
-        <mat-panel-title>
+        <mat-panel-title class="button-text-background">
           {{worker.resourceType | titlecase}}
         </mat-panel-title>
         <mat-panel-description>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <button mat-raised-button [color]="worker.canAffordToHire() ? 'accent' : 'disabled'" (click)="worker.hireWorker()">
-        <mat-card-title>{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
-        <mat-card-subtitle>{{worker.cost | longNumber}} Gold</mat-card-subtitle>
+      <button mat-raised-button class="wood" [color]="worker.canAffordToHire() ? 'accent' : 'disabled'" (click)="worker.hireWorker()" [disabled]="!worker.canAffordToHire()">
+        <mat-card-title class="button-text">{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
+        <mat-card-subtitle class="button-text-background">{{worker.cost | longNumber}} Gold</mat-card-subtitle>
       </button>
 
       <div *ngFor="let resourceWorker of getAccessibleResourceWorkers(worker)">

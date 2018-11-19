@@ -14,8 +14,8 @@ h2 {
 a {
   padding: 5px 10px;
   text-decoration: none;
-  margin-top: 10px;
   display: inline-block;
+  color: #607d8b;
   background-color: #eee;
   border-radius: 4px;
   cursor: pointer;
@@ -34,8 +34,21 @@ a.active {
   color: #039be5;
 }
 
+mat-form-field {
+  background-color: white;
+
+  border: gray;
+  border-width: 2px;
+  border-style: outset;
+  border-radius: 7px;
+}
+
 mat-panel-title {
   display: grid;
+}
+
+mat-expansion-panel {
+  margin: 0;
 }
 
 .color-input {

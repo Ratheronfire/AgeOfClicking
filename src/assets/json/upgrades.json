@@ -1034,6 +1034,19 @@
       {"resourceEnum": "TEAK",     "resourceCost": 300}
     ]
   }, {
+    "id": 92,
+    "upgradeType": "WORKER",
+    "name": "Fisherman",
+    "description": "Allows workers to be assigned to hunting fish.",
+    "upgradeEffects": [
+      {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
+      {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
+      {"upgradeIsForWholeType": false, "resourceEnum": "RAWSHARK",   "upgradeVariable": "WORKABLE", "upgradeFactor": 1}
+    ],
+    "resourceCosts": [
+      {"resourceEnum": "GOLD", "resourceCost": 4000}
+    ]
+  }, {
     "id": 78,
     "upgradeType": "WORKER",
     "name": "Monster Pocketer",

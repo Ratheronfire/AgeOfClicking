@@ -26,8 +26,8 @@ const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3', 'Alpha 3.4'];
-  gameVersion = 'Alpha 3.4';
+  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3', 'Alpha 3.4', 'Alpha 4.0'];
+  gameVersion = 'Alpha 4.0';
 
   bindSelected = new FormControl();
 
@@ -156,11 +156,6 @@ export class SettingsService implements Tick {
     this.mapService.seedRng(Math.random());
     this.mapService.initializeMap();
 
-    this.enemyService.enemies = [];
-    this.fighterService.fighters = [];
-    this.mapService.resourceAnimations = [];
-    this.mapService.projectiles = [];
-
     this.workersService.foodStockpile = 0;
 
     this.autosaveInterval = 60000;
@@ -253,41 +248,42 @@ export class SettingsService implements Tick {
       saveData.workers.push(workerData);
     }
 
-    for (const tile of this.mapService.tileMap) {
-      if (!tile || tile.buildingTileType === undefined && tile.buildingTileType !== BuildingTileType.EnemyPortal) {
-        continue;
-      }
+    if (this.mapService.mapLayer) {
+      for (const tile of this.mapService.mapLayer.getTilesWithin()) {
+        if (!tile || !tile.properties['buildingNode']) {
+          continue;
+        }
 
-      const tileData: TileData = {
-        id: tile.id,
-        health: tile.health,
-        maxHealth: tile.maxHealth,
-        buildingRemovable: tile.buildingRemovable,
-        tileCropDetail: tile.tileCropDetail,
-        statLevels: tile.statLevels,
-        statCosts: tile.statCosts
-      };
+        const tileData: TileData = {
+          id: tile.properties['id'],
+          health: tile.properties['buildingNode'].health,
+          maxHealth: tile.properties['buildingNode'].maxHealth,
+          buildingRemovable: tile.properties['buildingNode'].removable,
+          statLevels: tile.properties['buildingNode'].statLevels,
+          statCosts: tile.properties['buildingNode'].statCosts
+        };
 
-      if (tile.resourceTileType !== undefined) {
-        tileData.resourceTileType = tile.resourceTileType;
-      }
-      if (tile.buildingTileType !== undefined) {
-        tileData.buildingTileType = tile.buildingTileType;
-      }
+        if (tile.properties['resourceNode']) {
+          tileData.resourceTileType = tile.properties['resourceNode'].tileType;
+        }
+        if (tile.properties['buildingNode']) {
+          tileData.buildingTileType = tile.properties['buildingNode'].tileType;
+        }
 
-      if (tile.market) {
-        tileData.sellInterval = tile.market.sellInterval;
-        tileData.sellQuantity = tile.market.sellQuantity;
-      }
+        if (tile.properties['buildingNode'].market) {
+          tileData.sellInterval = tile.properties['buildingNode'].market.sellInterval;
+          tileData.sellQuantity = tile.properties['buildingNode'].market.sellQuantity;
+        }
 
-      saveData.tiles.push(tileData);
+        saveData.tiles.push(tileData);
+      }
     }
 
     for (const enemy of this.enemyService.enemies) {
       saveData.enemies.push({
         name: enemy.name,
-        position: enemy.position,
-        spawnPosition: enemy.spawnPosition,
+        x: enemy.x,
+        y: enemy.y,
         health: enemy.health,
         maxHealth: enemy.maxHealth,
         animationSpeed: enemy.animationSpeed,
@@ -306,8 +302,8 @@ export class SettingsService implements Tick {
       saveData.fighters.push({
         name: fighter.name,
         description: fighter.description,
-        position: fighter.position,
-        spawnPosition: fighter.spawnPosition,
+        x: fighter.x,
+        y: fighter.y,
         health: fighter.health,
         maxHealth: fighter.maxHealth,
         animationSpeed: fighter.animationSpeed,
@@ -427,88 +423,77 @@ export class SettingsService implements Tick {
 
       if (saveData.tiles !== undefined) {
         for (const tileData of saveData.tiles) {
-          const tile = this.mapService.tileMap.find(_tile => _tile && _tile.id === tileData.id);
+          const tile = this.mapService.mapLayer.findTile(_tile => _tile && _tile.properties['id'] === tileData.id);
 
-          if (!tile || [BuildingTileType.Home, BuildingTileType.EnemyPortal].includes(tileData.buildingTileType)) {
+          if (!tile || tileData.buildingTileType === BuildingTileType.Home) {
             continue;
           }
 
-          tile.health = tileData.health ? tileData.health : 50;
-          tile.maxHealth = tileData.maxHealth ? tileData.maxHealth : 50;
+          const buildingData = this.mapService.buildingTileData.get(tileData.buildingTileType);
+          this.mapService.createBuilding(tile.x, tile.y, buildingData, tileData.buildingRemovable, tileData.maxHealth, true);
 
-          tile.resourceTileType = tileData.resourceTileType;
-          tile.buildingTileType = tileData.buildingTileType;
+          tile.properties['buildingNode'].health = tileData.health ? tileData.health : 50;
+          tile.properties['buildingNode'].statLevels = tileData.statLevels;
+          tile.properties['buildingNode'].statCosts = tileData.statCosts;
 
-          tile.buildingRemovable = tileData.buildingRemovable;
+          if (tileData.buildingTileType &&
+            this.mapService.buildingTileData.get(tileData.buildingTileType).subType === BuildingSubType.Market) {
 
-          tile.tileCropDetail = tileData.tileCropDetail;
-
-          tile.statLevels = tileData.statLevels;
-          tile.statCosts = tileData.statCosts;
-        }
-
-        const marketTiles = saveData.tiles.filter(
-          tile => tile.buildingTileType && this.mapService.buildingTiles.get(tile.buildingTileType).subType === BuildingSubType.Market);
-
-        for (const tileData of marketTiles) {
-          const tile = this.mapService.tileMap[tileData.id];
-          let resourceType;
-          switch (tileData.buildingTileType) {
-            case BuildingTileType.WoodMarket: {
-              resourceType = ResourceType.Wood;
-              break;
-            } case BuildingTileType.MineralMarket: {
-              resourceType = ResourceType.Mineral;
-              break;
-            } case BuildingTileType.MetalMarket: {
-              resourceType = ResourceType.Metal;
-              break;
+            let resourceType: ResourceType;
+            switch (tileData.buildingTileType) {
+              case BuildingTileType.WoodMarket: {
+                resourceType = ResourceType.Wood;
+                break;
+              } case BuildingTileType.MineralMarket: {
+                resourceType = ResourceType.Mineral;
+                break;
+              } case BuildingTileType.MetalMarket: {
+                resourceType = ResourceType.Metal;
+                break;
+              }
             }
-          }
-          tile.market = new Market(this.mapService, this.resourcesService, resourceType, tile, false);
 
-          tile.market.sellInterval = tileData.sellInterval ? tileData.sellInterval : 1000;
-          tile.market.sellQuantity = tileData.sellQuantity ? tileData.sellQuantity : 50;
+            tile.properties['buildingNode'].market = new Market(this.mapService, this.resourcesService, resourceType, tile, false);
+          }
         }
       }
 
       if (saveData.enemies !== undefined) {
         for (const enemyData of saveData.enemies) {
-          const tilePosition = this.mapService.clampTileCoordinates(enemyData.position.x, enemyData.position.y);
-          const tile = this.mapService.getTile(tilePosition[0], tilePosition[1]);
+          const tile = this.mapService.mapLayer.getTileAtWorldXY(enemyData.x, enemyData.y);
 
-          const enemy = new Enemy(enemyData.name, new Vector(enemyData.position.x, enemyData.position.y), tile, enemyData.health,
-            enemyData.animationSpeed, enemyData.attack, enemyData.defense, enemyData.attackRange, enemyData.targetableBuildingTypes,
-            enemyData.resourcesToSteal, enemyData.stealMax, enemyData.resourceCapacity);
-          enemy.spawnPosition = new Vector(enemyData.spawnPosition.x, enemyData.spawnPosition.y);
+          if (!tile) {
+            continue;
+          }
 
-          this.enemyService.findTargets(enemy);
-          this.enemyService.pickTarget(enemy);
-          this.enemyService.enemies.push(enemy);
+          const enemyType = this.enemyService.enemyTypes.find(type => type.name === enemyData.name);
+          const enemy = this.mapService.spawnEnemy(enemyType, tile);
+
+          enemy.health = enemyData.health ? enemyData.health : 50;
+          enemy.maxHealth = enemyData.maxHealth ? enemyData.maxHealth : 50;
         }
       }
 
       if (saveData.fighters !== undefined) {
         for (const fighterData of saveData.fighters) {
-          const tilePosition = this.mapService.clampTileCoordinates(fighterData.position.x, fighterData.position.y);
-          const tile = this.mapService.getTile(tilePosition[0], tilePosition[1]);
+          const tile = this.mapService.mapLayer.getTileAtWorldXY(fighterData.x, fighterData.y);
 
-          const fighter = new Fighter(fighterData.name, new Vector(fighterData.position.x, fighterData.position.y),
-            tile, fighterData.health, fighterData.animationSpeed, fighterData.attack,
-            fighterData.defense, fighterData.attackRange, fighterData.description,
-            fighterData.cost ? fighterData.cost : 50, fighterData.moveable,
-            fighterData.fireMilliseconds ? fighterData.fireMilliseconds : 1000,
-            this.resourcesService, this.enemyService, this.mapService);
-          fighter.maxHealth = fighterData.maxHealth;
+          if (!tile) {
+            continue;
+          }
 
+          const fighterType = this.fighterService.fighterTypes.find(type => type.name === fighterData.name);
+          const fighter = this.mapService.spawnFighter(fighterType, tile.x, tile.y, true);
+
+          fighter.health = fighterData.health ? fighterData.health : 50;
+          fighter.maxHealth = fighterData.maxHealth ? fighterData.maxHealth : 50;
+          fighter.attackRange = fighterData.attackRange ? fighterData.attackRange : 3;
           if (fighterData.statLevels) {
             fighter.statLevels = fighterData.statLevels;
           }
           if (fighterData.statCosts) {
             fighter.statCosts = fighterData.statCosts;
           }
-
-          this.fighterService.fighters.push(fighter);
         }
       }
 
@@ -585,7 +570,7 @@ export class SettingsService implements Tick {
       saveData.settings.resourceAnimationColors[ResourceAnimationType.Sold] = '#ffc089';
 
       saveData.tiles.map(tileData => {
-        const isMarket = this.mapService.buildingTiles.get(tileData.buildingTileType).subType === BuildingSubType.Market;
+        const isMarket = this.mapService.buildingTileData.get(tileData.buildingTileType).subType === BuildingSubType.Market;
         tileData.statLevels = isMarket ? {'MAXHEALTH': 1, 'SELLAMOUNT': 1, 'SELLRATE': 1} : {'MAXHEALTH': 1};
         tileData.statCosts = isMarket ? {'MAXHEALTH': 1500, 'SELLAMOUNT': 1500, 'SELLRATE': 1500} : {'MAXHEALTH': 1500};
       });
@@ -632,7 +617,7 @@ export class SettingsService implements Tick {
       saveData.settings.highestTierReached = accessedTiers.sort()[accessedTiers.length - 1];
     }
 
-    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.3')) {
+    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.4')) {
       saveData.tiles = [];
     }
 

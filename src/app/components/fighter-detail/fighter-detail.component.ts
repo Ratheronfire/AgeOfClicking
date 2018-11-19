@@ -4,7 +4,6 @@ import { MapService } from '../../services/map/map.service';
 import { BuildingsService } from '../../services/buildings/buildings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
 import { ResourceEnum } from './../../objects/resourceData';
-import { Tile } from '../../objects/tile';
 import { Fighter } from './../../objects/entity';
 
 @Component({
@@ -13,7 +12,7 @@ import { Fighter } from './../../objects/entity';
   styleUrls: ['./fighter-detail.component.css']
 })
 export class FighterDetailComponent implements OnInit {
-  snapSetting = 'free';
+  snapSetting = 'lowerLeft';
 
   constructor(protected mapService: MapService,
               protected buildingsService: BuildingsService,
@@ -31,17 +30,17 @@ export class FighterDetailComponent implements OnInit {
       return;
     }
 
-    this.focusedFighter.health = 0;
+    this.focusedFighter.kill();
 
     this.focusedTile = undefined;
     this.focusedFighter = undefined;
   }
 
-  get focusedTile(): Tile {
+  get focusedTile(): Phaser.Tilemaps.Tile {
     return this.mapService.focusedTile;
   }
 
-  set focusedTile(value: Tile) {
+  set focusedTile(value: Phaser.Tilemaps.Tile) {
     this.mapService.focusedTile = value;
   }
 

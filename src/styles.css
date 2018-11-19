@@ -69,7 +69,11 @@ mat-sidenav-container.game-sidenav-container mat-sidenav-content {
   overflow-x: hidden;
 }
 
-.game-is-mobile app-clicker-main.resource-list {
+app-harvest {
+  height: 100%;
+}
+
+.game-is-mobile app-harvest.resource-list {
   width: 100%;
   overflow: hidden;
 }
@@ -82,8 +86,18 @@ mat-sidenav-container.game-sidenav-container mat-sidenav-content {
   display: flex;
 }
 
-.building button, .fighter button {
+.building button,
+.fighter button {
   width: 100%;
+}
+
+.building.mat-button-toggle-checked .title,
+.fighter.mat-button-toggle-checked .title {
+  background-color: #523f37;
+  color: chartreuse;
+
+  border-radius: 5px;
+  line-height: 2;
 }
 
 .color-picker {
@@ -100,4 +114,630 @@ app-fighter {
 
 .upgrade-button .mat-button-wrapper {
   display: inline-flex;
+}
+
+app-harvest,
+mat-tab-group.mat-tab-group-dynamic-height div.mat-tab-body-content,
+mat-tab-body#mat-tab-content-0-4 div {
+  overflow-x: hidden;
+  overflow-y: auto;
+
+  max-height: 100%;
+}
+
+mat-tab-body.mat-tab-body {
+  overflow: hidden;
+}
+
+/* Button Backgrounds */
+
+.stone,
+mat-tab-group {
+  background-image: url(assets/sprites/stone_background.png);
+  background-repeat: repeat;
+}
+
+.wood,
+mat-tab-header.mat-tab-header {
+  background-image: url(assets/sprites/wood_background.png);
+  background-repeat: repeat;
+}
+
+.steel {
+  background-image: url(assets/sprites/steel_background.png);
+  background-repeat: repeat;
+}
+
+mat-expansion-panel-header.mat-expansion-panel-header,
+mat-expansion-panel-header.mat-expansion-panel-header:hover,
+mat-expansion-panel-header.mat-expansion-panel-header:focus {
+  background-image: url(assets/sprites/wood_background.png);
+  background-repeat: repeat;
+
+  height: 30px;
+
+  border-color: darkslategray;
+  border-style: solid none;
+  border-width: 1px;
+}
+
+div.mat-tab-label-active {
+  opacity: 1;
+}
+
+.wood[disabled],
+.wood [disabled] {
+  background-image: linear-gradient( rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5) ), url(assets/sprites/wood_background.png);
+}
+
+.wood.warn {
+  background-image: linear-gradient( rgba(1, 0, 0, 0.8), rgba(1, 0, 0, 0.8) ), url(assets/sprites/wood_background.png);
+}
+
+.button-text-background,
+div.mat-sort-header-container,
+div.mat-tab-label {
+  background-color: #523f37;
+  color: wheat;
+
+  border-radius: 5px;
+  padding: 3px;
+}
+
+.button-text {
+  color: black;
+  font-weight: bold;
+}
+
+mat-expansion-panel .mat-expansion-panel-body {
+  padding: 0 24px;
+}
+
+mat-expansion-panel-header.mat-expansion-panel-header mat-panel-title {
+  flex-grow: unset;
+}
+
+.transparent {
+  background: none;
+}
+
+/* Resource Image Sprites */
+
+#gold {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -0 -0;
+}
+
+#gold.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -0 -0;
+  background-size: 700%;
+}
+
+#oak {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -48px -0;
+}
+
+#oak.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -16px -0;
+  background-size: 700%;
+}
+
+#pine {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -0 -48px;
+}
+
+#pine.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -0 -16px;
+  background-size: 700%;
+}
+
+#birch {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -48px -48px;
+}
+
+#birch.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -16px -16px;
+  background-size: 700%;
+}
+
+#eucalyptus {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -96px -0;
+}
+
+#eucalyptus.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -32px -0;
+  background-size: 700%;
+}
+
+#willow {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -96px -48px;
+}
+
+#willow.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -32px -16px;
+  background-size: 700%;
+}
+
+#teak {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -0 -96px;
+}
+
+#teak.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -0 -32px;
+  background-size: 700%;
+}
+
+#ent_soul {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -48px -96px;
+}
+
+#ent_soul.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -16px -32px;
+  background-size: 700%;
+}
+
+#reanimated_ent {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -96px -96px;
+}
+
+#reanimated_ent.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -32px -32px;
+  background-size: 700%;
+}
+
+#stone {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -144px -0;
+}
+
+#stone.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -48px -0;
+  background-size: 700%;
+}
+
+#graphite {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -144px -48px;
+}
+
+#granite.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -48px -16px;
+  background-size: 700%;
+}
+
+#limestone {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -144px -96px;
+}
+
+#limestone.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -48px -32px;
+  background-size: 700%;
+}
+
+#marble {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -0 -144px;
+}
+
+#marble.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -0 -48px;
+  background-size: 700%;
+}
+
+#quartz {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -48px -144px;
+}
+
+#quartz.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -16px -48px;
+  background-size: 700%;
+}
+
+#obsidian {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -96px -144px;
+}
+
+#obsidian.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -32px -48px;
+  background-size: 700%;
+}
+
+#diamond {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -144px -144px;
+}
+
+#diamond.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -48px -48px;
+  background-size: 700%;
+}
+
+#copper_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -192px -0;
+}
+
+#copper_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -64px -0;
+  background-size: 700%;
+}
+
+#tin_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -192px -48px;
+}
+
+#tin_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -64px -16px;
+  background-size: 700%;
+}
+
+#iron_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -192px -96px;
+}
+
+#iron_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -64px -32px;
+  background-size: 700%;
+}
+
+#gold_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -192px -144px;
+}
+
+#gold_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -64px -48px;
+  background-size: 700%;
+}
+
+#latinum_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -0 -192px;
+}
+
+#latinum_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -0 -64px;
+  background-size: 700%;
+}
+
+#unbelievium_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -48px -192px;
+}
+
+#unbelievium_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -16px -64px;
+  background-size: 700%;
+}
+
+#lustrial_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -96px -192px;
+}
+
+#lustrial_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -32px -64px;
+  background-size: 700%;
+}
+
+#spectrus_ore {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -144px -192px;
+}
+
+#spectrus_ore.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -48px -64px;
+  background-size: 700%;
+}
+
+#bronze_ingot {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -192px -192px;
+}
+
+#bronze_ingot.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -64px -64px;
+  background-size: 700%;
+}
+
+#iron_ingot {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -240px -0;
+}
+
+#iron_ingot.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -80px -0;
+  background-size: 700%;
+}
+
+#steel_ingot {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -240px -48px;
+}
+
+#steel_ingot.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -80px -16px;
+  background-size: 700%;
+}
+
+#gold_ingot {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -240px -96px;
+}
+
+#gold_ingot.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -80px -32px;
+  background-size: 700%;
+}
+
+#latinum_ingot {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -240px -144px;
+}
+
+#latinum_ingot.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -80px -48px;
+  background-size: 700%;
+}
+
+#temprous_ingot {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -240px -192px;
+}
+
+#temprous_ingot.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -80px -64px;
+  background-size: 700%;
+}
+
+#refined_temprous {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -0 -240px;
+}
+
+#refined_temprous.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -0 -80px;
+  background-size: 700%;
+}
+
+#wheat {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -48px -240px;
+}
+
+#wheat.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -16px -80px;
+  background-size: 700%;
+}
+
+#bread {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -96px -240px;
+}
+
+#bread.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -32px -80px;
+  background-size: 700%;
+}
+
+#raw_potato {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -144px -240px;
+}
+
+#raw_potato.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -48px -80px;
+  background-size: 700%;
+}
+
+#potato {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -192px -240px;
+}
+
+#potato.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -64px -80px;
+  background-size: 700%;
+}
+
+#rice {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -240px -240px;
+}
+
+#rice.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -80px -80px;
+  background-size: 700%;
+}
+
+#jelly_donut {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -288px -0;
+}
+
+#jelly_donut.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -96px -0;
+  background-size: 700%;
+}
+
+#raw_herring {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -288px -48px;
+}
+
+#raw_herring.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -96px -16px;
+  background-size: 700%;
+}
+
+#herring {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -288px -96px;
+}
+
+#herring.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -96px -32px;
+  background-size: 700%;
+}
+
+#raw_bass {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -288px -144px;
+}
+
+#raw_bass.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -96px -48px;
+  background-size: 700%;
+}
+
+#bass {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -288px -192px;
+}
+
+#bass.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -96px -64px;
+  background-size: 700%;
+}
+
+#raw_shark {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -288px -240px;
+}
+
+#raw_shark.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -96px -80px;
+  background-size: 700%;
+}
+
+#shark {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -0 -288px;
+}
+
+#shark.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -0 -96px;
+  background-size: 700%;
+}
+
+#raw_chicken {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -48px -288px;
+}
+
+#raw_chicken.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -16px -96px;
+  background-size: 700%;
+}
+
+#chicken {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -96px -288px;
+}
+
+#chicken.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -32px -96px;
+  background-size: 700%;
+}
+
+#raw_steak {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -144px -288px;
+}
+
+#raw_steak.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -48px -96px;
+  background-size: 700%;
+}
+
+#steak {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -192px -288px;
+}
+
+#steak.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -64px -96px;
+  background-size: 700%;
+}
+
+#raw_dragon_meat {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -240px -288px;
+}
+
+#raw_dragon_meat.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -80px -96px;
+  background-size: 700%;
+}
+
+#dragon_meat {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/resources.png) -288px -288px;
+}
+
+#dragon_meat.slim-icon {
+  width: 16px; height: 16px;
+  background: url(./assets/sprites/resources.png) -96px -96px;
+  background-size: 700%;
 }

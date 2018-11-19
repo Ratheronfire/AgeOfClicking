@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
-import { BuildingTile, BuildingTileType, Tile } from '../../../objects/tile';
+import { BuildingTileData, BuildingTileType } from '../../../objects/tile';
 import { Resource } from '../../../objects/resource';
-import { ResourceType, ResourceEnum } from '../../../objects/resourceData';
+import { ResourceEnum } from '../../../objects/resourceData';
 import { ResourcesService } from '../../../services/resources/resources.service';
 import { BuildingsService } from '../../../services/buildings/buildings.service';
 import { FighterService } from './../../../services/fighter/fighter.service';
@@ -24,7 +24,7 @@ export class BuildingsComponent implements OnInit {
   ngOnInit() {
   }
 
-  selectBuilding(buildingTile: BuildingTile) {
+  selectBuilding(buildingTile: BuildingTileData) {
     if (this.selectedBuilding === buildingTile) {
       this.selectedBuilding = undefined;
     } else {
@@ -37,20 +37,12 @@ export class BuildingsComponent implements OnInit {
     return this.buildingsService.canAffordBuilding(this.buildingTiles.get(buildingType));
   }
 
-  createBuilding(tile: Tile, buildingType: BuildingTileType) {
-    const buildingCreated = this.buildingsService.createBuilding(tile, buildingType);
-  }
-
-  clearBuilding(tile: Tile) {
-    this.buildingsService.clearBuilding(tile);
-  }
-
   get buildingTiles() {
-    return this.mapService.buildingTiles;
+    return this.mapService.buildingTileData;
   }
 
-  getBuildingTileArray(filterByPlaceable: boolean): BuildingTile[] {
-    let tiles = Array.from(this.mapService.buildingTiles.values());
+  getBuildingTileArray(filterByPlaceable: boolean): BuildingTileData[] {
+    let tiles = Array.from(this.mapService.buildingTileData.values());
 
     if (filterByPlaceable) {
       tiles = tiles.filter(tile => tile.placeable);
@@ -63,7 +55,7 @@ export class BuildingsComponent implements OnInit {
     return this.resourcesService.resources.get(resourceEnum);
   }
 
-  get selectedBuilding(): BuildingTile {
+  get selectedBuilding(): BuildingTileData {
     return this.buildingsService.selectedBuilding;
   }
 

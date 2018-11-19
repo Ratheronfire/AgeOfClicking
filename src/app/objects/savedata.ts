@@ -1,6 +1,6 @@
 import { ResourceType, ResourceEnum } from './resourceData';
 import { Vector } from './vector';
-import { MapTileType, ResourceTileType, BuildingTileType, Tile, TileCropDetail } from './tile';
+import { MapTileType, ResourceTileType, BuildingTileType } from './tile';
 import { MessageSource } from '../objects/message';
 
 export interface ResourceData {
@@ -33,8 +33,6 @@ export interface TileData {
 
   buildingRemovable: boolean;
 
-  tileCropDetail: TileCropDetail;
-
   statLevels: {};
   statCosts: {};
 
@@ -45,8 +43,8 @@ export interface TileData {
 export interface EnemyData {
   name: string;
 
-  position: Vector;
-  spawnPosition: Vector;
+  x: number;
+  y: number;
 
   health: number;
   maxHealth: number;
@@ -68,8 +66,8 @@ export interface FighterData {
   name: string;
   description: string;
 
-  position: Vector;
-  spawnPosition: Vector;
+  x: number;
+  y: number;
 
   health: number;
   maxHealth: number;

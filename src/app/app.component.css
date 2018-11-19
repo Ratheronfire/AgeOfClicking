@@ -38,10 +38,6 @@ nav a.active {
   float: left;
 }
 
-.tab-group {
-  margin-left: 15px;
-}
-
 .game-container {
   display: flex;
   flex-direction: column;
@@ -50,6 +46,11 @@ nav a.active {
   bottom: 0;
   left: 0;
   right: 0;
+}
+
+.game-toolbar,
+.game-toolbar button {
+  background-color: #582902;
 }
 
 .game-is-mobile .game-toolbar {
@@ -92,12 +93,8 @@ h1.game-app-name {
   display: inline-block;
 }
 
-.main-pane {
+.main-pane,
+mat-nav-list,
+mat-tab-group {
   height: 100%;
 }
-
-app-clicker-main {
-  overflow: auto;
-  max-height: 100%;
-}
-

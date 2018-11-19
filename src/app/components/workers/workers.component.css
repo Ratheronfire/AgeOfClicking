@@ -30,13 +30,13 @@
 }
 
 .workers mat-card {
+  background-color: wheat;
   position: relative;
   margin: .5em;
   padding: .4em 0;
   height: 3.6em;
   width: 100%;
   border-radius: 4px;
-  background: antiquewhite;
 }
 
 .workers mat-card.hunger-card {

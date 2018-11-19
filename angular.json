@@ -26,17 +26,8 @@
               "src/styles.css"
             ],
             "scripts": [
-              "node_modules/hammerjs/hammer.js",
               "node_modules/clipboard/dist/clipboard.min.js",
-              "node_modules/d3-color/dist/d3-color.min.js",
-              "node_modules/d3-dispatch/dist/d3-dispatch.min.js",
-              "node_modules/d3-ease/dist/d3-ease.min.js",
-              "node_modules/d3-interpolate/dist/d3-interpolate.min.js",
-              "node_modules/d3-selection/dist/d3-selection.min.js",
-              "node_modules/d3-timer/dist/d3-timer.min.js",
-              "node_modules/d3-transition/dist/d3-transition.min.js",
-              "node_modules/d3-drag/dist/d3-drag.min.js",
-              "node_modules/d3-zoom/dist/d3-zoom.min.js"
+              "node_modules/phaser/dist/phaser.js"
             ]
           },
           "configurations": {

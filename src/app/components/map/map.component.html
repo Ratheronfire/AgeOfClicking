@@ -1,63 +1,66 @@
-<div id="map-canvas-container" tabindex="1">
-  <canvas id="map" class="noselect" appNoScroll appMap oncontextmenu="return false"></canvas>
-
+<div id="map-canvas-container" tabindex="1" oncontextmenu="return false;">
   <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools"
     (valueChange)="clearFocus()">
-    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
+    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>Q</p>
       </div>
-      <mat-icon color="primary">add_photo_alternate</mat-icon>
+      <mat-icon class="button-text-background">add_photo_alternate</mat-icon>
       <br />
-      Place Buildings
+      <div class="button-text">
+        Place Buildings
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle value="CLEARBUILDINGS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle value="CLEARBUILDINGS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>W</p>
       </div>
-      <mat-icon color="primary">delete</mat-icon>
+      <mat-icon class="button-text-background">delete</mat-icon>
       <br />
-      Clear Buildings
+      <div class="button-text">
+        Clear Buildings
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle value="TILEDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle value="TILEDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>E</p>
       </div>
-      <mat-icon color="primary">mode_comment</mat-icon>
+      <mat-icon class="button-text-background">mode_comment</mat-icon>
       <br />
-      Tile Details
+      <div class="button-text">
+        Tile Details
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>R</p>
       </div>
-      <mat-icon color="primary">directions_walk</mat-icon>
+      <mat-icon class="button-text-background">directions_walk</mat-icon>
       <br />
-      Place Fighters
+      <div class="button-text">
+        Place Fighters
+      </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>T</p>
       </div>
-      <mat-icon color="primary">directions_run</mat-icon>
+      <mat-icon class="button-text-background">directions_run</mat-icon>
       <br />
-      Fighter Details
+      <div class="button-text">
+        Fighter Details
+      </div>
     </mat-button-toggle>
   </mat-button-toggle-group>
-
-  <div id="minimap-canvas-container" class="minimap" appMinimap oncontextmenu="return false">
-      <canvas id="minimap_background" class="noselect"></canvas>
-      <canvas id="minimap_foreground" class="noselect"></canvas>
-  </div>
 
   <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>
   <app-fighter *ngIf="mapService.fighterListVisible"></app-fighter>
 
-  <app-tile-detail [ngClass]="{'hidden': !mapService.focusedBuildingTile && !mapService.focusedResourceTile}"></app-tile-detail>
+  <app-tile-detail [ngClass]="{'hidden': !mapService.focusedTile}"></app-tile-detail>
   <app-fighter-detail [ngClass]="{'hidden': !mapService.focusedFighter}"></app-fighter-detail>
 </div>

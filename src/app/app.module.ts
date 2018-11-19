@@ -5,12 +5,12 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { ZoomableCanvasComponent } from '@durwella/zoomable-canvas';
 
 import { MaterialImportModule } from './material-import/material-import.module';
+import { PhaserModule } from 'phaser-component-library';
 import { PipeModule } from './pipes/pipe.module';
-import { LongNumberPipe } from './pipes/long-number-pipe';
 import { ColorPickerModule } from 'ngx-color-picker';
 
 import { AppComponent } from './app.component';
-import { ClickerMainComponent } from './components/clicker-main/clicker-main.component';
+import { HarvestComponent } from './components/harvest/harvest.component';
 import { MessagesComponent } from './components/messages/messages.component';
 import { WorkersComponent } from './components/workers/workers.component';
 import { StoreComponent } from './components/store/store.component';
@@ -21,7 +21,6 @@ import { AdminDebugComponent } from './components/admin-debug/admin-debug.compon
 import { AboutDialogComponent } from './components/about-dialog/about-dialog/about-dialog.component';
 import { SaveDialogComponent } from './components/save-dialog/save-dialog.component';
 import { CropDirective } from './directives/crop/crop.directive';
-import { MapDirective } from './directives/map/map.directive';
 import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
 import { EnemyComponent } from './components/enemy/enemy.component';
 import { FighterComponent } from './components/fighter/fighter.component';
@@ -29,14 +28,12 @@ import { BuildingsComponent } from './components/buildings/buildings/buildings.c
 import { TileDetailComponent } from './components/tile-detail/tile-detail.component';
 import { FighterDetailComponent } from './components/fighter-detail/fighter-detail.component';
 import { SnapDirective } from './directives/snap/snap.directive';
-import { MinimapDirective } from './directives/minimap/minimap.directive';
 
 @NgModule({
   declarations: [
     AppComponent,
     ZoomableCanvasComponent,
-    LongNumberPipe,
-    ClickerMainComponent,
+    HarvestComponent,
     MessagesComponent,
     WorkersComponent,
     StoreComponent,
@@ -46,7 +43,6 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
     MapComponent,
     CropDirective,
     SaveDialogComponent,
-    MapDirective,
     NoScrollDirective,
     EnemyComponent,
     FighterComponent,
@@ -54,7 +50,6 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
     TileDetailComponent,
     FighterDetailComponent,
     SnapDirective,
-    MinimapDirective
     AboutDialogComponent
   ],
   imports: [
@@ -63,6 +58,7 @@ import { MinimapDirective } from './directives/minimap/minimap.directive';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MaterialImportModule,
+    PhaserModule,
     PipeModule,
     ColorPickerModule
   ],

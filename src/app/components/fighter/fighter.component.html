@@ -1,13 +1,13 @@
 <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="selectedFighterType" class="fighters">
-  <mat-button-toggle *ngFor="let fighterType of fighterService.fighterTypes" [value]="fighterType" class="fighter"
+  <mat-button-toggle *ngFor="let fighterType of fighterService.fighterTypes" [value]="fighterType" class="fighter wood"
     [disabled]="!canAffordFighter(fighterType)" (click)="mapService.fighterListVisible = false">
-    <div class="title" matTooltip="{{fighterType.description}}" matTooltipPosition="above">
+    <div class="title button-text" matTooltip="{{fighterType.description}}" matTooltipPosition="above">
       {{fighterType.name}}
     </div>
     <div class="resource-list">
       <div matTooltip="{{fighterType.cost | longNumber}} {{getResource('GOLD').name | titlecase}}"
-        matTooltipPosition="below">
-        <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
+        matTooltipPosition="below" class="button-text">
+        <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
         {{fighterType.cost | longNumber}}
       </div>
     </div>

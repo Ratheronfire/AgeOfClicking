@@ -1,19 +1,19 @@
-<mat-checkbox class="hidePurchased" checked="true" [(ngModel)]="hidePurchasedUpgrades">Hide Purchased Upgrades</mat-checkbox>
+<mat-checkbox class="hidePurchased button-text-background" checked="true" [(ngModel)]="hidePurchasedUpgrades">Hide Purchased Upgrades</mat-checkbox>
 <br />
 <br />
 
 <mat-accordion multi="true" class="upgrades" [ngClass]="{'slim-interface': settingsService.slimInterface}">
-  <mat-expansion-panel expanded="true" *ngFor="let upgradeVariable of upgradeVariables | enumToArray">
+  <mat-expansion-panel class="steel" expanded="true" *ngFor="let upgradeVariable of upgradeVariables | enumToArray">
     <mat-expansion-panel-header>
-      <mat-panel-title>
+      <mat-panel-title class="button-text-background">
         {{upgradeVariableNames[upgradeVariable]}}
       </mat-panel-title>
     </mat-expansion-panel-header>
     <div *ngIf="!settingsService.slimInterface">
-      <mat-card class="upgrade full" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)">
+      <mat-card class="upgrade full wood" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)">
         <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)'
           (click)='purchaseUpgrade(upgrade.id)'>
-          <p class="title">
+          <p class="title button-text">
             <b>
               <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
             </b>
@@ -21,12 +21,12 @@
           </p>
         </button>
         <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
-        <mat-card-content>
+        <mat-card-content class="button-text-background">
           {{upgrade.description}}
           <div class="resource-list">
             <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
               matTooltipPosition="below">
-              <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
+              <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
               {{resourceCost.resourceCost | longNumber}}
             </div>
           </div>
@@ -35,9 +35,9 @@
     </div>
 
     <div *ngIf="settingsService.slimInterface">
-      <button class="slim" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)"
+      <button class="slim wood" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)"
         color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
-        <div class="title" matTooltip="{{upgrade.description}}" matTooltipPosition="above">
+        <div class="title button-text" matTooltip="{{upgrade.description}}" matTooltipPosition="above">
           <b>
             <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
           </b>
@@ -45,8 +45,8 @@
         </div>
         <div class="resource-list">
           <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
-            matTooltipPosition="below">
-            <img src="{{getResource(resourceCost.resourceEnum).iconPath}}" alt="{{getResource(resourceCost.resourceEnum).name}}">
+            matTooltipPosition="below" class="button-text">
+            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost | longNumber}}
           </div>
         </div>

@@ -1,27 +1,27 @@
 import { Component, OnInit, } from '@angular/core';
 
-import { ClickerMainService } from './../../services/clicker-main/clicker-main.service';
+import { HarvestService } from '../../services/harvest/harvest.service';
 import { SettingsService } from '../../services/settings/settings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { ResourceEnum } from './../../objects/resourceData';
+import { ResourceEnum } from '../../objects/resourceData';
 import { Resource } from '../../objects/resource';
 import { ResourceType } from '../../objects/resourceData';
 import { WorkersService } from '../../services/workers/workers.service';
-import { TooltipService } from './../../services/tooltip/tooltip.service';
-import { MapService } from './../../services/map/map.service';
-import { EnemyService } from './../../services/enemy/enemy.service';
-import { AdminService } from './../../services/admin/admin.service';
-import { TickService } from './../../services/tick/tick.service';
+import { TooltipService } from '../../services/tooltip/tooltip.service';
+import { MapService } from '../../services/map/map.service';
+import { EnemyService } from '../../services/enemy/enemy.service';
+import { AdminService } from '../../services/admin/admin.service';
+import { TickService } from '../../services/tick/tick.service';
 
 @Component({
-  selector: 'app-clicker-main',
-  templateUrl: './clicker-main.component.html',
-  styleUrls: ['./clicker-main.component.css']
+  selector: 'app-harvest',
+  templateUrl: './harvest.component.html',
+  styleUrls: ['./harvest.component.css']
 })
-export class ClickerMainComponent implements OnInit {
+export class HarvestComponent implements OnInit {
   resourceTypes = ResourceType;
 
-  constructor(protected clickerMainService: ClickerMainService,
+  constructor(protected harvestService: HarvestService,
               protected settingsService: SettingsService,
               protected resourcesService: ResourcesService,
               protected workersService: WorkersService,
@@ -47,7 +47,7 @@ export class ClickerMainComponent implements OnInit {
   }
 
   startHarvesting(resource: Resource) {
-    this.clickerMainService.startHarvesting(resource);
+    this.harvestService.startHarvesting(resource);
   }
 
   resourceIsBeingStolen(resource: Resource): boolean {
@@ -55,7 +55,7 @@ export class ClickerMainComponent implements OnInit {
   }
 
   harvestResource(resource: Resource) {
-    this.clickerMainService.harvestResource(resource);
+    this.harvestService.harvestResource(resource);
   }
 
   get goldResource(): Resource {

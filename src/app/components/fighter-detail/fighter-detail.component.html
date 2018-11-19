@@ -1,45 +1,31 @@
-<mat-card appSnap [snapSetting]="snapSetting" id="fighter-tooltip">
-  <div class="anchor-container">
-    <a>
-      <mat-icon class="corner" id="arrow-upper-left" (click)="snapSetting = 'upperLeft'">arrow_forward</mat-icon>
-    </a>
-    <a>
-      <mat-icon class="corner" id="arrow-upper-right" (click)="snapSetting = 'upperRight'">arrow_forward</mat-icon>
-    </a>
-    <a>
-      <mat-icon id="center" (click)="snapSetting = 'free'">all_out</mat-icon>
-    </a>
-    <a>
-      <mat-icon class="corner" id="arrow-lower-left" (click)="snapSetting = 'lowerLeft'">arrow_forward</mat-icon>
-    </a>
-    <a>
-      <mat-icon class="corner" id="arrow-lower-right" (click)="snapSetting = 'lowerRight'">arrow_forward</mat-icon>
-    </a>
-  </div>
+<mat-card id="fighter-tooltip" class="steel">
   <div *ngIf="focusedFighter">
-    <mat-card-title>{{focusedFighter.name}}</mat-card-title>
-    <mat-card-subtitle>{{focusedFighter.description}}</mat-card-subtitle>
+    <div id="card-header">
+      <mat-card-title class="button-text-background">{{focusedFighter.name}}</mat-card-title>
+      <mat-card-subtitle class="button-text">{{focusedFighter.description}}</mat-card-subtitle>
 
-    <div class="repair-container">
-      {{focusedFighter.health}}/{{focusedFighter.maxHealth | longNumber}} Health
-      <div *ngIf="focusedFighter.health < focusedFighter.maxHealth">
-        <button mat-raised-button (click)="focusedFighter.heal()" color="accent" [disabled]="!focusedFighter.canHeal()">
-          Heal
-          <div class="resource-list">
-            <div matTooltip="{{focusedFighter.healCost | longNumber}} {{getResource('GOLD').name | titlecase}}"
-              matTooltipPosition="below">
-              <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
-              {{focusedFighter.healCost | longNumber}}
+      <div class="repair-container">
+        {{focusedFighter.health}}/{{focusedFighter.maxHealth | longNumber}} Health
+        <div *ngIf="focusedFighter.health < focusedFighter.maxHealth">
+          <button mat-raised-button (click)="focusedFighter.heal()" color="accent" [disabled]="!focusedFighter.canHeal()">
+            Heal
+            <div class="resource-list">
+              <div matTooltip="{{focusedFighter.healCost | longNumber}} {{getResource('GOLD').name | titlecase}}"
+                matTooltipPosition="below">
+                <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                {{focusedFighter.healCost | longNumber}}
+              </div>
             </div>
-          </div>
-        </button>
+          </button>
+        </div>
       </div>
+      <br />
+      <br />
+
+      <button mat-raised-button color="warn" (click)="removeFighter()">Remove Fighter</button>
     </div>
 
-    <mat-card-content>
-      <button mat-raised-button color="warn" (click)="removeFighter()">Remove Fighter</button>
-
-      <h3>Stats</h3>
+    <mat-card-content id="card-content">
       <table class="stats-container">
         <tbody>
           <tr class="stat-row">
@@ -54,13 +40,13 @@
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('MAXHEALTH')"
+              <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('MAXHEALTH')"
                 [disabled]="!focusedFighter.canUpgradeStat('MAXHEALTH')" matTooltip="Level {{focusedFighter.statLevels['MAXHEALTH'] + 1}}: {{focusedFighter.getUpgradedStat('MAXHEALTH') | longNumber}} Max Health"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
-                  <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
+                  <div class="button-text">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['MAXHEALTH'] | longNumber}}
                   </div>
                 </div>
@@ -80,13 +66,13 @@
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('ATTACK')"
+              <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('ATTACK')"
                 [disabled]="!focusedFighter.canUpgradeStat('ATTACK')" matTooltip="Level {{focusedFighter.statLevels['ATTACK'] + 1}}: {{focusedFighter.getUpgradedStat('ATTACK') | longNumber}} Attack"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
-                  <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
+                  <div class="button-text">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['ATTACK'] | longNumber}}
                   </div>
                 </div>
@@ -106,13 +92,13 @@
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('DEFENSE')"
+              <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('DEFENSE')"
                 [disabled]="!focusedFighter.canUpgradeStat('DEFENSE')" matTooltip="Level {{focusedFighter.statLevels['DEFENSE'] + 1}}: {{focusedFighter.getUpgradedStat('DEFENSE') | longNumber}} Defense"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
-                  <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
+                  <div class="button-text">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['DEFENSE'] | longNumber}}
                   </div>
                 </div>
@@ -133,13 +119,13 @@
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('RANGE')"
+              <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('RANGE')"
                 [disabled]="!focusedFighter.canUpgradeStat('RANGE')" matTooltip="Level {{focusedFighter.statLevels['RANGE'] + 1}}: {{focusedFighter.getUpgradedStat('RANGE') | longNumber}} Attack Range"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
-                  <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
+                  <div class="button-text">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['RANGE'] | longNumber}}
                   </div>
                 </div>
@@ -160,13 +146,13 @@
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('MOVEMENTSPEED')"
+              <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('MOVEMENTSPEED')"
                 [disabled]="!focusedFighter.canUpgradeStat('MOVEMENTSPEED')" matTooltip="Level {{focusedFighter.statLevels['MOVEMENTSPEED'] + 1}}: {{focusedFighter.getUpgradedStat('MOVEMENTSPEED') * 100 | longNumber}} Tiles/Second"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
-                  <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
+                  <div class="button-text">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['MOVEMENTSPEED'] | longNumber}}
                   </div>
                 </div>
@@ -186,13 +172,13 @@
               </b>
             </td>
             <td>
-              <button class="upgrade-button" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('FIRERATE')"
+              <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('FIRERATE')"
                 [disabled]="!focusedFighter.canUpgradeStat('FIRERATE')" matTooltip="Level {{focusedFighter.statLevels['FIRERATE'] + 1}}: {{1000 / focusedFighter.getUpgradedStat('FIRERATE') | longNumber}}/Second"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
-                  <div>
-                    <img src="{{getResource('GOLD').iconPath}}" alt="{{getResource('GOLD').name}}">
+                  <div class="button-text">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
                     {{focusedFighter.statCosts['FIRERATE'] | longNumber}}
                   </div>
                 </div>

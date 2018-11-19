@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 
-import { ClickerMainService } from './../clicker-main/clicker-main.service';
+import { HarvestService } from '../harvest/harvest.service';
 import { WorkersService } from './../workers/workers.service';
-import { EnemyService } from './../enemy/enemy.service';
-import { FighterService } from './../fighter/fighter.service';
 import { SettingsService } from './../settings/settings.service';
-import { MapService } from './../map/map.service';
 
 declare var d3: any;
 
@@ -17,16 +14,12 @@ export interface Tick {
   providedIn: 'root'
 })
 export class TickService {
-  tickObjects = [this.clickerMainService, this.workersService, this.enemyService,
-                this.fighterService, this.settingsService, this.mapService];
+  tickObjects = [this.harvestService, this.workersService, this.settingsService];
   timeElapsed: number;
 
-  constructor(protected clickerMainService: ClickerMainService,
+  constructor(protected harvestService: HarvestService,
               protected workersService: WorkersService,
-              protected enemyService: EnemyService,
-              protected fighterService: FighterService,
-              protected settingsService: SettingsService,
-              protected mapService: MapService) {
+              protected settingsService: SettingsService) {
     d3.interval(this.tick(this), 25);
   }
 

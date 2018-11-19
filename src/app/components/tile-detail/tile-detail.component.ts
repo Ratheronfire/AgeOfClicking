@@ -3,7 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { MapService } from '../../services/map/map.service';
 import { BuildingsService } from '../../services/buildings/buildings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { Tile, BuildingTile, ResourceTile, BuildingTileType } from '../../objects/tile';
+import { BuildingTileData, ResourceTileData, BuildingTileType, BuildingNode, ResourceNode, Market } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
 import { ResourceEnum } from '../../objects/resourceData';
 
@@ -14,7 +14,7 @@ import { ResourceEnum } from '../../objects/resourceData';
 })
 export class TileDetailComponent implements OnInit {
   buildingTileTypes = BuildingTileType;
-  snapSetting = 'free';
+  snapSetting = 'lowerLeft';
 
   constructor(public mapService: MapService,
               public buildingsService: BuildingsService,
@@ -27,7 +27,7 @@ export class TileDetailComponent implements OnInit {
     return this.resourcesService.resources.get(resourceEnum);
   }
 
-  canAffordUpgrade(upgradeBuilding: BuildingTile) {
+  canAffordUpgrade(upgradeBuilding: BuildingTileData) {
     for (const resourceCost of upgradeBuilding.resourceCosts) {
       if (this.getResource(resourceCost.resourceEnum).amount < resourceCost.resourceCost) {
         return false;
@@ -38,11 +38,11 @@ export class TileDetailComponent implements OnInit {
   }
 
   get buildingTiles() {
-    return this.mapService.buildingTiles;
+    return this.mapService.buildingTileData;
   }
 
-  getBuildingTileArray(filterByPlaceable: boolean): BuildingTile[] {
-    let tiles = Array.from(this.mapService.buildingTiles.values());
+  getBuildingTileArray(filterByPlaceable: boolean): BuildingTileData[] {
+    let tiles = Array.from(this.mapService.buildingTileData.values());
 
     if (filterByPlaceable) {
       tiles = tiles.filter(tile => tile.placeable);
@@ -55,53 +55,58 @@ export class TileDetailComponent implements OnInit {
     return this.buildingsService.canAffordBuilding(this.buildingTiles.get(buildingType));
   }
 
-  upgradeBuilding(tile: Tile) {
-    const currentBuilding = this.mapService.buildingTiles.get(tile.buildingTileType);
+  upgradeBuilding() {
+    const currentBuildingData = this.focusedBuildingData;
+    const newBuildingData = this.upgradedBuildingData;
 
-    this.buildingsService.clearBuilding(tile);
-    this.buildingsService.createBuilding(tile, currentBuilding.upgradeBuilding);
-
-    this.focusedBuildingTile = this.mapService.buildingTiles.get(tile.buildingTileType);
-    this.focusedResourceTile = this.mapService.resourceTiles.get(tile.resourceTileType);
+    this.mapService.clearBuilding(this.focusedTile.x, this.focusedTile.y);
+    this.mapService.createBuilding(this.focusedTile.x, this.focusedTile.y,
+      newBuildingData, true, newBuildingData.baseHealth);
   }
 
-  canRepairBuilding(tile: Tile): boolean {
-    return this.buildingsService.canRepairBuilding(tile);
+  canRepairBuilding(): boolean {
+    return this.mapService.canRepairBuilding(this.focusedTile);
   }
 
-  repairBuilding(tile: Tile) {
-    this.buildingsService.repairBuilding(tile);
+  repairBuilding() {
+    this.mapService.repairBuilding(this.focusedTile);
   }
 
-  get focusedTile(): Tile {
+  get focusedTile(): Phaser.Tilemaps.Tile {
     return this.mapService.focusedTile;
   }
 
-  set focusedTile(value: Tile) {
-    this.mapService.focusedTile = value;
+  get focusedBuildingNode(): BuildingNode {
+    return this.focusedTile ? this.focusedTile.properties['buildingNode'] : null;
   }
 
-  get focusedBuildingTile(): BuildingTile {
-    return this.mapService.focusedBuildingTile;
+  get focusedResourceNode(): ResourceNode {
+    return this.focusedTile ? this.focusedTile.properties['resourceNode'] : null;
   }
 
-  set focusedBuildingTile(value: BuildingTile) {
-    this.mapService.focusedBuildingTile = value;
+  get marketNode(): Market {
+    return this.focusedBuildingNode ? this.focusedBuildingNode.market : null;
   }
 
-  get focusedResourceTile(): ResourceTile {
-    return this.mapService.focusedResourceTile;
+  get focusedBuildingData(): BuildingTileData {
+    return this.focusedBuildingNode ? this.mapService.buildingTileData.get(this.focusedBuildingNode.tileType) : null;
   }
 
-  set focusedResourceTile(value: ResourceTile) {
-    this.mapService.focusedResourceTile = value;
+  get focusedResourceData(): ResourceTileData {
+    return this.focusedResourceNode ? this.mapService.resourceTileData.get(this.focusedResourceNode.tileType): null;
+  }
+
+  get upgradedBuildingData(): BuildingTileData {
+    return this.focusedBuildingData ? this.mapService.buildingTileData.get(this.focusedBuildingData.upgradeBuilding) : null;
   }
 
   get focusedResources(): Resource[] {
-    return this.mapService.focusedResources;
-  }
+    if (!this.focusedResourceData) {
+      return [];
+    }
 
-  set focusedResources(value: Resource[]) {
-    this.mapService.focusedResources = value;
+    const resourceEnums = this.focusedResourceData.resourceEnums;
+
+    return resourceEnums.map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
   }
 }

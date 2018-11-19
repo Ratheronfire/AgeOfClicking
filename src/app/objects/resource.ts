@@ -41,8 +41,6 @@ export class Resource {
 
   resourceTier: number;
 
-  resourceBeingStolen = false;
-
   bindIndex: number;
 
   resourcesService: ResourcesService;

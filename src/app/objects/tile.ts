@@ -1,4 +1,4 @@
-import { Vector } from './vector';
+import { HealthBar } from './healthbar';
 import { Resource } from './resource';
 import { ResourceType, ResourceEnum } from './resourceData';
 import { ResourceCost } from './resourceCost';
@@ -65,23 +65,28 @@ export enum BuildingTileType {
   GoldForge = 'GOLDFORGE',
   LatinumForge = 'LATINUMFORGE',
   TemprousDistillery = 'TEMPROUSDISTILLERY',
-  EnemyPortal = 'ENEMYPORTAL',
-  WoodMarket = 'WOODMARKET',
-  MineralMarket = 'MINERALMARKET',
-  MetalMarket = 'METALMARKET',
   OakOven = 'OAKOVEN',
   StoneOven = 'STONEOVEN',
   MarbleOven = 'MARBLEOVEN',
   TemprousOven = 'TEMPROUSOVEN',
   ChickenFarm = 'CHICKENFARM',
   CowFarm = 'COWFARM',
-  DragonFarm = 'DRAGONFARM'
+  DragonFarm = 'DRAGONFARM',
+  WoodMarket = 'WOODMARKET',
+  MineralMarket = 'MINERALMARKET',
+  MetalMarket = 'METALMARKET'
 }
 
 export enum BuildingSubType {
+  /** A building which creates a resource-spawning node. */
   Resource = 'RESOURCE',
+  /** A building which automatically sells stored resources. */
   Market = 'MARKET',
-  Misc = 'MISC'
+  /** A building that resources and entities can travel on. */
+  Path = 'PATH',
+  /** A building that blocks entity travelling. */
+  Obstacle = 'OBSTACLE',
+  Miscellaneous = 'MISC'
 }
 
 export enum TileStat {
@@ -90,7 +95,7 @@ export enum TileStat {
   MaxHealth = 'MAXHEALTH'
 }
 
-export interface MapTile {
+export interface MapTileData {
   tileType: MapTileType;
 
   name: string;
@@ -98,7 +103,7 @@ export interface MapTile {
   walkable: boolean;
 }
 
-export interface BuildingTile {
+export interface BuildingTileData {
   tileType: BuildingTileType;
   subType: BuildingSubType;
 
@@ -122,7 +127,7 @@ export interface BuildingTile {
   resourcePathable: boolean;
 }
 
-export interface ResourceTile {
+export interface ResourceTileData {
   tileType: ResourceTileType;
 
   name: string;
@@ -135,64 +140,53 @@ export interface ResourceTile {
   resourceEnums: ResourceEnum[];
 }
 
-export interface TileCropDetail {
-  x: number;
-  y: number;
+export class BuildingNode {
+  tileType: BuildingTileType;
+  owningTile: Phaser.Tilemaps.Tile;
 
-  width: number;
-  height: number;
-}
+  removable: boolean;
 
-export class Tile {
-  id: number;
-
-  mapTileType: MapTileType;
-  resourceTileType?: ResourceTileType;
-  buildingTileType?: BuildingTileType;
-
-  buildingPath?: Tile[];
-  buildingRemovable: boolean;
+  health: number;
+  maxHealth: number;
+  healthBar: HealthBar;
 
   market?: Market;
 
   statLevels = {};
   statCosts = {};
 
-  health: number;
-  maxHealth: number;
-
-  position: Vector;
-
-  noiseValue: number;
-
-  tileCropDetail: TileCropDetail;
-
   resourcesService: ResourcesService;
 
-  public constructor(id: number, mapTileType: MapTileType, resourceTileType: ResourceTileType, buildingTileType: BuildingTileType,
-        buildingRemovable: boolean, position: Vector, tileCropDetail: TileCropDetail,
-        health: number = -1, noiseValue: number, resourcesService: ResourcesService) {
-    this.id = id;
+  constructor(tileType: BuildingTileType, removable: boolean, health: number,
+      owningTile: Phaser.Tilemaps.Tile, scene: Phaser.Scene, resourcesService: ResourcesService) {
+    this.tileType = tileType;
+    this.owningTile = owningTile;
 
-    this.mapTileType = mapTileType;
-    this.resourceTileType = resourceTileType;
-    this.buildingTileType = buildingTileType;
+    this.removable = removable;
 
-    this.buildingPath = [];
-    this.buildingRemovable = buildingRemovable;
+    this.health = health;
+    this.maxHealth = health;
 
     this.statLevels[TileStat.MaxHealth] = 1;
     this.statCosts[TileStat.MaxHealth] = 1500;
 
-    this.health = health;
-    this.maxHealth = health;
-    this.position = position;
-
-    this.noiseValue = noiseValue;
-
-    this.tileCropDetail = tileCropDetail;
+    this.healthBar = new HealthBar(owningTile, scene);
 
     this.resourcesService = resourcesService;
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    this.healthBar.tick(elapsed, deltaTime, this.owningTile.getCenterX(), this.owningTile.getCenterY());
+
+    if (this.market) {
+      this.market.tick(elapsed, deltaTime);
+    }
+
+    if (this.health <= 0) {
+      // Phaser.Tilemaps.Tile.tint seems to be somewhat broken at the moment.
+      // This line tints and broken buildings in a light red color.
+      this.owningTile.tint = 0x9999ff;
+    }
   }
 
   public canUpgradeStat(stat: TileStat): boolean {
@@ -237,20 +231,31 @@ export class Tile {
     this.statCosts[stat] *= 1.5;
   }
 
-  public get x(): number {
-    return this.position.x;
+  takeDamage(number) {
+    this.health -= number;
+    if (this.health < 0) {
+      this.health = 0;
+    }
+
+    this.healthBar.updateHealthbar(this.health / this.maxHealth);
+  }
+}
+
+export class ResourceNode {
+  tileType: ResourceTileType;
+
+  path?: Phaser.Tilemaps.Tile[];
+
+  health: number;
+
+  constructor(tileType: ResourceTileType, health: number) {
+    this.tileType = tileType;
+    this.path = [];
+    this.health = health;
   }
 
-  public set x(value: number) {
-    this.position.x = value;
-  }
-
-  public get y(): number {
-    return this.position.y;
-  }
-
-  public set y(value: number) {
-    this.position.y = value;
+  get travelMilliseconds(): number {
+    return this.path ? (this.path.length - 1) * 1000 : Infinity;
   }
 }
 
@@ -258,9 +263,9 @@ export class Market {
   mapService: MapService;
   resourcesService: ResourcesService;
 
-  homeTile: Tile;
-  owningTile: Tile;
-  tilePath: Tile[];
+  homeTile: Phaser.Tilemaps.Tile;
+  owningTile: Phaser.Tilemaps.Tile;
+  tilePath: Phaser.Tilemaps.Tile[];
   soldResources: Resource[];
   currentResource = 0;
 
@@ -272,14 +277,16 @@ export class Market {
   sellInterval = 1000;
   sellQuantity = 50;
 
-  public constructor(mapService: MapService, resourcesService: ResourcesService, resourceType: ResourceType, owningTile: Tile,
-      shouldInitStats: boolean) {
-    if (shouldInitStats) {
-      owningTile.statLevels[TileStat.SellAmount] = 1;
-      owningTile.statLevels[TileStat.SellRate] = 1;
+  public constructor(mapService: MapService, resourcesService: ResourcesService, resourceType: ResourceType,
+      owningTile: Phaser.Tilemaps.Tile, shouldInitStats: boolean) {
+    const buildingNode: BuildingNode = owningTile.properties['buildingNode'];
 
-      owningTile.statCosts[TileStat.SellAmount] = 1500;
-      owningTile.statCosts[TileStat.SellRate] = 1500;
+    if (shouldInitStats) {
+      buildingNode.statLevels[TileStat.SellAmount] = 1;
+      buildingNode.statLevels[TileStat.SellRate] = 1;
+
+      buildingNode.statCosts[TileStat.SellAmount] = 1500;
+      buildingNode.statCosts[TileStat.SellRate] = 1500;
     }
 
     this.mapService = mapService;
@@ -287,7 +294,8 @@ export class Market {
 
     this.soldResources = resourcesService.getResources(resourceType);
 
-    this.homeTile = mapService.tileMap.filter(tile => tile.buildingTileType === BuildingTileType.Home)[0];
+    this.homeTile = mapService.mapLayer.findTile(
+      tile => tile.properties['buildingNode'] && tile.properties['buildingNode'].tileType === BuildingTileType.Home);
     this.owningTile = owningTile;
 
     this.calculateConnection();
@@ -342,4 +350,5 @@ export class Market {
 
     return this.recentSales.reduce((total, sale) => total += sale) / this.recentSales.length;
   }
+
 }
