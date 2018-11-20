@@ -163,7 +163,7 @@
           <tr class="stat-row">
             <td>
               <p>
-                Fire Rate: {{1000 / focusedFighter.fireMilliseconds | longNumber}}/Second
+                Fire Rate: {{1000 / focusedFighter.fireMilliseconds | longNumber: 1}}/Second
               </p>
             </td>
             <td>
@@ -173,7 +173,7 @@
             </td>
             <td>
               <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedFighter.upgradeStat('FIRERATE')"
-                [disabled]="!focusedFighter.canUpgradeStat('FIRERATE')" matTooltip="Level {{focusedFighter.statLevels['FIRERATE'] + 1}}: {{1000 / focusedFighter.getUpgradedStat('FIRERATE') | longNumber}}/Second"
+                [disabled]="!focusedFighter.canUpgradeStat('FIRERATE')" matTooltip="Level {{focusedFighter.statLevels['FIRERATE'] + 1}}: {{1000 / focusedFighter.getUpgradedStat('FIRERATE') | longNumber: 1}}/Second"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">

@@ -4,7 +4,7 @@
       <mat-card-title class="button-text-background">{{focusedBuildingData.name}}</mat-card-title>
       <mat-card-subtitle class="button-text">{{focusedBuildingData.description}}</mat-card-subtitle>
       <div class="repair-container">
-        {{focusedBuildingNode.health}}/{{focusedBuildingNode.maxHealth}} Health
+        {{focusedBuildingNode.health | longNumber}}/{{focusedBuildingNode.maxHealth | longNumber}} Health
         <div *ngIf="focusedBuildingNode.health < focusedBuildingNode.maxHealth">
           <button mat-raised-button (click)="repairBuilding(focusedBuildingNode)" color="accent" [disabled]="!canRepairBuilding(focusedBuildingNode)">
             Repair
@@ -14,7 +14,7 @@
                 <img id="{{getResource(focusedBuildingData.repairResourceEnum).name | resourceId}}" class="resource-img slim-icon"
                   src="assets/sprites/transparent.png" alt="{{getResource(focusedBuildingData.repairResourceEnum).name}}">
                 {{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth -
-                focusedBuildingNode.health)}}
+                focusedBuildingNode.health) | longNumber}}
               </div>
             </div>
           </button>

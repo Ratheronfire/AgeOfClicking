@@ -15,9 +15,9 @@ import { Tick } from './../tick/tick.service';
 import { ResourceType, ResourceEnum } from './../../objects/resourceData';
 import { SaveData, WorkerData, TileData } from '../../objects/savedata';
 import { BuildingTileType, BuildingSubType, Market } from '../../objects/tile';
-import { Enemy, Fighter, ResourceAnimationType } from '../../objects/entity';
+import { ResourceAnimationType } from '../../objects/entity';
 import { MessageSource } from './../../objects/message';
-import { Vector } from '../../objects/vector';
+import { BuildingNode } from './../../objects/tile';
 
 const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.Birch, ResourceEnum.Stone, ResourceEnum.Graphite,
   ResourceEnum.Limestone, ResourceEnum.CopperOre, ResourceEnum.TinOre, ResourceEnum.BronzeIngot, ResourceEnum.IronOre];
@@ -151,7 +151,9 @@ export class SettingsService implements Tick {
    *    the save before loading to ensure we're working from a clean slate).
    */
   deleteSave(manualDeletion: boolean) {
-    localStorage.removeItem('clickerGameSaveData');
+    if (manualDeletion) {
+      localStorage.removeItem('clickerGameSaveData');
+    }
 
     this.resourcesService.loadBaseResources();
     this.upgradesService.loadBaseUpgrades();
@@ -439,11 +441,12 @@ export class SettingsService implements Tick {
           }
 
           const buildingData = this.mapService.buildingTileData.get(tileData.buildingTileType);
-          this.mapService.createBuilding(tile.x, tile.y, buildingData, tileData.buildingRemovable, tileData.maxHealth, true);
+          this.mapService.createBuilding(tile.x, tile.y, buildingData, tileData.buildingRemovable, tileData.maxHealth, true, false);
+          const buildingNode = tile.properties['buildingNode'] as BuildingNode;
 
-          tile.properties['buildingNode'].health = tileData.health ? tileData.health : 50;
-          tile.properties['buildingNode'].statLevels = tileData.statLevels;
-          tile.properties['buildingNode'].statCosts = tileData.statCosts;
+          buildingNode.setHealth(tileData.health ? tileData.health : 50);
+          buildingNode.statLevels = tileData.statLevels;
+          buildingNode.statCosts = tileData.statCosts;
 
           if (tileData.buildingTileType &&
             this.mapService.buildingTileData.get(tileData.buildingTileType).subType === BuildingSubType.Market) {

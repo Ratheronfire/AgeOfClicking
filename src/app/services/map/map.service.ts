@@ -119,6 +119,7 @@ export class MapService {
   pathfindingTestGroup: Phaser.GameObjects.Group;
 
   fighterAttackCircle: Phaser.GameObjects.Arc;
+  fighterPlaceCircle: Phaser.GameObjects.Arc;
 
   cameraControls: Phaser.Cameras.Controls.SmoothedKeyControl;
   minimapPanBox: Phaser.GameObjects.Rectangle;
@@ -170,7 +171,8 @@ export class MapService {
         update:  (time, delta) => this.updateMap(time, delta)
       },
       physics: {
-        default: 'arcade'
+        default: 'arcade',
+        debug: true
       }
     });
   }
@@ -226,6 +228,9 @@ export class MapService {
 
     this.fighterAttackCircle = this.scene.add.circle(0, 0, 1, 0xff0000, 0.4);
     this.fighterAttackCircle.setDepth(3);
+
+    this.fighterPlaceCircle = this.scene.add.circle(0, 0, 1, 0x0000ff, 0.3);
+    this.fighterPlaceCircle.setDepth(3);
 
     this.scene.physics.add.collider(this.projectileGroup, this.enemyGroup, this.projectileCollide);
 
@@ -294,6 +299,9 @@ export class MapService {
     this.pointerTileX = this.mapLayer.worldToTileX(cursorWorldPoint.x);
     this.pointerTileY = this.mapLayer.worldToTileY(cursorWorldPoint.y);
 
+    if (this.cursorTool === CursorTool.PlaceFighters) {
+    }
+
     this.minimapPanBox.x = this.mainCamera.worldView.x + this.mainCamera.width / 2;
     this.minimapPanBox.y = this.mainCamera.worldView.y + this.mainCamera.height / 2;
     this.minimapPanBox.width = this.mainCamera.worldView.width;
@@ -302,15 +310,30 @@ export class MapService {
 
     const camerasBelowCursor = this.scene.cameras.getCamerasBelowPointer(pointer);
 
+    // Drawing circles to indicate fighter attack ranges
+
     if (this.focusedFighter) {
       this.fighterAttackCircle.visible = true;
 
       this.fighterAttackCircle.radius = this.focusedFighter.attackRange * this.tilePixelSize;
+
       // For some reason, the circle object's x and y are offset from its center slightly...
       this.fighterAttackCircle.x = this.focusedFighter.x - this.fighterAttackCircle.radius / 2;
       this.fighterAttackCircle.y = this.focusedFighter.y - this.fighterAttackCircle.radius / 2;
     } else {
       this.fighterAttackCircle.visible = false;
+    }
+
+    if (this.cursorTool === CursorTool.PlaceFighters) {
+      const selectedFighter = this.fightersService.selectedFighterType;
+      this.fighterPlaceCircle.visible = true;
+
+      this.fighterPlaceCircle.radius = (selectedFighter ? selectedFighter.attackRange : 3) * this.tilePixelSize;
+
+      this.fighterPlaceCircle.x = this.mapLayer.tileToWorldX(this.pointerTileX - 1);
+      this.fighterPlaceCircle.y = this.mapLayer.tileToWorldY(this.pointerTileY - 1);
+    } else {
+      this.fighterPlaceCircle.visible = false;
     }
 
     if (camerasBelowCursor.includes(this.minimapCamera)) {
@@ -792,14 +815,15 @@ export class MapService {
       if (resourceNode) {
         this.findPath(currentTile, homeTile, true, true).subscribe(tilePath => {
           resourceNode.path = tilePath;
+          const pathAvailable = resourceNode.path.length > 0;
 
-          const pathAvailable = resourceNode.path.length &&
-            !resourceNode.path.some(tile => tile.properties['buildingNode'] && tile.properties['buildingNode'].health <= 0);
           const resources = this.resourceTileData.get(resourceNode.tileType).resourceEnums
               .map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
 
           for (const resource of resources) {
-            resource.pathAvailable = pathAvailable;
+            const alternatePaths = this.getResourceTiles(resource.resourceEnum).filter(
+              tile => tile !== currentTile && tile.properties['resourceNode'].path.length);
+            resource.pathAvailable = pathAvailable || alternatePaths.length > 0;
           }
         });
       } else if (buildingNode && buildingNode.market) {
@@ -1079,12 +1103,11 @@ export class MapService {
       return null;
     }
 
-    const pathPoints = tiles.map(tile => new Phaser.Math.Vector2(this.mapLayer.tileToWorldX(tile.x) + tile.width / 4,
-    this.mapLayer.tileToWorldY(tile.y) + tile.height / 4));
+    const pathPoints = tiles.map(tile => new Phaser.Math.Vector2(tile.getCenterX(), tile.getCenterY()));
 
     const startTile = tiles[0];
-    const worldX = this.mapLayer.tileToWorldX(startTile.x) + startTile.width / 4;
-    const worldY = this.mapLayer.tileToWorldY(startTile.y) + startTile.height / 4;
+    const worldX = startTile.getCenterX();
+    const worldY = startTile.getCenterY();
 
     const path = new Phaser.Curves.Path(worldX, worldY);
     for (const pathPoint of pathPoints) {
@@ -1094,7 +1117,8 @@ export class MapService {
     return path;
   }
 
-  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean, health: number, createForFree = false) {
+  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean, health: number,
+      createForFree = false, shouldUpdatePaths = true) {
     if (!buildingData) {
       return;
     }
@@ -1170,7 +1194,9 @@ export class MapService {
       }
     }
 
-    this.updatePaths(buildingTile, true);
+    if (shouldUpdatePaths) {
+      this.updatePaths(buildingTile, true);
+    }
   }
 
   clearBuilding(x: number, y: number) {
@@ -1229,7 +1255,7 @@ export class MapService {
     const healAmount = buildingNode.maxHealth - buildingNode.health;
 
     repairResource.addAmount(-buildingData.repairCostPerPoint * healAmount);
-    buildingNode.health = buildingNode.maxHealth;
+    buildingNode.setHealth(buildingNode.maxHealth);
     this.buildingLayer.getTileAt(tile.x, tile.y).tint = 0xffffff;
 
     this.updatePaths(tile, true);
@@ -1369,7 +1395,7 @@ export class MapService {
     const buildingNode: BuildingNode = tile.properties['buildingNode'];
     const buildingData: BuildingTileData = buildingNode ? this.buildingTileData.get(buildingNode.tileType) : null;
 
-    return buildingData && buildingData.resourcePathable;
+    return buildingNode && buildingNode.health > 0 && buildingData && buildingData.resourcePathable;
   }
 
   isTileWalkable(tile: Phaser.Tilemaps.Tile): boolean {

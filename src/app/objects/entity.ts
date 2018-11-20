@@ -189,12 +189,15 @@ export class Enemy extends Actor {
   tick(elapsed: number, deltaTime: number) {
     if (!this.currentTile || !this.mapService.isTileWalkable(this.currentTile)) {
       // If the enemy spawns on an invalid tile, we'll just move it elsewhere.
-      this.moveToNewTile();
+      if (!this.moveToNeighbor()) {
+        this.moveToNewTile();
+      }
     }
 
     this.lastIslandId = this.islandId;
 
-    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(this.x, this.y);
+    const center = this.getCenter();
+    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(center.x, center.y);
 
     switch (this.currentState) {
       case EnemyState.Looting: {
@@ -402,16 +405,39 @@ export class Enemy extends Actor {
     super.destroy();
   }
 
+  moveToNeighbor(): boolean {
+    if (!this.currentTile) {
+      return false;
+    }
+
+    for (const neighbor of this.mapService.getNeighborTiles(this.currentTile)) {
+      if (this.mapService.isTileWalkable(neighbor)) {
+        this.currentTile = neighbor;
+
+        return true;
+      }
+    }
+
+    return false;
+  }
+
   moveToNewTile() {
     this.currentTile = null;
+    if (!this.lastIslandId) {
+      this.lastIslandId = this.mapService.getRandomIslandId(10);
+    }
 
-    while (!this.currentTile || !this.islandId) {
-      const newIslandId = this.mapService.getRandomIslandId();
-      this.currentTile = this.mapService.getRandomTileOnIsland(newIslandId, [MapTileType.Grass], true, false);
+    while (!this.currentTile) {
+      this.currentTile = this.mapService.getRandomTileOnIsland(this.lastIslandId, [MapTileType.Grass], true, false);
     }
 
     this.x = this.currentTile.getCenterX();
     this.y = this.currentTile.getCenterY();
+
+    if (this.path) {
+      this.path.destroy();
+      this.stopFollow();
+    }
   }
 
   get islandId(): number {

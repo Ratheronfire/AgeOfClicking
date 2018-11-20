@@ -231,12 +231,17 @@ export class BuildingNode {
     this.statCosts[stat] *= 1.5;
   }
 
-  takeDamage(number) {
-    this.health -= number;
-    if (this.health < 0) {
-      this.health = 0;
+  takeDamage(pointsTaken: number) {
+    let newHealth = this.health - pointsTaken;
+    if (newHealth < 0) {
+      newHealth = 0;
     }
 
+    this.setHealth(newHealth);
+  }
+
+  setHealth(newHealth: number) {
+    this.health = newHealth;
     this.healthBar.updateHealthbar(this.health / this.maxHealth);
   }
 }
