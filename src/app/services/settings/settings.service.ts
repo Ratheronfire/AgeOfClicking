@@ -1,23 +1,26 @@
-import { FormControl } from '@angular/forms';
 import { Injectable } from '@angular/core';
-import { MatSnackBar, MatDialog, MatSelectChange } from '@angular/material';
-
-import { AboutDialogComponent } from './../../components/about-dialog/about-dialog/about-dialog.component';
+import { FormControl } from '@angular/forms';
+import { MatDialog, MatSelectChange, MatSnackBar } from '@angular/material';
+import { EnemyType } from 'src/app/objects/entity/enemy/enemy';
+import { UnitType } from 'src/app/objects/entity/unit/unit';
 import { SaveDialogComponent } from '../../components/save-dialog/save-dialog.component';
+import { ResourceAnimationType } from '../../objects/entity/resourceAnimation';
+import { SaveData, TileSaveData, WorkerSaveData } from '../../objects/savedata';
+import { BuildingSubType, BuildingTileType, Market } from '../../objects/tile';
+import { MessagesService } from '../messages/messages.service';
+import { AboutDialogComponent } from './../../components/about-dialog/about-dialog/about-dialog.component';
+import { MessageSource } from './../../objects/message';
+import { ResourceEnum, ResourceType } from './../../objects/resourceData';
+import { BuildingNode } from './../../objects/tile';
+import { EnemyService } from './../enemy/enemy.service';
+import { UnitService } from '../unit/unit.service';
+import { MapService } from './../map/map.service';
 import { ResourcesService } from './../resources/resources.service';
+import { Tick } from './../tick/tick.service';
 import { UpgradesService } from './../upgrades/upgrades.service';
 import { WorkersService } from './../workers/workers.service';
-import { MessagesService } from '../messages/messages.service';
-import { MapService } from './../map/map.service';
-import { EnemyService } from './../enemy/enemy.service';
-import { FighterService } from './../fighter/fighter.service';
-import { Tick } from './../tick/tick.service';
-import { ResourceType, ResourceEnum } from './../../objects/resourceData';
-import { SaveData, WorkerData, TileData } from '../../objects/savedata';
-import { BuildingTileType, BuildingSubType, Market } from '../../objects/tile';
-import { ResourceAnimationType } from '../../objects/entity';
-import { MessageSource } from './../../objects/message';
-import { BuildingNode } from './../../objects/tile';
+import { Raider } from 'src/app/objects/entity/enemy/raider';
+
 
 const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.Birch, ResourceEnum.Stone, ResourceEnum.Graphite,
   ResourceEnum.Limestone, ResourceEnum.CopperOre, ResourceEnum.TinOre, ResourceEnum.BronzeIngot, ResourceEnum.IronOre];
@@ -26,8 +29,8 @@ const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.
   providedIn: 'root'
 })
 export class SettingsService implements Tick {
-  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3', 'Alpha 3.4', 'Alpha 4.0'];
-  gameVersion = 'Alpha 4.0';
+  versionHistory = ['1.2', 'Alpha 3', 'Alpha 3.1', 'Alpha 3.2', 'Alpha 3.3', 'Alpha 3.4', 'Alpha 4.0', 'Alpha 4.1'];
+  gameVersion = 'Alpha 4.1';
 
   bindSelected = new FormControl();
 
@@ -57,7 +60,7 @@ export class SettingsService implements Tick {
               protected workersService: WorkersService,
               protected mapService: MapService,
               protected enemyService: EnemyService,
-              protected fighterService: FighterService,
+              protected unitService: UnitService,
               protected messagesService: MessagesService,
               protected snackbar: MatSnackBar,
               public dialog: MatDialog) { }
@@ -178,7 +181,7 @@ export class SettingsService implements Tick {
     this.resourceBindChange({'source': null, 'value': this.resourceBinds});
 
     this.messagesService.visibleSources = [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
-      MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
+      MessageSource.Unit, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
       MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
 
     this.enemyService.enemiesActive = false;
@@ -207,7 +210,7 @@ export class SettingsService implements Tick {
       workers: [],
       tiles: [],
       enemies: [],
-      fighters: [],
+      units: [],
       settings: {
         autosaveInterval: this.autosaveInterval,
         debugMode: this.debugMode,
@@ -238,7 +241,7 @@ export class SettingsService implements Tick {
     saveData.purchasedUpgrades = this.upgradesService.getUpgrades(true).map(upgrade => upgrade.id);
 
     for (const worker of this.workersService.getWorkers()) {
-      const workerData: WorkerData = {
+      const workerData: WorkerSaveData = {
         resourceType: worker.resourceType,
         cost: worker.cost,
         workerCount: worker.workerCount,
@@ -262,7 +265,7 @@ export class SettingsService implements Tick {
           continue;
         }
 
-        const tileData: TileData = {
+        const tileData: TileSaveData = {
           id: tile.properties['id'],
           health: tile.properties['buildingNode'].health,
           maxHealth: tile.properties['buildingNode'].maxHealth,
@@ -289,7 +292,7 @@ export class SettingsService implements Tick {
 
     for (const enemy of this.enemyService.enemies) {
       saveData.enemies.push({
-        name: enemy.name,
+        enemyType: enemy.enemyType,
         x: enemy.x,
         y: enemy.y,
         health: enemy.health,
@@ -299,30 +302,29 @@ export class SettingsService implements Tick {
         defense: enemy.defense,
         attackRange: enemy.attackRange,
         targetableBuildingTypes: enemy.targetableBuildingTypes,
-        resourcesToSteal: enemy.resourcesToSteal,
-        resorucesHeld: enemy.resourcesHeld,
-        stealMax: enemy.stealMax,
-        resourceCapacity: enemy.resourceCapacity
+        resourcesToSteal: (enemy as Raider).resourcesToSteal,
+        resorucesHeld: (enemy as Raider).resourcesHeld,
+        stealMax: (enemy as Raider).stealMax,
+        resourceCapacity: (enemy as Raider).resourceCapacity
       });
     }
 
-    for (const fighter of this.fighterService.fighters) {
-      saveData.fighters.push({
-        name: fighter.name,
-        description: fighter.description,
-        x: fighter.x,
-        y: fighter.y,
-        health: fighter.health,
-        maxHealth: fighter.maxHealth,
-        animationSpeed: fighter.animationSpeed,
-        attack: fighter.attack,
-        defense: fighter.defense,
-        attackRange: fighter.attackRange,
-        moveable: fighter.moveable,
-        fireMilliseconds: fighter.fireMilliseconds,
-        cost: fighter.cost,
-        statLevels: fighter.statLevels,
-        statCosts: fighter.statCosts
+    for (const unit of this.unitService.units) {
+      saveData.units.push({
+        unitType: unit.unitType,
+        x: unit.x,
+        y: unit.y,
+        health: unit.health,
+        maxHealth: unit.maxHealth,
+        animationSpeed: unit.animationSpeed,
+        attack: unit.attack,
+        defense: unit.defense,
+        attackRange: unit.attackRange,
+        movable: unit.movable,
+        fireMilliseconds: unit.fireMilliseconds,
+        cost: unit.cost,
+        statLevels: unit.statLevels,
+        statCosts: unit.statCosts
       });
     }
 
@@ -361,7 +363,7 @@ export class SettingsService implements Tick {
 
         this.messagesService.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
           [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
-            MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
+            MessageSource.Unit, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
             MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
 
         this.enemyService.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
@@ -384,15 +386,15 @@ export class SettingsService implements Tick {
       }
 
       if (saveData.resources !== undefined) {
-        for (const resourceData of saveData.resources) {
-          const resource = this.resourcesService.resources.get(resourceData.resourceEnum);
+        for (const resourceSaveData of saveData.resources) {
+          const resource = this.resourcesService.resources.get(resourceSaveData.resourceEnum);
 
           if (resource === undefined) {
             continue;
           }
 
-          resource.amount = resourceData.amount ? resourceData.amount : 0;
-          resource.autoSellCutoff = resourceData.autoSellCutoff ? resourceData.autoSellCutoff : 0;
+          resource.amount = resourceSaveData.amount ? resourceSaveData.amount : 0;
+          resource.autoSellCutoff = resourceSaveData.autoSellCutoff ? resourceSaveData.autoSellCutoff : 0;
         }
       }
 
@@ -408,14 +410,14 @@ export class SettingsService implements Tick {
       }
 
       if (saveData.workers !== undefined) {
-        for (const workerData of saveData.workers) {
-          const worker = this.workersService.workers.get(workerData.resourceType);
+        for (const workerSaveData of saveData.workers) {
+          const worker = this.workersService.workers.get(workerSaveData.resourceType);
 
-          worker.cost = workerData.cost;
-          worker.workerCount = workerData.workerCount;
-          worker.freeWorkers = workerData.workerCount;
+          worker.cost = workerSaveData.cost;
+          worker.workerCount = workerSaveData.workerCount;
+          worker.freeWorkers = workerSaveData.workerCount;
 
-          for (const resourceWorkerData of workerData.workersByResource) {
+          for (const resourceWorkerData of workerSaveData.workersByResource) {
             const resourceWorker = worker.resourceWorkers.get(resourceWorkerData.resourceEnum);
 
             resourceWorker.workable = resourceWorkerData.workable;
@@ -433,26 +435,26 @@ export class SettingsService implements Tick {
       }
 
       if (saveData.tiles !== undefined) {
-        for (const tileData of saveData.tiles) {
-          const tile = this.mapService.mapLayer.findTile(_tile => _tile && _tile.properties['id'] === tileData.id);
+        for (const tileSaveData of saveData.tiles) {
+          const tile = this.mapService.mapLayer.findTile(_tile => _tile && _tile.properties['id'] === tileSaveData.id);
 
-          if (!tile || tileData.buildingTileType === BuildingTileType.Home) {
+          if (!tile || tileSaveData.buildingTileType === BuildingTileType.Home) {
             continue;
           }
 
-          const buildingData = this.mapService.buildingTileData.get(tileData.buildingTileType);
-          this.mapService.createBuilding(tile.x, tile.y, buildingData, tileData.buildingRemovable, tileData.maxHealth, true, false);
+          const buildingData = this.mapService.buildingTileData.get(tileSaveData.buildingTileType);
+          this.mapService.createBuilding(tile.x, tile.y, buildingData, tileSaveData.buildingRemovable, tileSaveData.maxHealth, true, false);
           const buildingNode = tile.properties['buildingNode'] as BuildingNode;
 
-          buildingNode.setHealth(tileData.health ? tileData.health : 50);
-          buildingNode.statLevels = tileData.statLevels;
-          buildingNode.statCosts = tileData.statCosts;
+          buildingNode.setHealth(tileSaveData.health ? tileSaveData.health : 50);
+          buildingNode.statLevels = tileSaveData.statLevels;
+          buildingNode.statCosts = tileSaveData.statCosts;
 
-          if (tileData.buildingTileType &&
-            this.mapService.buildingTileData.get(tileData.buildingTileType).subType === BuildingSubType.Market) {
+          if (tileSaveData.buildingTileType &&
+            this.mapService.buildingTileData.get(tileSaveData.buildingTileType).subType === BuildingSubType.Market) {
 
             let resourceType: ResourceType;
-            switch (tileData.buildingTileType) {
+            switch (tileSaveData.buildingTileType) {
               case BuildingTileType.WoodMarket: {
                 resourceType = ResourceType.Wood;
                 break;
@@ -471,40 +473,42 @@ export class SettingsService implements Tick {
       }
 
       if (saveData.enemies !== undefined) {
-        for (const enemyData of saveData.enemies) {
-          const tile = this.mapService.mapLayer.getTileAtWorldXY(enemyData.x, enemyData.y);
+        for (const enemySaveData of saveData.enemies) {
+          const tile = this.mapService.mapLayer.getTileAtWorldXY(enemySaveData.x, enemySaveData.y);
 
           if (!tile) {
             continue;
           }
 
-          const enemyType = this.enemyService.enemyTypes.find(type => type.name === enemyData.name);
-          const enemy = this.mapService.spawnEnemy(enemyType, tile);
+          if (!enemySaveData.enemyType) {
+            enemySaveData.enemyType = EnemyType.Raider;
+          }
 
-          enemy.health = enemyData.health ? enemyData.health : 50;
-          enemy.maxHealth = enemyData.maxHealth ? enemyData.maxHealth : 50;
+          const enemy = this.mapService.spawnEnemy(enemySaveData.enemyType, tile);
+
+          enemy.health = enemySaveData.health ? enemySaveData.health : 50;
+          enemy.maxHealth = enemySaveData.maxHealth ? enemySaveData.maxHealth : 50;
         }
       }
 
-      if (saveData.fighters !== undefined) {
-        for (const fighterData of saveData.fighters) {
-          const tile = this.mapService.mapLayer.getTileAtWorldXY(fighterData.x, fighterData.y);
+      if (saveData.units !== undefined) {
+        for (const unitSaveData of saveData.units) {
+          const tile = this.mapService.mapLayer.getTileAtWorldXY(unitSaveData.x, unitSaveData.y);
 
           if (!tile) {
             continue;
           }
 
-          const fighterType = this.fighterService.fighterTypes.find(type => type.name === fighterData.name);
-          const fighter = this.mapService.spawnFighter(fighterType, tile.x, tile.y, true);
+          const unit = this.mapService.spawnUnit(unitSaveData.unitType, tile.x, tile.y, true);
 
-          fighter.health = fighterData.health ? fighterData.health : 50;
-          fighter.maxHealth = fighterData.maxHealth ? fighterData.maxHealth : 50;
-          fighter.attackRange = fighterData.attackRange ? fighterData.attackRange : 3;
-          if (fighterData.statLevels) {
-            fighter.statLevels = fighterData.statLevels;
+          unit.health = unitSaveData.health ? unitSaveData.health : 50;
+          unit.maxHealth = unitSaveData.maxHealth ? unitSaveData.maxHealth : 50;
+          unit.attackRange = unitSaveData.attackRange ? unitSaveData.attackRange : 3;
+          if (unitSaveData.statLevels) {
+            unit.statLevels = unitSaveData.statLevels;
           }
-          if (fighterData.statCosts) {
-            fighter.statCosts = fighterData.statCosts;
+          if (unitSaveData.statCosts) {
+            unit.statCosts = unitSaveData.statCosts;
           }
         }
       }
@@ -635,6 +639,18 @@ export class SettingsService implements Tick {
 
     if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 3.4')) {
       saveData.tiles = [];
+    }
+
+    if (oldVersionIndex <= this.versionHistory.indexOf('Alpha 4.0')) {
+      for (const enemySaveData of saveData.enemies) {
+        enemySaveData.enemyType = EnemyType.Raider;
+      }
+
+      saveData.units = saveData.fighters;
+
+      for (const unitSaveData of saveData.units) {
+        unitSaveData.unitType = UnitType.Sentry;
+      }
     }
 
     return saveData;

@@ -34,7 +34,7 @@
         Tile Details
       </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEFIGHTERS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.mapService.fighterListVisible)">
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEUNITS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.mapService.unitListVisible)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>R</p>
@@ -42,10 +42,10 @@
       <mat-icon class="button-text-background">directions_walk</mat-icon>
       <br />
       <div class="button-text">
-        Place Fighters
+        Place Units
       </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="FIGHTERDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="UNITDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>T</p>
@@ -53,14 +53,14 @@
       <mat-icon class="button-text-background">directions_run</mat-icon>
       <br />
       <div class="button-text">
-        Fighter Details
+        Unit Details
       </div>
     </mat-button-toggle>
   </mat-button-toggle-group>
 
   <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>
-  <app-fighter *ngIf="mapService.fighterListVisible"></app-fighter>
+  <app-unit *ngIf="mapService.unitListVisible"></app-unit>
 
   <app-tile-detail [ngClass]="{'hidden': !mapService.focusedTile}"></app-tile-detail>
-  <app-fighter-detail [ngClass]="{'hidden': !mapService.focusedFighter}"></app-fighter-detail>
+  <app-unit-detail [ngClass]="{'hidden': !mapService.focusedUnit}"></app-unit-detail>
 </div>

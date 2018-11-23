@@ -1,4 +1,4 @@
-import { Entity } from './entity';
+import { Entity } from './entity/entity';
 
 export class HealthBar {
   owningObject: Entity | Phaser.Tilemaps.Tile;

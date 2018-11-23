@@ -23,10 +23,10 @@ import { SaveDialogComponent } from './components/save-dialog/save-dialog.compon
 import { CropDirective } from './directives/crop/crop.directive';
 import { NoScrollDirective } from './directives/no-scroll/no-scroll.directive';
 import { EnemyComponent } from './components/enemy/enemy.component';
-import { FighterComponent } from './components/fighter/fighter.component';
+import { UnitComponent } from './components/unit/unit.component';
 import { BuildingsComponent } from './components/buildings/buildings/buildings.component';
 import { TileDetailComponent } from './components/tile-detail/tile-detail.component';
-import { FighterDetailComponent } from './components/fighter-detail/fighter-detail.component';
+import { UnitDetailComponent } from './components/unit-detail/unit-detail.component';
 import { SnapDirective } from './directives/snap/snap.directive';
 
 @NgModule({
@@ -45,10 +45,10 @@ import { SnapDirective } from './directives/snap/snap.directive';
     SaveDialogComponent,
     NoScrollDirective,
     EnemyComponent,
-    FighterComponent,
+    UnitComponent,
     BuildingsComponent,
     TileDetailComponent,
-    FighterDetailComponent,
+    UnitDetailComponent,
     SnapDirective,
     AboutDialogComponent
   ],

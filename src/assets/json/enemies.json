@@ -1,6 +1,8 @@
-[
-  {
-    "name": "Base Enemy",
+{
+  "RAIDER": {
+    "name": "Raider",
+    "description": "A low-level enemy that loots resources from your bases and damages your structures.",
+    "enemyType": "RAIDER",
     "health": 15,
     "maxHealth": 15,
     "targetableBuildingTypes": [
@@ -8,9 +10,10 @@
     ],
     "attack": 5,
     "defense": 1,
+    "movementSpeed": 1,
     "attackRange": 2,
     "resourcesToSteal": ["OAK", "COPPERORE", "TINORE"],
     "stealMax": 25,
     "resourceCapacity": 200
   }
-]
+}

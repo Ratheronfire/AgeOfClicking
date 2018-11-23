@@ -1,0 +1,62 @@
+<mat-card id="unit-tooltip" class="steel">
+  <div *ngIf="focusedUnit">
+    <div id="card-header">
+      <mat-card-title class="button-text-background">{{focusedUnit.name}}</mat-card-title>
+      <mat-card-subtitle class="button-text">{{focusedUnit.description}}</mat-card-subtitle>
+
+      <div class="repair-container">
+        {{focusedUnit.health}}/{{focusedUnit.maxHealth | longNumber}} Health
+        <div *ngIf="focusedUnit.health < focusedUnit.maxHealth">
+          <button mat-raised-button (click)="focusedUnit.heal()" color="accent" [disabled]="!focusedUnit.canHeal()">
+            Heal
+            <div class="resource-list">
+              <div matTooltip="{{focusedUnit.healCost | longNumber}} {{getResource('GOLD').name | titlecase}}"
+                matTooltipPosition="below">
+                <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                {{focusedUnit.healCost | longNumber}}
+              </div>
+            </div>
+          </button>
+        </div>
+      </div>
+      <br />
+      <br />
+
+      <button mat-raised-button color="warn" (click)="removeUnit()">Remove Unit</button>
+    </div>
+
+    <mat-card-content id="card-content">
+      <table class="stats-container">
+        <tbody>
+          <tr class="stat-row" *ngFor="let stat of focusedUnit.stats">
+            <td>
+              <p>
+                {{focusedUnit.getStatString(stat)}}
+              </p>
+
+            </td>
+            <td>
+              <b>
+                Level {{focusedUnit.statLevels[stat]}}
+              </b>
+            </td>
+
+            <td>
+                <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedUnit.upgradeStat(stat)"
+                [disabled]="!focusedUnit.canUpgradeStat(stat)" matTooltip="Level {{focusedUnit.statLevels[stat] + 1}} {{focusedUnit.getUpgradedStatString(stat)}}"
+                matTooltipPosition="below">
+                <mat-icon color="primary">arrow_upward</mat-icon>
+                <div class="resource-list">
+                  <div class="button-text">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                    {{focusedUnit.statCosts[stat] | longNumber}}
+                  </div>
+                </div>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </mat-card-content>
+  </div>
+</mat-card>

@@ -49,35 +49,35 @@ export class HarvestService implements Tick {
       case 'KeyQ': {
         this.mapService.cursorTool = CursorTool.PlaceBuildings;
         this.mapService.buildingListVisible = true;
-        this.mapService.fighterListVisible = false;
+        this.mapService.unitListVisible = false;
         break;
       } case 'KeyW': {
         this.mapService.cursorTool = CursorTool.ClearBuildings;
         this.mapService.buildingListVisible = false;
-        this.mapService.fighterListVisible = false;
+        this.mapService.unitListVisible = false;
         break;
       } case 'KeyE': {
         this.mapService.cursorTool = CursorTool.TileDetail;
         this.mapService.buildingListVisible = false;
-        this.mapService.fighterListVisible = false;
+        this.mapService.unitListVisible = false;
         break;
       } case 'KeyR': {
         if (!this.enemyService.enemiesActive) {
           break;
         }
 
-        this.mapService.cursorTool = CursorTool.PlaceFighters;
+        this.mapService.cursorTool = CursorTool.PlaceUnits;
         this.mapService.buildingListVisible = false;
-        this.mapService.fighterListVisible = true;
+        this.mapService.unitListVisible = true;
         break;
       } case 'KeyT': {
         if (!this.enemyService.enemiesActive) {
           break;
         }
 
-        this.mapService.cursorTool = CursorTool.FighterDetail;
+        this.mapService.cursorTool = CursorTool.UnitDetail;
         this.mapService.buildingListVisible = false;
-        this.mapService.fighterListVisible = false;
+        this.mapService.unitListVisible = false;
         break;
       }
     }

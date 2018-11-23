@@ -3,15 +3,15 @@ import { Component, OnInit } from '@angular/core';
 import { MapService } from '../../services/map/map.service';
 import { BuildingsService } from '../../services/buildings/buildings.service';
 import { ResourcesService } from '../../services/resources/resources.service';
-import { ResourceEnum } from './../../objects/resourceData';
-import { Fighter } from './../../objects/entity';
+import { ResourceEnum } from '../../objects/resourceData';
+import { Unit } from '../../objects/entity/unit/unit';
 
 @Component({
-  selector: 'app-fighter-detail',
-  templateUrl: './fighter-detail.component.html',
-  styleUrls: ['./fighter-detail.component.css']
+  selector: 'app-unit-detail',
+  templateUrl: './unit-detail.component.html',
+  styleUrls: ['./unit-detail.component.css']
 })
-export class FighterDetailComponent implements OnInit {
+export class UnitDetailComponent implements OnInit {
   snapSetting = 'lowerLeft';
 
   constructor(protected mapService: MapService,
@@ -25,15 +25,15 @@ export class FighterDetailComponent implements OnInit {
     return this.resourcesService.resources.get(resourceEnum);
   }
 
-  removeFighter() {
-    if (!this.focusedFighter) {
+  removeUnit() {
+    if (!this.focusedUnit) {
       return;
     }
 
-    this.focusedFighter.destroy();
+    this.focusedUnit.destroy();
 
     this.focusedTile = undefined;
-    this.focusedFighter = undefined;
+    this.focusedUnit = undefined;
   }
 
   get focusedTile(): Phaser.Tilemaps.Tile {
@@ -44,11 +44,11 @@ export class FighterDetailComponent implements OnInit {
     this.mapService.focusedTile = value;
   }
 
-  get focusedFighter(): Fighter {
-    return this.mapService.focusedFighter;
+  get focusedUnit(): Unit {
+    return this.mapService.focusedUnit;
   }
 
-  set focusedFighter(value: Fighter) {
-    this.mapService.focusedFighter = value;
+  set focusedUnit(value: Unit) {
+    this.mapService.focusedUnit = value;
   }
 }

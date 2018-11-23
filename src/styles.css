@@ -87,12 +87,12 @@ app-harvest {
 }
 
 .building button,
-.fighter button {
+.unit button {
   width: 100%;
 }
 
 .building.mat-button-toggle-checked .title,
-.fighter.mat-button-toggle-checked .title {
+.unit.mat-button-toggle-checked .title {
   background-color: #523f37;
   color: chartreuse;
 
@@ -108,7 +108,7 @@ app-buildings {
   position: absolute;
 }
 
-app-fighter {
+app-unit {
   position: absolute;
 }
 

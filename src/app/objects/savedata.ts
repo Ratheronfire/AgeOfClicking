@@ -1,28 +1,29 @@
-import { ResourceType, ResourceEnum } from './resourceData';
-import { Vector } from './vector';
-import { MapTileType, ResourceTileType, BuildingTileType } from './tile';
 import { MessageSource } from '../objects/message';
+import { EnemyType } from './entity/enemy/enemy';
+import { UnitType } from './entity/unit/unit';
+import { ResourceEnum, ResourceType } from './resourceData';
+import { BuildingTileType, ResourceTileType } from './tile';
 
-export interface ResourceData {
+export interface ResourceSaveData {
   resourceEnum: ResourceEnum;
   amount: number;
   autoSellCutoff: number;
 }
 
-export interface WorkerData {
+export interface WorkerSaveData {
   resourceType: ResourceType;
   cost: number;
   workerCount: number;
-  workersByResource: ResourceWorkerData[];
+  workersByResource: ResourceWorkerSaveData[];
 }
 
-export interface ResourceWorkerData {
+export interface ResourceWorkerSaveData {
   resourceEnum: ResourceEnum;
   workable: boolean;
   workerCount: number;
 }
 
-export interface TileData {
+export interface TileSaveData {
   id: number;
 
   health: number;
@@ -40,8 +41,8 @@ export interface TileData {
   sellQuantity?: number;
 }
 
-export interface EnemyData {
-  name: string;
+export interface EnemySaveData {
+  enemyType: EnemyType;
 
   x: number;
   y: number;
@@ -62,9 +63,8 @@ export interface EnemyData {
   resourceCapacity: number;
 }
 
-export interface FighterData {
-  name: string;
-  description: string;
+export interface UnitSaveData {
+  unitType: UnitType;
 
   x: number;
   y: number;
@@ -80,7 +80,7 @@ export interface FighterData {
 
   cost: number;
 
-  moveable: boolean;
+  movable: boolean;
 
   fireMilliseconds: number;
 
@@ -88,7 +88,7 @@ export interface FighterData {
   statCosts: {};
 }
 
-export interface SettingsData {
+export interface SettingsSaveData {
   autosaveInterval: number;
   debugMode: boolean;
 
@@ -115,14 +115,14 @@ export interface SettingsData {
 }
 
 export class SaveData {
-  resources: ResourceData[];
+  resources: ResourceSaveData[];
   purchasedUpgrades: number[];
-  workers: WorkerData[];
-  tiles: TileData[];
-  enemies: EnemyData[];
-  fighters: FighterData[];
+  workers: WorkerSaveData[];
+  tiles: TileSaveData[];
+  enemies: EnemySaveData[];
+  units: UnitSaveData[];
 
-  settings: SettingsData;
+  settings: SettingsSaveData;
 
   foodStockpile: number;
   gameVersion: string;

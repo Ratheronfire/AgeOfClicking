@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-
-import { BuildingTileData, BuildingTileType } from '../../../objects/tile';
 import { Resource } from '../../../objects/resource';
 import { ResourceEnum } from '../../../objects/resourceData';
-import { ResourcesService } from '../../../services/resources/resources.service';
+import { BuildingTileData, BuildingTileType } from '../../../objects/tile';
 import { BuildingsService } from '../../../services/buildings/buildings.service';
-import { FighterService } from './../../../services/fighter/fighter.service';
-import { SettingsService } from '../../../services/settings/settings.service';
 import { MapService } from '../../../services/map/map.service';
+import { ResourcesService } from '../../../services/resources/resources.service';
+import { SettingsService } from '../../../services/settings/settings.service';
+import { UnitService } from '../../../services/unit/unit.service';
+
 
 @Component({
   selector: 'app-buildings',
@@ -17,7 +17,7 @@ import { MapService } from '../../../services/map/map.service';
 export class BuildingsComponent implements OnInit {
   constructor(protected resourcesService: ResourcesService,
               protected buildingsService: BuildingsService,
-              protected fighterService: FighterService,
+              protected unitService: UnitService,
               protected settingsService: SettingsService,
               protected mapService: MapService) { }
 
@@ -28,7 +28,7 @@ export class BuildingsComponent implements OnInit {
     if (this.selectedBuilding === buildingTile) {
       this.selectedBuilding = undefined;
     } else {
-      this.fighterService.selectedFighterType = undefined;
+      this.unitService.selectedUnitType = undefined;
       this.selectedBuilding = buildingTile;
     }
   }

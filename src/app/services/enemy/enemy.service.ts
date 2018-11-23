@@ -1,11 +1,13 @@
 import { Injectable } from '@angular/core';
-
-import { Resource } from '../../objects/resource';
-import { Enemy, EnemyData, EnemyState } from './../../objects/entity';
+import { ActorState } from 'src/app/objects/entity/actor';
+import { Enemy, EnemyType } from 'src/app/objects/entity/enemy/enemy';
 import { MessageSource } from '../../objects/message';
+import { Resource } from '../../objects/resource';
 import { BuildingsService } from '../buildings/buildings.service';
-import { ResourcesService } from '../resources/resources.service';
 import { MessagesService } from '../messages/messages.service';
+import { ResourcesService } from '../resources/resources.service';
+import { Raider } from 'src/app/objects/entity/enemy/raider';
+
 
 declare var require: any;
 const baseEnemyTypes = require('../../../assets/json/enemies.json');
@@ -14,7 +16,7 @@ const baseEnemyTypes = require('../../../assets/json/enemies.json');
   providedIn: 'root'
 })
 export class EnemyService {
-  public enemyTypes: EnemyData[] = baseEnemyTypes;
+  public enemiesData: {} = baseEnemyTypes;
   enemyGroup: Phaser.GameObjects.Group;
 
   enemiesActive: boolean;
@@ -25,9 +27,9 @@ export class EnemyService {
 
   resourceIsBeingStolen(resource: Resource): boolean {
     const activeEnemies = this.enemies.filter(
-      enemy => enemy.currentState === EnemyState.Looting);
+      enemy => enemy.enemyType === EnemyType.Raider && enemy.currentState === ActorState.Looting);
 
-    return activeEnemies.some(enemy => enemy.resourcesToSteal.includes(resource.resourceEnum));
+    return activeEnemies.some(enemy => (enemy as Raider).resourcesToSteal.includes(resource.resourceEnum));
   }
 
   private log(message: string) {

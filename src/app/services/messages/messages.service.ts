@@ -9,7 +9,7 @@ import { Message, MessageSource } from './../../objects/message';
 export class MessagesService {
   messages: Message[] = [];
   visibleSources: MessageSource[] = [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
-    MessageSource.Fighter, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
+    MessageSource.Unit, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
     MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
   messagesDataSource = new MatTableDataSource(this.messages);
   messageLimit = 50;

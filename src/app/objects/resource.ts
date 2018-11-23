@@ -1,5 +1,5 @@
 import { ResourceType, ResourceEnum } from './resourceData';
-import { ResourceAnimationType } from './entity';
+import { ResourceAnimationType } from './entity/resourceAnimation';
 import { ResourcesService } from '../services/resources/resources.service';
 
 export interface ResourceConsume {

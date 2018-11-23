@@ -26,11 +26,11 @@ export class MapComponent {
 
   clearFocus() {
     this.mapService.focusedTile = undefined;
-    this.mapService.focusedFighter = undefined;
+    this.mapService.focusedUnit = undefined;
   }
 
-  setPlacementGroupVisibility(buildingVisibility: boolean, fighterVisibility: boolean) {
+  setPlacementGroupVisibility(buildingVisibility: boolean, unitVisibility: boolean) {
     this.mapService.buildingListVisible = buildingVisibility;
-    this.mapService.fighterListVisible = fighterVisibility;
+    this.mapService.unitListVisible = unitVisibility;
   }
 }

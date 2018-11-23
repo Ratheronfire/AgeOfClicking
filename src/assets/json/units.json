@@ -1,0 +1,28 @@
+{
+  "SENTRY": {
+    "name": "Sentry",
+    "description": "A stationary archer, capable of shooting at one target per second.",
+    "unitType": "SENTRY",
+    "maxHealth": 15,
+    "cost": 500,
+    "attack": 5,
+    "defense": 5,
+    "movable": false,
+    "movementSpeed": 0,
+    "attackRange": 3,
+    "stats": [ "ATTACK", "DEFENSE", "RANGE", "FIRERATE", "MAXHEALTH"]
+  },
+  "BUILDER": {
+    "name": "Builder",
+    "description": "Repairs buildings damaged by enemy attacks.",
+    "unitType": "BUILDER",
+    "maxHealth": 10,
+    "cost": 250,
+    "attack": 1,
+    "defense": 2,
+    "movementSpeed": 1,
+    "movable": true,
+    "attackRange": 1,
+    "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "REPAIRRATE", "MAXHEALTH"]
+  }
+}

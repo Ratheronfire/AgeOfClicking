@@ -3,7 +3,7 @@ export enum MessageSource {
   Buildings = 'BUILDINGS',
   Main = 'MAIN',
   Enemy = 'ENEMY',
-  Fighter = 'FIGHTER',
+  Unit = 'UNIT',
   Map = 'MAP',
   Resources = 'RESOURCES',
   Settings = 'SETTINGS',

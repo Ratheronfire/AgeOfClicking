@@ -65,11 +65,11 @@ export class TileDetailComponent implements OnInit {
   }
 
   canRepairBuilding(): boolean {
-    return this.mapService.canRepairBuilding(this.focusedTile);
+    return this.mapService.canRepairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
   }
 
   repairBuilding() {
-    this.mapService.repairBuilding(this.focusedTile);
+    this.mapService.repairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
   }
 
   get focusedTile(): Phaser.Tilemaps.Tile {
@@ -93,7 +93,7 @@ export class TileDetailComponent implements OnInit {
   }
 
   get focusedResourceData(): ResourceTileData {
-    return this.focusedResourceNode ? this.mapService.resourceTileData.get(this.focusedResourceNode.tileType): null;
+    return this.focusedResourceNode ? this.mapService.resourceTileData.get(this.focusedResourceNode.tileType) : null;
   }
 
   get upgradedBuildingData(): BuildingTileData {
