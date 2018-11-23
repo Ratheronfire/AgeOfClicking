@@ -335,10 +335,13 @@ export class MapService {
       const selectedUnitData = this.unitService.unitsData[selectedUnit];
       this.unitPlaceCircle.visible = true;
 
-      this.unitPlaceCircle.radius = (selectedUnit ? selectedUnitData.attackRange : 3) * this.tilePixelSize;
+      const tileRadius = (selectedUnit ? selectedUnitData.attackRange : 0);
+      this.unitPlaceCircle.radius = tileRadius * this.tilePixelSize;
 
-      this.unitPlaceCircle.x = this.mapLayer.tileToWorldX(this.pointerTileX - 1);
-      this.unitPlaceCircle.y = this.mapLayer.tileToWorldY(this.pointerTileY - 1);
+      // Don't question the wierd math, it just works
+      this.unitPlaceCircle.x = this.mapLayer.tileToWorldX(this.pointerTileX - Math.floor(tileRadius / 2));
+      this.unitPlaceCircle.y = this.mapLayer.tileToWorldY(this.pointerTileY - Math.floor(tileRadius / 2));
+
     } else {
       this.unitPlaceCircle.visible = false;
     }

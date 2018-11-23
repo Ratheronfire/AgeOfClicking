@@ -32,7 +32,6 @@ export class Unit extends Actor {
 
   fireMilliseconds = 1000;
   lastFire = 0;
-  repairAmount = 5;
 
   stats: UnitStat[];
   statLevels = {};
@@ -50,6 +49,7 @@ export class Unit extends Actor {
 
     this.unitType = unitData.unitType;
 
+    this.name = unitData.name;
     this.description = unitData.description;
 
     this.cost = unitData.cost;
@@ -96,17 +96,17 @@ export class Unit extends Actor {
   public getStatString(stat: UnitStat): string {
     switch (stat) {
       case UnitStat.Attack: {
-        return 'Attack: ' + this.attack;
+        return 'Attack: ' + Math.floor(this.attack);
       } case UnitStat.Defense: {
-        return 'Defense: ' + this.defense;
+        return 'Defense: ' + Math.floor(this.defense);
       }  case UnitStat.FireRate: {
         return 'Fire Rate:' + Math.floor(this.fireMilliseconds / 100) / 10 + '/Second';
       } case UnitStat.MovementSpeed: {
-        return 'Movement Speed: ' + this.animationSpeed;
+        return 'Movement Speed: ' + Math.floor(this.animationSpeed);
       } case UnitStat.Range: {
         return 'Attack Range: ' + this.attackRange + (this.attackRange > 1 ? ' Tiles' : ' Tile');
       } case UnitStat.MaxHealth: {
-        return 'Max Health: ' + this.maxHealth;
+        return 'Max Health: ' + Math.floor(this.maxHealth);
       }
     }
   }
@@ -114,17 +114,17 @@ export class Unit extends Actor {
   public getUpgradedStatString(stat: UnitStat): string {
     switch (stat) {
       case UnitStat.Attack: {
-        return 'Attack: ' + this.getUpgradedStat(stat);
+        return 'Attack: ' + Math.floor(this.getUpgradedStat(stat));
       } case UnitStat.Defense: {
-        return 'Defense: ' + this.getUpgradedStat(stat);
+        return 'Defense: ' + Math.floor(this.getUpgradedStat(stat));
       }  case UnitStat.FireRate: {
         return 'Fire Rate:' + Math.floor(this.getUpgradedStat(stat) / 100) / 10 + '/Second';
       } case UnitStat.MovementSpeed: {
-        return 'Movement Speed: ' + this.getUpgradedStat(stat);
+        return 'Movement Speed: ' + Math.floor(this.getUpgradedStat(stat));
       } case UnitStat.Range: {
         return 'Attack Range: ' + this.getUpgradedStat(stat) + ' Tiles';
       } case UnitStat.MaxHealth: {
-        return 'Max Health: ' + this.getUpgradedStat(stat);
+        return 'Max Health: ' + Math.floor(this.getUpgradedStat(stat));
       }
     }
   }

@@ -2,8 +2,6 @@ import { MapService } from 'src/app/services/map/map.service';
 import { HealthBar } from '../healthbar';
 
 export class Entity extends Phaser.GameObjects.PathFollower {
-  name: string;
-
   spawnPosition: Phaser.Math.Vector2;
   currentTile: Phaser.Tilemaps.Tile;
 
