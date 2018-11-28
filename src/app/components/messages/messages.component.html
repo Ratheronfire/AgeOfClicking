@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="messagesService.messagesDataSource" matSort matSortActive="timestamp" matSortDirection="desc" class="message-table mat-elevation-z8">
+<table mat-table [dataSource]="game.messages.messagesDataSource" matSort matSortActive="timestamp" matSortDirection="desc" class="message-table mat-elevation-z8">
     <ng-container matColumnDef="source">
       <mat-header-cell *matHeaderCellDef mat-sort-header> Source </mat-header-cell>
       <mat-cell *matCellDef="let message"> {{message.source | titlecase}} </mat-cell>

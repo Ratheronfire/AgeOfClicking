@@ -1,5 +1,5 @@
-import { MapService } from 'src/app/services/map/map.service';
 import { HealthBar } from '../healthbar';
+import { GameService } from './../../game/game.service';
 
 export class Entity extends Phaser.GameObjects.PathFollower {
   spawnPosition: Phaser.Math.Vector2;
@@ -12,19 +12,19 @@ export class Entity extends Phaser.GameObjects.PathFollower {
   maxHealth: number;
   healthBar: HealthBar;
 
-  mapService: MapService;
+  protected game: GameService;
 
   public constructor(x: number, y: number, health: number, animationSpeed: number,
                      scene: Phaser.Scene, texture: string, frame: string | number,
-                     mapService: MapService, path?: Phaser.Curves.Path) {
+                     game: GameService, path?: Phaser.Curves.Path) {
     super(scene, path, x, y, texture, frame);
 
-    this.mapService = mapService;
+    this.game = game;
 
     this.name = name;
 
     this.spawnPosition = new Phaser.Math.Vector2(x, y);
-    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(x, y);
+    this.currentTile = this.game.map.mapLayer.getTileAtWorldXY(x, y);
 
     this.health = health;
     this.maxHealth = health;

@@ -1,4 +1,4 @@
-import { MapService } from './../../services/map/map.service';
+import { GameService } from './../../game/game.service';
 import { Actor } from './actor';
 import { Entity } from './entity';
 
@@ -14,8 +14,8 @@ export class Projectile extends Entity {
   lifeSpan = 5000;
 
   public constructor(x: number, y: number, animationSpeed: number, owner: Actor, target: Actor,
-      scene: Phaser.Scene, texture: string, frame: string | number, mapService: MapService) {
-    super(x, y, 1, animationSpeed, scene, texture, frame, mapService);
+      scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
+    super(x, y, 1, animationSpeed, scene, texture, frame, game);
 
     this.owner = owner;
     this.target = target;

@@ -1,4 +1,4 @@
-import { EnemyService } from '../../services/enemy/enemy.service';
+import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,7 +7,7 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./enemy.component.css']
 })
 export class EnemyComponent implements OnInit {
-  constructor(public enemyService: EnemyService) { }
+  constructor(public game: GameService) { }
 
   ngOnInit() {
   }

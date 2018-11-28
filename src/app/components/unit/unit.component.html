@@ -1,6 +1,6 @@
 <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="selectedUnitType" class="units">
   <mat-button-toggle *ngFor="let unitType of UnitTypes | enumToArray" [value]="UnitTypes[unitType]" class="unit wood"
-    [disabled]="!canAffordUnit(UnitTypes[unitType])" (click)="mapService.unitListVisible = false">
+    [disabled]="!canAffordUnit(UnitTypes[unitType])" (click)="game.map.unitListVisible = false">
     <div class="title button-text" matTooltip="{{getUnitData(UnitTypes[unitType]).description}}" matTooltipPosition="above">
       {{getUnitData(UnitTypes[unitType]).name}}
     </div>

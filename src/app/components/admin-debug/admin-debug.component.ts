@@ -1,11 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-
-import { AdminService } from '../../services/admin/admin.service';
-import { ResourcesService } from '../../services/resources/resources.service';
 import { Resource } from '../../objects/resource';
-import { Worker } from '../../objects/worker';
-import { WorkersService } from '../../services/workers/workers.service';
-import { UpgradesService } from '../../services/upgrades/upgrades.service';
+import { GameService } from './../../game/game.service';
 
 @Component({
   selector: 'app-admin-debug',
@@ -18,15 +13,13 @@ export class AdminDebugComponent implements OnInit {
   public selectedResource: Resource;
   amount = 0;
 
-  constructor(public resourcesService: ResourcesService,
-              public adminService: AdminService
-  ) {}
+  constructor(public game: GameService) {}
 
   ngOnInit() {}
 
   addResourceAmount(selectedResource?: Resource) {
     if (!selectedResource) {
-      for (const resource of this.resourcesService.getResources()) {
+      for (const resource of this.game.resources.allResources) {
         resource.addAmount(+this.amount);
       }
 

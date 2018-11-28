@@ -1,8 +1,5 @@
-import { EnemyService } from 'src/app/services/enemy/enemy.service';
-import { MapService } from 'src/app/services/map/map.service';
-import { ResourcesService } from 'src/app/services/resources/resources.service';
+import { GameService } from './../../../game/game.service';
 import { ResourceEnum } from '../../resourceData';
-import { BuildingNode } from '../../tile';
 import { Actor, ActorState, UnitData } from '../actor';
 import { Enemy } from '../enemy/enemy';
 
@@ -37,15 +34,10 @@ export class Unit extends Actor {
   statLevels = {};
   statCosts = {};
 
-  resourcesService: ResourcesService;
-  enemyService: EnemyService;
-  mapService: MapService;
-
   public constructor(x: number, y: number, unitData: UnitData,
-      scene: Phaser.Scene, texture: string, frame: string | number,
-      resourcesService: ResourcesService, enemyService: EnemyService, mapService: MapService) {
+      scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
     super(x, y, unitData.maxHealth, unitData.movementSpeed, unitData.attack, unitData.defense,
-      unitData.attackRange, mapService, scene, texture, frame);
+      unitData.attackRange, scene, texture, frame, game);
 
     this.unitType = unitData.unitType;
 
@@ -60,9 +52,6 @@ export class Unit extends Actor {
       this.statLevels[stat] = 1;
       this.statCosts[stat] = 1500;
     }
-
-    this.resourcesService = resourcesService;
-    this.enemyService = enemyService;
 
     this.findTargets();
     this.pickTarget();
@@ -85,12 +74,12 @@ export class Unit extends Actor {
     }
 
     if (this.selectedTarget) {
-      this.mapService.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+      this.game.map.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
     }
   }
 
   public canUpgradeStat(stat: UnitStat): boolean {
-    return this.resourcesService.resources.get(ResourceEnum.Gold).amount >= this.statCosts[stat];
+    return this.game.resources.getResource(ResourceEnum.Gold).amount >= this.statCosts[stat];
   }
 
   public getStatString(stat: UnitStat): string {
@@ -172,7 +161,7 @@ export class Unit extends Actor {
       return;
     }
 
-    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-this.statCosts[stat]);
+    this.game.resources.getResource(ResourceEnum.Gold).addAmount(-this.statCosts[stat]);
 
     const upgradedStat = this.getUpgradedStat(stat);
     switch (stat) {
@@ -210,7 +199,7 @@ export class Unit extends Actor {
   }
 
   public canHeal(): boolean {
-    return this.resourcesService.resources.get(ResourceEnum.Gold).amount >= this.healCost;
+    return this.game.resources.getResource(ResourceEnum.Gold).amount >= this.healCost;
   }
 
   public heal() {
@@ -218,7 +207,7 @@ export class Unit extends Actor {
       return;
     }
 
-    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-this.healCost);
+    this.game.resources.getResource(ResourceEnum.Gold).addAmount(-this.healCost);
     this.health = this.maxHealth;
   }
 

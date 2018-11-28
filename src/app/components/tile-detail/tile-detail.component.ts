@@ -1,11 +1,11 @@
+import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
-
-import { MapService } from '../../services/map/map.service';
-import { BuildingsService } from '../../services/buildings/buildings.service';
-import { ResourcesService } from '../../services/resources/resources.service';
-import { BuildingTileData, ResourceTileData, BuildingTileType, BuildingNode, ResourceNode, Market } from '../../objects/tile';
 import { Resource } from '../../objects/resource';
 import { ResourceEnum } from '../../objects/resourceData';
+import { BuildingNode } from '../../objects/tile/buildingNode';
+import { Market } from '../../objects/tile/market';
+import { ResourceNode } from '../../objects/tile/resourceNode';
+import { BuildingTileData, BuildingTileType, ResourceTileData } from '../../objects/tile/tile';
 
 @Component({
   selector: 'app-tile-detail',
@@ -16,15 +16,13 @@ export class TileDetailComponent implements OnInit {
   buildingTileTypes = BuildingTileType;
   snapSetting = 'lowerLeft';
 
-  constructor(public mapService: MapService,
-              public buildingsService: BuildingsService,
-              public resourcesService: ResourcesService) { }
+  constructor(protected game: GameService) { }
 
   ngOnInit() {
   }
 
   getResource(resourceEnum: ResourceEnum): Resource {
-    return this.resourcesService.resources.get(resourceEnum);
+    return this.game.resources.getResource(resourceEnum);
   }
 
   canAffordUpgrade(upgradeBuilding: BuildingTileData) {
@@ -38,11 +36,11 @@ export class TileDetailComponent implements OnInit {
   }
 
   get buildingTiles() {
-    return this.mapService.buildingTileData;
+    return this.game.map.buildingTileData;
   }
 
   getBuildingTileArray(filterByPlaceable: boolean): BuildingTileData[] {
-    let tiles = Array.from(this.mapService.buildingTileData.values());
+    let tiles = Array.from(this.game.map.buildingTileData.values());
 
     if (filterByPlaceable) {
       tiles = tiles.filter(tile => tile.placeable);
@@ -52,28 +50,27 @@ export class TileDetailComponent implements OnInit {
   }
 
   canAffordBuilding(buildingType: BuildingTileType): boolean {
-    return this.buildingsService.canAffordBuilding(this.buildingTiles.get(buildingType));
+    return this.game.buildings.canAffordBuilding(this.buildingTiles.get(buildingType));
   }
 
   upgradeBuilding() {
-    const currentBuildingData = this.focusedBuildingData;
     const newBuildingData = this.upgradedBuildingData;
 
-    this.mapService.clearBuilding(this.focusedTile.x, this.focusedTile.y);
-    this.mapService.createBuilding(this.focusedTile.x, this.focusedTile.y,
+    this.game.map.clearBuilding(this.focusedTile.x, this.focusedTile.y);
+    this.game.map.createBuilding(this.focusedTile.x, this.focusedTile.y,
       newBuildingData, true, newBuildingData.baseHealth);
   }
 
   canRepairBuilding(): boolean {
-    return this.mapService.canRepairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
+    return this.game.map.canRepairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
   }
 
   repairBuilding() {
-    this.mapService.repairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
+    this.game.map.repairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
   }
 
   get focusedTile(): Phaser.Tilemaps.Tile {
-    return this.mapService.focusedTile;
+    return this.game.map.focusedTile;
   }
 
   get focusedBuildingNode(): BuildingNode {
@@ -89,15 +86,15 @@ export class TileDetailComponent implements OnInit {
   }
 
   get focusedBuildingData(): BuildingTileData {
-    return this.focusedBuildingNode ? this.mapService.buildingTileData.get(this.focusedBuildingNode.tileType) : null;
+    return this.focusedBuildingNode ? this.game.map.buildingTileData.get(this.focusedBuildingNode.tileType) : null;
   }
 
   get focusedResourceData(): ResourceTileData {
-    return this.focusedResourceNode ? this.mapService.resourceTileData.get(this.focusedResourceNode.tileType) : null;
+    return this.focusedResourceNode ? this.game.map.resourceTileData.get(this.focusedResourceNode.tileType) : null;
   }
 
   get upgradedBuildingData(): BuildingTileData {
-    return this.focusedBuildingData ? this.mapService.buildingTileData.get(this.focusedBuildingData.upgradeBuilding) : null;
+    return this.focusedBuildingData ? this.game.map.buildingTileData.get(this.focusedBuildingData.upgradeBuilding) : null;
   }
 
   get focusedResources(): Resource[] {
@@ -107,6 +104,6 @@ export class TileDetailComponent implements OnInit {
 
     const resourceEnums = this.focusedResourceData.resourceEnums;
 
-    return resourceEnums.map(resourceEnum => this.resourcesService.resources.get(resourceEnum));
+    return resourceEnums.map(resourceEnum => this.game.resources.getResource(resourceEnum));
   }
 }

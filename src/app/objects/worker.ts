@@ -1,11 +1,7 @@
-import { Resource } from './resource';
-import { Tick } from './../services/tick/tick.service';
-import { WorkersService } from './../services/workers/workers.service';
-import { ResourcesService } from './../services/resources/resources.service';
-import { MapService } from './../services/map/map.service';
-import { MessagesService } from './../services/messages/messages.service';
-import { ResourceType, ResourceEnum } from './resourceData';
+import { GameService } from './../game/game.service';
 import { MessageSource } from './message';
+import { Resource } from './resource';
+import { ResourceEnum, ResourceType } from './resourceData';
 
 export interface ResourceWorker {
   resourceEnum: ResourceEnum;
@@ -21,7 +17,7 @@ export interface ResourceWorker {
   sliderSettingValid: boolean;
 }
 
-export class Worker implements Tick {
+export class Worker {
   cost: number;
 
   resourceType: ResourceType;
@@ -34,29 +30,22 @@ export class Worker implements Tick {
 
   priorityOrder = 0;
 
-  workersService: WorkersService;
-  resourcesService: ResourcesService;
-  mapService: MapService;
-  messagesService: MessagesService;
+  private game: GameService;
 
   public constructor(cost: number, resourceType: ResourceType, resourceWorkers: Map<string, ResourceWorker>,
-                     priorityOrder = 0, workersService: WorkersService, resourcesService: ResourcesService,
-                     mapService: MapService, messagesService: MessagesService) {
+                     priorityOrder = 0, game: GameService) {
     this.cost = cost;
     this.resourceType = resourceType;
     this.resourceWorkers = resourceWorkers;
 
     this.priorityOrder = priorityOrder;
 
-    this.workersService = workersService;
-    this.resourcesService = resourcesService;
-    this.mapService = mapService;
-    this.messagesService = messagesService;
+    this.game = game;
   }
 
   public tick(elapsed: number, deltaTime: number) {
     for (const resourceWorker of this.getResourceWorkers()) {
-      const resource = this.resourcesService.resources.get(resourceWorker.resourceEnum);
+      const resource = this.game.resources.getResource(resourceWorker.resourceEnum);
 
       if (resourceWorker.workerCount === 0 || elapsed - resourceWorker.lastHarvestTime < this.getWorkInterval(resource) ||
           !this.canAffordToHarvest(resource.resourceEnum)) {
@@ -69,18 +58,18 @@ export class Worker implements Tick {
       }
 
       const amountToConsume = resourceWorker.recurringCost * resourceWorker.workerCount;
-      this.workersService.foodStockpile -= amountToConsume;
-      if (this.workersService.foodStockpile < 0) {
-        const foodConsumed = amountToConsume + this.workersService.foodStockpile;
+      this.game.workers.foodStockpile -= amountToConsume;
+      if (this.game.workers.foodStockpile < 0) {
+        const foodConsumed = amountToConsume + this.game.workers.foodStockpile;
         workerOutput *= (foodConsumed / amountToConsume);
-        this.workersService.foodStockpile = 0;
+        this.game.workers.foodStockpile = 0;
       }
 
       if (!this.canAffordToHarvest(resource.resourceEnum)) {
         this.log(`No more food available for ${resource.name}.`);
       }
 
-      this.mapService.spawnHarvestedResourceAnimation(resource, workerOutput, false);
+      this.game.map.spawnHarvestedResourceAnimation(resource, workerOutput, false);
 
       resourceWorker.lastHarvestTime = elapsed;
     }
@@ -90,13 +79,13 @@ export class Worker implements Tick {
     let resourceWorkers = Array.from(this.resourceWorkers.values());
 
     if (filterByAccessible) {
-      resourceWorkers = resourceWorkers.filter(rw => this.resourcesService.resources.get(rw.resourceEnum).resourceAccessible);
+      resourceWorkers = resourceWorkers.filter(rw => this.game.resources.getResource(rw.resourceEnum).resourceAccessible);
     }
     if (filterByWorkable) {
       resourceWorkers = resourceWorkers.filter(rw => rw.workable);
     }
     if (filterByHarvestable) {
-      resourceWorkers = resourceWorkers.filter(rw => this.resourcesService.resources.get(rw.resourceEnum).harvestable);
+      resourceWorkers = resourceWorkers.filter(rw => this.game.resources.getResource(rw.resourceEnum).harvestable);
     }
 
     return resourceWorkers;
@@ -107,7 +96,7 @@ export class Worker implements Tick {
       return;
     }
 
-    this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(-this.cost);
+    this.game.resources.getResource(ResourceEnum.Gold).addAmount(-this.cost);
 
     this.cost *= 1.01;
     this.workerCount++;
@@ -115,11 +104,11 @@ export class Worker implements Tick {
   }
 
   canAffordToHire(): boolean {
-    return this.cost <= this.resourcesService.resources.get(ResourceEnum.Gold).amount;
+    return this.cost <= this.game.resources.getResource(ResourceEnum.Gold).amount;
   }
 
   canAffordToHarvest(resourceEnum: ResourceEnum): boolean {
-    return this.resourceWorkers.get(resourceEnum).recurringCost <= this.workersService.foodStockpile;
+    return this.resourceWorkers.get(resourceEnum).recurringCost <= this.game.workers.foodStockpile;
   }
 
   updateResourceWorker(resourceEnum: ResourceEnum, newResourceWorkerCount: number) {
@@ -141,6 +130,6 @@ export class Worker implements Tick {
   }
 
   private log(message: string) {
-    this.messagesService.add(MessageSource.Workers, message);
+    this.game.messages.add(MessageSource.Workers, message);
   }
 }

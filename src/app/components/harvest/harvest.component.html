@@ -18,11 +18,11 @@
         </mat-panel-description>
       </mat-expansion-panel-header>
 
-      <div class='button-container' *ngFor="let resource of getResources(resourceType, adminService.filterAccessible)"
+      <div class='button-container' *ngFor="let resource of getResources(resourceType, game.admin.filterAccessible)"
         matTooltip="{{getTooltipMessage(resource)}}" matTooltipPosition="right">
         <button mat-raised-button class="resource-button wood" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
           [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'
-          *ngIf="resource.resourceType != 'CURRENCY' && resource.resourceTier <= resourcesService.highestTierReached + 1">
+          *ngIf="resource.resourceType != 'CURRENCY' && resource.resourceTier <= game.resources.highestTierReached + 1">
           <div class="key-container" *ngIf="resource.bindIndex >= 0">
             <img src="./assets/sprites/key.png">
             <p>{{resource.bindIndex}}</p>
@@ -52,11 +52,11 @@
           </mat-panel-description>
         </mat-expansion-panel-header>
 
-        <div class='button-container' *ngFor="let resource of getResources(undefined, [resourceTier], adminService.filterAccessible)"
+        <div class='button-container' *ngFor="let resource of getResources(undefined, [resourceTier], game.admin.filterAccessible)"
           matTooltip="{{getTooltipMessage(resource)}}" matTooltipPosition="right">
           <button mat-raised-button class="resource-button wood" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
             [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'
-            *ngIf="resource.resourceTier <= resourcesService.highestTierReached + 1 && resource.resourceType != 'CURRENCY'">
+            *ngIf="resource.resourceTier <= game.resources.highestTierReached + 1 && resource.resourceType != 'CURRENCY'">
             <div class="key-container" *ngIf="resource.bindIndex >= 0">
               <img src="./assets/sprites/key.png">
               <p>{{resource.bindIndex}}</p>

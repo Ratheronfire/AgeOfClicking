@@ -1,9 +1,8 @@
-import { MapService } from 'src/app/services/map/map.service';
-import { MessagesService } from 'src/app/services/messages/messages.service';
-import { ResourcesService } from 'src/app/services/resources/resources.service';
 import { ResourceEnum } from '../../resourceData';
-import { BuildingNode, BuildingTileType } from '../../tile';
+import { BuildingNode } from '../../tile/buildingNode';
+import { BuildingTileType } from '../../tile/tile';
 import { ActorState, EnemyData } from '../actor';
+import { GameService } from './../../../game/game.service';
 import { Enemy } from './enemy';
 
 export class Raider extends Enemy {
@@ -16,10 +15,8 @@ export class Raider extends Enemy {
   resourceCapacity: number;
 
   public constructor(x: number, y: number, enemyData: EnemyData, difficultyMultiplier: number,
-      scene: Phaser.Scene, texture: string, frame: string | number,
-      mapService: MapService, resourcesService: ResourcesService, messagesService: MessagesService) {
-    super (x, y, enemyData, difficultyMultiplier, scene, texture, frame,
-      mapService, resourcesService, messagesService);
+      scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
+    super (x, y, enemyData, difficultyMultiplier, scene, texture, frame, game);
 
     this.resourcesToSteal = enemyData.resourcesToSteal;
     this.resourcesHeld = new Map<ResourceEnum, number>();
@@ -42,7 +39,7 @@ export class Raider extends Enemy {
         }
 
         const resourceIndex = Math.floor(Math.random() * this.resourcesToSteal.length);
-        const resourceToSteal = this.resourcesService.resources.get(this.resourcesToSteal[resourceIndex]);
+        const resourceToSteal = this.game.resources.getResource(this.resourcesToSteal[resourceIndex]);
 
         if (resourceToSteal.amount > this.minimumResourceAmount) {
           let amountToSteal = Math.floor(Math.random() * this.stealMax);
@@ -80,7 +77,7 @@ export class Raider extends Enemy {
   canSteal(): boolean {
     return this.totalHeld < this.resourceCapacity &&
       this.resourcesToSteal.some(resource =>
-      this.resourcesService.resources.get(resource).amount > this.minimumResourceAmount);
+      this.game.resources.getResource(resource).amount > this.minimumResourceAmount);
   }
 
   destroy() {
@@ -95,7 +92,7 @@ export class Raider extends Enemy {
           continue;
         }
 
-        const resource = this.resourcesService.resources.get(resourceEnum);
+        const resource = this.game.resources.getResource(resourceEnum);
         resource.addAmount(stolenAmount);
 
         enemyDefeatedMessage += ` ${Math.floor(stolenAmount)} ${resource.name},`;

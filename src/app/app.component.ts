@@ -1,11 +1,8 @@
-import { Component, ChangeDetectorRef, NgZone } from '@angular/core';
 import { MediaMatcher } from '@angular/cdk/layout';
-
-import { ResourcesService } from './services/resources/resources.service';
-import { UpgradesService } from './services/upgrades/upgrades.service';
-import { EnemyService } from './services/enemy/enemy.service';
-import { SettingsService } from './services/settings/settings.service';
+import { ChangeDetectorRef, Component, NgZone } from '@angular/core';
+import { GameService } from './game/game.service';
 import { ResourceEnum } from './objects/resourceData';
+
 
 @Component({
   selector: 'app-root',
@@ -19,10 +16,7 @@ export class AppComponent {
 
   private _mobileQueryListener: () => void;
 
-  constructor(protected resourcesService: ResourcesService,
-              protected upgradesService: UpgradesService,
-              protected enemyService: EnemyService,
-              protected settingsService: SettingsService,
+  constructor(protected game: GameService,
               protected changeDetectorRef: ChangeDetectorRef,
               protected ngZone: NgZone,
               protected media: MediaMatcher) {
@@ -51,33 +45,33 @@ export class AppComponent {
   }
 
   getResourceNames() {
-    return this.ngZone.run(() => this.resourcesService.getResources().map(resource => resource.resourceEnum));
+    return this.ngZone.run(() => this.game.resources.allResources.map(resource => resource.resourceEnum));
   }
 
   addToResource(resourceEnum: ResourceEnum, amount: number) {
-    this.ngZone.run(() => this.resourcesService.resources.get(resourceEnum).addAmount(amount));
+    this.ngZone.run(() => this.game.resources.getResource(resourceEnum).addAmount(amount));
   }
 
   getUpgrades() {
-    return this.ngZone.run(() => this.upgradesService.getUpgrades());
+    return this.ngZone.run(() => this.game.upgrades.getUpgrades());
   }
 
   purchaseUpgrade(id: number) {
-    return this.ngZone.run(() => this.upgradesService.getUpgrade(id).purchaseUpgrade());
+    return this.ngZone.run(() => this.game.upgrades.getUpgrade(id).purchaseUpgrade());
   }
 
   get affordableUpgradeCount(): number {
-    const upgrades = this.upgradesService.getUpgrades(false, true, true);
+    const upgrades = this.game.upgrades.getUpgrades(false, true, true);
     const affordableUpgrades = upgrades.filter(upgrade => upgrade.canAfford());
 
     return affordableUpgrades.length;
   }
 
   get disableAnimations(): boolean {
-    return this.settingsService.disableAnimations;
+    return this.game.settings.disableAnimations;
   }
 
   get debugMode(): boolean {
-    return this.settingsService.debugMode;
+    return this.game.settings.debugMode;
   }
 }

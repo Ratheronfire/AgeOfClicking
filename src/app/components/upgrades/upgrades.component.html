@@ -2,15 +2,15 @@
 <br />
 <br />
 
-<mat-accordion multi="true" class="upgrades" [ngClass]="{'slim-interface': settingsService.slimInterface}">
+<mat-accordion multi="true" class="upgrades" [ngClass]="{'slim-interface': game.settings.slimInterface}">
   <mat-expansion-panel class="steel" expanded="true" *ngFor="let upgradeVariable of upgradeVariables | enumToArray">
     <mat-expansion-panel-header>
       <mat-panel-title class="button-text-background">
         {{upgradeVariableNames[upgradeVariable]}}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <div *ngIf="!settingsService.slimInterface">
-      <mat-card class="upgrade full wood" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)">
+    <div *ngIf="!game.settings.slimInterface">
+      <mat-card class="upgrade full wood" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)">
         <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)'
           (click)='purchaseUpgrade(upgrade.id)'>
           <p class="title button-text">
@@ -20,7 +20,7 @@
             {{upgrade.name}}
           </p>
         </button>
-        <mat-card-subtitle>{{upgradesService.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
+        <mat-card-subtitle>{{game.upgrades.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
         <mat-card-content class="button-text-background">
           {{upgrade.description}}
           <div class="resource-list">
@@ -34,8 +34,8 @@
       </mat-card>
     </div>
 
-    <div *ngIf="settingsService.slimInterface">
-      <button class="slim wood" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, adminService.filterAccessible, undefined, upgradeVariable)"
+    <div *ngIf="game.settings.slimInterface">
+      <button class="slim wood" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)"
         color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
         <div class="title button-text" matTooltip="{{upgrade.description}}" matTooltipPosition="above">
           <b>

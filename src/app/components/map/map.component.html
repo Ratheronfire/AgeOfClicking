@@ -1,7 +1,7 @@
 <div id="map-canvas-container" tabindex="1" oncontextmenu="return false;">
-  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="mapService.cursorTool" class="cursor-tools"
+  <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="game.map.cursorTool" class="cursor-tools"
     (valueChange)="clearFocus()">
-    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(!mapService.buildingListVisible, false)">
+    <mat-button-toggle value="PLACEBUILDINGS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(!game.map.buildingListVisible, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>Q</p>
@@ -34,7 +34,7 @@
         Tile Details
       </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="PLACEUNITS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.mapService.unitListVisible)">
+    <mat-button-toggle *ngIf="game.enemy.enemiesActive" value="PLACEUNITS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.game.map.unitListVisible)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>R</p>
@@ -45,7 +45,7 @@
         Place Units
       </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="enemyService.enemiesActive" value="UNITDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle *ngIf="game.enemy.enemiesActive" value="UNITDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>T</p>
@@ -58,9 +58,9 @@
     </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <app-buildings *ngIf="mapService.buildingListVisible"></app-buildings>
-  <app-unit *ngIf="mapService.unitListVisible"></app-unit>
+  <app-buildings *ngIf="game.map.buildingListVisible"></app-buildings>
+  <app-unit *ngIf="game.map.unitListVisible"></app-unit>
 
-  <app-tile-detail [ngClass]="{'hidden': !mapService.focusedTile}"></app-tile-detail>
-  <app-unit-detail [ngClass]="{'hidden': !mapService.focusedUnit}"></app-unit-detail>
+  <app-tile-detail [ngClass]="{'hidden': !game.map.focusedTile}"></app-tile-detail>
+  <app-unit-detail [ngClass]="{'hidden': !game.map.focusedUnit}"></app-unit-detail>
 </div>

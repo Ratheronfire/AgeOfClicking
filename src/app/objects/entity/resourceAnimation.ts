@@ -1,7 +1,5 @@
-import { MapService } from 'src/app/services/map/map.service';
-import { ResourcesService } from 'src/app/services/resources/resources.service';
-import { StoreService } from 'src/app/services/store/store.service';
 import { ResourceEnum } from '../resourceData';
+import { GameService } from './../../game/game.service';
 import { Entity } from './entity';
 
 export enum ResourceAnimationType {
@@ -18,14 +16,11 @@ export class ResourceAnimation extends Entity {
 
   spawnedByPlayer: boolean;
 
-  resourcesService: ResourcesService;
-  storeService: StoreService;
-
   public constructor(x: number, y: number, animationSpeed, path: Phaser.Curves.Path,
       animationType: ResourceAnimationType, resourceEnum: ResourceEnum, multiplier: number,
       spawnedByPlayer: boolean, scene: Phaser.Scene, texture: string, frame: string | number,
-      mapService: MapService, resourcesService: ResourcesService, storeService: StoreService) {
-    super(x, y, -1, animationSpeed, scene, texture, frame, mapService, path);
+      game: GameService) {
+    super(x, y, -1, animationSpeed, scene, texture, frame, game, path);
 
     this.animationType = animationType;
 
@@ -33,14 +28,11 @@ export class ResourceAnimation extends Entity {
     this.multiplier = multiplier;
     this.spawnedByPlayer = spawnedByPlayer;
 
-    this.resourcesService = resourcesService;
-    this.storeService = storeService;
-
     this.startFollow((path.curves.length - 1) * 1000 / this.animationSpeed);
   }
 
   finishAnimation() {
-    this.resourcesService.resources.get(this.resourceEnum).finishResourceAnimation(this.multiplier, this.animationType);
+    this.game.resources.getResource(this.resourceEnum).finishResourceAnimation(this.multiplier, this.animationType);
 
     this.destroy();
   }

@@ -1,9 +1,8 @@
+import { GameService } from './../../../game/game.service';
 import { EnemyData } from 'src/app/objects/entity/actor';
-import { MapService } from 'src/app/services/map/map.service';
-import { MessagesService } from 'src/app/services/messages/messages.service';
-import { ResourcesService } from 'src/app/services/resources/resources.service';
 import { MessageSource } from '../../message';
-import { BuildingNode, BuildingTileType, MapTileType } from '../../tile';
+import { MapTileType } from '../../tile/tile';
+import { BuildingNode } from '../../tile/buildingNode';
 import { Actor, ActorState } from '../actor';
 
 export enum EnemyType {
@@ -14,26 +13,19 @@ export class Enemy extends Actor {
   enemyType: EnemyType;
   tilePath: Phaser.Tilemaps.Tile[] = [];
 
-  resourcesService: ResourcesService;
-  messagesService: MessagesService;
-
   public constructor(x: number, y: number, enemyData: EnemyData, difficultyMultiplier: number,
-      scene: Phaser.Scene, texture: string, frame: string | number,
-      mapService: MapService, resourcesService: ResourcesService, messagesService: MessagesService) {
+      scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
     super(x, y, enemyData.maxHealth * difficultyMultiplier,
       enemyData.movementSpeed * Math.min(4, 1 + difficultyMultiplier / 10000), enemyData.attack * difficultyMultiplier,
-      enemyData.defense * difficultyMultiplier, enemyData.attackRange, mapService, scene, texture, frame);
+      enemyData.defense * difficultyMultiplier, enemyData.attackRange, scene, texture, frame, game);
 
     this.enemyType = enemyData.enemyType;
 
     this.targetableBuildingTypes = enemyData.targetableBuildingTypes;
 
-    this.resourcesService = resourcesService;
-    this.messagesService = messagesService;
-
     this.currentState = ActorState.MovingToTarget;
 
-    this.currentTile = this.mapService.mapLayer.getTileAtWorldXY(this.x, this.y);
+    this.currentTile = this.game.map.mapLayer.getTileAtWorldXY(this.x, this.y);
     this.lastIslandId = this.currentTile.properties['islandId'];
 
     this.findTargets();
@@ -60,7 +52,7 @@ export class Enemy extends Actor {
           buildingNode.takeDamage(this.attack);
 
           if (buildingNode.health <= 0) {
-            this.mapService.updatePaths(this.currentTile, true);
+            this.game.map.updatePaths(this.currentTile, true);
             this.finishTask();
           }
         }
@@ -87,16 +79,16 @@ export class Enemy extends Actor {
       const sortedTargets = this.sortedTargets();
       this.selectedTarget = sortedTargets[0];
     } else {
-      const shouldTargetBuilding = Math.random() < 0.15 && this.mapService.islandHasActiveTiles(this.islandId);
+      const shouldTargetBuilding = Math.random() < 0.15 && this.game.map.islandHasActiveTiles(this.islandId);
 
       let randomTarget;
 
       if (shouldTargetBuilding) {
         this.currentState = ActorState.MovingToTarget;
-        randomTarget = this.mapService.getRandomTileOnIsland(this.islandId, [MapTileType.Grass], true, true);
+        randomTarget = this.game.map.getRandomTileOnIsland(this.islandId, [MapTileType.Grass], true, true);
       } else {
         this.currentState = ActorState.Wandering;
-        randomTarget = this.mapService.getRandomTileOnIsland(this.islandId, [MapTileType.Grass, MapTileType.Water], true);
+        randomTarget = this.game.map.getRandomTileOnIsland(this.islandId, [MapTileType.Grass, MapTileType.Water], true);
       }
 
       this.targets.push(randomTarget);
@@ -106,7 +98,7 @@ export class Enemy extends Actor {
     if (!this.selectedTarget) {
       this.currentState = ActorState.Sleeping;
     } else {
-      this.mapService.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+      this.game.map.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
     }
   }
 
@@ -122,6 +114,6 @@ export class Enemy extends Actor {
   }
 
   protected log(message: string) {
-    this.messagesService.add(MessageSource.Enemy, message);
+    this.game.messages.add(MessageSource.Enemy, message);
   }
 }

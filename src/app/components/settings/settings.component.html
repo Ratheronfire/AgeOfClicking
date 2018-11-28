@@ -1,5 +1,5 @@
 <h3 class="button-text-background">
-  Version {{settingsService.gameVersion}} -
+  Version {{game.settings.gameVersion}} -
   <a (click)="openAboutDialog()">About</a>
 </h3>
 
@@ -17,7 +17,7 @@
       <br />
       <br />
 
-      <mat-select [(ngModel)]="autosaveInterval" (valueChange)="settingsService.setAutosave()">
+      <mat-select [(ngModel)]="autosaveInterval" (valueChange)="game.settings.setAutosave()">
         <mat-option [value]="-1">Disable</mat-option>
         <mat-option [value]="60000">1</mat-option>
         <mat-option [value]="900000">15</mat-option>
@@ -72,7 +72,7 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <button mat-raised-button (click)="messagesService.clear()">Clear</button>
+    <button mat-raised-button (click)="game.messages.clear()">Clear</button>
 
     <br />
 
@@ -81,7 +81,7 @@
       <br />
       <br />
 
-      <input matInput type="number" placeholder="Log History" min="0" max="10000" [(ngModel)]="messagesService.messageLimit">
+      <input matInput type="number" placeholder="Log History" min="0" max="10000" [(ngModel)]="game.messages.messageLimit">
     </mat-form-field>
 
     <br />
@@ -91,7 +91,7 @@
       <br />
       <br />
 
-      <mat-select [(ngModel)]="messagesService.visibleSources" (ngModelChange)="messagesService.getFilteredMessages()"
+      <mat-select [(ngModel)]="game.messages.visibleSources" (ngModelChange)="game.messages.getFilteredMessages()"
         multiple>
         <mat-option *ngFor="let messageSource of messageSources | enumToArray" [(value)]="messageSources[messageSource]">
           {{messageSource | titlecase}}

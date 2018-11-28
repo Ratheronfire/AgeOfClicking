@@ -1,6 +1,6 @@
 <h2>Debug</h2>
 
-<mat-checkbox class="filterAccessible button-text-background" checked="true" [(ngModel)]="adminService.filterAccessible">Hide Inaccessible
+<mat-checkbox class="filterAccessible button-text-background" checked="true" [(ngModel)]="game.admin.filterAccessible">Hide Inaccessible
   Upgrades</mat-checkbox>
 <br />
 
@@ -9,7 +9,7 @@
 
 <div>
   <mat-select placeholder="Resource" style="width: 200px; background: white" [(ngModel)]="selectedResource">
-    <mat-option *ngFor="let resource of resourcesService.getResources()" [value]="resource">
+    <mat-option *ngFor="let resource of game.resources.allResources" [value]="resource">
       {{resource.name | titlecase}}
     </mat-option>
   </mat-select>

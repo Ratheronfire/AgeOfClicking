@@ -1,17 +1,14 @@
-import { EnemyService } from 'src/app/services/enemy/enemy.service';
-import { MapService } from 'src/app/services/map/map.service';
-import { ResourcesService } from 'src/app/services/resources/resources.service';
-import { BuildingNode } from '../../tile';
+import { BuildingNode } from '../../tile/buildingNode';
 import { ActorState, UnitData } from '../actor';
+import { GameService } from './../../../game/game.service';
 import { Unit, UnitStat } from './unit';
 
 export class Builder extends Unit {
   repairAmount = 5;
 
   public constructor(x: number, y: number, unitData: UnitData,
-      scene: Phaser.Scene, texture: string, frame: string | number,
-      resourcesService: ResourcesService, enemyService: EnemyService, mapService: MapService) {
-    super(x, y, unitData, scene, texture, frame, resourcesService, enemyService, mapService);
+      scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
+    super(x, y, unitData, scene, texture, frame, game);
 
     this.currentState = ActorState.MovingToTarget;
   }
@@ -31,8 +28,8 @@ export class Builder extends Unit {
             break;
           }
 
-          if (this.mapService.canRepairBuilding(this.currentTile, this.repairAmount)) {
-            this.mapService.repairBuilding(this.currentTile, this.repairAmount);
+          if (this.game.map.canRepairBuilding(this.currentTile, this.repairAmount)) {
+            this.game.map.repairBuilding(this.currentTile, this.repairAmount);
           }
 
           if (buildingNode.health >= buildingNode.maxHealth) {
@@ -54,7 +51,7 @@ export class Builder extends Unit {
   findTargets() {
     this.targets = [];
 
-    for (const tile of this.mapService.getBuildingTiles()) {
+    for (const tile of this.game.map.getBuildingTiles()) {
       const buildingNode: BuildingNode = tile.properties['buildingNode'];
       if (buildingNode.health < buildingNode.maxHealth) {
         this.targets.push(tile);

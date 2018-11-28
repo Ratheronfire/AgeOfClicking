@@ -1,8 +1,8 @@
+import { GameService } from './../../game/game.service';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material';
 
 import { Message, MessageSource } from './../../objects/message';
-import { MessagesService } from '../../services/messages/messages.service';
 
 @Component({
   selector: 'app-messages',
@@ -12,14 +12,14 @@ import { MessagesService } from '../../services/messages/messages.service';
 export class MessagesComponent implements OnInit {
   @ViewChild(MatSort) sort: MatSort;
 
-  constructor(public messagesService: MessagesService) { }
+  constructor(public game: GameService) { }
 
   ngOnInit() {
-    this.messagesService.messagesDataSource.sort = this.sort;
+    this.game.messages.messagesDataSource.sort = this.sort;
   }
 
   get messages(): Message[] {
-    return this.messagesService.messages;
+    return this.game.messages.messages;
   }
 
   get displayedColumns(): string[] {

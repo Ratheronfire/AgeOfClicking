@@ -2,7 +2,7 @@ import { MessageSource } from '../objects/message';
 import { EnemyType } from './entity/enemy/enemy';
 import { UnitType } from './entity/unit/unit';
 import { ResourceEnum, ResourceType } from './resourceData';
-import { BuildingTileType, ResourceTileType } from './tile';
+import { BuildingTileType, ResourceTileType } from './tile/tile';
 
 export interface ResourceSaveData {
   resourceEnum: ResourceEnum;

@@ -1,10 +1,8 @@
+import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
 
 import { Resource } from '../../objects/resource';
 import { ResourceType } from '../../objects/resourceData';
-import { ResourcesService } from '../../services/resources/resources.service';
-import { StoreService } from '../../services/store/store.service';
-import { AdminService } from '../../services/admin/admin.service';
 
 @Component({
   selector: 'app-store',
@@ -16,23 +14,21 @@ export class StoreComponent implements OnInit {
   sellableTypes = [ResourceType.Wood, ResourceType.Mineral, ResourceType.Metal];
   sellAmount = 1;
 
-  constructor(private resourcesService: ResourcesService,
-              private storeService: StoreService,
-              private adminService: AdminService) {
+  constructor(protected game: GameService) {
   }
 
   ngOnInit() {
   }
 
   canSellResource(resource: Resource) {
-    return this.storeService.canSellResource(resource, +this.sellAmount);
+    return this.game.store.canSellResource(resource, +this.sellAmount);
   }
 
   getResources(resourceType: ResourceType, filterBySellable: boolean, filterByAccessible): Resource[] {
-    return this.resourcesService.getResources(resourceType, undefined, filterBySellable, filterByAccessible);
+    return this.game.resources.getResources(resourceType, undefined, filterBySellable, filterByAccessible);
   }
 
   sellResource(resource: Resource) {
-    this.storeService.sellResource(resource, +this.sellAmount);
+    this.game.store.sellResource(resource, +this.sellAmount);
   }
 }

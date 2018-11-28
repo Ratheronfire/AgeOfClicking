@@ -1,9 +1,7 @@
-import { ResourcesService } from './../services/resources/resources.service';
-import { WorkersService } from './../services/workers/workers.service';
-import { MessagesService } from './../services/messages/messages.service';
-import { ResourceCost } from './resourceCost';
-import { ResourceType, ResourceEnum } from './resourceData';
+import { GameService } from './../game/game.service';
 import { MessageSource } from './message';
+import { ResourceCost } from './resourceCost';
+import { ResourceEnum, ResourceType } from './resourceData';
 
 export enum UpgradeType {
   Resource = 'RESOURCE',
@@ -57,13 +55,11 @@ export class Upgrade {
 
   purchased = false;
 
-  resourcesService: ResourcesService;
-  workersService: WorkersService;
-  messagesService: MessagesService;
+  private game: GameService;
 
   public constructor(id: number, name: string, description: string, upgradeType: UpgradeType,
                      upgradeEffects: UpgradeEffect[], resourceCosts: ResourceCost[], purchased = false,
-                     resourcesService: ResourcesService, workersService: WorkersService, messagesService: MessagesService) {
+                     game: GameService) {
     this.id = id;
     this.name = name;
     this.description = description;
@@ -75,9 +71,7 @@ export class Upgrade {
 
     this.purchased = purchased;
 
-    this.resourcesService = resourcesService;
-    this.workersService = workersService;
-    this.messagesService = messagesService;
+    this.game = game;
   }
 
   public purchaseUpgrade() {
@@ -86,7 +80,7 @@ export class Upgrade {
     }
 
     for (const resourceCost of this.resourceCosts) {
-      this.resourcesService.resources.get(resourceCost.resourceEnum).addAmount(-resourceCost.resourceCost);
+      this.game.resources.getResource(resourceCost.resourceEnum).addAmount(-resourceCost.resourceCost);
     }
 
     this.applyUpgrade();
@@ -97,7 +91,7 @@ export class Upgrade {
   public applyUpgrade(applySilently = false) {
     for (const upgradeEffect of this.upgradeEffects) {
       if (upgradeEffect.upgradeVariable === UpgradeVariable.WorkerCost) {
-        this.workersService.workers.get(upgradeEffect.resourceType).cost *= upgradeEffect.upgradeFactor;
+        this.game.workers.getWorkerFromType(upgradeEffect.resourceType).cost *= upgradeEffect.upgradeFactor;
         continue;
       }
 
@@ -105,17 +99,17 @@ export class Upgrade {
       let workersToUpgrade = [];
 
       if (upgradeEffect.upgradeIsForWholeType) {
-        resourcesToUpgrade = this.resourcesService.getResources(upgradeEffect.resourceType);
-        workersToUpgrade = this.workersService.workers.get(upgradeEffect.resourceType).getResourceWorkers();
+        resourcesToUpgrade = this.game.resources.getResources(upgradeEffect.resourceType);
+        workersToUpgrade = this.game.workers.getWorkerFromType(upgradeEffect.resourceType).getResourceWorkers();
 
         if (upgradeEffect.maxTier >= 0) {
           resourcesToUpgrade = resourcesToUpgrade.filter(resource => resource.resourceTier <= upgradeEffect.maxTier);
           workersToUpgrade = workersToUpgrade.filter(worker =>
-            this.resourcesService.resources.get(worker.resourceEnum).resourceTier <= upgradeEffect.maxTier);
+            this.game.resources.getResource(worker.resourceEnum).resourceTier <= upgradeEffect.maxTier);
         }
       } else {
-        resourcesToUpgrade.push(this.resourcesService.resources.get(upgradeEffect.resourceEnum));
-        workersToUpgrade.push(this.workersService.getResourceWorker(upgradeEffect.resourceEnum));
+        resourcesToUpgrade.push(this.game.resources.getResource(upgradeEffect.resourceEnum));
+        workersToUpgrade.push(this.game.workers.getResourceWorker(upgradeEffect.resourceEnum));
       }
 
       for (const resourceToUpgrade of resourcesToUpgrade) {
@@ -139,7 +133,7 @@ export class Upgrade {
       }
 
       for (const workerToUpgrade of workersToUpgrade) {
-        switch(upgradeEffect.upgradeVariable) {
+        switch (upgradeEffect.upgradeVariable) {
           case UpgradeVariable.Workable: {
             workerToUpgrade.workable = !!upgradeEffect.upgradeFactor;
             break;
@@ -162,10 +156,10 @@ export class Upgrade {
 
   public canAfford(): boolean {
     return this.resourceCosts.every(resourceCost =>
-      this.resourcesService.resources.get(resourceCost.resourceEnum).amount >= resourceCost.resourceCost);
+      this.game.resources.getResource(resourceCost.resourceEnum).amount >= resourceCost.resourceCost);
   }
 
   private log(message: string) {
-    this.messagesService.add(MessageSource.Workers, message);
+    this.game.messages.add(MessageSource.Workers, message);
   }
 }

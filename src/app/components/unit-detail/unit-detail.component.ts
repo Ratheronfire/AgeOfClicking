@@ -1,8 +1,6 @@
+import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
 
-import { MapService } from '../../services/map/map.service';
-import { BuildingsService } from '../../services/buildings/buildings.service';
-import { ResourcesService } from '../../services/resources/resources.service';
 import { ResourceEnum } from '../../objects/resourceData';
 import { Unit } from '../../objects/entity/unit/unit';
 
@@ -14,15 +12,13 @@ import { Unit } from '../../objects/entity/unit/unit';
 export class UnitDetailComponent implements OnInit {
   snapSetting = 'lowerLeft';
 
-  constructor(protected mapService: MapService,
-              protected buildingsService: BuildingsService,
-              protected resourcesService: ResourcesService) { }
+  constructor(protected game: GameService) { }
 
   ngOnInit() {
   }
 
   getResource(resourceEnum: ResourceEnum) {
-    return this.resourcesService.resources.get(resourceEnum);
+    return this.game.resources.getResource(resourceEnum);
   }
 
   removeUnit() {
@@ -37,18 +33,18 @@ export class UnitDetailComponent implements OnInit {
   }
 
   get focusedTile(): Phaser.Tilemaps.Tile {
-    return this.mapService.focusedTile;
+    return this.game.map.focusedTile;
   }
 
   set focusedTile(value: Phaser.Tilemaps.Tile) {
-    this.mapService.focusedTile = value;
+    this.game.map.focusedTile = value;
   }
 
   get focusedUnit(): Unit {
-    return this.mapService.focusedUnit;
+    return this.game.map.focusedUnit;
   }
 
   set focusedUnit(value: Unit) {
-    this.mapService.focusedUnit = value;
+    this.game.map.focusedUnit = value;
   }
 }

@@ -1,11 +1,11 @@
-import { MapService } from 'src/app/services/map/map.service';
 import { HealthBar } from '../healthbar';
 import { ResourceEnum } from '../resourceData';
-import { BuildingTileType, MapTileType } from '../tile';
+import { BuildingTileType, MapTileType } from '../tile/tile';
+import { GameService } from './../../game/game.service';
 import { EnemyType } from './enemy/enemy';
 import { Entity } from './entity';
-import { UnitStat, UnitType } from './unit/unit';
 import { Projectile } from './projectile';
+import { UnitStat, UnitType } from './unit/unit';
 
 export enum ActorState {
   /** The actor is moving towards a specific target. */
@@ -76,12 +76,10 @@ export class Actor extends Entity {
 
   currentState: ActorState;
 
-  mapService: MapService;
-
   public constructor(x: number, y: number, health: number, animationSpeed: number,
-      attack: number, defense: number, attackRange: number, mapService: MapService,
-      scene: Phaser.Scene, texture: string, frame: string | number) {
-    super(x, y, health, animationSpeed, scene, texture, frame, mapService);
+      attack: number, defense: number, attackRange: number,
+      scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
+    super(x, y, health, animationSpeed, scene, texture, frame, game);
 
     this.attack = attack;
     this.defense = defense;
@@ -91,7 +89,7 @@ export class Actor extends Entity {
   }
 
   tick(elapsed: number, deltaTime: number) {
-    if (!this.currentTile || !this.mapService.isTileWalkable(this.currentTile)) {
+    if (!this.currentTile || !this.game.map.isTileWalkable(this.currentTile)) {
       // If the enemy spawns on an invalid tile, we'll just move it elsewhere.
       if (!this.moveToNeighbor()) {
         this.moveToNewTile();
@@ -136,7 +134,7 @@ export class Actor extends Entity {
 
   findTargets() {
     for (const buildingType of this.targetableBuildingTypes) {
-      const matchingTiles = this.mapService.mapLayer.filterTiles(tile => tile.properties['buildingNode'] &&
+      const matchingTiles = this.game.map.mapLayer.filterTiles(tile => tile.properties['buildingNode'] &&
         tile.properties['buildingNode'].tileType === buildingType);
 
       for (const tile of matchingTiles) {
@@ -180,7 +178,7 @@ export class Actor extends Entity {
         this.tilePath.splice(0, 1);
       }
 
-      this.path = this.mapService.tilesToLinearPath(tilePath);
+      this.path = this.game.map.tilesToLinearPath(tilePath);
 
       this.currentState = ActorState.MovingToTarget;
     }
@@ -201,8 +199,8 @@ export class Actor extends Entity {
       return false;
     }
 
-    for (const neighbor of this.mapService.getNeighborTiles(this.currentTile)) {
-      if (this.mapService.isTileWalkable(neighbor)) {
+    for (const neighbor of this.game.map.getNeighborTiles(this.currentTile)) {
+      if (this.game.map.isTileWalkable(neighbor)) {
         this.currentTile = neighbor;
 
         return true;
@@ -215,11 +213,11 @@ export class Actor extends Entity {
   moveToNewTile() {
     this.currentTile = null;
     if (!this.lastIslandId) {
-      this.lastIslandId = this.mapService.getRandomIslandId(10);
+      this.lastIslandId = this.game.map.getRandomIslandId(10, [MapTileType.Grass]);
     }
 
     while (!this.currentTile) {
-      this.currentTile = this.mapService.getRandomTileOnIsland(this.lastIslandId, [MapTileType.Grass], true, false);
+      this.currentTile = this.game.map.getRandomTileOnIsland(this.lastIslandId, [MapTileType.Grass], true, false);
     }
 
     this.x = this.currentTile.getCenterX();
@@ -233,7 +231,7 @@ export class Actor extends Entity {
 
   isPathBroken(): boolean {
     return !this.selectedTarget || this.selectedTarget.properties['islandId'] !== this.islandId ||
-      this.tilePath.some(tile => !this.mapService.isTileWalkable(tile));
+      this.tilePath.some(tile => !this.game.map.isTileWalkable(tile));
   }
 
   takeDamage(damageSource: Projectile) {

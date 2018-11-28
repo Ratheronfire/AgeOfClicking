@@ -1,12 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
 import { Resource } from '../../objects/resource';
-import { ResourceType, ResourceEnum } from '../../objects/resourceData';
+import { ResourceEnum, ResourceType } from '../../objects/resourceData';
 import { Worker } from '../../objects/worker';
-import { ResourcesService } from '../../services/resources/resources.service';
-import { WorkersService } from '../../services/workers/workers.service';
-import { TooltipService } from './../../services/tooltip/tooltip.service';
-import { AdminService } from '../../services/admin/admin.service';
+import { GameService } from './../../game/game.service';
+
 
 @Component({
   selector: 'app-workers',
@@ -16,24 +13,21 @@ import { AdminService } from '../../services/admin/admin.service';
 export class WorkersComponent implements OnInit {
   resourceTypes = ResourceType;
 
-  constructor(protected resourcesService: ResourcesService,
-              protected workersService: WorkersService,
-              protected tooltipService: TooltipService,
-              protected adminService: AdminService) { }
+  constructor(protected game: GameService) { }
 
   ngOnInit() {
   }
 
   getWorkers(filterByAccessible: boolean, filterByWorkable: boolean, filterByHarvestable: boolean): Worker[] {
-    return this.workersService.getWorkers(filterByAccessible, filterByWorkable, filterByHarvestable);
+    return this.game.workers.getWorkers(filterByAccessible, filterByWorkable, filterByHarvestable);
   }
 
   public getWorker(resourceType: ResourceType) {
-    return this.workersService.workers.get(resourceType);
+    return this.game.workers.workers.get(resourceType);
   }
 
   getResource(resourceEnum: ResourceEnum): Resource {
-    return this.resourcesService.resources.get(resourceEnum);
+    return this.game.resources.getResource(resourceEnum);
   }
 
   getAccessibleResourceWorkers(worker: Worker) {
@@ -41,30 +35,30 @@ export class WorkersComponent implements OnInit {
   }
 
   canAffordToHarvest(resourceEnum: ResourceEnum): boolean {
-    return this.workersService.getWorker(resourceEnum).canAffordToHarvest(resourceEnum);
+    return this.game.workers.getWorkerFromResource(resourceEnum).canAffordToHarvest(resourceEnum);
   }
 
   canHarvest(resourceEnum: ResourceEnum): boolean {
-    return this.resourcesService.resources.get(resourceEnum).canHarvest() && this.canAffordToHarvest(resourceEnum);
+    return this.game.resources.getResource(resourceEnum).canHarvest() && this.canAffordToHarvest(resourceEnum);
   }
 
   shouldShowResource(resourceEnum: ResourceEnum): boolean {
-    const resource = this.resourcesService.resources.get(resourceEnum);
-    const resourceWorker = this.workersService.getResourceWorker(resourceEnum);
+    const resource = this.game.resources.getResource(resourceEnum);
+    const resourceWorker = this.game.workers.getResourceWorker(resourceEnum);
 
-    return (resourceWorker.workable && resource.harvestable) || !this.adminService.filterAccessible;
+    return (resourceWorker.workable && resource.harvestable) || !this.game.admin.filterAccessible;
   }
 
   getTooltipMessage(resourceEnum: ResourceEnum): string {
-    return this.tooltipService.getWorkerTooltip(resourceEnum);
+    return this.game.tooltip.getWorkerTooltip(resourceEnum);
   }
 
   checkSliderValue(eventOrEnum: any | string) {
     const resourceEnum = typeof(eventOrEnum) === 'string' ? eventOrEnum : eventOrEnum.source._elementRef.nativeElement.id;
 
-    const resource = this.resourcesService.resources.get(resourceEnum);
+    const resource = this.game.resources.getResource(resourceEnum);
     const worker = this.getWorker(resource.resourceType);
-    const resourceWorker = this.workersService.getResourceWorker(resourceEnum);
+    const resourceWorker = this.game.workers.getResourceWorker(resourceEnum);
 
     const newValue = typeof(eventOrEnum) === 'string' ? resourceWorker.sliderSetting : +eventOrEnum.value;
 
@@ -77,30 +71,30 @@ export class WorkersComponent implements OnInit {
       value = +eventOrEnum.value;
     }
 
-    this.workersService.getWorker(resourceEnum).updateResourceWorker(resourceEnum, value);
+    this.game.workers.getWorkerFromResource(resourceEnum).updateResourceWorker(resourceEnum, value);
   }
 
   pathAvailable(resourceEnum: ResourceEnum): boolean {
-    return this.resourcesService.resources.get(resourceEnum).pathAvailable;
+    return this.game.resources.getResource(resourceEnum).pathAvailable;
   }
 
   get workersPaused(): boolean {
-    return this.workersService.workersPaused;
+    return this.game.workers.workersPaused;
   }
 
   set workersPaused(value: boolean) {
-    this.workersService.workersPaused = value;
+    this.game.workers.workersPaused = value;
   }
 
   get foodStockpile(): number {
-    return this.workersService.foodStockpile;
+    return this.game.workers.foodStockpile;
   }
 
   get foodCapacity(): number {
-    return this.workersService.foodCapacity;
+    return this.game.workers.foodCapacity;
   }
 
   get foodPercentage(): number {
-    return Math.floor(this.workersService.foodStockpile / this.workersService.foodCapacity * 100);
+    return Math.floor(this.game.workers.foodStockpile / this.game.workers.foodCapacity * 100);
   }
 }

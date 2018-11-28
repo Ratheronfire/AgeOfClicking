@@ -1,6 +1,6 @@
-import { ResourceType, ResourceEnum } from './resourceData';
+import { GameService } from './../game/game.service';
 import { ResourceAnimationType } from './entity/resourceAnimation';
-import { ResourcesService } from '../services/resources/resources.service';
+import { ResourceEnum, ResourceType } from './resourceData';
 
 export interface ResourceConsume {
   resourceEnum: ResourceEnum;
@@ -43,12 +43,12 @@ export class Resource {
 
   bindIndex: number;
 
-  resourcesService: ResourcesService;
+  private game: GameService;
 
   public constructor(name: string, resourceType: ResourceType, resourceEnum: ResourceEnum, iconPath: string,
                      resourceConsumes: ResourceConsume[], harvestable: boolean, harvestYield: number = 1, harvestMilliseconds: number,
                      sellable: boolean, sellsFor: number, resourceDescription: string, workerVerb: string, workerNoun: string,
-                     resourceTier: number, edible: boolean, foodMultiplier: number, resourcesService: ResourcesService) {
+                     resourceTier: number, edible: boolean, foodMultiplier: number, game: GameService) {
     this.name = name;
     this.resourceType = resourceType;
     this.resourceEnum = resourceEnum;
@@ -74,7 +74,7 @@ export class Resource {
     this.edible = edible;
     this.foodMultiplier = foodMultiplier;
 
-    this.resourcesService = resourcesService;
+    this.game = game;
   }
 
   addAmount(amount: number) {
@@ -85,8 +85,8 @@ export class Resource {
   }
 
   harvestResource(multiplier = 1) {
-    if (this.resourceTier > this.resourcesService.highestTierReached) {
-      this.resourcesService.highestTierReached = this.resourceTier;
+    if (this.resourceTier > this.game.resources.highestTierReached) {
+      this.game.resources.highestTierReached = this.resourceTier;
     }
 
     this.addAmount(multiplier);
@@ -94,7 +94,7 @@ export class Resource {
 
   public deductResourceConsumes(multiplier = 1) {
     for (const resourceConsume of this.resourceConsumes) {
-      this.resourcesService.resources.get(resourceConsume.resourceEnum).addAmount(-resourceConsume.cost * multiplier);
+      this.game.resources.getResource(resourceConsume.resourceEnum).addAmount(-resourceConsume.cost * multiplier);
     }
   }
 
@@ -108,7 +108,7 @@ export class Resource {
         this.harvestResource(multiplier);
         break;
       } case ResourceAnimationType.Sold: {
-        this.resourcesService.resources.get(ResourceEnum.Gold).addAmount(multiplier * this.sellsFor);
+        this.game.resources.getResource(ResourceEnum.Gold).addAmount(multiplier * this.sellsFor);
         break;
       }
     }
@@ -124,7 +124,7 @@ export class Resource {
 
   public canAfford(multiplier = 1): boolean {
     for (const resourceConsume of this.resourceConsumes) {
-      if (this.resourcesService.resources.get(resourceConsume.resourceEnum).amount < resourceConsume.cost * multiplier) {
+      if (this.game.resources.getResource(resourceConsume.resourceEnum).amount < resourceConsume.cost * multiplier) {
         return false;
       }
     }
@@ -133,6 +133,6 @@ export class Resource {
   }
 
   get resourceAccessible(): boolean {
-    return this.resourceTier <= this.resourcesService.highestTierReached + 1;
+    return this.resourceTier <= this.game.resources.highestTierReached + 1;
   }
 }
