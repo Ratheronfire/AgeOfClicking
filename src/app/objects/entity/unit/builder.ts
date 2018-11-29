@@ -69,6 +69,7 @@ export class Builder extends Unit {
       scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
     super(x, y, unitData, scene, texture, frame, game);
 
+    this.stats = new BuilderStats(unitData.stats, this, this.game);
     this.currentState = ActorState.MovingToTarget;
   }
 
