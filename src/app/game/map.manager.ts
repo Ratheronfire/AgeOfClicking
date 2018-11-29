@@ -852,8 +852,8 @@ export class MapManager {
             resource.pathAvailable = pathAvailable || alternatePaths.length > 0;
           }
         });
-      } else if (buildingNode && buildingNode.market) {
-        buildingNode.market.calculateConnection();
+      } else if (buildingNode && buildingNode instanceof Market) {
+        buildingNode.calculateConnection();
       }
     }
   }
@@ -885,8 +885,8 @@ export class MapManager {
 
     for (const marketTile of this.mapLayer.getTilesWithin()) {
       const buildingNode: BuildingNode = marketTile.properties['buildingNode'];
-      if (buildingNode && buildingNode.market) {
-        buildingNode.market.calculateConnection();
+      if (buildingNode && buildingNode instanceof Market) {
+        buildingNode.calculateConnection();
       }
     }
   }
@@ -1165,7 +1165,7 @@ export class MapManager {
     return path;
   }
 
-  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean, health: number,
+  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean,
       createForFree = false, shouldUpdatePaths = true) {
     if (!buildingData) {
       return;
@@ -1185,28 +1185,10 @@ export class MapManager {
       this.game.buildings.purchaseBuilding(buildingData);
     }
 
-    const buildingTile = this.setBuildingTile(x, y, buildingData.tileType, removable, health);
+    const buildingTile = this.setBuildingTile(x, y, buildingData.tileType, removable);
 
     if (buildingData.placesResourceTile) {
-      mapTile.properties['resourceNode'] = new ResourceNode(buildingData.resourceTileType, health);
-    }
-
-    if (buildingData.subType === BuildingSubType.Market) {
-      let resourceType: ResourceType;
-      switch (buildingData.tileType) {
-        case BuildingTileType.WoodMarket: {
-          resourceType = ResourceType.Wood;
-          break;
-        } case BuildingTileType.MineralMarket: {
-          resourceType = ResourceType.Mineral;
-          break;
-        } case BuildingTileType.MetalMarket: {
-          resourceType = ResourceType.Metal;
-          break;
-        }
-      }
-
-      mapTile.properties['buildingNode'].market = new Market(resourceType, mapTile, true, this.game);
+      mapTile.properties['resourceNode'] = new ResourceNode(buildingData.resourceTileType, buildingData.baseHealth);
     }
 
     // If we're building a bridge, we need to update the island structure
@@ -1396,11 +1378,35 @@ export class MapManager {
     this.mapLayer.removeTileAt(x, y);
   }
 
-  setBuildingTile(x: number, y: number, tileType: BuildingTileType, removable: boolean, health: number): Phaser.Tilemaps.Tile {
+  setBuildingTile(x: number, y: number, tileType: BuildingTileType, removable: boolean): Phaser.Tilemaps.Tile {
     const buildingTile = this.buildingLayer.putTileAt(this.tileIndices[tileType], x, y);
     const mapTile = this.mapLayer.getTileAt(x, y);
 
-    mapTile.properties['buildingNode'] = new BuildingNode(tileType, removable, health, buildingTile, this.scene, this.game);
+    const buildingData = this.buildingTileData.get(tileType);
+
+    switch (buildingData.subType) {
+      case BuildingSubType.Market: {
+        let resourceType: ResourceType;
+        switch (buildingData.tileType) {
+          case BuildingTileType.WoodMarket: {
+            resourceType = ResourceType.Wood;
+            break;
+          } case BuildingTileType.MineralMarket: {
+            resourceType = ResourceType.Mineral;
+            break;
+          } case BuildingTileType.MetalMarket: {
+            resourceType = ResourceType.Metal;
+            break;
+          }
+        }
+
+        mapTile.properties['buildingNode'] = new Market(resourceType, mapTile, buildingData, this.scene, this.game);
+        break;
+      } default: {
+        mapTile.properties['buildingNode'] = new BuildingNode(tileType, removable, buildingData, mapTile, this.scene, this.game);
+        break;
+      }
+    }
 
     return this.buildingLayer.getTileAt(x, y);
   }

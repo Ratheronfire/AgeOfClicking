@@ -121,6 +121,8 @@ export interface BuildingTileData {
   resourceTileType?: ResourceTileType;
 
   resourcePathable: boolean;
+
+  stats: TileStat[];
 }
 
 export interface ResourceTileData {

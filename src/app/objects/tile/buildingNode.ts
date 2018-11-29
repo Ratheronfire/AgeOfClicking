@@ -1,8 +1,66 @@
 import { GameService } from './../../game/game.service';
 import { HealthBar } from '../healthbar';
-import { ResourceEnum } from '../resourceData';
-import { BuildingTileType, TileStat } from './tile';
-import { Market } from './market';
+import { BuildingTileType, TileStat, BuildingTileData } from './tile';
+import { Stats } from '../entity/stats';
+
+export class TileStats extends Stats<TileStat> {
+  owner: BuildingNode;
+
+  public constructor(statList: TileStat[], owner: BuildingNode, game: GameService) {
+    super(statList, game);
+
+    this.owner = owner;
+  }
+
+  public getStatString(stat: TileStat): string {
+    switch (stat) {
+      case TileStat.MaxHealth: {
+        return `Max Health: ${Math.floor(this.owner.maxHealth)}`;
+      }
+    }
+  }
+
+  public getUpgradedStatString(stat: TileStat): string {
+    switch (stat) {
+      case TileStat.MaxHealth: {
+        return `Max Health: ${Math.floor(this.getUpgradedStat(stat))}`;
+      }
+    }
+  }
+
+  public getStat(stat: TileStat): number {
+    switch (stat) {
+      case TileStat.MaxHealth: {
+        return Math.floor(this.owner.maxHealth);
+      }
+    }
+  }
+
+  public getUpgradedStat(stat: TileStat): number {
+    switch (stat) {
+      case TileStat.MaxHealth: {
+        return Math.floor(this.owner.maxHealth * 1.2);
+      }
+    }
+  }
+
+  public upgradeStat(stat: TileStat, upgradeForFree = false) {
+    if (!this.canUpgradeStat(stat) && !upgradeForFree) {
+      return;
+    }
+
+    const upgradedStat = this.getUpgradedStat(stat);
+    switch (stat) {
+      case TileStat.MaxHealth: {
+        this.owner.maxHealth = upgradedStat;
+        this.owner.health = this.owner.maxHealth;
+        break;
+      }
+    }
+
+    super.upgradeStat(stat, upgradeForFree);
+  }
+}
 
 export class BuildingNode {
   tileType: BuildingTileType;
@@ -14,27 +72,23 @@ export class BuildingNode {
   maxHealth: number;
   healthBar: HealthBar;
 
-  market?: Market;
+  stats: TileStats;
 
-  statLevels = {};
-  statCosts = {};
+  protected game: GameService;
 
-  private game: GameService;
-
-  constructor(tileType: BuildingTileType, removable: boolean, health: number,
+  constructor(tileType: BuildingTileType, removable: boolean, tileData: BuildingTileData,
     owningTile: Phaser.Tilemaps.Tile, scene: Phaser.Scene, game: GameService) {
     this.tileType = tileType;
     this.owningTile = owningTile;
 
     this.removable = removable;
 
-    this.health = health;
-    this.maxHealth = health;
-
-    this.statLevels[TileStat.MaxHealth] = 1;
-    this.statCosts[TileStat.MaxHealth] = 1500;
+    this.health = tileData.baseHealth;
+    this.maxHealth = tileData.baseHealth;
 
     this.healthBar = new HealthBar(owningTile, scene);
+
+    this.stats = new TileStats(tileData.stats, this, game);
 
     this.game = game;
   }
@@ -42,61 +96,11 @@ export class BuildingNode {
   tick(elapsed: number, deltaTime: number) {
     this.healthBar.tick(elapsed, deltaTime, this.owningTile.getCenterX(), this.owningTile.getCenterY());
 
-    if (this.market) {
-      this.market.tick(elapsed, deltaTime);
-    }
-
     if (this.health <= 0) {
       // Phaser.Tilemaps.Tile.tint seems to be somewhat broken at the moment.
       // This line tints and broken buildings in a light red color.
       this.owningTile.tint = 0x9999ff;
     }
-  }
-
-  public canUpgradeStat(stat: TileStat): boolean {
-    return this.game.resources.getResource(ResourceEnum.Gold).amount >= this.statCosts[stat];
-  }
-
-  public getUpgradedStat(stat: TileStat): number {
-    switch (stat) {
-      case TileStat.SellAmount: {
-        return this.market.sellQuantity * 1.2;
-      }
-      case TileStat.SellRate: {
-        return this.market.sellInterval / 1.1;
-      }
-      case TileStat.MaxHealth: {
-        return Math.floor(this.maxHealth * 1.2);
-      }
-    }
-  }
-
-  public upgradeStat(stat: TileStat) {
-    if (!this.canUpgradeStat(stat)) {
-      return;
-    }
-
-    this.game.resources.getResource(ResourceEnum.Gold).addAmount(-this.statCosts[stat]);
-
-    const upgradedStat = this.getUpgradedStat(stat);
-    switch (stat) {
-      case TileStat.SellAmount: {
-        this.market.sellQuantity = upgradedStat;
-        break;
-      }
-      case TileStat.SellRate: {
-        this.market.sellInterval = upgradedStat;
-        break;
-      }
-      case TileStat.MaxHealth: {
-        this.maxHealth = upgradedStat;
-        this.health = this.maxHealth;
-        break;
-      }
-    }
-
-    this.statLevels[stat]++;
-    this.statCosts[stat] *= 1.5;
   }
 
   takeDamage(pointsTaken: number) {

@@ -1,3 +1,4 @@
+import { UnitStats } from './../../objects/entity/unit/unit';
 import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
 
@@ -46,5 +47,13 @@ export class UnitDetailComponent implements OnInit {
 
   set focusedUnit(value: Unit) {
     this.game.map.focusedUnit = value;
+  }
+
+  get focusedStats(): UnitStats {
+    if (!this.focusedUnit) {
+      return null;
+    }
+
+    return this.focusedUnit.stats;
   }
 }

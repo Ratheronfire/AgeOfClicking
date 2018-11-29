@@ -2,6 +2,7 @@ import { GameService } from './../../../game/game.service';
 import { ResourceEnum } from '../../resourceData';
 import { Actor, ActorState, UnitData } from '../actor';
 import { Enemy } from '../enemy/enemy';
+import { Stats } from '../stats';
 
 export enum UnitStat {
   Attack = 'ATTACK',
@@ -18,6 +19,119 @@ export enum UnitType {
   Builder = 'BUILDER'
 }
 
+export class UnitStats extends Stats<UnitStat> {
+  owner: Unit;
+
+  public constructor (statList: UnitStat[], owner: Unit, game: GameService) {
+    super(statList, game);
+
+    this.owner = owner;
+  }
+
+  public getStatString(stat: UnitStat): string {
+    switch (stat) {
+      case UnitStat.Attack: {
+        return `Attack: ${Math.floor(this.getStat(stat))}`;
+      } case UnitStat.Defense: {
+        return `Defense: ${Math.floor(this.getStat(stat))}`;
+      }  case UnitStat.FireRate: {
+        return `Fire Rate: ${Math.floor(10000 / this.getStat(stat)) / 10}/Second`;
+      } case UnitStat.MovementSpeed: {
+        return `Movement Speed: ${Math.floor(this.getStat(stat))}`;
+      } case UnitStat.Range: {
+        return `Attack Range: ${this.getStat(stat)} ${this.getStat(stat) > 1 ? 'Tiles' : 'Tile'}`;
+      } case UnitStat.MaxHealth: {
+        return `Max Health: ${Math.floor(this.getStat(stat))}`;
+      }
+    }
+  }
+
+  public getUpgradedStatString(stat: UnitStat): string {
+    switch (stat) {
+      case UnitStat.Attack: {
+        return `Attack: ${Math.floor(this.getUpgradedStat(stat))}`;
+      } case UnitStat.Defense: {
+        return `Defense: ${Math.floor(this.getUpgradedStat(stat))}`;
+      }  case UnitStat.FireRate: {
+        return `Fire Rate: ${Math.floor(10000 / this.getUpgradedStat(stat)) / 10}/Second`;
+      } case UnitStat.MovementSpeed: {
+        return `Movement Speed: ${Math.floor(this.getUpgradedStat(stat))}`;
+      } case UnitStat.Range: {
+        return `Attack Range: ${this.getUpgradedStat(stat)} Tiles`;
+      } case UnitStat.MaxHealth: {
+        return `Max Health: ${Math.floor(this.getUpgradedStat(stat))}`;
+      }
+    }
+  }
+
+  public getStat(stat: UnitStat): number {
+    switch (stat) {
+      case UnitStat.Attack: {
+        return this.owner.attack;
+      } case UnitStat.Defense: {
+        return this.owner.defense;
+      }  case UnitStat.FireRate: {
+        return this.owner.fireMilliseconds;
+      } case UnitStat.MovementSpeed: {
+        return this.owner.animationSpeed;
+      } case UnitStat.Range: {
+        return this.owner.attackRange;
+      } case UnitStat.MaxHealth: {
+        return Math.floor(this.owner.maxHealth);
+      }
+    }
+  }
+
+  public getUpgradedStat(stat: UnitStat): number {
+    switch (stat) {
+      case UnitStat.Attack: {
+        return this.owner.attack * 1.2;
+      } case UnitStat.Defense: {
+        return this.owner.defense * 1.2;
+      }  case UnitStat.FireRate: {
+        return this.owner.fireMilliseconds / 1.1;
+      } case UnitStat.MovementSpeed: {
+        return this.owner.animationSpeed * 1.2;
+      } case UnitStat.Range: {
+        return this.owner.attackRange + 1;
+      } case UnitStat.MaxHealth: {
+        return Math.floor(this.owner.maxHealth * 1.2);
+      }
+    }
+  }
+
+  public upgradeStat(stat: UnitStat, upgradeForFree = false) {
+    if (!this.canUpgradeStat(stat) && !upgradeForFree) {
+      return;
+    }
+
+    const upgradedStat = this.getUpgradedStat(stat);
+    switch (stat) {
+      case UnitStat.Attack: {
+        this.owner.attack = upgradedStat;
+        break;
+      } case UnitStat.Defense: {
+        this.owner.defense = upgradedStat;
+        break;
+      }  case UnitStat.FireRate: {
+        this.owner.fireMilliseconds = upgradedStat;
+        break;
+      } case UnitStat.MovementSpeed: {
+        this.owner.animationSpeed = upgradedStat;
+        break;
+      } case UnitStat.Range: {
+        this.owner.attackRange = upgradedStat;
+        break;
+      } case UnitStat.MaxHealth: {
+        this.owner.maxHealth = upgradedStat;
+        this.owner.health = this.owner.maxHealth;
+      }
+    }
+
+    super.upgradeStat(stat, upgradeForFree);
+  }
+}
+
 export class Unit extends Actor {
   unitType: UnitType;
 
@@ -30,9 +144,7 @@ export class Unit extends Actor {
   fireMilliseconds = 1000;
   lastFire = 0;
 
-  stats: UnitStat[];
-  statLevels = {};
-  statCosts = {};
+  stats: UnitStats;
 
   public constructor(x: number, y: number, unitData: UnitData,
       scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
@@ -47,11 +159,7 @@ export class Unit extends Actor {
     this.cost = unitData.cost;
     this.movable = unitData.movable;
 
-    this.stats = unitData.stats;
-    for (const stat of unitData.stats) {
-      this.statLevels[stat] = 1;
-      this.statCosts[stat] = 1500;
-    }
+    this.stats = new UnitStats(unitData.stats, this, this.game);
 
     this.findTargets();
     this.pickTarget();
@@ -76,118 +184,6 @@ export class Unit extends Actor {
     if (this.selectedTarget) {
       this.game.map.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
     }
-  }
-
-  public canUpgradeStat(stat: UnitStat): boolean {
-    return this.game.resources.getResource(ResourceEnum.Gold).amount >= this.statCosts[stat];
-  }
-
-  public getStatString(stat: UnitStat): string {
-    switch (stat) {
-      case UnitStat.Attack: {
-        return 'Attack: ' + Math.floor(this.attack);
-      } case UnitStat.Defense: {
-        return 'Defense: ' + Math.floor(this.defense);
-      }  case UnitStat.FireRate: {
-        return 'Fire Rate:' + Math.floor(this.fireMilliseconds / 100) / 10 + '/Second';
-      } case UnitStat.MovementSpeed: {
-        return 'Movement Speed: ' + Math.floor(this.animationSpeed);
-      } case UnitStat.Range: {
-        return 'Attack Range: ' + this.attackRange + (this.attackRange > 1 ? ' Tiles' : ' Tile');
-      } case UnitStat.MaxHealth: {
-        return 'Max Health: ' + Math.floor(this.maxHealth);
-      }
-    }
-  }
-
-  public getUpgradedStatString(stat: UnitStat): string {
-    switch (stat) {
-      case UnitStat.Attack: {
-        return 'Attack: ' + Math.floor(this.getUpgradedStat(stat));
-      } case UnitStat.Defense: {
-        return 'Defense: ' + Math.floor(this.getUpgradedStat(stat));
-      }  case UnitStat.FireRate: {
-        return 'Fire Rate:' + Math.floor(this.getUpgradedStat(stat) / 100) / 10 + '/Second';
-      } case UnitStat.MovementSpeed: {
-        return 'Movement Speed: ' + Math.floor(this.getUpgradedStat(stat));
-      } case UnitStat.Range: {
-        return 'Attack Range: ' + this.getUpgradedStat(stat) + ' Tiles';
-      } case UnitStat.MaxHealth: {
-        return 'Max Health: ' + Math.floor(this.getUpgradedStat(stat));
-      }
-    }
-  }
-
-  public getStat(stat: UnitStat): number {
-    const tileString = this.attackRange === 1 ? ' Tile' : ' Tiles';
-
-    switch (stat) {
-      case UnitStat.Attack: {
-        return this.attack;
-      } case UnitStat.Defense: {
-        return this.defense;
-      }  case UnitStat.FireRate: {
-        return this.fireMilliseconds;
-      } case UnitStat.MovementSpeed: {
-        return this.animationSpeed;
-      } case UnitStat.Range: {
-        return this.attackRange;
-      } case UnitStat.MaxHealth: {
-        return Math.floor(this.maxHealth);
-      }
-    }
-  }
-
-  public getUpgradedStat(stat: UnitStat): number {
-    switch (stat) {
-      case UnitStat.Attack: {
-        return this.attack * 1.2;
-      } case UnitStat.Defense: {
-        return this.defense * 1.2;
-      }  case UnitStat.FireRate: {
-        return this.fireMilliseconds / 1.1;
-      } case UnitStat.MovementSpeed: {
-        return this.animationSpeed * 1.2;
-      } case UnitStat.Range: {
-        return this.attackRange + 1;
-      } case UnitStat.MaxHealth: {
-        return Math.floor(this.maxHealth * 1.2);
-      }
-    }
-  }
-
-  public upgradeStat(stat: UnitStat) {
-    if (!this.canUpgradeStat(stat)) {
-      return;
-    }
-
-    this.game.resources.getResource(ResourceEnum.Gold).addAmount(-this.statCosts[stat]);
-
-    const upgradedStat = this.getUpgradedStat(stat);
-    switch (stat) {
-      case UnitStat.Attack: {
-        this.attack = upgradedStat;
-        break;
-      } case UnitStat.Defense: {
-        this.defense = upgradedStat;
-        break;
-      }  case UnitStat.FireRate: {
-        this.fireMilliseconds = upgradedStat;
-        break;
-      } case UnitStat.MovementSpeed: {
-        this.animationSpeed = upgradedStat;
-        break;
-      } case UnitStat.Range: {
-        this.attackRange = upgradedStat;
-        break;
-      } case UnitStat.MaxHealth: {
-        this.maxHealth = upgradedStat;
-        this.health = this.maxHealth;
-      }
-    }
-
-    this.statLevels[stat]++;
-    this.statCosts[stat] *= 1.5;
   }
 
   public destroy() {

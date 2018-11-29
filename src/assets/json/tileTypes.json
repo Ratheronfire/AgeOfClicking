@@ -43,7 +43,10 @@
       "buildableSurfaces": [
         "GRASS"
       ],
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "WALL": {
       "tileType": "WALL",
@@ -62,7 +65,10 @@
       "buildableSurfaces": [
         "GRASS"
       ],
-      "resourcePathable": false
+      "resourcePathable": false,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "ROAD": {
       "tileType": "ROAD",
@@ -81,7 +87,10 @@
       "buildableSurfaces": [
         "GRASS"
       ],
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "TUNNEL": {
       "tileType": "TUNNEL",
@@ -100,7 +109,10 @@
       "buildableSurfaces": [
         "MOUNTAIN"
       ],
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "BRIDGE": {
       "tileType": "BRIDGE",
@@ -119,7 +131,10 @@
       "buildableSurfaces": [
         "WATER"
       ],
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "CRACKEDFORGE": {
       "tileType": "CRACKEDFORGE",
@@ -141,7 +156,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "CRACKEDFORGE",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "STONEFORGE": {
       "tileType": "STONEFORGE",
@@ -169,7 +187,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "STONEFORGE",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "IRONFORGE": {
       "tileType": "IRONFORGE",
@@ -197,7 +218,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "IRONFORGE",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "GOLDFORGE": {
       "tileType": "GOLDFORGE",
@@ -225,7 +249,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "GOLDFORGE",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "LATINUMFORGE": {
       "tileType": "LATINUMFORGE",
@@ -253,7 +280,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "LATINUMFORGE",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "TEMPROUSDISTILLERY": {
       "tileType": "TEMPROUSDISTILLERY",
@@ -280,7 +310,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "TEMPROUSDISTILLERY",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "OAKOVEN": {
       "tileType": "OAKOVEN",
@@ -305,7 +338,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "OAKOVEN",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "STONEOVEN": {
       "tileType": "STONEOVEN",
@@ -330,7 +366,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "STONEOVEN",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "MARBLEOVEN": {
       "tileType": "MARBLEOVEN",
@@ -358,7 +397,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "MARBLEOVEN",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "TEMPROUSOVEN": {
       "tileType": "TEMPROUSOVEN",
@@ -385,7 +427,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "TEMPROUSOVEN",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "CHICKENFARM": {
       "tileType": "CHICKENFARM",
@@ -410,7 +455,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "CHICKENFARM",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "COWFARM": {
       "tileType": "COWFARM",
@@ -438,7 +486,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "COWFARM",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "DRAGONFARM": {
       "tileType": "DRAGONFARM",
@@ -465,7 +516,10 @@
       ],
       "placesResourceTile": true,
       "resourceTileType": "DRAGONFARM",
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH"
+      ]
     },
     "WOODMARKET": {
       "tileType": "WOODMARKET",
@@ -485,7 +539,12 @@
         "GRASS"
       ],
       "placesResourceTile": false,
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH",
+        "SELLRATE",
+        "SELLAMOUNT"
+      ]
     },
     "MINERALMARKET": {
       "tileType": "MINERALMARKET",
@@ -505,7 +564,12 @@
         "GRASS"
       ],
       "placesResourceTile": false,
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH",
+        "SELLRATE",
+        "SELLAMOUNT"
+      ]
     },
     "METALMARKET": {
       "tileType": "METALMARKET",
@@ -525,7 +589,12 @@
         "GRASS"
       ],
       "placesResourceTile": false,
-      "resourcePathable": true
+      "resourcePathable": true,
+      "stats": [
+        "MAXHEALTH",
+        "SELLRATE",
+        "SELLAMOUNT"
+      ]
     }
   },
   "resourceTiles": {

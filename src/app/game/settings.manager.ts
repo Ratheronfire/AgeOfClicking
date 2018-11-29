@@ -268,10 +268,8 @@ export class SettingsManager {
         const tileData: TileSaveData = {
           id: tile.properties['id'],
           health: tile.properties['buildingNode'].health,
-          maxHealth: tile.properties['buildingNode'].maxHealth,
           buildingRemovable: tile.properties['buildingNode'].removable,
-          statLevels: tile.properties['buildingNode'].statLevels,
-          statCosts: tile.properties['buildingNode'].statCosts
+          statLevels: tile.properties['buildingNode'].stats.stringifiedLevels
         };
 
         if (tile.properties['resourceNode']) {
@@ -279,11 +277,6 @@ export class SettingsManager {
         }
         if (tile.properties['buildingNode']) {
           tileData.buildingTileType = tile.properties['buildingNode'].tileType;
-        }
-
-        if (tile.properties['buildingNode'].market) {
-          tileData.sellInterval = tile.properties['buildingNode'].market.sellInterval;
-          tileData.sellQuantity = tile.properties['buildingNode'].market.sellQuantity;
         }
 
         saveData.tiles.push(tileData);
@@ -315,16 +308,7 @@ export class SettingsManager {
         x: unit.x,
         y: unit.y,
         health: unit.health,
-        maxHealth: unit.maxHealth,
-        animationSpeed: unit.animationSpeed,
-        attack: unit.attack,
-        defense: unit.defense,
-        attackRange: unit.attackRange,
-        movable: unit.movable,
-        fireMilliseconds: unit.fireMilliseconds,
-        cost: unit.cost,
-        statLevels: unit.statLevels,
-        statCosts: unit.statCosts
+        statLevels: unit.stats.stringifiedLevels
       });
     }
 
@@ -452,31 +436,23 @@ export class SettingsManager {
           }
 
           const buildingData = this.game.map.buildingTileData.get(tileSaveData.buildingTileType);
-          this.game.map.createBuilding(tile.x, tile.y, buildingData, tileSaveData.buildingRemovable, tileSaveData.maxHealth, true, false);
+          this.game.map.createBuilding(tile.x, tile.y, buildingData, tileSaveData.buildingRemovable, true, false);
           const buildingNode = tile.properties['buildingNode'] as BuildingNode;
 
           buildingNode.setHealth(tileSaveData.health ? tileSaveData.health : 50);
-          buildingNode.statLevels = tileSaveData.statLevels;
-          buildingNode.statCosts = tileSaveData.statCosts;
 
-          if (tileSaveData.buildingTileType &&
-            this.game.map.buildingTileData.get(tileSaveData.buildingTileType).subType === BuildingSubType.Market) {
+          if (!tileSaveData.statLevels) {
+            continue;
+          }
 
-            let resourceType: ResourceType;
-            switch (tileSaveData.buildingTileType) {
-              case BuildingTileType.WoodMarket: {
-                resourceType = ResourceType.Wood;
-                break;
-              } case BuildingTileType.MineralMarket: {
-                resourceType = ResourceType.Mineral;
-                break;
-              } case BuildingTileType.MetalMarket: {
-                resourceType = ResourceType.Metal;
-                break;
-              }
+          for (const stat of buildingData.stats) {
+            if (!tileSaveData.statLevels[stat]) {
+              continue;
             }
 
-            tile.properties['buildingNode'].market = new Market(resourceType, tile, false, this.game);
+            for (let i = tileSaveData.statLevels[stat]; i > 1; i--) {
+              buildingNode.stats.upgradeStat(stat, true);
+            }
           }
         }
       }
@@ -515,13 +491,19 @@ export class SettingsManager {
           const unit = this.game.map.spawnUnit(unitSaveData.unitType, tile.x, tile.y, true);
 
           unit.health = unitSaveData.health ? unitSaveData.health : 50;
-          unit.maxHealth = unitSaveData.maxHealth ? unitSaveData.maxHealth : 50;
-          unit.attackRange = unitSaveData.attackRange ? unitSaveData.attackRange : 3;
-          if (unitSaveData.statLevels) {
-            unit.statLevels = unitSaveData.statLevels;
+
+          if (!unitSaveData.statLevels) {
+            continue;
           }
-          if (unitSaveData.statCosts) {
-            unit.statCosts = unitSaveData.statCosts;
+
+          for (const stat of unit.stats.statList) {
+            if (!unitSaveData.statLevels[stat]) {
+              continue;
+            }
+
+            for (let i = unitSaveData.statLevels[stat]; i > 1; i--) {
+              unit.stats.upgradeStat(stat, true);
+            }
           }
         }
       }

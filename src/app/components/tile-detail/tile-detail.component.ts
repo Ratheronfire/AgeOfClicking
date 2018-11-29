@@ -1,11 +1,11 @@
-import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
 import { Resource } from '../../objects/resource';
 import { ResourceEnum } from '../../objects/resourceData';
-import { BuildingNode } from '../../objects/tile/buildingNode';
+import { BuildingNode, TileStats } from '../../objects/tile/buildingNode';
 import { Market } from '../../objects/tile/market';
 import { ResourceNode } from '../../objects/tile/resourceNode';
 import { BuildingTileData, BuildingTileType, ResourceTileData } from '../../objects/tile/tile';
+import { GameService } from './../../game/game.service';
 
 @Component({
   selector: 'app-tile-detail',
@@ -81,10 +81,6 @@ export class TileDetailComponent implements OnInit {
     return this.focusedTile ? this.focusedTile.properties['resourceNode'] : null;
   }
 
-  get marketNode(): Market {
-    return this.focusedBuildingNode ? this.focusedBuildingNode.market : null;
-  }
-
   get focusedBuildingData(): BuildingTileData {
     return this.focusedBuildingNode ? this.game.map.buildingTileData.get(this.focusedBuildingNode.tileType) : null;
   }
@@ -105,5 +101,21 @@ export class TileDetailComponent implements OnInit {
     const resourceEnums = this.focusedResourceData.resourceEnums;
 
     return resourceEnums.map(resourceEnum => this.game.resources.getResource(resourceEnum));
+  }
+
+  get focusedMarket(): Market {
+    if (!this.focusedBuildingNode || !(this.focusedBuildingNode instanceof Market)) {
+      return null;
+    }
+
+    return this.focusedBuildingNode as Market;
+  }
+
+  get focusedStats(): TileStats {
+    if (!this.focusedBuildingNode) {
+      return null;
+    }
+
+    return this.focusedBuildingNode.stats;
   }
 }

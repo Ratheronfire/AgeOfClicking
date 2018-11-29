@@ -2,7 +2,7 @@ import { MessageSource } from '../objects/message';
 import { EnemyType } from './entity/enemy/enemy';
 import { UnitType } from './entity/unit/unit';
 import { ResourceEnum, ResourceType } from './resourceData';
-import { BuildingTileType, ResourceTileType } from './tile/tile';
+import { BuildingTileType, ResourceTileType, TileStat } from './tile/tile';
 
 export interface ResourceSaveData {
   resourceEnum: ResourceEnum;
@@ -27,18 +27,13 @@ export interface TileSaveData {
   id: number;
 
   health: number;
-  maxHealth: number;
 
   resourceTileType?: ResourceTileType;
   buildingTileType?: BuildingTileType;
 
   buildingRemovable: boolean;
 
-  statLevels: {};
-  statCosts: {};
-
-  sellInterval?: number;
-  sellQuantity?: number;
+  statLevels: any;
 }
 
 export interface EnemySaveData {
@@ -70,22 +65,8 @@ export interface UnitSaveData {
   y: number;
 
   health: number;
-  maxHealth: number;
 
-  animationSpeed: number;
-
-  attack: number;
-  defense: number;
-  attackRange: number;
-
-  cost: number;
-
-  movable: boolean;
-
-  fireMilliseconds: number;
-
-  statLevels: {};
-  statCosts: {};
+  statLevels: any;
 }
 
 export interface SettingsSaveData {

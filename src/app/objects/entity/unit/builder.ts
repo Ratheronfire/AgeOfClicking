@@ -1,7 +1,66 @@
 import { BuildingNode } from '../../tile/buildingNode';
 import { ActorState, UnitData } from '../actor';
 import { GameService } from './../../../game/game.service';
-import { Unit, UnitStat } from './unit';
+import { Unit, UnitStat, UnitStats } from './unit';
+
+export class BuilderStats extends UnitStats {
+  owner: Builder;
+
+  public getStatString(stat: UnitStat): string {
+    switch (stat) {
+      case UnitStat.RepairRate: {
+        return `Repair Rate: ${Math.floor(this.getStat(stat))} Points/Tick`;
+      } default: {
+        return super.getStatString(stat);
+      }
+    }
+  }
+
+  public getUpgradedStatString(stat: UnitStat): string {
+    switch (stat) {
+      case UnitStat.RepairRate: {
+        return `Repair Rate: ${Math.floor(this.getUpgradedStat(stat))} Points/Tick`;
+      } default: {
+        return super.getUpgradedStatString(stat);
+      }
+    }
+  }
+
+  public getStat(stat: UnitStat): number {
+    switch (stat) {
+      case UnitStat.RepairRate: {
+        return this.owner.repairAmount;
+      } default: {
+        return super.getStat(stat);
+      }
+    }
+  }
+
+  public getUpgradedStat(stat: UnitStat): number {
+    switch (stat) {
+      case UnitStat.RepairRate: {
+        return this.owner.repairAmount * 1.2;
+      } default: {
+        return super.getUpgradedStat(stat);
+      }
+    }
+  }
+
+  public upgradeStat(stat: UnitStat, upgradeForFree = false) {
+    if (!this.canUpgradeStat(stat) && !upgradeForFree) {
+      return;
+    }
+
+    switch (stat) {
+      case UnitStat.RepairRate: {
+        this.owner.repairAmount = this.getUpgradedStat(stat);
+        break;
+      }
+    }
+
+    super.upgradeStat(stat, upgradeForFree);
+  }
+}
 
 export class Builder extends Unit {
   repairAmount = 5;
@@ -68,49 +127,6 @@ export class Builder extends Unit {
       this.currentState = ActorState.Repairing;
     } else {
       this.pickTarget();
-    }
-  }
-
-  public getStatString(stat: UnitStat): string {
-    if (stat === UnitStat.RepairRate) {
-      return 'Repair Rate: ' + Math.floor(this.getStat(stat)) + ' Points/Tick';
-    }
-
-    return super.getStatString(stat);
-  }
-
-  public getUpgradedStatString(stat: UnitStat): string {
-    if (stat === UnitStat.RepairRate) {
-      return 'Repair Rate: ' + Math.floor(this.getUpgradedStat(stat)) + ' Points/Tick';
-    }
-
-    return super.getUpgradedStatString(stat);
-  }
-
-  public getStat(stat: UnitStat): number {
-    if (stat === UnitStat.RepairRate) {
-      return this.repairAmount;
-    }
-
-    return super.getStat(stat);
-  }
-
-  public getUpgradedStat(stat: UnitStat): number {
-    if (stat === UnitStat.RepairRate) {
-      return this.repairAmount * 1.2;
-    }
-
-    return super.getUpgradedStat(stat);
-  }
-
-  public upgradeStat(stat: UnitStat) {
-    if (this.canUpgradeStat(stat) && stat === UnitStat.RepairRate) {
-      this.repairAmount = this.getUpgradedStat(stat);
-
-      this.statLevels[stat]++;
-      this.statCosts[stat] *= 1.5;
-    } else {
-      super.upgradeStat(stat);
     }
   }
 }

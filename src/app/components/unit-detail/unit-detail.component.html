@@ -28,28 +28,28 @@
     <mat-card-content id="card-content">
       <table class="stats-container">
         <tbody>
-          <tr class="stat-row" *ngFor="let stat of focusedUnit.stats">
+          <tr class="stat-row" *ngFor="let stat of focusedStats.statList">
             <td>
               <p>
-                {{focusedUnit.getStatString(stat)}}
+                {{focusedStats.getStatString(stat)}}
               </p>
 
             </td>
             <td>
               <b>
-                Level {{focusedUnit.statLevels[stat]}}
+                Level {{focusedStats.statLevels.get(stat)}}
               </b>
             </td>
 
             <td>
-                <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedUnit.upgradeStat(stat)"
-                [disabled]="!focusedUnit.canUpgradeStat(stat)" matTooltip="Level {{focusedUnit.statLevels[stat] + 1}} {{focusedUnit.getUpgradedStatString(stat)}}"
+                <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedStats.upgradeStat(stat)"
+                [disabled]="!focusedStats.canUpgradeStat(stat)" matTooltip="Level {{focusedStats.statLevels.get(stat) + 1}} {{focusedStats.getUpgradedStatString(stat)}}"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div class="button-text">
                     <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
-                    {{focusedUnit.statCosts[stat] | longNumber}}
+                    {{focusedStats.statCosts.get(stat) | longNumber}}
                   </div>
                 </div>
               </button>
