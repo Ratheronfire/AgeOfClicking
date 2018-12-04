@@ -34,7 +34,7 @@
         Tile Details
       </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="game.enemy.enemiesActive" value="PLACEUNITS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.game.map.unitListVisible)">
+    <mat-button-toggle value="PLACEUNITS" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, !this.game.map.unitListVisible)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>R</p>
@@ -45,7 +45,7 @@
         Place Units
       </div>
     </mat-button-toggle>
-    <mat-button-toggle *ngIf="game.enemy.enemiesActive" value="UNITDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
+    <mat-button-toggle value="UNITDETAIL" class="cursor-tool wood" (click)="setPlacementGroupVisibility(false, false)">
       <div class="key-container">
         <img src="./assets/sprites/key.png">
         <p>T</p>
@@ -56,10 +56,26 @@
         Unit Details
       </div>
     </mat-button-toggle>
+    <mat-button-toggle *ngIf="isDevMode" value="PATHFINDINGTEST1" class="cursor-tool wood"
+      (click)="setPlacementGroupVisibility(false, false)">
+      <mat-icon class="button-text-background">bug_report</mat-icon>
+      <br />
+      <div class="button-text">
+        Pathfinding Test 1
+      </div>
+    </mat-button-toggle>
+    <mat-button-toggle *ngIf="isDevMode" value="PATHFINDINGTEST2" class="cursor-tool wood"
+    (click)="setPlacementGroupVisibility(false, false)">
+    <mat-icon class="button-text-background">bug_report</mat-icon>
+    <br />
+    <div class="button-text">
+      Pathfinding Test 2
+    </div>
+  </mat-button-toggle>
   </mat-button-toggle-group>
 
-  <app-buildings *ngIf="game.map.buildingListVisible"></app-buildings>
-  <app-unit *ngIf="game.map.unitListVisible"></app-unit>
+  <app-building-dropdown *ngIf="game.map.buildingListVisible"></app-building-dropdown>
+  <app-unit-dropdown *ngIf="game.map.unitListVisible"></app-unit-dropdown>
 
   <app-tile-detail [ngClass]="{'hidden': !game.map.focusedTile}"></app-tile-detail>
   <app-unit-detail [ngClass]="{'hidden': !game.map.focusedUnit}"></app-unit-detail>

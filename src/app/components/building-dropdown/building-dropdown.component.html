@@ -1,7 +1,7 @@
 <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="selectedBuilding"
 class="buildings">
 <mat-button-toggle *ngFor="let buildingTile of getBuildingTileArray(true)" [value]="buildingTile" class="building wood"
-  [disabled]="!canAffordBuilding(buildingTile.tileType)" (click)="game.map.buildingListVisible = false">
+  [disabled]="!canPlaceBuilding(buildingTile.tileType)" (click)="game.map.buildingListVisible = false">
   <div class="title button-text" matTooltip="{{buildingTile.description}}" matTooltipPosition="above">
     {{buildingTile.name}}
   </div>

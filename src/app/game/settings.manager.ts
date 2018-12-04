@@ -7,10 +7,9 @@ import { Raider } from '../objects/entity/enemy/raider';
 import { ResourceAnimationType } from '../objects/entity/resourceAnimation';
 import { UnitType } from '../objects/entity/unit/unit';
 import { MessageSource } from '../objects/message';
-import { ResourceEnum, ResourceType } from '../objects/resourceData';
+import { ResourceEnum } from '../objects/resourceData';
 import { SaveData, TileSaveData, WorkerSaveData } from '../objects/savedata';
 import { BuildingSubType, BuildingTileType } from '../objects/tile/tile';
-import { Market } from '../objects/tile/market';
 import { BuildingNode } from '../objects/tile/buildingNode';
 import { GameService } from './game.service';
 
@@ -25,7 +24,6 @@ export class SettingsManager {
 
   autosaveInterval = 60000;
   lastAutosave = Date.now();
-  debugMode = false;
 
   resourceBinds = defaultResourceBinds;
 
@@ -160,6 +158,7 @@ export class SettingsManager {
     this.game.resources.loadBaseResources();
     this.game.upgrades.loadBaseUpgrades();
     this.game.workers.loadBaseWorkers();
+    this.game.buildings.resetBuildings();
 
     if (manualDeletion) {
       this.game.map.seedRng(Math.random());
@@ -169,8 +168,6 @@ export class SettingsManager {
 
     this.autosaveInterval = 60000;
     this.setAutosave();
-
-    this.debugMode = false;
 
     this.game.resources.highestTierReached = 0;
 
@@ -213,7 +210,6 @@ export class SettingsManager {
       units: [],
       settings: {
         autosaveInterval: this.autosaveInterval,
-        debugMode: this.debugMode,
         highestTierReached: this.game.resources.highestTierReached,
         workersPaused: this.game.workers.workersPaused,
         hidePurchasedUpgrades: this.game.upgrades.hidePurchasedUpgrades,
@@ -302,7 +298,7 @@ export class SettingsManager {
       });
     }
 
-    for (const unit of this.game.unit.units) {
+    for (const unit of this.game.unit.getUnits()) {
       saveData.units.push({
         unitType: unit.unitType,
         x: unit.x,
@@ -335,7 +331,6 @@ export class SettingsManager {
 
       if (saveData.settings !== undefined) {
         this.autosaveInterval = saveData.settings.autosaveInterval ? saveData.settings.autosaveInterval : 900000;
-        this.debugMode = saveData.settings.debugMode ? saveData.settings.debugMode : false;
 
         this.game.resources.highestTierReached = saveData.settings.highestTierReached ? saveData.settings.highestTierReached : 0;
 
@@ -431,15 +426,15 @@ export class SettingsManager {
         for (const tileSaveData of saveData.tiles) {
           const tile = this.game.map.mapLayer.findTile(_tile => _tile && _tile.properties['id'] === tileSaveData.id);
 
-          if (!tile || tileSaveData.buildingTileType === BuildingTileType.Home) {
+          if (!tile || tile.properties['resourceNode'] || tileSaveData.buildingTileType === BuildingTileType.Home) {
             continue;
           }
 
           const buildingData = this.game.map.buildingTileData.get(tileSaveData.buildingTileType);
-          this.game.map.createBuilding(tile.x, tile.y, buildingData, tileSaveData.buildingRemovable, true, false);
+          this.game.map.createBuilding(tile.x, tile.y, buildingData, tileSaveData.buildingRemovable, false);
           const buildingNode = tile.properties['buildingNode'] as BuildingNode;
 
-          buildingNode.setHealth(tileSaveData.health ? tileSaveData.health : 50);
+          buildingNode.setHealth(tileSaveData.health === undefined ? 50 : tileSaveData.health);
 
           if (!tileSaveData.statLevels) {
             continue;

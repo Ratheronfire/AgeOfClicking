@@ -2,6 +2,8 @@ import { GameService } from './game.service';
 import { BuildingTileData, BuildingTileType } from '../objects/tile/tile';
 
 export class BuildingsManager {
+  buildingTileTypes = BuildingTileType;
+
   selectedBuilding: BuildingTileData;
   totalBuildingsPlaced = new Map<BuildingTileType, number>();
 
@@ -11,25 +13,23 @@ export class BuildingsManager {
     this.game = game;
   }
 
-  public purchaseBuilding(buildingData: BuildingTileData) {
-    const buildingType = buildingData.tileType;
+  public canPlaceBuilding(buildingData: BuildingTileData): boolean {
+    const totalPlaced = this.getTotalPlaced(buildingData.tileType);
 
-    if (!this.canAffordBuilding(buildingData)) {
-      return;
-    }
+    return buildingData.maxPlaceable <= 0 || totalPlaced < buildingData.maxPlaceable;
+  }
+
+  public placeBuilding(buildingData: BuildingTileData) {
+    const buildingType = buildingData.tileType;
 
     if (!this.totalBuildingsPlaced.has(buildingData.tileType)) {
       this.totalBuildingsPlaced.set(buildingType, 1);
     } else {
       this.totalBuildingsPlaced.set(buildingType, this.totalBuildingsPlaced.get(buildingType) + 1);
     }
-
-    for (const resourceCost of buildingData.resourceCosts) {
-      this.game.resources.getResource(resourceCost.resourceEnum).addAmount(-resourceCost.resourceCost);
-    }
   }
 
-  public refundBuilding(buildingData: BuildingTileData) {
+  public refundBuilding(buildingData: BuildingTileData, healthPercentage: number) {
     if (!this.totalBuildingsPlaced.has(buildingData.tileType)) {
       this.totalBuildingsPlaced.set(buildingData.tileType, 0);
     } else {
@@ -37,20 +37,20 @@ export class BuildingsManager {
     }
 
     for (const resourceCost of buildingData.resourceCosts) {
-      this.game.resources.getResource(resourceCost.resourceEnum).addAmount(resourceCost.resourceCost * 0.85);
+      this.game.resources.getResource(resourceCost.resourceEnum).addAmount(resourceCost.resourceCost * 0.85 * healthPercentage);
     }
   }
 
-  public canAffordBuilding(buildingTile: BuildingTileData): boolean {
-    if (buildingTile.maxPlaceable > 0 && this.totalBuildingsPlaced.get(buildingTile.tileType) >= buildingTile.maxPlaceable) {
-      return false;
-    }
-    for (const resourceCost of buildingTile.resourceCosts) {
-      if (this.game.resources.getResource(resourceCost.resourceEnum).amount < resourceCost.resourceCost) {
-        return false;
-      }
+  public resetBuildings() {
+    this.totalBuildingsPlaced.clear();
+  }
+
+  getTotalPlaced(buildingTileType: BuildingTileType): number {
+    let totalPlaced = this.totalBuildingsPlaced.get(buildingTileType);
+    if (totalPlaced === undefined) {
+      totalPlaced = 0;
     }
 
-    return true;
+    return totalPlaced;
   }
 }

@@ -5,20 +5,6 @@
       <mat-card-subtitle class="button-text">{{focusedBuildingData.description}}</mat-card-subtitle>
       <div class="repair-container">
         {{focusedBuildingNode.health | longNumber}}/{{focusedBuildingNode.maxHealth | longNumber}} Health
-        <div *ngIf="focusedBuildingNode.health < focusedBuildingNode.maxHealth">
-          <button mat-raised-button (click)="repairBuilding(focusedBuildingNode)" color="accent" [disabled]="!canRepairBuilding(focusedBuildingNode)">
-            Repair
-            <div class="resource-list">
-              <div matTooltip="{{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth - focusedBuildingNode.health)}} {{getResource(focusedBuildingData.repairResourceEnum).name | titlecase}}"
-                matTooltipPosition="below">
-                <img id="{{getResource(focusedBuildingData.repairResourceEnum).name | resourceId}}" class="resource-img slim-icon"
-                  src="assets/sprites/transparent.png" alt="{{getResource(focusedBuildingData.repairResourceEnum).name}}">
-                {{focusedBuildingData.repairCostPerPoint * (focusedBuildingNode.maxHealth -
-                focusedBuildingNode.health) | longNumber}}
-              </div>
-            </div>
-          </button>
-        </div>
       </div>
     </div>
 
@@ -46,7 +32,7 @@
     </div>
   </div>
 
-  <mat-card-content id="card-content" *ngIf="focusedBuildingNode">
+  <mat-card-content id="card-content" *ngIf="focusedBuildingNode && (focusedBuildingData.upgradeBuilding || focusedBuildingData.stats.length)">
     <div *ngIf="focusedBuildingNode && focusedBuildingData.upgradeBuilding">
       <button mat-raised-button class="wood" (click)="upgradeBuilding(focusedBuildingNode)" [disabled]="!canAffordUpgrade(upgradedBuildingData)">
         <div class="title button-text" matTooltip="{{upgradedBuildingData.description}}" matTooltipPosition="above">

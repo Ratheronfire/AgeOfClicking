@@ -1,0 +1,22 @@
+<ul class="units">
+  <mat-accordion multi="true">
+    <mat-expansion-panel class="steel" expanded="true" *ngFor="let unitType of unitTypes | enumToArray">
+      <mat-expansion-panel-header>
+        <mat-panel-title class="button-text-background">
+          {{unitType | titlecase}}
+        </mat-panel-title>
+      </mat-expansion-panel-header>
+
+      <div *ngFor="let unit of game.unit.getUnits(unitTypes[unitType])">
+        <mat-card class="wood">
+          <mat-card-title class="button-text-background">
+            {{unit.health}}/{{unit.maxHealth}} Health - {{unit.currentStateString}}
+          </mat-card-title>
+          <button mat-flat-button (click)="setFocusedUnit(unit)">
+            <mat-icon>mode_comment</mat-icon>
+          </button>
+        </mat-card>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+</ul>

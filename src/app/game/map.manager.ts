@@ -126,6 +126,8 @@ export class MapManager {
   minimapCamera: Phaser.Cameras.Scene2D.Camera;
   minimapSize = 240;
 
+  followingUnit = false;
+
   isDraggingScreen: boolean;
 
   pointerTileX: number;
@@ -405,6 +407,9 @@ export class MapManager {
   clickMap() {
     const pointer = this.scene.input.activePointer;
 
+    this.followingUnit = false;
+    this.mainCamera.stopFollow();
+
     if (pointer.justDown) {
       this.isDraggingScreen = false;
 
@@ -424,14 +429,14 @@ export class MapManager {
       }
 
       if (pointer.primaryDown && this.cursorTool === CursorTool.PlaceBuildings) {
-        this.createBuilding(this.pointerTileX, this.pointerTileY, this.game.buildings.selectedBuilding, true, 50);
+        this.createBuilding(this.pointerTileX, this.pointerTileY, this.game.buildings.selectedBuilding, true);
       } else if (pointer.primaryDown && this.cursorTool === CursorTool.ClearBuildings) {
         this.clearBuilding(this.pointerTileX, this.pointerTileY);
       }
     } else if (pointer.justUp && !this.isDraggingScreen) {
       switch (this.cursorTool) {
         case CursorTool.PlaceBuildings: {
-          this.createBuilding(this.pointerTileX, this.pointerTileY, this.game.buildings.selectedBuilding, true, 50);
+          this.createBuilding(this.pointerTileX, this.pointerTileY, this.game.buildings.selectedBuilding, true, false);
 
           break;
         } case CursorTool.TileDetail: {
@@ -591,7 +596,8 @@ export class MapManager {
                                                                    this.totalChunkY * 0.4 * this.chunkHeight,
                                                                    this.totalChunkY * 0.6 * this.chunkHeight);
     const homeData = this.buildingTileData.get(BuildingTileType.Home);
-    this.createBuilding(homeTile.x, homeTile.y, homeData, false, 50, true);
+    const homeNode = this.createBuilding(homeTile.x, homeTile.y, homeData, false, true);
+    homeNode.health = homeNode.maxHealth;
 
     if (loadingSave) {
       this.game.settings.loadGame(false);
@@ -607,82 +613,12 @@ export class MapManager {
     this.minimapIconGroup.add(minimapHomeIcon);
     this.mainCamera.ignore(minimapHomeIcon);
 
-    // Placing an oak tree & stone mine near the home, to ensure they're always available.
+    // Placing an oak tree, stone mine, and wheat farm near the home, to ensure they're always available.
     // We want to vary up their positions a bit to feel more natural.
-    let grassTiles: Phaser.Tilemaps.Tile[] = [], mountainTiles: Phaser.Tilemaps.Tile[] = [];
-    const placedRoads: Phaser.Tilemaps.Tile[] = [];
-
-    let oakTile: Phaser.Tilemaps.Tile, stoneTile: Phaser.Tilemaps.Tile;
-    let currentTile = homeTile;
-
-    for (let i = 0; i < this.rng.nextIntRange(7, 16); i++) {
-      let neighbors = this.getNeighborTiles(currentTile);
-
-      const existingOakTile = neighbors.find(tile => tile.properties['resourceNode'] &&
-        tile.properties['resourceNode'].tileType === ResourceTileType.OakTree);
-      if (existingOakTile) {
-        oakTile = existingOakTile;
-      }
-
-      const existingStoneTile = neighbors.find(tile => tile.properties['resourceNode'] &&
-        tile.properties['resourceNode'].tileType === ResourceTileType.StoneMine);
-      if (existingStoneTile) {
-        stoneTile = existingStoneTile;
-      }
-
-      grassTiles = grassTiles.concat(neighbors.filter(tile => tile.properties['tileType'] === MapTileType.Grass));
-      mountainTiles = mountainTiles.concat(neighbors.filter(tile => tile.properties['tileType'] === MapTileType.Mountain));
-
-      neighbors = neighbors.filter(tile => {
-        const buildingNode: BuildingNode = tile.properties['buildingNode'];
-        const resourceNode: ResourceNode = tile.properties['resourceNode'];
-
-        return (!buildingNode || buildingNode.tileType === BuildingTileType.Road)
-          && !resourceNode && tile.properties['tileType'] === MapTileType.Grass;
-      });
-
-      if (!neighbors.length) {
-        currentTile = grassTiles[this.rng.nextIntRange(0, grassTiles.length - 1)];
-      } else {
-        currentTile = neighbors[this.rng.nextIntRange(0, neighbors.length - 1)];
-      }
-
-      if (currentTile.properties['buildingNode'] && currentTile.properties['buildingNode'].tileType === BuildingTileType.Road) {
-        continue;
-      }
-
-      const roadData = this.buildingTileData.get(BuildingTileType.Road);
-      this.createBuilding(currentTile.x, currentTile.y, roadData, false, 50, true);
-      placedRoads.push(currentTile);
-    }
-
-    grassTiles = grassTiles.filter(tile => !tile.properties['buildingNode'] && !tile.properties['resourceNode']);
-    mountainTiles = mountainTiles.filter(tile => !tile.properties['buildingNode'] && !tile.properties['resourceNode']);
-
-    if (!oakTile) {
-      oakTile = grassTiles[this.rng.nextIntRange(0, grassTiles.length - 1)];
-      grassTiles = grassTiles.filter(tile => tile !== oakTile);
-    }
-
-    if (!stoneTile) {
-      stoneTile = mountainTiles.length ? mountainTiles[this.rng.nextIntRange(0, mountainTiles.length - 1)] :
-                                            grassTiles[this.rng.nextIntRange(0, grassTiles.length - 1)];
-    }
-
-    if (oakTile) {
-      this.setResourceTile(oakTile.x, oakTile.y, ResourceTileType.OakTree, 50);
-    }
-    if (stoneTile) {
-      this.setResourceTile(stoneTile.x, stoneTile.y, ResourceTileType.StoneMine, 50);
-    }
-
-    this.updatePaths(homeTile, true);
-
-    for (const roadTile of placedRoads) {
-      if (!oakTile.properties['resourceNode'].path.includes(roadTile) && !stoneTile.properties['resourceNode'].path.includes(roadTile)) {
-        this.clearBuildingTile(roadTile.x, roadTile.y);
-      }
-    }
+    const spawnAreaSize = 25;
+    this.putResourceNearSpawn(ResourceTileType.StoneMine, spawnAreaSize, [MapTileType.Mountain, MapTileType.Grass]);
+    this.putResourceNearSpawn(ResourceTileType.WheatFarm, spawnAreaSize, [MapTileType.Grass]);
+    this.putResourceNearSpawn(ResourceTileType.OakTree, spawnAreaSize, [MapTileType.Grass]);
 
     // Final sweep to make sure all spawnable resources exist at least once.
     let naturalResources = Array.from(this.resourceTileData.values());
@@ -1094,15 +1030,16 @@ export class MapManager {
 
   getRandomTile(mapTileTypes?: MapTileType[], avoidResources = false,
       minX = 0, maxX = Infinity, minY = 0, maxY = Infinity): Phaser.Tilemaps.Tile {
-    const tiles = this.mapLayer.getTilesWithin(minX, minY, maxX - minX, maxY - minY);
-    let tile: Phaser.Tilemaps.Tile;
+    let tiles = this.mapLayer.getTilesWithin(minX, minY, maxX - minX, maxY - minY);
 
-    do {
-      tile = tiles[Math.floor(this.rng.nextDouble() * tiles.length)];
-    } while (!tile || !(!mapTileTypes || mapTileTypes.includes(tile.properties['tileType'])) ||
-      (avoidResources && tile.properties['resourceNode']));
+    if (mapTileTypes) {
+      tiles = tiles.filter(tile => mapTileTypes.includes(tile.properties['tileType']));
+    }
+    if (avoidResources) {
+      tiles = tiles.filter(tile => !tile.properties['resourceNode']);
+    }
 
-    return tile;
+    return tiles[Math.floor(this.rng.nextDouble() * tiles.length)];
   }
 
   getRandomIslandId(minimumSize = 1, mapTileTypes?: MapTileType[]): number {
@@ -1165,8 +1102,7 @@ export class MapManager {
     return path;
   }
 
-  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean,
-      createForFree = false, shouldUpdatePaths = true) {
+  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean, shouldUpdatePaths = true): BuildingNode {
     if (!buildingData) {
       return;
     }
@@ -1177,13 +1113,11 @@ export class MapManager {
     const mapTile = this.mapLayer.getTileAt(x, y);
     const canPlaceHere = buildingData.buildableSurfaces.includes(mapTile.properties['tileType']);
 
-    if (buildingExists || resourceExists || !canPlaceHere || !(createForFree || this.game.buildings.canAffordBuilding(buildingData))) {
+    if (buildingExists || resourceExists || !canPlaceHere || !this.game.buildings.canPlaceBuilding(buildingData)) {
       return;
     }
 
-    if (!createForFree) {
-      this.game.buildings.purchaseBuilding(buildingData);
-    }
+    this.game.buildings.placeBuilding(buildingData);
 
     const buildingTile = this.setBuildingTile(x, y, buildingData.tileType, removable);
 
@@ -1227,6 +1161,8 @@ export class MapManager {
     if (shouldUpdatePaths) {
       this.updatePaths(buildingTile, true);
     }
+
+    return mapTile.properties['buildingNode'];
   }
 
   clearBuilding(x: number, y: number) {
@@ -1239,7 +1175,7 @@ export class MapManager {
     const buildingNode: BuildingNode = buildingTile.properties['buildingNode'];
     const buildingData = this.buildingTileData.get(buildingNode.tileType);
 
-    this.game.buildings.refundBuilding(buildingData);
+    this.game.buildings.refundBuilding(buildingData, buildingNode.health / buildingNode.maxHealth);
 
     this.clearBuildingTile(x, y);
     if (buildingData.placesResourceTile) {
@@ -1279,23 +1215,23 @@ export class MapManager {
       return false;
     }
 
-    const justHealedFromZero = buildingNode.health === 0;
-
     const buildingData = this.buildingTileData.get(buildingNode.tileType);
-    const repairResource = this.game.resources.getResource(buildingData.repairResourceEnum);
 
-    repairResource.addAmount(-buildingData.repairCostPerPoint * repairAmount);
-    buildingNode.health += repairAmount;
-    if (buildingNode.health > buildingNode.maxHealth) {
-      buildingNode.health = buildingNode.maxHealth;
+    const costRatio = buildingNode.maxHealth / repairAmount;
+    for (const resourceCost of buildingData.resourceCosts) {
+      const resource = this.game.resources.getResource(resourceCost.resourceEnum);
+      resource.addAmount(-resourceCost.resourceCost / costRatio);
     }
 
-    buildingNode.healthBar.updateHealthbar(buildingNode.health / buildingNode.maxHealth);
+    buildingNode.health += repairAmount;
+    if (buildingNode.health >= buildingNode.maxHealth) {
+      buildingNode.health = buildingNode.maxHealth;
 
-    if (justHealedFromZero) {
       this.buildingLayer.getTileAt(tile.x, tile.y).tint = 0xffffff;
       this.updatePaths(tile, true);
     }
+
+    buildingNode.healthBar.updateHealthbar(buildingNode.health / buildingNode.maxHealth);
   }
 
   canRepairBuilding(tile: Phaser.Tilemaps.Tile, repairAmount: number) {
@@ -1304,10 +1240,17 @@ export class MapManager {
       return false;
     }
 
-    const buildingData = this.buildingTileData.get(buildingNode.tileType);
-    const repairResource = this.game.resources.getResource(buildingData.repairResourceEnum);
+    const costRatio = buildingNode.maxHealth / repairAmount;
 
-    return repairResource.amount >= buildingData.repairCostPerPoint * repairAmount;
+    const buildingData = this.buildingTileData.get(buildingNode.tileType);
+    for (const resourceCost of buildingData.resourceCosts) {
+      const resourceAmount = this.game.resources.getResource(resourceCost.resourceEnum).amount;
+      if (resourceAmount < resourceCost.resourceCost * costRatio) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   processIslands(startTile?: Phaser.Tilemaps.Tile) {
@@ -1416,6 +1359,25 @@ export class MapManager {
 
     const mapTile = this.mapLayer.getTileAt(x, y);
     mapTile.properties['buildingNode'] = null;
+  }
+
+  putResourceNearSpawn(resourceTileType: ResourceTileType, spawnAreaSize: number, desiredSpawnTypes: MapTileType[]) {
+    const homeTile = this.getBuildingTiles([BuildingTileType.Home])[0];
+
+    const spawnArea = this.mapLayer.getTilesWithin(homeTile.x - Math.floor(spawnAreaSize / 2),
+      homeTile.y - Math.floor(spawnAreaSize / 2), spawnAreaSize, spawnAreaSize);
+
+    if (spawnArea.some(tile => tile.properties['resourceNode'] && tile.properties['resourceNode'].tileType === resourceTileType)) {
+      return;
+    }
+
+    const spawnTile = this.getRandomTile(desiredSpawnTypes, true,
+      homeTile.x - Math.floor(spawnAreaSize / 2), homeTile.x + Math.floor(spawnAreaSize / 2),
+      homeTile.y - Math.floor(spawnAreaSize / 2), homeTile.y + Math.floor(spawnAreaSize / 2));
+
+    if (spawnTile) {
+      this.setResourceTile(spawnTile.x, spawnTile.y, resourceTileType, 50);
+    }
   }
 
   setResourceTile(x: number, y: number, tileType: ResourceTileType, health: number): Phaser.Tilemaps.Tile {

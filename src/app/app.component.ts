@@ -70,8 +70,4 @@ export class AppComponent {
   get disableAnimations(): boolean {
     return this.game.settings.disableAnimations;
   }
-
-  get debugMode(): boolean {
-    return this.game.settings.debugMode;
-  }
 }

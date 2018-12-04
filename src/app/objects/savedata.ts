@@ -71,7 +71,6 @@ export interface UnitSaveData {
 
 export interface SettingsSaveData {
   autosaveInterval: number;
-  debugMode: boolean;
 
   highestTierReached: number;
 

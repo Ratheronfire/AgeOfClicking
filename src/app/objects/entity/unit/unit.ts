@@ -166,7 +166,7 @@ export class Unit extends Actor {
   }
 
   pickTarget() {
-    if (!this.islandId) {
+    if (this.islandId === undefined) {
       // The enemy's position has become invalid, so we'll just move it somewhere random.
       this.moveToNewTile();
     }

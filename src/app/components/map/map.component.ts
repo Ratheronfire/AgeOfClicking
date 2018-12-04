@@ -1,6 +1,7 @@
 import { GameService } from './../../game/game.service';
 import { Component } from '@angular/core';
 import { MapTileType, BuildingTileType } from '../../objects/tile/tile';
+import { isDevMode } from '@angular/core';
 
 declare var d3: any;
 
@@ -23,5 +24,9 @@ export class MapComponent {
   setPlacementGroupVisibility(buildingVisibility: boolean, unitVisibility: boolean) {
     this.game.map.buildingListVisible = buildingVisibility;
     this.game.map.unitListVisible = unitVisibility;
+  }
+
+  get isDevMode() {
+    return isDevMode();
   }
 }

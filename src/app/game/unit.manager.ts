@@ -34,7 +34,13 @@ export class UnitManager {
     this.game.resources.getResource(ResourceEnum.Gold).addAmount(-unitData.cost);
   }
 
-  get units(): Unit[] {
-    return this.unitGroup ? this.unitGroup.getChildren().map(unit => unit as Unit) : [];
+  getUnits(unitType?: UnitType): Unit[] {
+    let units = this.unitGroup ? this.unitGroup.getChildren().map(unit => unit as Unit) : [];
+
+    if (unitType) {
+      units = units.filter(unit => unit.unitType === unitType);
+    }
+
+    return units;
   }
 }

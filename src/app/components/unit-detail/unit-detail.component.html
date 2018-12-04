@@ -22,10 +22,13 @@
       <br />
       <br />
 
+      <mat-button-toggle (click)="toggleFollowUnit()" value="followingUnit">
+        <mat-icon>videocam</mat-icon>
+      </mat-button-toggle>
       <button mat-raised-button color="warn" (click)="removeUnit()">Remove Unit</button>
     </div>
 
-    <mat-card-content id="card-content">
+    <mat-card-content id="card-content" *ngIf="focusedStats && focusedStats.statList.length">
       <table class="stats-container">
         <tbody>
           <tr class="stat-row" *ngFor="let stat of focusedStats.statList">

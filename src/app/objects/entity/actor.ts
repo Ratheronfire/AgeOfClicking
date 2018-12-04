@@ -89,8 +89,8 @@ export class Actor extends Entity {
   }
 
   tick(elapsed: number, deltaTime: number) {
-    if (!this.currentTile || !this.game.map.isTileWalkable(this.currentTile)) {
-      // If the enemy spawns on an invalid tile, we'll just move it elsewhere.
+    if (!this.currentTileIsValid()) {
+      // If the actor spawns on an invalid tile, we'll just move it elsewhere.
       if (!this.moveToNeighbor()) {
         this.moveToNewTile();
       }
@@ -194,6 +194,10 @@ export class Actor extends Entity {
     });
   }
 
+  protected currentTileIsValid(): boolean {
+    return this.currentTile && this.game.map.isTileWalkable(this.currentTile);
+  }
+
   moveToNeighbor(): boolean {
     if (!this.currentTile) {
       return false;
@@ -235,7 +239,8 @@ export class Actor extends Entity {
   }
 
   takeDamage(damageSource: Projectile) {
-    this.health -= damageSource.owner.attack;
+    const damageDealt = damageSource.owner.attack - this.defense;
+    this.health -= damageDealt;
 
     this.healthBar.updateHealthbar(this.health / this.maxHealth);
 
@@ -250,6 +255,28 @@ export class Actor extends Entity {
       return this.currentTile.properties['islandId'];
     } else {
       return this.lastIslandId;
+    }
+  }
+
+  public get currentStateString(): string {
+    switch (this.currentState) {
+      case ActorState.Destroying: {
+        return 'Destroying';
+      } case ActorState.Fighting: {
+        return 'Fighting';
+      } case ActorState.Looting: {
+        return 'Looting';
+      } case ActorState.MovingToTarget: {
+        return 'Moving to Target';
+      } case ActorState.Repairing: {
+        return 'Repairing';
+      } case ActorState.Sleeping: {
+        return 'Sleeping';
+      } case ActorState.Stationary: {
+        return 'Stationary';
+      } case ActorState.Wandering: {
+        return 'Wandering';
+      }
     }
   }
 }

@@ -11,8 +11,6 @@ import { GameService } from './../../game/game.service';
   styleUrls: ['./workers.component.css']
 })
 export class WorkersComponent implements OnInit {
-  resourceTypes = ResourceType;
-
   constructor(protected game: GameService) { }
 
   ngOnInit() {

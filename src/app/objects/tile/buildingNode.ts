@@ -83,7 +83,7 @@ export class BuildingNode {
 
     this.removable = removable;
 
-    this.health = tileData.baseHealth;
+    this.health = 0;
     this.maxHealth = tileData.baseHealth;
 
     this.healthBar = new HealthBar(owningTile, scene);
@@ -99,7 +99,8 @@ export class BuildingNode {
     if (this.health <= 0) {
       // Phaser.Tilemaps.Tile.tint seems to be somewhat broken at the moment.
       // This line tints and broken buildings in a light red color.
-      this.owningTile.tint = 0x9999ff;
+      const buildingTile = this.game.map.buildingLayer.getTileAt(this.owningTile.x, this.owningTile.y);
+      buildingTile.tint = 0x9999ff;
     }
   }
 

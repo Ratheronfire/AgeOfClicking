@@ -49,16 +49,12 @@ export class TileDetailComponent implements OnInit {
     return tiles;
   }
 
-  canAffordBuilding(buildingType: BuildingTileType): boolean {
-    return this.game.buildings.canAffordBuilding(this.buildingTiles.get(buildingType));
-  }
-
   upgradeBuilding() {
     const newBuildingData = this.upgradedBuildingData;
 
     this.game.map.clearBuilding(this.focusedTile.x, this.focusedTile.y);
     this.game.map.createBuilding(this.focusedTile.x, this.focusedTile.y,
-      newBuildingData, true, newBuildingData.baseHealth);
+      newBuildingData, true);
   }
 
   canRepairBuilding(): boolean {

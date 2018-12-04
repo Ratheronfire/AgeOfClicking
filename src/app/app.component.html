@@ -16,6 +16,9 @@
       fixedTopGap="56">
       <mat-nav-list>
         <mat-tab-group class="tab-group" dynamicHeight>
+          <mat-tab label="Units">
+            <app-units></app-units>
+          </mat-tab>
           <mat-tab label="Workers">
             <app-workers></app-workers>
           </mat-tab>
@@ -30,7 +33,6 @@
           </mat-tab>
           <mat-tab label="Settings">
             <app-settings></app-settings>
-            <app-admin-debug *ngIf="debugMode"></app-admin-debug>
           </mat-tab>
         </mat-tab-group>
       </mat-nav-list>

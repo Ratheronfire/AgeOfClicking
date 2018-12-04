@@ -111,8 +111,6 @@ export interface BuildingTileData {
   upgradeBuilding?: BuildingTileType;
 
   baseHealth: number;
-  repairResourceEnum?: ResourceEnum;
-  repairCostPerPoint?: number;
 
   resourceCosts: ResourceCost[];
   buildableSurfaces: MapTileType[];

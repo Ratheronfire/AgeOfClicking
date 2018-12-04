@@ -2,15 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { UnitData } from 'src/app/objects/entity/actor';
 import { UnitType } from 'src/app/objects/entity/unit/unit';
 import { ResourceEnum } from '../../objects/resourceData';
-import { GameService } from './../../game/game.service';
+import { GameService } from '../../game/game.service';
 
 
 @Component({
-  selector: 'app-unit',
-  templateUrl: './unit.component.html',
-  styleUrls: ['./unit.component.css']
+  selector: 'app-unit-dropdown',
+  templateUrl: './unit-dropdown.component.html',
+  styleUrls: ['./unit-dropdown.component.css']
 })
-export class UnitComponent implements OnInit {
+export class UnitDropdownComponent implements OnInit {
   UnitTypes = UnitType;
 
   constructor(protected game: GameService) { }

@@ -33,6 +33,20 @@ export class UnitDetailComponent implements OnInit {
     this.focusedUnit = undefined;
   }
 
+  toggleFollowUnit() {
+    if (!this.focusedUnit) {
+      return;
+    }
+
+    this.followingUnit = !this.followingUnit;
+
+    if (this.followingUnit) {
+      this.game.map.mainCamera.startFollow(this.focusedUnit);
+    } else {
+      this.game.map.mainCamera.stopFollow();
+    }
+  }
+
   get focusedTile(): Phaser.Tilemaps.Tile {
     return this.game.map.focusedTile;
   }
@@ -55,5 +69,13 @@ export class UnitDetailComponent implements OnInit {
     }
 
     return this.focusedUnit.stats;
+  }
+
+  get followingUnit(): boolean {
+    return this.game.map.followingUnit;
+  }
+
+  set followingUnit(value: boolean) {
+    this.game.map.followingUnit = value;
   }
 }

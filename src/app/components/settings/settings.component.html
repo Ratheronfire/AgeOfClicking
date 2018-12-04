@@ -100,7 +100,7 @@
     </mat-form-field>
   </mat-expansion-panel>
 
-  <mat-expansion-panel class="steel" expanded="true">
+  <mat-expansion-panel class="steel" expanded="true" *ngIf="isDevMode">
     <mat-expansion-panel-header>
       <mat-panel-title>
         <mat-icon color="primary">bug_report</mat-icon>
@@ -108,6 +108,6 @@
       </mat-panel-title>
     </mat-expansion-panel-header>
 
-    <mat-checkbox [(ngModel)]="debugMode">Debug Mode</mat-checkbox>
+    <app-admin-debug></app-admin-debug>
   </mat-expansion-panel>
 </mat-accordion>

@@ -37,8 +37,6 @@
       "placeable": false,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 0,
       "resourceCosts": [],
       "buildableSurfaces": [
         "GRASS"
@@ -56,8 +54,6 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "OAK",
-      "repairCostPerPoint": 0.2,
       "resourceCosts": [{
         "resourceEnum": "OAK",
         "resourceCost": 20
@@ -66,9 +62,7 @@
         "GRASS"
       ],
       "resourcePathable": false,
-      "stats": [
-        "MAXHEALTH"
-      ]
+      "stats": []
     },
     "ROAD": {
       "tileType": "ROAD",
@@ -78,8 +72,6 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "STONE",
-      "repairCostPerPoint": 0.1,
       "resourceCosts": [{
         "resourceEnum": "STONE",
         "resourceCost": 5
@@ -88,9 +80,7 @@
         "GRASS"
       ],
       "resourcePathable": true,
-      "stats": [
-        "MAXHEALTH"
-      ]
+      "stats": []
     },
     "TUNNEL": {
       "tileType": "TUNNEL",
@@ -100,8 +90,6 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "OAK",
-      "repairCostPerPoint": 0.2,
       "resourceCosts": [{
         "resourceEnum": "OAK",
         "resourceCost": 15
@@ -110,9 +98,7 @@
         "MOUNTAIN"
       ],
       "resourcePathable": true,
-      "stats": [
-        "MAXHEALTH"
-      ]
+      "stats": []
     },
     "BRIDGE": {
       "tileType": "BRIDGE",
@@ -122,8 +108,6 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "OAK",
-      "repairCostPerPoint": 0.25,
       "resourceCosts": [{
         "resourceEnum": "OAK",
         "resourceCost": 20
@@ -132,9 +116,7 @@
         "WATER"
       ],
       "resourcePathable": true,
-      "stats": [
-        "MAXHEALTH"
-      ]
+      "stats": []
     },
     "CRACKEDFORGE": {
       "tileType": "CRACKEDFORGE",
@@ -144,8 +126,6 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 1,
       "upgradeBuilding": "STONEFORGE",
       "resourceCosts": [{
         "resourceEnum": "GOLD",
@@ -169,8 +149,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 75,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 0.3,
       "upgradeBuilding": "IRONFORGE",
       "resourceCosts": [{
         "resourceEnum": "BRONZEINGOT",
@@ -200,8 +178,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 125,
-      "repairResourceEnum": "IRONINGOT",
-      "repairCostPerPoint": 0.3,
       "upgradeBuilding": "GOLDFORGE",
       "resourceCosts": [{
         "resourceEnum": "IRONINGOT",
@@ -231,8 +207,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 150,
-      "repairResourceEnum": "GOLDINGOT",
-      "repairCostPerPoint": 0.35,
       "upgradeBuilding": "LATINUMFORGE",
       "resourceCosts": [{
         "resourceEnum": "GOLDINGOT",
@@ -262,8 +236,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 200,
-      "repairResourceEnum": "LATINUMINGOT",
-      "repairCostPerPoint": 0.5,
       "upgradeBuilding": "TEMPROUSDISTILLERY",
       "resourceCosts": [{
         "resourceEnum": "LATINUMINGOT",
@@ -293,8 +265,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 350,
-      "repairResourceEnum": "TEMPROUSINGOT",
-      "repairCostPerPoint": 0.65,
       "resourceCosts": [{
         "resourceEnum": "TEMPROUSINGOT",
         "resourceCost": 5000
@@ -323,8 +293,6 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "OAK",
-      "repairCostPerPoint": 2,
       "upgradeBuilding": "STONEOVEN",
       "resourceCosts": [{
         "resourceEnum": "OAK",
@@ -351,8 +319,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 75,
-      "repairResourceEnum": "STONE",
-      "repairCostPerPoint": 3,
       "upgradeBuilding": "MARBLEOVEN",
       "resourceCosts": [{
         "resourceEnum": "PINE",
@@ -379,8 +345,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 75,
-      "repairResourceEnum": "MARBLE",
-      "repairCostPerPoint": 3,
       "upgradeBuilding": "TEMPROUSOVEN",
       "resourceCosts": [{
         "resourceEnum": "MARBLE",
@@ -410,8 +374,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 150,
-      "repairResourceEnum": "TEMPROUSINGOT",
-      "repairCostPerPoint": 5,
       "resourceCosts": [{
         "resourceEnum": "TEMPROUSINGOT",
         "resourceCost": 2350
@@ -440,8 +402,6 @@
       "placeable": true,
       "maxPlaceable": -1,
       "baseHealth": 50,
-      "repairResourceEnum": "EUCALYPTUS",
-      "repairCostPerPoint": 3,
       "upgradeBuilding": "COWFARM",
       "resourceCosts": [{
         "resourceEnum": "EUCALYPTUS",
@@ -468,8 +428,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 100,
-      "repairResourceEnum": "WILLOW",
-      "repairCostPerPoint": 4,
       "upgradeBuilding": "DRAGONFARM",
       "resourceCosts": [{
         "resourceEnum": "RAWCHICKEN",
@@ -499,8 +457,6 @@
       "placeable": false,
       "maxPlaceable": -1,
       "baseHealth": 150,
-      "repairResourceEnum": "TEMPROUSINGOT",
-      "repairCostPerPoint": 5,
       "resourceCosts": [{
         "resourceEnum": "RAWSTEAK",
         "resourceCost": 30
@@ -529,8 +485,6 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 1,
       "resourceCosts": [{
         "resourceEnum": "GOLD",
         "resourceCost": 150
@@ -554,8 +508,6 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 1,
       "resourceCosts": [{
         "resourceEnum": "GOLD",
         "resourceCost": 150
@@ -579,8 +531,6 @@
       "placeable": true,
       "maxPlaceable": 1,
       "baseHealth": 50,
-      "repairResourceEnum": "GOLD",
-      "repairCostPerPoint": 1,
       "resourceCosts": [{
         "resourceEnum": "GOLD",
         "resourceCost": 150

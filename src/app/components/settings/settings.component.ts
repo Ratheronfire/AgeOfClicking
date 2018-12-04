@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, isDevMode } from '@angular/core';
 import { MatSelectChange } from '@angular/material';
 import { MessageSource } from '../../objects/message';
 import { Resource } from '../../objects/resource';
@@ -75,13 +75,6 @@ export class SettingsComponent {
     this.game.settings.autosaveInterval = value;
   }
 
-  get debugMode(): boolean {
-    return this.game.settings.debugMode;
-  }
-  set debugMode(value: boolean) {
-    this.game.settings.debugMode = value;
-  }
-
   get mapLowFramerate(): boolean {
     return this.game.settings.mapLowFramerate;
   }
@@ -122,5 +115,9 @@ export class SettingsComponent {
   }
   set resourceBinds(value: ResourceEnum[]) {
     this.game.settings.resourceBinds = value;
+  }
+
+  get isDevMode() {
+    return isDevMode();
   }
 }

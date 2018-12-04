@@ -2,6 +2,7 @@ import { BuildingNode } from '../../tile/buildingNode';
 import { ActorState, UnitData } from '../actor';
 import { GameService } from './../../../game/game.service';
 import { Unit, UnitStat, UnitStats } from './unit';
+import { BuildingTileType } from '../../tile/tile';
 
 export class BuilderStats extends UnitStats {
   owner: Builder;
@@ -129,5 +130,12 @@ export class Builder extends Unit {
     } else {
       this.pickTarget();
     }
+
+    super.finishTask();
+  }
+
+  protected currentTileIsValid(): boolean {
+    return this.currentTile && (this.game.map.isTileWalkable(this.currentTile) ||
+      this.currentTile.properties['buildingNode'].tileType === BuildingTileType.Wall);
   }
 }

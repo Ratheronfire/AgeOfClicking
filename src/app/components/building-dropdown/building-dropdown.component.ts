@@ -5,11 +5,11 @@ import { ResourceEnum } from '../../objects/resourceData';
 import { BuildingTileData, BuildingTileType } from '../../objects/tile/tile';
 
 @Component({
-  selector: 'app-buildings',
-  templateUrl: './buildings.component.html',
-  styleUrls: ['./buildings.component.css']
+  selector: 'app-building-dropdown',
+  templateUrl: './building-dropdown.component.html',
+  styleUrls: ['./building-dropdown.component.css']
 })
-export class BuildingsComponent implements OnInit {
+export class BuildingDropdownComponent implements OnInit {
   constructor(protected game: GameService) { }
 
   ngOnInit() {
@@ -24,8 +24,9 @@ export class BuildingsComponent implements OnInit {
     }
   }
 
-  canAffordBuilding(buildingType: BuildingTileType): boolean {
-    return this.game.buildings.canAffordBuilding(this.buildingTiles.get(buildingType));
+  canPlaceBuilding(buildingType: BuildingTileType): boolean {
+    const buildingData = this.buildingTiles.get(buildingType);
+    return this.game.buildings.canPlaceBuilding(buildingData);
   }
 
   get buildingTiles() {
@@ -52,5 +53,9 @@ export class BuildingsComponent implements OnInit {
 
   set selectedBuilding(value) {
     this.game.buildings.selectedBuilding = value;
+  }
+
+  getTotalPlaced(buildingType: BuildingTileType) {
+    return this.game.buildings.getTotalPlaced(buildingType);
   }
 }
