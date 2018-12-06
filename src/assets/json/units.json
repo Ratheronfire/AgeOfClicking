@@ -20,7 +20,7 @@
     "cost": 250,
     "attack": 1,
     "defense": 2,
-    "movementSpeed": 1,
+    "movementSpeed": 3,
     "movable": true,
     "attackRange": 1,
     "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "REPAIRRATE", "MAXHEALTH"]

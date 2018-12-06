@@ -14,8 +14,8 @@
 
     <div *ngIf="focusedResourceNode" class="resource-list">
       <div *ngIf="focusedResourceNode.path.length">
-        Travel Time: {{focusedResourceNode.travelMilliseconds / 1000 | longNumber}}
-        Second{{focusedResourceNode.travelMilliseconds === 1000 ? '' : 's'}}
+        Travel Time: {{game.pathfinding.getPathWeight(focusedResourceNode.path) | longNumber}}
+        Second{{game.pathfinding.getPathWeight(focusedResourceNode.path) === 1 ? '' : 's'}}
       </div>
       <br />
       Produces:

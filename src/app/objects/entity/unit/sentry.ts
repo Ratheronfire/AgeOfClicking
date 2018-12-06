@@ -1,4 +1,5 @@
-import { ActorState, UnitData } from '../actor';
+import { UnitData } from '../actor';
+import { EntityState } from '../entity';
 import { GameService } from './../../../game/game.service';
 import { Unit } from './unit';
 
@@ -7,7 +8,7 @@ export class Sentry extends Unit {
       scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
     super(x, y, unitData, scene, texture, frame, game);
 
-    this.currentState = ActorState.Stationary;
+    this.currentState = EntityState.Stationary;
   }
 
   tick (elapsed: number, deltaTime: number) {

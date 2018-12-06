@@ -3,28 +3,9 @@ import { ResourceEnum } from '../resourceData';
 import { BuildingTileType, MapTileType } from '../tile/tile';
 import { GameService } from './../../game/game.service';
 import { EnemyType } from './enemy/enemy';
-import { Entity } from './entity';
+import { Entity, EntityState } from './entity';
 import { Projectile } from './projectile';
 import { UnitStat, UnitType } from './unit/unit';
-
-export enum ActorState {
-  /** The actor is moving towards a specific target. */
-  MovingToTarget = 'MOVINGTOTARGET',
-  /** The actor has no targets, and is moving randomly. */
-  Wandering = 'WANDERING',
-  /** The actor is fighting another actor. */
-  Fighting = 'FIGHTING',
-  /** For enemies: The actor is looting resources from the player's home base. */
-  Looting = 'LOOTING',
-  /** For enemies: The actor is destroying a building. */
-  Destroying = 'DESTROYING',
-  /** For player units: The actor is defending from a stationary position. */
-  Stationary = 'STATIONARY',
-  /** For player units: The actor is reparing a building. */
-  Repairing = 'REPAIRING',
-  /** The actor is inactive. */
-  Sleeping = 'SLEEPING'
-}
 
 export interface ActorData {
   name: string;
@@ -70,12 +51,6 @@ export class Actor extends Entity {
   targets: Phaser.Tilemaps.Tile[] = [];
   selectedTarget: Phaser.Tilemaps.Tile;
 
-  pathAttempt = 0;
-  maxPathRetryCount = 25;
-  animationSpeedFactor = 0.002;
-
-  currentState: ActorState;
-
   public constructor(x: number, y: number, health: number, animationSpeed: number,
       attack: number, defense: number, attackRange: number,
       scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
@@ -84,6 +59,8 @@ export class Actor extends Entity {
     this.attack = attack;
     this.defense = defense;
     this.attackRange = attackRange;
+
+    this.terrainTypeControlsSpeed = true;
 
     this.healthBar = new HealthBar(this, scene);
   }
@@ -98,38 +75,19 @@ export class Actor extends Entity {
 
     this.lastIslandId = this.islandId;
 
-    if (this.currentState === ActorState.MovingToTarget || this.currentState === ActorState.Wandering) {
-      this.moveAlongPath(deltaTime);
-    }
-
-    if (this.currentState === ActorState.Sleeping) {
-      this.finishTask();
-    }
-
     this.healthBar.tick(elapsed, deltaTime, this.x, this.y);
+
+    super.tick(elapsed, deltaTime);
   }
 
   moveAlongPath(deltaTime: number) {
-    if (this.isPathBroken() || !this.tilePath.length) {
+    if (this.isPathBroken()) {
       this.finishTask();
 
       return;
     }
 
-    const totalDistanceX = this.tilePath[0].pixelX - this.currentTile.pixelX;
-    const totalDistanceY = this.tilePath[0].pixelY - this.currentTile.pixelY;
-
-    this.x += totalDistanceX * deltaTime * this.animationSpeed * this.animationSpeedFactor;
-    this.y += totalDistanceY * deltaTime * this.animationSpeed * this.animationSpeedFactor;
-
-    const center = this.getCenter();
-
-    if (Math.abs(center.x - this.currentTile.getCenterX()) >= Math.abs(totalDistanceX) &&
-        Math.abs(center.y - this.currentTile.getCenterY()) >= Math.abs(totalDistanceY)) {
-          this.currentTile = this.tilePath.splice(0, 1)[0];
-          this.x = this.currentTile.getCenterX();
-          this.y = this.currentTile.getCenterY();
-        }
+    super.moveAlongPath(deltaTime);
   }
 
   findTargets() {
@@ -144,8 +102,8 @@ export class Actor extends Entity {
       }
     }
 
-    if (this.currentState === ActorState.Wandering) {
-      this.currentState = ActorState.MovingToTarget;
+    if (this.currentState === EntityState.Wandering) {
+      this.currentState = EntityState.MovingToTarget;
 
       this.pickTarget();
     }
@@ -157,30 +115,8 @@ export class Actor extends Entity {
   finishTask() {
     this.targets = this.targets.filter(target => target !== this.selectedTarget);
 
-    if (this.currentState === ActorState.MovingToTarget) {
+    if (this.currentState === EntityState.MovingToTarget) {
       this.pickTarget();
-    }
-  }
-
-  beginPathing(tilePath: Phaser.Tilemaps.Tile[]) {
-    if (!tilePath.length) {
-      this.pathAttempt++;
-
-      if (this.pathAttempt < this.maxPathRetryCount) {
-        this.finishTask();
-      } else {
-        this.currentState = ActorState.Sleeping;
-      }
-    } else {
-      this.tilePath = tilePath;
-
-      if (this.tilePath.length > 1) {
-        this.tilePath.splice(0, 1);
-      }
-
-      this.path = this.game.map.tilesToLinearPath(tilePath);
-
-      this.currentState = ActorState.MovingToTarget;
     }
   }
 
@@ -226,11 +162,6 @@ export class Actor extends Entity {
 
     this.x = this.currentTile.getCenterX();
     this.y = this.currentTile.getCenterY();
-
-    if (this.path) {
-      this.path.destroy();
-      this.stopFollow();
-    }
   }
 
   isPathBroken(): boolean {
@@ -260,21 +191,21 @@ export class Actor extends Entity {
 
   public get currentStateString(): string {
     switch (this.currentState) {
-      case ActorState.Destroying: {
+      case EntityState.Destroying: {
         return 'Destroying';
-      } case ActorState.Fighting: {
+      } case EntityState.Fighting: {
         return 'Fighting';
-      } case ActorState.Looting: {
+      } case EntityState.Looting: {
         return 'Looting';
-      } case ActorState.MovingToTarget: {
+      } case EntityState.MovingToTarget: {
         return 'Moving to Target';
-      } case ActorState.Repairing: {
+      } case EntityState.Repairing: {
         return 'Repairing';
-      } case ActorState.Sleeping: {
+      } case EntityState.Sleeping: {
         return 'Sleeping';
-      } case ActorState.Stationary: {
+      } case EntityState.Stationary: {
         return 'Stationary';
-      } case ActorState.Wandering: {
+      } case EntityState.Wandering: {
         return 'Wandering';
       }
     }

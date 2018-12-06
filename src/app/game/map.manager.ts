@@ -355,13 +355,7 @@ export class MapManager {
     }
 
     const resourceAnimations = this.resourceAnimationGroup.children.entries.map(anim => anim as ResourceAnimation);
-
-    for (const resourceAnimation of resourceAnimations) {
-      if (resourceAnimation.pathingDone) {
-        resourceAnimation.finishAnimation();
-        this.resourceAnimationGroup.remove(resourceAnimation);
-      }
-    }
+    resourceAnimations.map(animation => animation.tick(elapsed, deltaTime));
 
     for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['buildingNode'])) {
       tile.properties['buildingNode'].tick(elapsed, deltaTime);
@@ -436,7 +430,7 @@ export class MapManager {
     } else if (pointer.justUp && !this.isDraggingScreen) {
       switch (this.cursorTool) {
         case CursorTool.PlaceBuildings: {
-          this.createBuilding(this.pointerTileX, this.pointerTileY, this.game.buildings.selectedBuilding, true, false);
+          this.createBuilding(this.pointerTileX, this.pointerTileY, this.game.buildings.selectedBuilding, true);
 
           break;
         } case CursorTool.TileDetail: {
@@ -471,7 +465,7 @@ export class MapManager {
           const homeTile = this.mapLayer.findTile(_tile => _tile.properties['buildingNode'] &&
             _tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
-          this.findPath(tile, homeTile, false, true).subscribe(tilePath => {
+          this.game.pathfinding.findPath(tile, homeTile, false, true).subscribe(tilePath => {
             for (const pathTile of tilePath) {
               let tileColor = 0x0000ff;
               if (tilePath.indexOf(pathTile) === 0) {
@@ -495,7 +489,7 @@ export class MapManager {
           const homeTile = this.mapLayer.findTile(_tile => _tile.properties['buildingNode'] &&
             _tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
-          this.findPath(tile, homeTile, true, true).subscribe(tilePath => {
+            this.game.pathfinding.findPath(tile, homeTile, true, true).subscribe(tilePath => {
             for (const pathTile of tilePath) {
               let tileColor = 0x0000ff;
               if (tilePath.indexOf(pathTile) === 0) {
@@ -596,12 +590,16 @@ export class MapManager {
                                                                    this.totalChunkY * 0.4 * this.chunkHeight,
                                                                    this.totalChunkY * 0.6 * this.chunkHeight);
     const homeData = this.buildingTileData.get(BuildingTileType.Home);
-    const homeNode = this.createBuilding(homeTile.x, homeTile.y, homeData, false, true);
+    const homeNode = this.createBuilding(homeTile.x, homeTile.y, homeData, false);
     homeNode.health = homeNode.maxHealth;
 
     if (loadingSave) {
       this.game.settings.loadGame(false);
+    } else {
+      this.spawnUnit(UnitType.Builder, homeTile.x, homeTile.y, true);
     }
+
+    this.game.pathfinding.calculateResourceConnections();
 
     this.mainCamera.centerOn(homeTile.pixelX, homeTile.pixelY);
 
@@ -743,168 +741,8 @@ export class MapManager {
     }
   }
 
-  updatePaths(updatedTile: Phaser.Tilemaps.Tile, onlyPathable: boolean) {
-    const visitedTiles: Phaser.Tilemaps.Tile[] = [];
-    const tileQueue: Phaser.Tilemaps.Tile[] = [];
-    let currentTile: Phaser.Tilemaps.Tile;
-
-    tileQueue.push(updatedTile);
-
-    const homeTile = this.mapLayer.findTile(tile => tile.properties['buildingNode'] &&
-      tile.properties['buildingNode'].tileType === BuildingTileType.Home);
-
-    while (tileQueue.length) {
-      currentTile = tileQueue.pop();
-
-      const neighborTiles = this.getNeighborTiles(currentTile);
-      visitedTiles.push(currentTile);
-
-      for (const neighbor of neighborTiles) {
-        let buildingTile: BuildingTileData;
-        if (neighbor.properties['buildingNode']) {
-          buildingTile = this.buildingTileData.get(neighbor.properties['buildingNode'].tileType);
-        }
-
-        if (!visitedTiles.includes(neighbor) &&
-            (!onlyPathable || ((buildingTile && buildingTile.resourcePathable)) || neighbor.properties['resourceNode'])) {
-          tileQueue.push(neighbor);
-        }
-      }
-
-      const resourceNode: ResourceNode = currentTile.properties['resourceNode'];
-      const buildingNode: BuildingNode = currentTile.properties['buildingNode'];
-
-      if (resourceNode) {
-        this.findPath(currentTile, homeTile, true, true).subscribe(tilePath => {
-          resourceNode.path = tilePath;
-          const pathAvailable = resourceNode.path.length > 0;
-
-          const resources = this.resourceTileData.get(resourceNode.tileType).resourceEnums
-              .map(resourceEnum => this.game.resources.getResource(resourceEnum));
-
-          for (const resource of resources) {
-            const alternatePaths = this.getResourceTiles(resource.resourceEnum).filter(
-              tile => tile !== currentTile && tile.properties['resourceNode'].path.length);
-            resource.pathAvailable = pathAvailable || alternatePaths.length > 0;
-          }
-        });
-      } else if (buildingNode && buildingNode instanceof Market) {
-        buildingNode.calculateConnection();
-      }
-    }
-  }
-
-  calculateResourceConnections() {
-    const resourceTiles = this.getResourceTiles();
-
-    for (const resource of this.game.resources.allResources) {
-      resource.pathAvailable = false;
-    }
-
-    const homeTile = this.mapLayer.findTile(tile => tile.properties['buildingNode'] &&
-      tile.properties['buildingNode'].tileType === BuildingTileType.Home);
-
-    for (const resourceTile of resourceTiles) {
-      this.findPath(resourceTile, homeTile, true, true).subscribe(tilePath => {
-        const resourceNode = resourceTile.properties['resourceNode'];
-        resourceNode.path = tilePath;
-
-        if (resourceNode.path.length && !resourceNode.path.some(tile => tile.health <= 0)) {
-          const resources = this.resourceTileData.get(resourceNode.tileType).resourceEnums
-            .map(resourceEnum => this.game.resources.getResource(resourceEnum));
-          for (const resource of resources) {
-            resource.pathAvailable = true;
-          }
-        }
-      });
-    }
-
-    for (const marketTile of this.mapLayer.getTilesWithin()) {
-      const buildingNode: BuildingNode = marketTile.properties['buildingNode'];
-      if (buildingNode && buildingNode instanceof Market) {
-        buildingNode.calculateConnection();
-      }
-    }
-  }
-
-  findPath(startTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile, onlyPathable: boolean, onlyWalkable: boolean,
-      maxAttempts: number = Infinity): Observable<Phaser.Tilemaps.Tile[]> {
-    const visitedTiles: Phaser.Tilemaps.Tile[] = [];
-
-    let tileQueue: Phaser.Tilemaps.Tile[] = [];
-
-    const tileDistances = [];
-    const tileHeuristicDistances = [];
-
-    const nodeMap = new Map<Phaser.Tilemaps.Tile, Phaser.Tilemaps.Tile>();
-
-    const targetPosition = new Phaser.Math.Vector2(targetTile.x, targetTile.y);
-
-    let currentNode: Phaser.Tilemaps.Tile;
-
-    tileDistances[startTile.properties['id']] = 0;
-
-    tileQueue.push(startTile);
-
-    let nodesProcessed = 0;
-
-    while (tileQueue.length) {
-      nodesProcessed++;
-      if (nodesProcessed > maxAttempts) {
-        break;
-      }
-
-      tileQueue = tileQueue.sort((a, b) => tileHeuristicDistances[b.properties['id']] - tileHeuristicDistances[a.properties['id']]);
-      currentNode = tileQueue.pop();
-
-      if (currentNode === targetTile) {
-        const buildingPath: Phaser.Tilemaps.Tile[] = [];
-
-        let backtrackNode = currentNode;
-        while (backtrackNode !== startTile) {
-          buildingPath.push(backtrackNode);
-          backtrackNode = nodeMap.get(backtrackNode);
-        }
-
-        buildingPath.push(backtrackNode);
-
-        return of(buildingPath.reverse());
-      }
-
-      const neighborDistance = tileDistances[currentNode.properties['id']] + 1;
-
-      for (const neighbor of this.getNeighborTiles(currentNode)) {
-        const pathable = this.isTilePathable(neighbor);
-        const walkable = this.isTileWalkable(neighbor);
-
-        const tileDestroyed = neighbor.properties['buildingNode'] && neighbor.properties['buildingNode'].health <= 0;
-
-        if (!tileDistances[neighbor.properties['id']]) {
-          tileDistances[neighbor.properties['id']] = Infinity;
-          tileHeuristicDistances[neighbor.properties['id']] = Infinity;
-        }
-
-        if (!visitedTiles.includes(neighbor) && (!onlyPathable || (pathable && !tileDestroyed)) && (!onlyWalkable || walkable) &&
-            tileDistances[neighbor.properties['id']] > neighborDistance) {
-          nodeMap.set(neighbor, currentNode);
-
-          tileDistances[neighbor.properties['id']] = neighborDistance;
-
-          const neighborPosition = new Phaser.Math.Vector2(neighbor.x, neighbor.y);
-          tileHeuristicDistances[neighbor.properties['id']] = neighborDistance + targetPosition.distance(neighborPosition);
-
-          tileQueue.push(neighbor);
-        }
-      }
-
-      visitedTiles.push(currentNode);
-    }
-
-    return of([]);
-  }
-
   spawnHarvestedResourceAnimation(resource: Resource, multiplier: number = 1, spawnedByPlayer: boolean) {
-    const matchingTiles = this.getResourceTiles(resource.resourceEnum).filter(_tile => _tile.properties['resourceNode'].path.length);
+    let matchingTiles = this.getResourceTiles(resource.resourceEnum).filter(_tile => _tile.properties['resourceNode'].path.length);
 
     if (!resource.canAfford(multiplier)) {
       return;
@@ -912,12 +750,14 @@ export class MapManager {
 
     resource.deductResourceConsumes(multiplier);
 
-    const tile = matchingTiles[Math.floor(Math.random() * matchingTiles.length)];
+    matchingTiles = matchingTiles.sort((a, b) => this.game.pathfinding.getPathWeight(a.properties['resourceNode'].path) -
+                                                 this.game.pathfinding.getPathWeight(b.properties['resourceNode'].path));
+    const tile = matchingTiles[0];
     if (tile === undefined) {
       return;
     }
 
-    const tilePath: Phaser.Tilemaps.Tile[] = tile.properties['resourceNode'].path;
+    const tilePath: Phaser.Tilemaps.Tile[] = Array.from(tile.properties['resourceNode'].path);
 
     const animationType = spawnedByPlayer ? ResourceAnimationType.PlayerSpawned : ResourceAnimationType.WorkerSpawned;
 
@@ -933,12 +773,10 @@ export class MapManager {
     const worldX = this.mapLayer.tileToWorldX(startTile.x) + startTile.width / 4;
     const worldY = this.mapLayer.tileToWorldY(startTile.y) + startTile.height / 4;
 
-    const path = this.tilesToLinearPath(tilePath);
-
     const resourceSpriteIndex = this.tileIndices[resourceEnum];
 
     const resourceAnimation = new ResourceAnimation(worldX, worldY, this.resourceAnimationSpeed,
-      path, animationType, resourceEnum, multiplier, spawnedByPlayer,
+      animationType, resourceEnum, multiplier, spawnedByPlayer, tilePath,
       this.scene, 'resources', resourceSpriteIndex, this.game);
 
     resourceAnimation.setScale(2 / 3, 2 / 3);
@@ -1081,28 +919,9 @@ export class MapManager {
     const islandTiles = this.mapIslands[islandId].tiles.map(tile => this.mapLayer.getTileAt(tile.x, tile.y));
     return islandTiles.some(tile => tile.properties['buildingNode'] &&
       tile.properties['buildingNode'].health > 0 && tile.properties['buildingNode'].tileType !== BuildingTileType.Home);
-}
-
-  tilesToLinearPath(tiles: Phaser.Tilemaps.Tile[]): Phaser.Curves.Path {
-    if (!tiles.length) {
-      return null;
-    }
-
-    const pathPoints = tiles.map(tile => new Phaser.Math.Vector2(tile.getCenterX(), tile.getCenterY()));
-
-    const startTile = tiles[0];
-    const worldX = startTile.getCenterX();
-    const worldY = startTile.getCenterY();
-
-    const path = new Phaser.Curves.Path(worldX, worldY);
-    for (const pathPoint of pathPoints) {
-      path.lineTo(pathPoint);
-    }
-
-    return path;
   }
 
-  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean, shouldUpdatePaths = true): BuildingNode {
+  createBuilding(x: number, y: number, buildingData: BuildingTileData, removable: boolean): BuildingNode {
     if (!buildingData) {
       return;
     }
@@ -1158,10 +977,6 @@ export class MapManager {
       }
     }
 
-    if (shouldUpdatePaths) {
-      this.updatePaths(buildingTile, true);
-    }
-
     return mapTile.properties['buildingNode'];
   }
 
@@ -1177,6 +992,7 @@ export class MapManager {
 
     this.game.buildings.refundBuilding(buildingData, buildingNode.health / buildingNode.maxHealth);
 
+    this.mapLayer.getTileAt(x, y).properties['buildingNode'].destroy();
     this.clearBuildingTile(x, y);
     if (buildingData.placesResourceTile) {
       this.clearResourceTile(x, y);
@@ -1191,7 +1007,7 @@ export class MapManager {
             continue;
           }
 
-          this.findPath(neighbors[i], neighbors[j], false, true).subscribe(tilePath => {
+          this.game.pathfinding.findPath(neighbors[i], neighbors[j], false, true).subscribe(tilePath => {
             if (!tilePath.length) {
               this.mapIslands[neighbors[i].properties['islandId']].tiles = [];
               this.mapIslands[neighbors[j].properties['islandId']].tiles = [];
@@ -1206,7 +1022,7 @@ export class MapManager {
       mapTile.properties['islandId'] = undefined;
     }
 
-    this.updatePaths(buildingTile, true);
+    this.game.pathfinding.updatePaths(buildingTile, true);
   }
 
   repairBuilding(tile: Phaser.Tilemaps.Tile, repairAmount: number) {
@@ -1228,7 +1044,7 @@ export class MapManager {
       buildingNode.health = buildingNode.maxHealth;
 
       this.buildingLayer.getTileAt(tile.x, tile.y).tint = 0xffffff;
-      this.updatePaths(tile, true);
+      this.game.pathfinding.updatePaths(tile, true);
     }
 
     buildingNode.healthBar.updateHealthbar(buildingNode.health / buildingNode.maxHealth);
@@ -1245,7 +1061,7 @@ export class MapManager {
     const buildingData = this.buildingTileData.get(buildingNode.tileType);
     for (const resourceCost of buildingData.resourceCosts) {
       const resourceAmount = this.game.resources.getResource(resourceCost.resourceEnum).amount;
-      if (resourceAmount < resourceCost.resourceCost * costRatio) {
+      if (resourceAmount < resourceCost.resourceCost / costRatio) {
         return false;
       }
     }
@@ -1397,6 +1213,8 @@ export class MapManager {
   }
 
   clearLayeredTile(x: number, y: number) {
+    this.mapLayer.getTileAt(x, y).properties['buildingNode'].destroy();
+
     this.clearMapTile(x, y);
     this.clearBuildingTile(x, y);
     this.clearResourceTile(x, y);

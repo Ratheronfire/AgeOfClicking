@@ -1,8 +1,9 @@
-import { GameService } from './../../../game/game.service';
 import { ResourceEnum } from '../../resourceData';
-import { Actor, ActorState, UnitData } from '../actor';
+import { Actor, UnitData } from '../actor';
 import { Enemy } from '../enemy/enemy';
+import { EntityState } from '../entity';
 import { Stats } from '../stats';
+import { GameService } from './../../../game/game.service';
 
 export enum UnitStat {
   Attack = 'ATTACK',
@@ -177,12 +178,12 @@ export class Unit extends Actor {
       const sortedTargets = this.sortedTargets();
       this.selectedTarget = sortedTargets[0];
     } else {
-      this.currentState = ActorState.Sleeping;
+      this.currentState = EntityState.Sleeping;
       this.selectedTarget = null;
     }
 
     if (this.selectedTarget) {
-      this.game.map.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+      this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
     }
   }
 

@@ -1,7 +1,8 @@
 import { ResourceEnum } from '../../resourceData';
 import { BuildingNode } from '../../tile/buildingNode';
 import { BuildingTileType } from '../../tile/tile';
-import { ActorState, EnemyData } from '../actor';
+import { EnemyData } from '../actor';
+import { EntityState } from '../entity';
 import { GameService } from './../../../game/game.service';
 import { Enemy } from './enemy';
 
@@ -28,7 +29,7 @@ export class Raider extends Enemy {
   tick(elapsed: number, deltaTime: number) {
     super.tick(elapsed, deltaTime);
 
-    if (this.currentState === ActorState.Looting) {
+    if (this.currentState === EntityState.Looting) {
       if (elapsed - this.lastActionTime > this.actionInterval) {
         this.lastActionTime = elapsed;
 
@@ -68,7 +69,7 @@ export class Raider extends Enemy {
     const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
 
     if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
-      this.currentState = this.currentState === ActorState.Looting ? ActorState.MovingToTarget : ActorState.Looting;
+      this.currentState = this.currentState === EntityState.Looting ? EntityState.MovingToTarget : EntityState.Looting;
     }
 
     super.finishTask();

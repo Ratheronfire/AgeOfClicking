@@ -1,8 +1,9 @@
 import { BuildingNode } from '../../tile/buildingNode';
-import { ActorState, UnitData } from '../actor';
+import { BuildingTileType } from '../../tile/tile';
+import { UnitData } from '../actor';
+import { EntityState } from '../entity';
 import { GameService } from './../../../game/game.service';
 import { Unit, UnitStat, UnitStats } from './unit';
-import { BuildingTileType } from '../../tile/tile';
 
 export class BuilderStats extends UnitStats {
   owner: Builder;
@@ -71,14 +72,14 @@ export class Builder extends Unit {
     super(x, y, unitData, scene, texture, frame, game);
 
     this.stats = new BuilderStats(unitData.stats, this, this.game);
-    this.currentState = ActorState.MovingToTarget;
+    this.currentState = EntityState.MovingToTarget;
   }
 
   tick(elapsed: number, deltaTime: number) {
     super.tick(elapsed, deltaTime);
 
     switch (this.currentState) {
-      case ActorState.Repairing: {
+      case EntityState.Repairing: {
         if (elapsed - this.lastActionTime > this.actionInterval) {
           this.lastActionTime = elapsed;
 
@@ -99,7 +100,7 @@ export class Builder extends Unit {
         }
 
         break;
-      } case ActorState.MovingToTarget: {
+      } case EntityState.MovingToTarget: {
         if (this.isPathBroken()) {
           this.finishTask();
         }
@@ -124,9 +125,9 @@ export class Builder extends Unit {
     const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
 
     if (!buildingNode) {
-      this.currentState = ActorState.MovingToTarget;
+      this.currentState = EntityState.MovingToTarget;
     } else if (buildingNode.health < buildingNode.maxHealth) {
-      this.currentState = ActorState.Repairing;
+      this.currentState = EntityState.Repairing;
     } else {
       this.pickTarget();
     }
@@ -134,8 +135,12 @@ export class Builder extends Unit {
     super.finishTask();
   }
 
+  isPathBroken(): boolean {
+    return !this.selectedTarget || !this.selectedTarget.properties['buildingNode'] || super.isPathBroken();
+  }
+
   protected currentTileIsValid(): boolean {
     return this.currentTile && (this.game.map.isTileWalkable(this.currentTile) ||
-      this.currentTile.properties['buildingNode'].tileType === BuildingTileType.Wall);
+      (this.currentTile.properties['buildingNode'] && this.currentTile.properties['buildingNode'].tileType === BuildingTileType.Wall));
   }
 }

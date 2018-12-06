@@ -431,7 +431,7 @@ export class SettingsManager {
           }
 
           const buildingData = this.game.map.buildingTileData.get(tileSaveData.buildingTileType);
-          this.game.map.createBuilding(tile.x, tile.y, buildingData, tileSaveData.buildingRemovable, false);
+          this.game.map.createBuilding(tile.x, tile.y, buildingData, tileSaveData.buildingRemovable);
           const buildingNode = tile.properties['buildingNode'] as BuildingNode;
 
           buildingNode.setHealth(tileSaveData.health === undefined ? 50 : tileSaveData.health);
@@ -502,8 +502,6 @@ export class SettingsManager {
           }
         }
       }
-
-      this.game.map.calculateResourceConnections();
 
       return true;
     } catch (error) {

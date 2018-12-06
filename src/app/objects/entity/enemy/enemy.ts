@@ -1,9 +1,10 @@
-import { GameService } from './../../../game/game.service';
 import { EnemyData } from 'src/app/objects/entity/actor';
 import { MessageSource } from '../../message';
-import { MapTileType } from '../../tile/tile';
 import { BuildingNode } from '../../tile/buildingNode';
-import { Actor, ActorState } from '../actor';
+import { MapTileType } from '../../tile/tile';
+import { Actor } from '../actor';
+import { EntityState } from '../entity';
+import { GameService } from './../../../game/game.service';
 
 export enum EnemyType {
   Raider = 'RAIDER'
@@ -11,7 +12,6 @@ export enum EnemyType {
 
 export class Enemy extends Actor {
   enemyType: EnemyType;
-  tilePath: Phaser.Tilemaps.Tile[] = [];
 
   public constructor(x: number, y: number, enemyData: EnemyData, difficultyMultiplier: number,
       scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
@@ -23,7 +23,7 @@ export class Enemy extends Actor {
 
     this.targetableBuildingTypes = enemyData.targetableBuildingTypes;
 
-    this.currentState = ActorState.MovingToTarget;
+    this.currentState = EntityState.MovingToTarget;
 
     this.currentTile = this.game.map.mapLayer.getTileAtWorldXY(this.x, this.y);
     this.lastIslandId = this.currentTile.properties['islandId'];
@@ -38,7 +38,7 @@ export class Enemy extends Actor {
     super.tick(elapsed, deltaTime);
 
     switch (this.currentState) {
-      case ActorState.Destroying: {
+      case EntityState.Destroying: {
         if (elapsed - this.lastActionTime > this.actionInterval) {
           this.lastActionTime = elapsed;
 
@@ -52,14 +52,14 @@ export class Enemy extends Actor {
           buildingNode.takeDamage(this.attack);
 
           if (buildingNode.health <= 0) {
-            this.game.map.updatePaths(this.currentTile, true);
+            this.game.pathfinding.updatePaths(this.currentTile, true);
             this.finishTask();
           }
         }
 
         break;
-      } case ActorState.Wandering:
-        case ActorState.MovingToTarget: {
+      } case EntityState.Wandering:
+        case EntityState.MovingToTarget: {
         if (this.isPathBroken()) {
           this.finishTask();
         }
@@ -84,10 +84,10 @@ export class Enemy extends Actor {
       let randomTarget;
 
       if (shouldTargetBuilding) {
-        this.currentState = ActorState.MovingToTarget;
+        this.currentState = EntityState.MovingToTarget;
         randomTarget = this.game.map.getRandomTileOnIsland(this.islandId, [MapTileType.Grass], true, true);
       } else {
-        this.currentState = ActorState.Wandering;
+        this.currentState = EntityState.Wandering;
         randomTarget = this.game.map.getRandomTileOnIsland(this.islandId, [MapTileType.Grass, MapTileType.Water], true);
       }
 
@@ -96,16 +96,16 @@ export class Enemy extends Actor {
     }
 
     if (!this.selectedTarget) {
-      this.currentState = ActorState.Sleeping;
+      this.currentState = EntityState.Sleeping;
     } else {
-      this.game.map.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+      this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
     }
   }
 
   finishTask() {
     const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
     if (!buildingNode) {
-      this.currentState = ActorState.MovingToTarget;
+      this.currentState = EntityState.MovingToTarget;
     } else {
       // this.currentState = this.currentState === ActorState.Destroying ? ActorState.MovingToTarget : ActorState.Destroying;
     }

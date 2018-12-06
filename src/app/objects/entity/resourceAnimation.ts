@@ -1,6 +1,6 @@
 import { ResourceEnum } from '../resourceData';
 import { GameService } from './../../game/game.service';
-import { Entity } from './entity';
+import { Entity, EntityState } from './entity';
 
 export enum ResourceAnimationType {
   PlayerSpawned = 'PLAYERSPAWNED',
@@ -16,11 +16,11 @@ export class ResourceAnimation extends Entity {
 
   spawnedByPlayer: boolean;
 
-  public constructor(x: number, y: number, animationSpeed, path: Phaser.Curves.Path,
+  public constructor(x: number, y: number, animationSpeed,
       animationType: ResourceAnimationType, resourceEnum: ResourceEnum, multiplier: number,
-      spawnedByPlayer: boolean, scene: Phaser.Scene, texture: string, frame: string | number,
+      spawnedByPlayer: boolean, tilePath: Phaser.Tilemaps.Tile[], scene: Phaser.Scene, texture: string, frame: string | number,
       game: GameService) {
-    super(x, y, -1, animationSpeed, scene, texture, frame, game, path);
+    super(x, y, -1, animationSpeed, scene, texture, frame, game);
 
     this.animationType = animationType;
 
@@ -28,16 +28,14 @@ export class ResourceAnimation extends Entity {
     this.multiplier = multiplier;
     this.spawnedByPlayer = spawnedByPlayer;
 
-    this.startFollow((path.curves.length - 1) * 1000 / this.animationSpeed);
+    this.terrainTypeControlsSpeed = true;
+
+    this.beginPathing(tilePath);
   }
 
-  finishAnimation() {
+  finishTask() {
     this.game.resources.getResource(this.resourceEnum).finishResourceAnimation(this.multiplier, this.animationType);
 
     this.destroy();
-  }
-
-  get pathingDone(): boolean {
-    return this.pathTween.progress >= 1;
   }
 }

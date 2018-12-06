@@ -118,4 +118,8 @@ export class BuildingNode {
     this.health = newHealth;
     this.healthBar.updateHealthbar(this.health / this.maxHealth);
   }
+
+  destroy() {
+    this.healthBar.destroy();
+  }
 }

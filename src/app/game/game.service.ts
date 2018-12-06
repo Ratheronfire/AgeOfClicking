@@ -1,10 +1,12 @@
 import { Injectable } from '@angular/core';
+import { MatDialog, MatSnackBar } from '@angular/material';
 import { AdminManager } from './admin.manager';
 import { BuildingsManager } from './buildings.manager';
 import { EnemyManager } from './enemy.manager';
 import { HarvestManager } from './harvest.manager';
 import { MapManager } from './map.manager';
 import { MessagesManager } from './messages.manager';
+import { PathfindingManager } from './pathfinding-manager';
 import { ResourcesManager } from './resources.manager';
 import { SettingsManager } from './settings.manager';
 import { StoreManager } from './store.manager';
@@ -12,7 +14,6 @@ import { TooltipManager } from './tooltip.manager';
 import { UnitManager } from './unit.manager';
 import { UpgradesManager } from './upgrades.manager';
 import { WorkersManager } from './workers.manager';
-import { MatSnackBar, MatDialog } from '@angular/material';
 
 @Injectable({
   providedIn: 'root'
@@ -24,6 +25,7 @@ export class GameService {
   harvest: HarvestManager;
   map: MapManager;
   messages: MessagesManager;
+  pathfinding: PathfindingManager;
   resources: ResourcesManager;
   settings: SettingsManager;
   store: StoreManager;
@@ -44,6 +46,7 @@ export class GameService {
     this.store = new StoreManager(this);
     this.upgrades = new UpgradesManager(this);
 
+    this.pathfinding = new PathfindingManager(this);
     this.map = new MapManager(this);
     this.unit = new UnitManager(this);
     this.enemy = new EnemyManager(this);
