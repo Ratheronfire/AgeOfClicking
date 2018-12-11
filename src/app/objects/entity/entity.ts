@@ -2,21 +2,23 @@ import { HealthBar } from '../healthbar';
 import { GameService } from './../../game/game.service';
 
 export enum EntityState {
-  /** The actor is moving towards a specific target. */
+  /** The entity is moving towards a specific target. */
   MovingToTarget = 'MOVINGTOTARGET',
-  /** The actor has no targets, and is moving randomly. */
+  /** The entity has no targets, and is moving randomly. */
   Wandering = 'WANDERING',
-  /** The actor is fighting another actor. */
+  /** The entity is fighting another entity. */
   Fighting = 'FIGHTING',
-  /** For enemies: The actor is looting resources from the player's home base. */
+  /** For enemies: The entity is looting resources from the player's home base. */
   Looting = 'LOOTING',
-  /** For enemies: The actor is destroying a building. */
+  /** For enemies: The entity is destroying a building. */
   Destroying = 'DESTROYING',
-  /** For player units: The actor is defending from a stationary position. */
+  /** For player units: The entity is defending from a stationary position. */
   Stationary = 'STATIONARY',
-  /** For player units: The actor is reparing a building. */
+  /** For player units: The entity is reparing a building. */
   Repairing = 'REPAIRING',
-  /** The actor is inactive. */
+  /** For player units: The entity is harvesting a resource. */
+  Harvesting = 'HARVESTING',
+  /** The entity is inactive. */
   Sleeping = 'SLEEPING'
 }
 
@@ -109,11 +111,39 @@ export class Entity extends Phaser.GameObjects.Sprite {
 
     const center = this.getCenter();
 
+    // We've reached the next tile, so realign to the center and trim our path.
     if (Math.abs(center.x - this.currentTile.getCenterX()) >= Math.abs(totalDistanceX) &&
         Math.abs(center.y - this.currentTile.getCenterY()) >= Math.abs(totalDistanceY)) {
       this.currentTile = this.tilePath.splice(0, 1)[0];
+
       this.x = this.currentTile.getCenterX();
       this.y = this.currentTile.getCenterY();
+    }
+  }
+
+  public get currentStateString(): string {
+    switch (this.currentState) {
+      case EntityState.Destroying: {
+        return 'Destroying';
+      } case EntityState.Fighting: {
+        return 'Fighting';
+      } case EntityState.Looting: {
+        return 'Looting';
+      } case EntityState.MovingToTarget: {
+        return 'Moving to Target';
+      } case EntityState.Repairing: {
+        return 'Repairing';
+      } case EntityState.Sleeping: {
+        return 'Sleeping';
+      } case EntityState.Stationary: {
+        return 'Stationary';
+      } case EntityState.Harvesting: {
+        return 'Harvesting';
+      } case EntityState.Wandering: {
+        return 'Wandering';
+      } default: {
+        return this.currentState;
+      }
     }
   }
 

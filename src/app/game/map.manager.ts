@@ -1,5 +1,5 @@
+import { Harvester } from './../objects/entity/unit/harvester';
 import * as prng from 'prng-parkmiller-js';
-import { Observable, of } from 'rxjs';
 import * as SimplexNoise from 'simplex-noise';
 import { Actor } from '../objects/entity/actor';
 import { Enemy, EnemyType } from '../objects/entity/enemy/enemy';
@@ -14,9 +14,9 @@ import { ResourceEnum, ResourceType } from '../objects/resourceData';
 import { BuildingNode } from '../objects/tile/buildingNode';
 import { Market } from '../objects/tile/market';
 import { ResourceNode } from '../objects/tile/resourceNode';
-import { BuildingSubType, BuildingTileData, BuildingTileType, MapTileData, MapTileType,
-  ResourceTileData, ResourceTileType } from '../objects/tile/tile';
+import { BuildingSubType, BuildingTileData, MapTileData, MapTileType, ResourceTileData, ResourceTileType } from '../objects/tile/tile';
 import { Vector } from '../objects/vector';
+import { BuildingTileType } from './../objects/tile/tile';
 import { GameService } from './game.service';
 
 declare var require: any;
@@ -599,8 +599,6 @@ export class MapManager {
       this.spawnUnit(UnitType.Builder, homeTile.x, homeTile.y, true);
     }
 
-    this.game.pathfinding.calculateResourceConnections();
-
     this.mainCamera.centerOn(homeTile.pixelX, homeTile.pixelY);
 
     const minimapHomeIcon = this.scene.add.sprite(homeTile.pixelX, homeTile.pixelY,
@@ -628,6 +626,8 @@ export class MapManager {
       const resourceTile = this.getRandomTile(missingResource.spawnsOn, true);
       this.setResourceTile(resourceTile.x, resourceTile.y, missingResource.tileType, 50);
     }
+
+    this.game.pathfinding.calculateResourceConnections();
   }
 
   generateChunk(chunkX: number, chunkY: number) {
@@ -830,6 +830,22 @@ export class MapManager {
         break;
       } case UnitType.Builder: {
         unit = new Builder(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData,
+          this.scene, 'sentry', 0, this.game);
+        break;
+      } case UnitType.Lumberjack: {
+        unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Wood,
+          this.scene, 'sentry', 0, this.game);
+        break;
+      } case UnitType.MineralMiner: {
+        unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Mineral,
+          this.scene, 'sentry', 0, this.game);
+        break;
+      } case UnitType.MetalMiner: {
+        unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Metal,
+          this.scene, 'sentry', 0, this.game);
+        break;
+      } case UnitType.Hunter: {
+        unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Food,
           this.scene, 'sentry', 0, this.game);
         break;
       } default: {
@@ -1178,7 +1194,7 @@ export class MapManager {
   }
 
   putResourceNearSpawn(resourceTileType: ResourceTileType, spawnAreaSize: number, desiredSpawnTypes: MapTileType[]) {
-    const homeTile = this.getBuildingTiles([BuildingTileType.Home])[0];
+    const homeTile = this.getBuildingTiles(BuildingTileType.Home)[0];
 
     const spawnArea = this.mapLayer.getTilesWithin(homeTile.x - Math.floor(spawnAreaSize / 2),
       homeTile.y - Math.floor(spawnAreaSize / 2), spawnAreaSize, spawnAreaSize);
@@ -1220,22 +1236,33 @@ export class MapManager {
     this.clearResourceTile(x, y);
   }
 
-  getResourceTiles(resourceEnum?: ResourceEnum): Phaser.Tilemaps.Tile[] {
+  getResourceTiles(resourceEnumOrEnums?: ResourceEnum | ResourceEnum[]): Phaser.Tilemaps.Tile[] {
+    let resourceEnums = [];
+    if (resourceEnumOrEnums) {
+      resourceEnums = resourceEnums.concat(resourceEnumOrEnums);
+    }
+
     let tiles = this.mapLayer.filterTiles(tile => tile.properties['resourceNode']);
 
-    if (resourceEnum) {
-      const matchingTypes = Array.from(this.resourceTileData.values()).filter(
-        tile => tile.resourceEnums.includes(resourceEnum)).map(tile => tile.tileType);
+    if (resourceEnums.length) {
+      const tileData = Array.from(this.resourceTileData.values());
+
+      const matchingTypes = tileData.filter(tile =>
+        tile.resourceEnums.some(resourceEnum => resourceEnums.includes(resourceEnum))).map(
+          data => data.tileType);
+
       tiles = tiles.filter(tile => matchingTypes.includes(tile.properties['resourceNode'].tileType));
     }
 
     return tiles;
   }
 
-  getBuildingTiles(buildingTypes?: BuildingTileType[]): Phaser.Tilemaps.Tile[] {
+  getBuildingTiles(buildingTypeOrTypes?: BuildingTileType | BuildingTileType[]): Phaser.Tilemaps.Tile[] {
+    const buildingTypes = [].concat(buildingTypeOrTypes);
+
     let tiles = this.mapLayer.filterTiles(tile => tile.properties['buildingNode']);
 
-    if (buildingTypes) {
+    if (buildingTypeOrTypes) {
       tiles = tiles.filter(tile => buildingTypes.includes(tile.properties['buildingNode'].tileType));
     }
 

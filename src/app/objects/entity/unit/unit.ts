@@ -17,7 +17,11 @@ export enum UnitStat {
 
 export enum UnitType {
   Sentry = 'SENTRY',
-  Builder = 'BUILDER'
+  Builder = 'BUILDER',
+  Lumberjack = 'LUMBERJACK',
+  MineralMiner = 'MINERALMINER',
+  MetalMiner = 'METALMINER',
+  Hunter = 'HUNTER'
 }
 
 export class UnitStats extends Stats<UnitStat> {

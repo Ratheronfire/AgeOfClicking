@@ -8,8 +8,6 @@ import { Enemy } from './enemy';
 
 export class Raider extends Enemy {
   resourcesToSteal: ResourceEnum[];
-  resourcesHeld: Map<ResourceEnum, number>;
-  totalHeld = 0;
 
   minimumResourceAmount = 500;
   stealMax: number;

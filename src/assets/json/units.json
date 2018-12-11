@@ -24,5 +24,57 @@
     "movable": true,
     "attackRange": 1,
     "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "REPAIRRATE", "MAXHEALTH"]
+  },
+  "LUMBERJACK": {
+    "name": "Lumberjack",
+    "description": "Harvests trees and brings their logs to the base.",
+    "unitType": "LUMBERJACK",
+    "maxHealth": 10,
+    "cost": 250,
+    "attack": 1,
+    "defense": 2,
+    "movementSpeed": 3,
+    "movable": true,
+    "attackRange": 1,
+    "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "MAXHEALTH"]
+  },
+  "MINERALMINER": {
+    "name": "Miner (Minerals)",
+    "description": "Harvests minerals and brings them to the base.",
+    "unitType": "MINERALMINER",
+    "maxHealth": 10,
+    "cost": 250,
+    "attack": 1,
+    "defense": 2,
+    "movementSpeed": 3,
+    "movable": true,
+    "attackRange": 1,
+    "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "MAXHEALTH"]
+  },
+  "METALMINER": {
+    "name": "Miner (Metal)",
+    "description": "Harvests ores and brings them to the base.",
+    "unitType": "METALMINER",
+    "maxHealth": 10,
+    "cost": 250,
+    "attack": 1,
+    "defense": 2,
+    "movementSpeed": 3,
+    "movable": true,
+    "attackRange": 1,
+    "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "MAXHEALTH"]
+  },
+  "HUNTER": {
+    "name": "Hunter",
+    "description": "Harvests food and brings it to the base.",
+    "unitType": "HUNTER",
+    "maxHealth": 10,
+    "cost": 250,
+    "attack": 1,
+    "defense": 2,
+    "movementSpeed": 3,
+    "movable": true,
+    "attackRange": 1,
+    "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "MAXHEALTH"]
   }
 }

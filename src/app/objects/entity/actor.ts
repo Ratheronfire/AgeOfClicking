@@ -43,6 +43,10 @@ export class Actor extends Entity {
 
   lastIslandId: number;
 
+  resourcesHeld: Map<ResourceEnum, number>;
+  resourceCapacity: number;
+  totalHeld = 0;
+
   actionInterval = 250;
   lastActionTime = 0;
 
@@ -186,28 +190,6 @@ export class Actor extends Entity {
       return this.currentTile.properties['islandId'];
     } else {
       return this.lastIslandId;
-    }
-  }
-
-  public get currentStateString(): string {
-    switch (this.currentState) {
-      case EntityState.Destroying: {
-        return 'Destroying';
-      } case EntityState.Fighting: {
-        return 'Fighting';
-      } case EntityState.Looting: {
-        return 'Looting';
-      } case EntityState.MovingToTarget: {
-        return 'Moving to Target';
-      } case EntityState.Repairing: {
-        return 'Repairing';
-      } case EntityState.Sleeping: {
-        return 'Sleeping';
-      } case EntityState.Stationary: {
-        return 'Stationary';
-      } case EntityState.Wandering: {
-        return 'Wandering';
-      }
     }
   }
 }
