@@ -1282,8 +1282,13 @@ export class MapManager {
     const resourceNode: ResourceNode = tile.properties['resourceNode'];
     const buildingData: BuildingTileData = buildingNode ? this.buildingTileData.get(buildingNode.tileType) : null;
 
-    return !resourceNode && (!buildingData || buildingData.subType !== BuildingSubType.Obstacle || buildingNode.health <= 0) &&
-      (this.mapTileData.get(tileType).walkable || (buildingData && buildingData.resourcePathable));
+    if (resourceNode && !buildingNode) {
+      return false;
+    } else if (buildingData && buildingData.subType === BuildingSubType.Obstacle && buildingNode.health > 0) {
+      return false;
+    } else {
+      return this.mapTileData.get(tileType).walkable || (buildingData && buildingData.resourcePathable);
+    }
   }
 
   updateIslandDebugData() {

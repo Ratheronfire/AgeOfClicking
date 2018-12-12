@@ -12,7 +12,8 @@
             <div class="resource-list">
               <div matTooltip="{{focusedUnit.healCost | longNumber}} {{getResource('GOLD').name | titlecase}}"
                 matTooltipPosition="below">
-                <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
+                  alt="{{getResource('GOLD').name}}">
                 {{focusedUnit.healCost | longNumber}}
               </div>
             </div>
@@ -26,6 +27,13 @@
         <mat-icon>videocam</mat-icon>
       </mat-button-toggle>
       <button mat-raised-button color="warn" (click)="removeUnit()">Remove Unit</button>
+
+
+      <div *ngFor="let slot of focusedUnit.inventory">
+        <div *ngIf="slot.resourceEnum !== null">
+          {{slot.resourceEnum}}: {{slot.amount}}
+        </div>
+      </div>
     </div>
 
     <mat-card-content id="card-content" *ngIf="focusedStats && focusedStats.statList.length">
@@ -45,13 +53,14 @@
             </td>
 
             <td>
-                <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedStats.upgradeStat(stat)"
+              <button class="upgrade-button wood" color="accent" mat-raised-button (click)="focusedStats.upgradeStat(stat)"
                 [disabled]="!focusedStats.canUpgradeStat(stat)" matTooltip="Level {{focusedStats.statLevels.get(stat) + 1}} {{focusedStats.getUpgradedStatString(stat)}}"
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
                   <div class="button-text">
-                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
+                    <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
+                      alt="{{getResource('GOLD').name}}">
                     {{focusedStats.statCosts.get(stat) | longNumber}}
                   </div>
                 </div>

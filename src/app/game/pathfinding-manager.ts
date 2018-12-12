@@ -132,7 +132,7 @@ export class PathfindingManager {
 
         if (!(neighborTile.properties['id'] in tileFrom) || newCost < tileDistances[neighborTile.properties['id']]) {
           tileDistances[neighborTile.properties['id']] = newCost;
-          const priority = newCost + this.getHeuristicDistance(startTile, neighborTile, targetTile);
+          const priority = newCost + this.getHeuristicDistance(neighborTile, targetTile);
 
           tileQueue.push({tile: neighborTile, priority: priority});
           tileFrom[neighborTile.properties['id']] = currentNode.tile;
@@ -154,11 +154,23 @@ export class PathfindingManager {
     return of(tilePath.reverse());
   }
 
-  getHeuristicDistance(startTile: Phaser.Tilemaps.Tile, currentTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile): number {
-    const distanceFromStart = Math.abs(currentTile.x - startTile.x) + Math.abs(currentTile.y - startTile.y);
-    const distanceToTarget =  Math.abs(targetTile.x - currentTile.x) + Math.abs(targetTile.y - currentTile.y);
+  debugDrawGraph(topLeftX: number, topLeftY: number, tileDistances: {}) {
+    const tileTable = [];
 
-    return distanceFromStart + distanceToTarget;
+    for (let i = 0; i < 20; i++) {
+      tileTable[i] = [];
+
+      for (let j = 0; j < 20; j++) {
+        const tile = this.game.map.getMapTile(topLeftX + i, topLeftY + j);
+        tileTable[i][j] = tile ? tileDistances[tile.properties['id']] : undefined;
+      }
+    }
+
+    console.table(tileTable);
+  }
+
+  getHeuristicDistance(currentTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile): number {
+    return Math.abs(targetTile.x - currentTile.x) + Math.abs(targetTile.y - currentTile.y);
   }
 
   getTileWeight(tile: Phaser.Tilemaps.Tile): number {

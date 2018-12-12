@@ -11,9 +11,8 @@ import { Unit } from './unit';
 
 export class Harvester extends Unit {
   resourceType: ResourceType;
-  desiredResources: Resource[];
+  currentResource: Resource;
 
-  currentResourceIndex: number;
   currentResourceNode: ResourceNode;
 
   public constructor(x: number, y: number, unitData: UnitData, resourceType: ResourceType,
@@ -21,16 +20,9 @@ export class Harvester extends Unit {
     super(x, y, unitData, scene, texture, frame, game);
 
     this.resourceType = resourceType;
-    this.desiredResources = this.game.resources.getResources(resourceType, null, false, false, true);
+    this.currentResource = this.game.resources.getResources(resourceType)[0];
 
-    this.totalHeld = 0;
     this.resourceCapacity = 10;
-    this.currentResourceIndex = 0;
-
-    this.resourcesHeld = new Map<ResourceEnum, number>();
-    for (const desiredResource of this.desiredResources) {
-      this.resourcesHeld.set(desiredResource.resourceEnum, 0);
-    }
 
     this.findTargets();
     this.pickTarget();
@@ -41,25 +33,15 @@ export class Harvester extends Unit {
 
     switch (this.currentState) {
       case EntityState.Harvesting: {
-        if (!this.currentResourceNode) {
+        if (!this.currentResourceNode || !this.currentResource.canAfford(1)) {
           this.finishTask();
-          break;
-        } else if (!this.currentResource.canAfford(1)) {
-          // If there are other resources, we'll try to harvest one of those instead.
-          // Otherwise, we'll wait until we can harvest again.
-          if (this.desiredResources.length > 1) {
-            this.finishTask();
-          }
-
           break;
         }
 
         if (elapsed - this.lastActionTime > this.actionInterval) {
           this.lastActionTime = elapsed;
 
-          const newResourceCount = this.resourcesHeld.get(this.currentResource.resourceEnum) + 1;
-          this.resourcesHeld.set(this.currentResource.resourceEnum, newResourceCount);
-          this.totalHeld += 1;
+          this.addToInventory(this.currentResource.resourceEnum, 1);
         }
 
         if (this.totalHeld >= this.resourceCapacity) {
@@ -74,24 +56,20 @@ export class Harvester extends Unit {
   findTargets() {
     this.targets = [];
 
-    if (this.totalHeld >= this.resourceCapacity) {
+    if (!this.currentResource || this.totalHeld >= this.resourceCapacity) {
       this.targets = this.game.map.getBuildingTiles(BuildingTileType.Home);
 
       return;
-    } else if (!this.desiredResources) {
-      return;
     }
 
-    for (const resource of this.desiredResources) {
-      let resourceTiles = this.game.map.getResourceTiles(resource.resourceEnum);
-      resourceTiles = resourceTiles.filter(node => node.properties['resourceNode'].path && node.properties['resourceNode'].path.length > 0);
-      resourceTiles = resourceTiles.sort((a, b) =>
-        this.game.pathfinding.getPathWeight(a.properties['resourceNode'].path) -
-        this.game.pathfinding.getPathWeight(b.properties['resourceNode'].path));
+    let resourceTiles = this.game.map.getResourceTiles(this.currentResource.resourceEnum);
+    resourceTiles = resourceTiles.filter(node => node.properties['resourceNode'].path && node.properties['resourceNode'].path.length > 0);
+    resourceTiles = resourceTiles.sort((a, b) =>
+      this.game.pathfinding.getPathWeight(a.properties['resourceNode'].path) -
+      this.game.pathfinding.getPathWeight(b.properties['resourceNode'].path));
 
-      if (resourceTiles.length) {
-        this.targets.push(resourceTiles[0]);
-      }
+    if (resourceTiles.length) {
+      this.targets.push(resourceTiles[0]);
     }
   }
 
@@ -112,7 +90,7 @@ export class Harvester extends Unit {
       // We're just going to move to a neighbor of the resource instead of the tile itself.
       if (this.currentResourceNode) {
         const neighbors = this.game.map.getNeighborTiles(this.selectedTarget).filter(tile =>
-          tile.properties['tileType'] === MapTileType.Grass);
+          this.game.map.isTileWalkable(tile));
         this.selectedTarget = neighbors[Math.floor(Math.random() * neighbors.length)];
       }
     } else {
@@ -133,14 +111,11 @@ export class Harvester extends Unit {
     } else if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
       this.currentResourceNode = null;
 
-      for (const desiredResource of this.desiredResources) {
-        desiredResource.addAmount(this.resourcesHeld.get(desiredResource.resourceEnum));
-        this.resourcesHeld.set(desiredResource.resourceEnum, 0);
-      }
+      const amountHeld = this.amountHeld(this.currentResource.resourceEnum);
 
-      this.totalHeld = 0;
+      this.currentResource.addAmount(amountHeld);
+      this.addToInventory(this.currentResource.resourceEnum, -amountHeld);
 
-      this.currentResourceIndex = (this.currentResourceIndex + 1) % this.desiredResources.length;
       this.actionInterval = this.currentResource.harvestMilliseconds;
 
       this.currentState = EntityState.MovingToTarget;
@@ -149,9 +124,5 @@ export class Harvester extends Unit {
     }
 
     super.finishTask();
-  }
-
-  get currentResource(): Resource {
-    return this.desiredResources[this.currentResourceIndex];
   }
 }

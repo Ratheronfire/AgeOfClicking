@@ -1,7 +1,8 @@
 import { FormControl } from '@angular/forms';
-import { MatSelectChange, MatDialog, MatSnackBar } from '@angular/material';
+import { MatDialog, MatSelectChange, MatSnackBar } from '@angular/material';
 import { AboutDialogComponent } from '../components/about-dialog/about-dialog.component';
 import { SaveDialogComponent } from '../components/save-dialog/save-dialog.component';
+import { InventorySlot } from '../objects/entity/actor';
 import { EnemyType } from '../objects/entity/enemy/enemy';
 import { Raider } from '../objects/entity/enemy/raider';
 import { ResourceAnimationType } from '../objects/entity/resourceAnimation';
@@ -9,8 +10,8 @@ import { UnitType } from '../objects/entity/unit/unit';
 import { MessageSource } from '../objects/message';
 import { ResourceEnum } from '../objects/resourceData';
 import { SaveData, TileSaveData, WorkerSaveData } from '../objects/savedata';
-import { BuildingSubType, BuildingTileType } from '../objects/tile/tile';
 import { BuildingNode } from '../objects/tile/buildingNode';
+import { BuildingSubType, BuildingTileType } from '../objects/tile/tile';
 import { GameService } from './game.service';
 
 const defaultResourceBinds = [ResourceEnum.Oak, ResourceEnum.Pine, ResourceEnum.Birch, ResourceEnum.Stone, ResourceEnum.Graphite,
@@ -292,7 +293,7 @@ export class SettingsManager {
         attackRange: enemy.attackRange,
         targetableBuildingTypes: enemy.targetableBuildingTypes,
         resourcesToSteal: (enemy as Raider).resourcesToSteal,
-        resorucesHeld: (enemy as Raider).resourcesHeld,
+        inventory: enemy.inventory,
         stealMax: (enemy as Raider).stealMax,
         resourceCapacity: (enemy as Raider).resourceCapacity
       });
@@ -469,6 +470,8 @@ export class SettingsManager {
           if (!enemy) {
             continue;
           }
+
+          enemy.inventory = enemySaveData.inventory ? enemySaveData.inventory : new Array<InventorySlot>(5);
 
           enemy.health = enemySaveData.health ? enemySaveData.health : 50;
           enemy.maxHealth = enemySaveData.maxHealth ? enemySaveData.maxHealth : 50;

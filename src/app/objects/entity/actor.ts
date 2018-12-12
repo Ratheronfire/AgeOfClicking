@@ -36,6 +36,11 @@ export interface UnitData extends ActorData {
   stats: UnitStat[];
 }
 
+export interface InventorySlot {
+  resourceEnum: ResourceEnum;
+  amount: number;
+}
+
 export class Actor extends Entity {
   attack: number;
   defense: number;
@@ -43,9 +48,9 @@ export class Actor extends Entity {
 
   lastIslandId: number;
 
-  resourcesHeld: Map<ResourceEnum, number>;
   resourceCapacity: number;
-  totalHeld = 0;
+  inventorySize = 5;
+  inventory: InventorySlot[] = new Array<InventorySlot>(this.inventorySize);
 
   actionInterval = 250;
   lastActionTime = 0;
@@ -65,6 +70,10 @@ export class Actor extends Entity {
     this.attackRange = attackRange;
 
     this.terrainTypeControlsSpeed = true;
+
+    for (let i = 0; i < this.inventorySize; i++) {
+      this.inventory[i] = { resourceEnum: null, amount: 0 };
+    }
 
     this.healthBar = new HealthBar(this, scene);
   }
@@ -183,6 +192,37 @@ export class Actor extends Entity {
       this.healthBar.destroy();
       this.destroy();
     }
+  }
+
+  addToInventory(resourceEnum: ResourceEnum, amount: number) {
+    let itemSlot = this.inventory.find(slot => slot && slot.resourceEnum === resourceEnum);
+    if (!itemSlot) {
+      itemSlot = this.inventory.find(slot => slot.resourceEnum === null);
+
+      if (!itemSlot) {
+        // We have no slots free.
+        return;
+      }
+
+      itemSlot.resourceEnum = resourceEnum;
+      itemSlot.amount = 0;
+    }
+
+    itemSlot.amount += amount;
+
+    if (itemSlot.amount <= 0) {
+      itemSlot.resourceEnum = null;
+      itemSlot.amount = 0;
+    }
+  }
+
+  amountHeld(resourceEnum: ResourceEnum): number {
+    const itemSlot = this.inventory.find(slot => slot.resourceEnum === resourceEnum);
+    return itemSlot ? itemSlot.amount : 0;
+  }
+
+  get totalHeld(): number {
+    return this.inventory.map(slot => slot.amount).reduce((total, amount) => total += amount);
   }
 
   get islandId(): number {

@@ -18,8 +18,6 @@ export class Raider extends Enemy {
     super (x, y, enemyData, difficultyMultiplier, scene, texture, frame, game);
 
     this.resourcesToSteal = enemyData.resourcesToSteal;
-    this.resourcesHeld = new Map<ResourceEnum, number>();
-    this.totalHeld = 0;
     this.stealMax = enemyData.stealMax * difficultyMultiplier;
     this.resourceCapacity = enemyData.resourceCapacity * difficultyMultiplier;
   }
@@ -46,15 +44,9 @@ export class Raider extends Enemy {
             amountToSteal = resourceToSteal.amount - this.minimumResourceAmount;
           }
 
-          if (!this.resourcesHeld.get(resourceToSteal.resourceEnum)) {
-            this.resourcesHeld.set(resourceToSteal.resourceEnum, amountToSteal);
-          } else {
-            this.resourcesHeld.set(resourceToSteal.resourceEnum, this.resourcesHeld.get(resourceToSteal.resourceEnum) + amountToSteal);
-          }
+          this.addToInventory(resourceToSteal.resourceEnum, amountToSteal);
 
           if (amountToSteal > 0) {
-            this.totalHeld += amountToSteal;
-
             resourceToSteal.addAmount(-amountToSteal);
             this.log(`An enemy stole ${Math.floor(amountToSteal)} ${resourceToSteal.name}!`);
           }
@@ -86,7 +78,7 @@ export class Raider extends Enemy {
       enemyDefeatedMessage += ' Resources recovered:';
 
       for (const resourceEnum of this.resourcesToSteal) {
-        const stolenAmount = this.resourcesHeld.get(resourceEnum);
+        const stolenAmount = this.amountHeld(resourceEnum);
         if (isNaN(stolenAmount) || stolenAmount <= 0) {
           continue;
         }

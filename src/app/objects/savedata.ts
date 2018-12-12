@@ -1,8 +1,9 @@
 import { MessageSource } from '../objects/message';
+import { InventorySlot } from './entity/actor';
 import { EnemyType } from './entity/enemy/enemy';
 import { UnitType } from './entity/unit/unit';
 import { ResourceEnum, ResourceType } from './resourceData';
-import { BuildingTileType, ResourceTileType, TileStat } from './tile/tile';
+import { BuildingTileType, ResourceTileType } from './tile/tile';
 
 export interface ResourceSaveData {
   resourceEnum: ResourceEnum;
@@ -53,7 +54,7 @@ export interface EnemySaveData {
 
   targetableBuildingTypes: BuildingTileType[];
   resourcesToSteal: ResourceEnum[];
-  resorucesHeld: Map<ResourceEnum, number>;
+  inventory: InventorySlot[];
   stealMax: number;
   resourceCapacity: number;
 }
