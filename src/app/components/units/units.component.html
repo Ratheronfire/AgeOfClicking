@@ -12,9 +12,23 @@
           <mat-card-title class="button-text-background">
             {{unit.health}}/{{unit.maxHealth}} Health - {{unit.currentStateString}}
           </mat-card-title>
-          <button mat-flat-button (click)="setFocusedUnit(unit)">
-            <mat-icon>mode_comment</mat-icon>
-          </button>
+
+          <mat-card-content>
+            <button class="focus-button" mat-flat-button (click)="setFocusedUnit(unit)">
+              <mat-icon>mode_comment</mat-icon>
+            </button>
+
+            <div class="inventory">
+              <div class="slot" *ngFor="let slot of unit.inventory">
+                <div class="slot-size" *ngIf="slot.resourceEnum !== null">
+                  {{slot.amount}}
+                </div>
+                <img class="resource-img" *ngIf="slot.resourceEnum !== null" id="{{getResource(slot.resourceEnum).name | resourceId}}"
+                  src="assets/sprites/transparent.png" alt="{{getResource(slot.resourceEnum).name}}">
+                <img class="background" src="assets/sprites/inventoryBack.png" width="48px" height="48px">
+              </div>
+            </div>
+          </mat-card-content>
         </mat-card>
       </div>
     </mat-expansion-panel>

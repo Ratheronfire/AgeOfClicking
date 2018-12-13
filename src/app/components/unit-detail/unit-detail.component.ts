@@ -1,9 +1,12 @@
-import { UnitStats } from './../../objects/entity/unit/unit';
-import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
-
-import { ResourceEnum } from '../../objects/resourceData';
+import { Resource } from 'src/app/objects/resource';
 import { Unit } from '../../objects/entity/unit/unit';
+import { ResourceEnum } from '../../objects/resourceData';
+import { GameService } from './../../game/game.service';
+import { Harvester } from './../../objects/entity/unit/harvester';
+import { UnitStats } from './../../objects/entity/unit/unit';
+import { ResourceType } from './../../objects/resourceData';
+
 
 @Component({
   selector: 'app-unit-detail',
@@ -16,6 +19,10 @@ export class UnitDetailComponent implements OnInit {
   constructor(protected game: GameService) { }
 
   ngOnInit() {
+  }
+
+  getResources(resourceType: ResourceType) {
+    return this.game.resources.getResources(resourceType, null, false, true, false, false);
   }
 
   getResource(resourceEnum: ResourceEnum) {
@@ -44,6 +51,12 @@ export class UnitDetailComponent implements OnInit {
       this.game.map.mainCamera.startFollow(this.focusedUnit);
     } else {
       this.game.map.mainCamera.stopFollow();
+    }
+  }
+
+  setHarvesterTask(newResource: Resource) {
+    if (this.focusedHarvester) {
+      this.focusedHarvester.setResource(newResource);
     }
   }
 
@@ -77,5 +90,13 @@ export class UnitDetailComponent implements OnInit {
 
   set followingUnit(value: boolean) {
     this.game.map.followingUnit = value;
+  }
+
+  get focusedHarvester(): Harvester {
+    if (!(this.focusedUnit instanceof Harvester)) {
+      return null;
+    }
+
+    return this.focusedUnit as Harvester;
   }
 }

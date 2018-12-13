@@ -213,6 +213,19 @@ export class Actor extends Entity {
     if (itemSlot.amount <= 0) {
       itemSlot.resourceEnum = null;
       itemSlot.amount = 0;
+
+      // This slot is empty, so we'll move the later ones down to fill the gap.
+      for (let i = 1; i < this.inventory.length; i++) {
+        for (let j = i - 1; j >= 0; j--) {
+          if (this.inventory[i].resourceEnum && !this.inventory[j].resourceEnum) {
+            this.inventory[j].resourceEnum = this.inventory[i].resourceEnum;
+            this.inventory[j].amount = this.inventory[i].amount;
+
+            this.inventory[i].resourceEnum = null;
+            this.inventory[i].amount = 0;
+          }
+        }
+      }
     }
   }
 

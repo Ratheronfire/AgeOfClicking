@@ -22,7 +22,7 @@ export class Harvester extends Unit {
     this.resourceType = resourceType;
     this.currentResource = this.game.resources.getResources(resourceType)[0];
 
-    this.resourceCapacity = 10;
+    this.resourceCapacity = 20;
 
     this.findTargets();
     this.pickTarget();
@@ -33,7 +33,7 @@ export class Harvester extends Unit {
 
     switch (this.currentState) {
       case EntityState.Harvesting: {
-        if (!this.currentResourceNode || !this.currentResource.canAfford(1)) {
+        if (!this.currentResourceNode || !this.canHarvest()) {
           this.finishTask();
           break;
         }
@@ -41,11 +41,11 @@ export class Harvester extends Unit {
         if (elapsed - this.lastActionTime > this.actionInterval) {
           this.lastActionTime = elapsed;
 
-          this.addToInventory(this.currentResource.resourceEnum, 1);
-        }
+          for (const resourceConsume of this.currentResource.resourceConsumes) {
+            this.addToInventory(resourceConsume.resourceEnum, -resourceConsume.cost);
+          }
 
-        if (this.totalHeld >= this.resourceCapacity) {
-          this.finishTask();
+          this.addToInventory(this.currentResource.resourceEnum, 1);
         }
 
         break;
@@ -56,7 +56,7 @@ export class Harvester extends Unit {
   findTargets() {
     this.targets = [];
 
-    if (!this.currentResource || this.totalHeld >= this.resourceCapacity) {
+    if (!this.canHarvest()) {
       this.targets = this.game.map.getBuildingTiles(BuildingTileType.Home);
 
       return;
@@ -106,17 +106,43 @@ export class Harvester extends Unit {
   finishTask() {
     const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
 
-    if (this.currentResourceNode && this.totalHeld < this.resourceCapacity) {
+    if (this.currentResourceNode && this.canHarvest()) {
       this.currentState = EntityState.Harvesting;
     } else if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
       this.currentResourceNode = null;
 
-      const amountHeld = this.amountHeld(this.currentResource.resourceEnum);
-
-      this.currentResource.addAmount(amountHeld);
-      this.addToInventory(this.currentResource.resourceEnum, -amountHeld);
+      // Empty all currently held items back into the base.
+      for (const slot of this.inventory.filter(_slot => _slot.amount > 0)) {
+        this.game.resources.getResource(slot.resourceEnum).addAmount(slot.amount);
+        this.addToInventory(slot.resourceEnum, -slot.amount);
+      }
 
       this.actionInterval = this.currentResource.harvestMilliseconds;
+
+      if (this.currentResource.resourceConsumes.length) {
+        // The number of storage units needed for each harvest, including its consumes and the resource itself.
+        const spaceNeededPerHarvest = this.currentResource.resourceConsumes.map(consume => consume.cost)
+          .reduce((total, cost) => total += cost) + 1;
+        // The total number of harvests possible, based on the storage needed for it and its consumes.
+        const resourceStorageLimit = Math.floor(this.resourceCapacity / spaceNeededPerHarvest);
+        // The max number of harvests of harvests possible, based on available resource counts.
+        const maximumAvailable = Math.max(...this.currentResource.resourceConsumes
+          .map(consume => Math.min(consume.cost * resourceStorageLimit, this.game.resources.getResource(consume.resourceEnum).amount)));
+        // The final number of harvests we're going to perform this run.
+        const amountToHarvest = Math.min(resourceStorageLimit, maximumAvailable);
+
+        for (const resourceConsume of this.currentResource.resourceConsumes) {
+          let amountNeeded = resourceConsume.cost * amountToHarvest - this.amountHeld(resourceConsume.resourceEnum);
+          if (amountNeeded < 0) {
+            amountNeeded = 0;
+          }
+
+          const resource = this.game.resources.getResource(resourceConsume.resourceEnum);
+
+          resource.addAmount(-amountNeeded);
+          this.addToInventory(resourceConsume.resourceEnum, amountNeeded);
+        }
+      }
 
       this.currentState = EntityState.MovingToTarget;
     } else {
@@ -124,5 +150,23 @@ export class Harvester extends Unit {
     }
 
     super.finishTask();
+  }
+
+  setResource(newResource: Resource) {
+    this.currentResource = newResource;
+
+    this.finishTask();
+  }
+
+  canHarvest(): boolean {
+    if (!this.currentResource ||
+      (this.currentResourceNode && !this.currentResourceNode.resourceEnums.includes(this.currentResource.resourceEnum))) {
+      return false;
+    }
+
+    const hasEnoughConsumes = !this.currentResource.resourceConsumes.length ||
+      this.currentResource.resourceConsumes.every(consume => this.amountHeld(consume.resourceEnum) >= consume.cost);
+
+    return hasEnoughConsumes && this.totalHeld < this.resourceCapacity;
   }
 }

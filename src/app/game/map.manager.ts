@@ -954,10 +954,13 @@ export class MapManager {
 
     this.game.buildings.placeBuilding(buildingData);
 
-    const buildingTile = this.setBuildingTile(x, y, buildingData.tileType, removable);
+    this.setBuildingTile(x, y, buildingData.tileType, removable);
 
     if (buildingData.placesResourceTile) {
-      mapTile.properties['resourceNode'] = new ResourceNode(buildingData.resourceTileType, buildingData.baseHealth);
+      const resourceData = this.resourceTileData.get(buildingData.resourceTileType);
+
+      mapTile.properties['resourceNode'] = new ResourceNode(buildingData.resourceTileType,
+        resourceData.resourceEnums, buildingData.baseHealth);
     }
 
     // If we're building a bridge, we need to update the island structure
@@ -1213,10 +1216,12 @@ export class MapManager {
   }
 
   setResourceTile(x: number, y: number, tileType: ResourceTileType, health: number): Phaser.Tilemaps.Tile {
+    const resourceData = this.resourceTileData.get(tileType);
+
     this.resourceLayer.putTileAt(this.tileIndices[tileType], x, y);
 
     const mapTile = this.mapLayer.getTileAt(x, y);
-    mapTile.properties['resourceNode'] = new ResourceNode(tileType, health);
+    mapTile.properties['resourceNode'] = new ResourceNode(tileType, resourceData.resourceEnums, health);
 
     return this.resourceLayer.getTileAt(x, y);
   }

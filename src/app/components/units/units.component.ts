@@ -1,7 +1,8 @@
-import { GameService } from './../../game/game.service';
 import { Component, OnInit } from '@angular/core';
-import { UnitType, Unit } from 'src/app/objects/entity/unit/unit';
 import { CursorTool } from 'src/app/game/map.manager';
+import { Unit, UnitType } from 'src/app/objects/entity/unit/unit';
+import { ResourceEnum } from 'src/app/objects/resourceData';
+import { GameService } from './../../game/game.service';
 
 @Component({
   selector: 'app-units',
@@ -26,5 +27,9 @@ export class UnitsComponent implements OnInit {
       this.game.map.mainCamera.stopFollow();
       this.game.map.mainCamera.startFollow(this.game.map.focusedUnit);
     }
+  }
+
+  getResource(resourceEnum: ResourceEnum) {
+    return this.game.resources.getResource(resourceEnum);
   }
 }

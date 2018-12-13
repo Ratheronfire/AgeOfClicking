@@ -41,6 +41,37 @@ mat-card {
   top: 5px;
 }
 
+.inventory {
+  display: flex;
+}
+
+.inventory .slot {
+  position: relative;
+  width: 48px;
+}
+
+.inventory .background {
+  z-index: 1;
+}
+
+.inventory .resource-img {
+  position: absolute;
+  z-index: 2;
+}
+
+.inventory .slot-size {
+  position: absolute;
+
+  -webkit-text-stroke: 1px black;
+  color: white;
+
+  font-size: 32px;
+
+  bottom: 16px;
+  right: 0;
+  z-index: 3;
+}
+
 #card-header {
   float: left;
   max-width: 250px;

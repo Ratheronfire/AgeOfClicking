@@ -67,6 +67,9 @@ export interface UnitSaveData {
 
   health: number;
 
+  inventory: InventorySlot[];
+  currentResource?: ResourceEnum;
+
   statLevels: any;
 }
 

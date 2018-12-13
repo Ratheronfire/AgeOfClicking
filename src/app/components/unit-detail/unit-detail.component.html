@@ -28,10 +28,22 @@
       </mat-button-toggle>
       <button mat-raised-button color="warn" (click)="removeUnit()">Remove Unit</button>
 
+      <mat-form-field *ngIf="focusedHarvester">
+        <mat-select placholder="Current Resource" [value]="focusedHarvester.currentResource" (valueChange)="setHarvesterTask($event)">
+          <mat-option *ngFor="let resource of getResources(focusedHarvester.resourceType)" [value]="resource">
+            {{resource.name | titlecase}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
 
-      <div *ngFor="let slot of focusedUnit.inventory">
-        <div *ngIf="slot.resourceEnum !== null">
-          {{slot.resourceEnum}}: {{slot.amount}}
+      <div class="inventory">
+        <div class="slot" *ngFor="let slot of focusedUnit.inventory">
+          <div class="slot-size" *ngIf="slot.resourceEnum !== null">
+              {{slot.amount}}
+          </div>
+          <img class="resource-img" *ngIf="slot.resourceEnum !== null" id="{{getResource(slot.resourceEnum).name | resourceId}}" src="assets/sprites/transparent.png"
+            alt="{{getResource(slot.resourceEnum).name}}">
+          <img class="background" src="assets/sprites/inventoryBack.png" width="48px" height="48px">
         </div>
       </div>
     </div>
