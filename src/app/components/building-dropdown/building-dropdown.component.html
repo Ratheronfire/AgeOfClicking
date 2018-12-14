@@ -2,12 +2,12 @@
 class="buildings">
 <mat-button-toggle *ngFor="let buildingTile of getBuildingTileArray(true)" [value]="buildingTile" class="building wood"
   [disabled]="!canPlaceBuilding(buildingTile.tileType)" (click)="game.map.buildingListVisible = false">
-  <div class="title button-text" matTooltip="{{buildingTile.description}}" matTooltipPosition="above">
+  <div class="title button-text-stroke" matTooltip="{{buildingTile.description}}" matTooltipPosition="above">
     {{buildingTile.name}}
   </div>
   <div class="resource-list">
     <div *ngFor="let resourceCost of buildingTile.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
-      matTooltipPosition="below" class="button-text">
+      matTooltipPosition="below" class="button-text-stroke">
       <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
       {{resourceCost.resourceCost | longNumber}}
     </div>

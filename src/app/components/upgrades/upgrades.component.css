@@ -36,16 +36,16 @@
   border-radius: 4px;
 }
 
-.upgrades button[disabled] {
-  cursor: default;
-}
-
 .upgrades button:hover {
   left: .1em;
 }
 
-.upgrades button.mat-disabled {
+.upgrades button[disabled] {
   cursor: default;
+}
+
+.upgrades button[disabled] div {
+  color: rgba(0,0,0,.87);
 }
 
 .upgrades .badge {

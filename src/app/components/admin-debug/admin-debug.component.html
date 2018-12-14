@@ -12,7 +12,7 @@
     </mat-option>
   </mat-select>
 
-  <input class="button-text" [(ngModel)]="amount">
+  <input class="button-text-stroke" [(ngModel)]="amount">
   <button mat-raised-button (click)="addResourceAmount()">Add to all resources</button>
   <div *ngIf="selectedResource !== undefined">
     <button mat-raised-button (click)="addResourceAmount(selectedResource)">Add to {{selectedResource.name |

@@ -3,19 +3,19 @@
     Amount to sell:
   </div>
   <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="sellAmount" class="wood">
-    <mat-button-toggle value="1" checked="true" class="button-text">
+    <mat-button-toggle value="1" checked="true" class="button-text-stroke">
       1x
     </mat-button-toggle>
-    <mat-button-toggle value="10" class="button-text">
+    <mat-button-toggle value="10" class="button-text-stroke">
       10x
     </mat-button-toggle>
-    <mat-button-toggle value="100" class="button-text">
+    <mat-button-toggle value="100" class="button-text-stroke">
       100x
     </mat-button-toggle>
-    <mat-button-toggle value="1000" class="button-text">
+    <mat-button-toggle value="1000" class="button-text-stroke">
       1000x
     </mat-button-toggle>
-    <mat-button-toggle value="-1" class="button-text">
+    <mat-button-toggle value="-1" class="button-text-stroke">
       All
     </mat-button-toggle>
   </mat-button-toggle-group>
@@ -33,13 +33,13 @@
       <div *ngFor="let resource of getResources(resourceType, false, game.admin.filterAccessible)">
         <button class="sell-button wood" color="accent" mat-raised-button *ngIf="resource.sellable" (click)="sellResource(resource)"
           [disabled]="!canSellResource(resource)">
-          <mat-panel-title class="button-text">
+          <mat-panel-title class="button-text-stroke">
             {{(sellAmount == -1 ? resource.amount : sellAmount) | longNumber}} {{resource.name | titlecase }} -
             {{resource.sellsFor * (+sellAmount === -1 ? resource.amount : sellAmount) | longNumber}} Gold
           </mat-panel-title>
         </button>
         <button disabled class="sell-button wood" color="warn" mat-raised-button *ngIf="!resource.sellable">
-          <mat-panel-title class="button-text">
+          <mat-panel-title class="button-text-stroke">
             {{(sellAmount == -1 ? resource.amount : sellAmount) | longNumber}} {{resource.name | titlecase }} -
             Unsellable
           </mat-panel-title>

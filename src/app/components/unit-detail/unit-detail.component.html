@@ -2,7 +2,7 @@
   <div *ngIf="focusedUnit">
     <div id="card-header">
       <mat-card-title class="button-text-background">{{focusedUnit.name}}</mat-card-title>
-      <mat-card-subtitle class="button-text">{{focusedUnit.description}}</mat-card-subtitle>
+      <mat-card-subtitle class="button-text-stroke">{{focusedUnit.description}}</mat-card-subtitle>
 
       <div class="repair-container">
         {{focusedUnit.health}}/{{focusedUnit.maxHealth | longNumber}} Health
@@ -70,7 +70,7 @@
                 matTooltipPosition="below">
                 <mat-icon color="primary">arrow_upward</mat-icon>
                 <div class="resource-list">
-                  <div class="button-text">
+                  <div class="button-text-stroke">
                     <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
                       alt="{{getResource('GOLD').name}}">
                     {{focusedStats.statCosts.get(stat) | longNumber}}

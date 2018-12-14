@@ -1,6 +1,6 @@
 <ul class="resources noselect">
   <button mat-raised-button disabled="true" class="resource-button currency-button wood" [ngClass]="{'warn': resourceIsBeingStolen(goldResource)}">
-    <mat-card-title class="button-text">{{goldResource.name | titlecase }}</mat-card-title>
+    <mat-card-title class="button-text-stroke">{{goldResource.name | titlecase }}</mat-card-title>
     <mat-card-subtitle class="button-text-background">{{goldResource.amount | longNumber}}</mat-card-subtitle>
 
     <div class="harvest-icon-container">
@@ -28,7 +28,7 @@
             <p>{{resource.bindIndex}}</p>
           </div>
 
-          <mat-card-title class="button-text">{{resource.name | titlecase }}</mat-card-title>
+          <mat-card-title class="button-text-stroke">{{resource.name | titlecase }}</mat-card-title>
           <mat-card-subtitle class="button-text-background">{{resource.amount | longNumber}}</mat-card-subtitle>
           <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [value]="resource.progressBarValue"></mat-progress-bar>
 
@@ -62,7 +62,7 @@
               <p>{{resource.bindIndex}}</p>
             </div>
 
-            <mat-card-title class="button-text">{{resource.name | titlecase }}</mat-card-title>
+            <mat-card-title class="button-text-stroke">{{resource.name | titlecase }}</mat-card-title>
             <mat-card-subtitle class="button-text-background">{{resource.amount | longNumber}}</mat-card-subtitle>
             <mat-progress-bar [class.hidden]="!resource.harvesting" class="harvest-progress" [value]="resource.progressBarValue"></mat-progress-bar>
 

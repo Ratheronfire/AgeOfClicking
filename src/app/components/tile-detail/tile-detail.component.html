@@ -2,7 +2,7 @@
   <div id="card-header">
     <div *ngIf="focusedBuildingNode">
       <mat-card-title class="button-text-background">{{focusedBuildingData.name}}</mat-card-title>
-      <mat-card-subtitle class="button-text">{{focusedBuildingData.description}}</mat-card-subtitle>
+      <mat-card-subtitle class="button-text-stroke">{{focusedBuildingData.description}}</mat-card-subtitle>
       <div class="repair-container">
         {{focusedBuildingNode.health | longNumber}}/{{focusedBuildingNode.maxHealth | longNumber}} Health
       </div>
@@ -35,12 +35,12 @@
   <mat-card-content id="card-content" *ngIf="focusedBuildingNode && (focusedBuildingData.upgradeBuilding || focusedBuildingData.stats.length)">
     <div *ngIf="focusedBuildingNode && focusedBuildingData.upgradeBuilding">
       <button mat-raised-button class="wood" (click)="upgradeBuilding(focusedBuildingNode)" [disabled]="!canAffordUpgrade(upgradedBuildingData)">
-        <div class="title button-text" matTooltip="{{upgradedBuildingData.description}}" matTooltipPosition="above">
+        <div class="title button-text-stroke" matTooltip="{{upgradedBuildingData.description}}" matTooltipPosition="above">
           Upgrade to {{upgradedBuildingData.name}}
         </div>
         <div class="resource-list">
           <div *ngFor="let resourceCost of upgradedBuildingData.resourceCosts" matTooltip="{{resourceCost.resourceCost}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
-            matTooltipPosition="below" class="button-text">
+            matTooltipPosition="below" class="button-text-stroke">
             <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
               alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost}}
@@ -68,7 +68,7 @@
               matTooltipPosition="below">
               <mat-icon color="primary">arrow_upward</mat-icon>
               <div class="resource-list">
-                <div class="button-text">
+                <div class="button-text-stroke">
                   <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png"
                     alt="{{getResource('GOLD').name}}">
                   {{focusedStats.statCosts.get(stat) | longNumber}}

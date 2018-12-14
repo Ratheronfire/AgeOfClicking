@@ -184,9 +184,21 @@ div.mat-tab-label {
   padding: 3px;
 }
 
-.button-text {
-  color: black;
-  font-weight: bold;
+.button-text-stroke {
+  -webkit-text-stroke: 1px black;
+  color: white;
+
+  font-weight: 900;
+  font-size: larger;
+}
+
+.button-text-bold {
+  font-weight: 900;
+}
+
+button:hover .button-text-stroke,
+button:hover .button-text-bold, {
+  color: #523f37;
 }
 
 mat-expansion-panel .mat-expansion-panel-body {

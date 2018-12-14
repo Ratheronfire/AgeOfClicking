@@ -19,7 +19,7 @@
       </mat-expansion-panel-header>
 
       <button mat-raised-button class="wood" [color]="worker.canAffordToHire() ? 'accent' : 'disabled'" (click)="worker.hireWorker()" [disabled]="!worker.canAffordToHire()">
-        <mat-card-title class="button-text">{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
+        <mat-card-title class="button-text-bold">{{worker.workerCount}} Workers ({{worker.freeWorkers}} Idle)</mat-card-title>
         <mat-card-subtitle class="button-text-background">{{worker.cost | longNumber}} Gold</mat-card-subtitle>
       </button>
 
