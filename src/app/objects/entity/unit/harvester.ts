@@ -112,9 +112,13 @@ export class Harvester extends Unit {
       this.currentResourceNode = null;
 
       // Empty all currently held items back into the base.
-      for (const slot of this.inventory.filter(_slot => _slot.amount > 0)) {
-        this.game.resources.getResource(slot.resourceEnum).addAmount(slot.amount);
-        this.addToInventory(slot.resourceEnum, -slot.amount);
+      for (const slot of this.inventory) {
+        if (slot.resourceEnum) {
+          this.game.resources.getResource(slot.resourceEnum).addAmount(slot.amount);
+        }
+
+        slot.resourceEnum = null;
+        slot.amount = 0;
       }
 
       this.actionInterval = this.currentResource.harvestMilliseconds;
@@ -122,7 +126,7 @@ export class Harvester extends Unit {
       if (this.currentResource.resourceConsumes.length) {
         // The number of storage units needed for each harvest, including its consumes and the resource itself.
         const spaceNeededPerHarvest = this.currentResource.resourceConsumes.map(consume => consume.cost)
-          .reduce((total, cost) => total += cost) + 1;
+          .reduce((total, cost) => total += cost);
         // The total number of harvests possible, based on the storage needed for it and its consumes.
         const resourceStorageLimit = Math.floor(this.resourceCapacity / spaceNeededPerHarvest);
         // The max number of harvests of harvests possible, based on available resource counts.
@@ -164,9 +168,12 @@ export class Harvester extends Unit {
       return false;
     }
 
-    const hasEnoughConsumes = !this.currentResource.resourceConsumes.length ||
-      this.currentResource.resourceConsumes.every(consume => this.amountHeld(consume.resourceEnum) >= consume.cost);
+    if (this.currentResource.resourceConsumes.length) {
+      // We need to check if the inventory is full and if we have any resources that'll be freed up.
+      // We don't need to check the inventory size since we'll be removing at least one item to make this resource.
+      return this.currentResource.resourceConsumes.every(consume => this.amountHeld(consume.resourceEnum) >= consume.cost);
+    }
 
-    return hasEnoughConsumes && this.totalHeld < this.resourceCapacity;
+    return this.totalHeld < this.resourceCapacity;
   }
 }
