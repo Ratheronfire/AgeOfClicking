@@ -119,10 +119,17 @@ export class Harvester extends Unit {
   sortedTargets(): Phaser.Tilemaps.Tile[] {
     // We're just going to move to a neighbor of the resource instead of the tile itself.
     const targetNeighbors = this.targets.map(tile => {
-      const neighbors = this.game.map.getNeighborTiles(tile).filter(
+      const walkableNeighbors = this.game.map.getNeighborTiles(tile).filter(
         _tile => this.game.map.isTileWalkable(_tile));
 
-      return neighbors[Math.floor(Math.random() * neighbors.length)];
+      const pathNeighbors = walkableNeighbors.filter(_tile => _tile.properties['buildingNode'] &&
+        [BuildingTileType.Road, BuildingTileType.Tunnel, BuildingTileType.Bridge].includes(_tile.properties['buildingNode'].tileType));
+
+      if (pathNeighbors.length) {
+        return pathNeighbors[Math.floor(Math.random() * pathNeighbors.length)];
+      }
+
+      return walkableNeighbors[Math.floor(Math.random() * walkableNeighbors.length)];
     });
 
     return targetNeighbors.sort((a, b) => {
