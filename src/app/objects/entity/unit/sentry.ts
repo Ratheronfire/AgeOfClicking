@@ -26,15 +26,7 @@ export class Sentry extends Unit {
     }
   }
 
-  findTargets() {
-    return;
-  }
-
-  pickTarget() {
-    return;
-  }
-
-  finishTask() {
-    return;
-  }
+  findTargets() {}
+  pickTarget() {}
+  finishTask() {}
 }

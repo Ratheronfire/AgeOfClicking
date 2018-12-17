@@ -12,6 +12,8 @@ export enum EntityState {
   Looting = 'LOOTING',
   /** For enemies: The entity is destroying a building. */
   Destroying = 'DESTROYING',
+  /** For player units: the entity is returning to the base to gather/deposit resources. */
+  Restocking = 'RESTOCKING',
   /** For player units: The entity is defending from a stationary position. */
   Stationary = 'STATIONARY',
   /** For player units: The entity is reparing a building. */
@@ -61,7 +63,7 @@ export class Entity extends Phaser.GameObjects.Sprite {
   }
 
   tick(elapsed: number, deltaTime: number) {
-    if (this.currentState === EntityState.MovingToTarget || this.currentState === EntityState.Wandering) {
+    if ([EntityState.MovingToTarget, EntityState.Wandering, EntityState.Restocking].includes(this.currentState)) {
       this.moveAlongPath(deltaTime);
     }
 
@@ -135,6 +137,8 @@ export class Entity extends Phaser.GameObjects.Sprite {
         return 'Repairing';
       } case EntityState.Sleeping: {
         return 'Sleeping';
+      } case EntityState.Restocking: {
+        return 'Restocking';
       } case EntityState.Stationary: {
         return 'Stationary';
       } case EntityState.Harvesting: {

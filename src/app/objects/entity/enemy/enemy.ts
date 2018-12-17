@@ -60,11 +60,24 @@ export class Enemy extends Actor {
         break;
       } case EntityState.Wandering:
         case EntityState.MovingToTarget: {
-        if (this.isPathBroken()) {
+        if (this.isPathBroken) {
           this.finishTask();
         }
 
         break;
+      }
+    }
+  }
+
+  findPath() {
+    for (const buildingType of this.targetableBuildingTypes) {
+      const matchingTiles = this.game.map.mapLayer.filterTiles(tile => tile.properties['buildingNode'] &&
+        tile.properties['buildingNode'].tileType === buildingType);
+
+      for (const tile of matchingTiles) {
+        if (!this.targets.includes(tile)) {
+          this.targets.push(tile);
+        }
       }
     }
   }

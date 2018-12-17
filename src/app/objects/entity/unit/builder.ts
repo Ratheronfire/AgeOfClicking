@@ -1,8 +1,9 @@
-import { BuildingNode } from '../../tile/buildingNode';
 import { BuildingTileType } from '../../tile/tile';
 import { UnitData } from '../actor';
 import { EntityState } from '../entity';
 import { GameService } from './../../../game/game.service';
+import { BuildingNode } from './../../tile/buildingNode';
+import { BuildingTileData } from './../../tile/tile';
 import { Unit, UnitStat, UnitStats } from './unit';
 
 export class BuilderStats extends UnitStats {
@@ -66,6 +67,7 @@ export class BuilderStats extends UnitStats {
 
 export class Builder extends Unit {
   repairAmount = 5;
+  resourceCapacity = 100;
 
   public constructor(x: number, y: number, unitData: UnitData,
       scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
@@ -80,29 +82,26 @@ export class Builder extends Unit {
 
     switch (this.currentState) {
       case EntityState.Repairing: {
+        const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
+
+        if (!buildingNode || !this.canBuild(this.currentTile)) {
+          this.finishTask();
+          break;
+        }
+
         if (elapsed - this.lastActionTime > this.actionInterval) {
           this.lastActionTime = elapsed;
 
-          const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
+          for (const slot of this.inventory.filter(_slot => _slot.resourceEnum !== null)) {
+            const amountToSpend = Math.min(buildingNode.getRemainingResourceCost(slot.resourceEnum), this.repairAmount);
 
-          if (!buildingNode) {
-            this.finishTask();
-            break;
+            buildingNode.addResource(slot.resourceEnum, amountToSpend);
+            this.removeFromInventory(slot.resourceEnum, amountToSpend);
+
+            if (amountToSpend > 0) {
+              break;
+            }
           }
-
-          if (this.game.map.canRepairBuilding(this.currentTile, this.repairAmount)) {
-            this.game.map.repairBuilding(this.currentTile, this.repairAmount);
-          }
-
-          if (buildingNode.health >= buildingNode.maxHealth) {
-            this.finishTask();
-          }
-        }
-
-        break;
-      } case EntityState.MovingToTarget: {
-        if (this.isPathBroken()) {
-          this.finishTask();
         }
 
         break;
@@ -123,13 +122,41 @@ export class Builder extends Unit {
 
   finishTask() {
     const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
+    this.findTargets();
 
-    if (!buildingNode) {
-      this.currentState = EntityState.MovingToTarget;
-    } else if (buildingNode.health < buildingNode.maxHealth) {
+    if (!this.nextTarget || !this.nextTarget.properties['buildingNode']) {
+      this.currentState = this.totalHeld > 0 ? EntityState.Restocking : EntityState.Sleeping;
+    }
+
+    if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
+      this.returnAllResources();
+
+      if (this.nextTarget) {
+        const nextNode: BuildingNode = this.nextTarget.properties['buildingNode'];
+
+        if (nextNode.resourcesNeeded.length) {
+          const spacePerResource = Math.floor(this.resourceCapacity / nextNode.resourcesNeeded.length);
+          const amountToBuild = this.amountOfBuildingTypeQueued(nextNode.tileType);
+
+          for (const resourceEnum of nextNode.resourcesNeeded) {
+            const resource = this.game.resources.getResource(resourceEnum);
+            const costPerBuilding = nextNode.getResourceCost(resourceEnum);
+
+            let amountToTake = Math.min(spacePerResource, amountToBuild * costPerBuilding);
+            amountToTake = Math.min(amountToTake, resource.amount);
+
+            this.takeResource(resourceEnum, amountToTake);
+          }
+        }
+
+        this.currentState = EntityState.MovingToTarget;
+      }
+    } else if (!this.canBuild(this.nextTarget)) {
+      this.currentState = EntityState.Restocking;
+    } else if (this.currentBuildingNode.health < this.currentBuildingNode.maxHealth) {
       this.currentState = EntityState.Repairing;
     } else {
-      this.pickTarget();
+      this.currentState = EntityState.MovingToTarget;
     }
 
     super.finishTask();
@@ -145,7 +172,7 @@ export class Builder extends Unit {
     const totalDistanceX = this.tilePath[0].pixelX - this.currentTile.pixelX;
     const totalDistanceY = this.tilePath[0].pixelY - this.currentTile.pixelY;
 
-    let tileWeight = (this.terrainTypeControlsSpeed ? this.game.pathfinding.getTileWeight(this.currentTile) : 1)
+    let tileWeight = (this.terrainTypeControlsSpeed ? this.game.pathfinding.getTileWeight(this.currentTile) : 1);
     if (tileWeight === Infinity && this.currentTile.properties['buildingNode'] &&
         this.currentTile.properties['buildingNode'].health === 0) {
       // The builder is on an unbuilt tile over unwalkable ground, so we'll force it to be walkable for now.
@@ -176,5 +203,36 @@ export class Builder extends Unit {
   protected currentTileIsValid(): boolean {
     return this.currentTile && (this.game.map.isTileWalkable(this.currentTile) ||
       (this.currentTile.properties['buildingNode'] && this.currentTile.properties['buildingNode'].tileType === BuildingTileType.Wall));
+  }
+
+  get currentBuildingData(): BuildingTileData {
+    if (!this.currentBuildingNode) {
+      return null;
+    }
+
+    return this.currentBuildingNode.tileData;
+  }
+
+  canBuild(tile: Phaser.Tilemaps.Tile): boolean {
+    if (!tile || !this.selectedTarget || !this.selectedTarget.properties['buildingNode']) {
+      return false;
+    }
+
+    const buildingNode: BuildingNode = tile.properties['buildingNode'];
+
+    return buildingNode.health < buildingNode.maxHealth && buildingNode.resourcesNeeded.some(cost => this.amountHeld(cost) > 0);
+  }
+
+  amountOfBuildingTypeQueued(buildingType: BuildingTileType): number {
+    const buildings: BuildingNode[] = this.targets.map(target => target.properties['buildingNode']);
+
+    return buildings.filter(building => building && building.tileType === buildingType && building.health < building.maxHealth).length;
+  }
+
+  get nextTarget(): Phaser.Tilemaps.Tile {
+    const sortedTargets = this.sortedTargets().filter(
+      tile => tile.properties['buildingNode'].health < tile.properties['buildingNode'].maxHealth);
+
+    return sortedTargets.length ? sortedTargets[0] : null;
   }
 }

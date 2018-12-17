@@ -591,7 +591,6 @@ export class MapManager {
                                                                    this.totalChunkY * 0.6 * this.chunkHeight);
     const homeData = this.buildingTileData.get(BuildingTileType.Home);
     const homeNode = this.createBuilding(homeTile.x, homeTile.y, homeData, false);
-    homeNode.health = homeNode.maxHealth;
 
     if (loadingSave) {
       this.game.settings.loadGame(false);
@@ -1044,50 +1043,6 @@ export class MapManager {
     this.game.pathfinding.updatePaths(buildingTile, true);
   }
 
-  repairBuilding(tile: Phaser.Tilemaps.Tile, repairAmount: number) {
-    const buildingNode: BuildingNode = tile.properties['buildingNode'];
-    if (!buildingNode || !this.canRepairBuilding(tile, repairAmount)) {
-      return false;
-    }
-
-    const buildingData = this.buildingTileData.get(buildingNode.tileType);
-
-    const costRatio = buildingNode.maxHealth / repairAmount;
-    for (const resourceCost of buildingData.resourceCosts) {
-      const resource = this.game.resources.getResource(resourceCost.resourceEnum);
-      resource.addAmount(-resourceCost.resourceCost / costRatio);
-    }
-
-    buildingNode.health += repairAmount;
-    if (buildingNode.health >= buildingNode.maxHealth) {
-      buildingNode.health = buildingNode.maxHealth;
-
-      this.buildingLayer.getTileAt(tile.x, tile.y).tint = 0xffffff;
-      this.game.pathfinding.updatePaths(tile, true);
-    }
-
-    buildingNode.healthBar.updateHealthbar(buildingNode.health / buildingNode.maxHealth);
-  }
-
-  canRepairBuilding(tile: Phaser.Tilemaps.Tile, repairAmount: number) {
-    const buildingNode: BuildingNode = tile.properties['buildingNode'];
-    if (!buildingNode) {
-      return false;
-    }
-
-    const costRatio = buildingNode.maxHealth / repairAmount;
-
-    const buildingData = this.buildingTileData.get(buildingNode.tileType);
-    for (const resourceCost of buildingData.resourceCosts) {
-      const resourceAmount = this.game.resources.getResource(resourceCost.resourceEnum).amount;
-      if (resourceAmount < resourceCost.resourceCost / costRatio) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   processIslands(startTile?: Phaser.Tilemaps.Tile) {
     const tilesToProcess = startTile ? [startTile] : this.mapLayer.filterTiles(_tile => _tile.properties['tileType'] !== MapTileType.Water);
 
@@ -1197,7 +1152,7 @@ export class MapManager {
   }
 
   putResourceNearSpawn(resourceTileType: ResourceTileType, spawnAreaSize: number, desiredSpawnTypes: MapTileType[]) {
-    const homeTile = this.getBuildingTiles(BuildingTileType.Home)[0];
+    const homeTile = this.getHomeTile();
 
     const spawnArea = this.mapLayer.getTilesWithin(homeTile.x - Math.floor(spawnAreaSize / 2),
       homeTile.y - Math.floor(spawnAreaSize / 2), spawnAreaSize, spawnAreaSize);
@@ -1272,6 +1227,12 @@ export class MapManager {
     }
 
     return tiles;
+  }
+
+  getHomeTile(): Phaser.Tilemaps.Tile {
+    const homeTiles = this.getBuildingTiles(BuildingTileType.Home);
+
+    return homeTiles && homeTiles.length ? homeTiles[0] : null;
   }
 
   isTilePathable(tile: Phaser.Tilemaps.Tile): boolean {

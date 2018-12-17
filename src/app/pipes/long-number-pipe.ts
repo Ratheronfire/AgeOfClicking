@@ -12,6 +12,8 @@ export class LongNumberPipe implements PipeTransform {
   transform(data: number, decimalsShown: number = 0) {
     if (data < 1000000) {
       return formatNumber(data, 'en-US', `1.0-${decimalsShown}`);
+    } else if (Math.abs(data) >= Infinity) {
+      return data.toString();
     }
 
     let nameIndex = -2;

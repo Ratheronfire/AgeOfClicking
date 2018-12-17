@@ -178,7 +178,9 @@ export class Unit extends Actor {
 
     this.findTargets();
 
-    if (this.targets.length) {
+    if (this.currentState === EntityState.Restocking) {
+      this.selectedTarget = this.game.map.getHomeTile();
+    } else if (this.targets.length) {
       const sortedTargets = this.sortedTargets();
       this.selectedTarget = sortedTargets[0];
     } else {

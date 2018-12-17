@@ -56,14 +56,6 @@ export class TileDetailComponent implements OnInit {
     this.game.map.createBuilding(this.focusedTile.x, this.focusedTile.y, newBuildingData, true);
   }
 
-  canRepairBuilding(): boolean {
-    return this.game.map.canRepairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
-  }
-
-  repairBuilding() {
-    this.game.map.repairBuilding(this.focusedTile, this.focusedBuildingNode.maxHealth - this.focusedBuildingNode.health);
-  }
-
   get focusedTile(): Phaser.Tilemaps.Tile {
     return this.game.map.focusedTile;
   }

@@ -42,7 +42,7 @@ export class Harvester extends Unit {
           this.lastActionTime = elapsed;
 
           for (const resourceConsume of this.currentResource.resourceConsumes) {
-            this.addToInventory(resourceConsume.resourceEnum, -resourceConsume.cost);
+            this.removeFromInventory(resourceConsume.resourceEnum, resourceConsume.cost);
           }
 
           this.addToInventory(this.currentResource.resourceEnum, 1);
@@ -56,9 +56,7 @@ export class Harvester extends Unit {
   findTargets() {
     this.targets = [];
 
-    if (!this.canHarvest()) {
-      this.targets = this.game.map.getBuildingTiles(BuildingTileType.Home);
-
+    if (!this.currentResource) {
       return;
     }
 
@@ -70,56 +68,17 @@ export class Harvester extends Unit {
 
     if (resourceTiles.length) {
       this.targets.push(resourceTiles[0]);
-    }
-  }
-
-  pickTarget() {
-    if (this.islandId === undefined) {
-      // The enemy's position has become invalid, so we'll just move it somewhere random.
-      this.moveToNewTile();
-    }
-
-    this.findTargets();
-
-    if (this.targets.length) {
-      const sortedTargets = this.sortedTargets();
-      this.selectedTarget = sortedTargets[0];
-
-      this.currentResourceNode = this.selectedTarget.properties['resourceNode'];
-
-      // We're just going to move to a neighbor of the resource instead of the tile itself.
-      if (this.currentResourceNode) {
-        const neighbors = this.game.map.getNeighborTiles(this.selectedTarget).filter(tile =>
-          this.game.map.isTileWalkable(tile));
-        this.selectedTarget = neighbors[Math.floor(Math.random() * neighbors.length)];
-      }
-    } else {
-      this.currentState = EntityState.Sleeping;
-      this.selectedTarget = null;
-    }
-
-    if (this.selectedTarget) {
-      this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, false, true).subscribe(tilePath => this.beginPathing(tilePath));
+      this.currentResourceNode = resourceTiles[0].properties['resourceNode'];
     }
   }
 
   finishTask() {
     const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
 
-    if (this.currentResourceNode && this.canHarvest()) {
-      this.currentState = EntityState.Harvesting;
-    } else if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
+    if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
       this.currentResourceNode = null;
 
-      // Empty all currently held items back into the base.
-      for (const slot of this.inventory) {
-        if (slot.resourceEnum) {
-          this.game.resources.getResource(slot.resourceEnum).addAmount(slot.amount);
-        }
-
-        slot.resourceEnum = null;
-        slot.amount = 0;
-      }
+      this.returnAllResources();
 
       this.actionInterval = this.currentResource.harvestMilliseconds;
 
@@ -141,19 +100,38 @@ export class Harvester extends Unit {
             amountNeeded = 0;
           }
 
-          const resource = this.game.resources.getResource(resourceConsume.resourceEnum);
-
-          resource.addAmount(-amountNeeded);
-          this.addToInventory(resourceConsume.resourceEnum, amountNeeded);
+          this.takeResource(resourceConsume.resourceEnum, amountNeeded);
         }
       }
 
       this.currentState = EntityState.MovingToTarget;
+    } else if (this.currentResourceNode && this.canHarvest()) {
+      this.currentState = EntityState.Harvesting;
+    } else if (!this.canHarvest()) {
+      this.currentState = EntityState.Restocking;
     } else {
       this.pickTarget();
     }
 
     super.finishTask();
+  }
+
+  sortedTargets(): Phaser.Tilemaps.Tile[] {
+    // We're just going to move to a neighbor of the resource instead of the tile itself.
+    const targetNeighbors = this.targets.map(tile => {
+      const neighbors = this.game.map.getNeighborTiles(tile).filter(
+        _tile => this.game.map.isTileWalkable(_tile));
+
+      return neighbors[Math.floor(Math.random() * neighbors.length)];
+    });
+
+    return targetNeighbors.sort((a, b) => {
+      const enemyPosition = new Phaser.Math.Vector2(this.x, this.y);
+      const aPos = new Phaser.Math.Vector2(a.pixelX, a.pixelY);
+      const bPos = new Phaser.Math.Vector2(b.pixelX, b.pixelY);
+
+      return Math.abs(aPos.distance(enemyPosition)) - Math.abs(bPos.distance(enemyPosition));
+    });
   }
 
   setResource(newResource: Resource) {

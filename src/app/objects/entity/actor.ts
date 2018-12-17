@@ -1,5 +1,6 @@
 import { HealthBar } from '../healthbar';
 import { ResourceEnum } from '../resourceData';
+import { BuildingNode } from '../tile/buildingNode';
 import { BuildingTileType, MapTileType } from '../tile/tile';
 import { GameService } from './../../game/game.service';
 import { EnemyType } from './enemy/enemy';
@@ -104,17 +105,6 @@ export class Actor extends Entity {
   }
 
   findTargets() {
-    for (const buildingType of this.targetableBuildingTypes) {
-      const matchingTiles = this.game.map.mapLayer.filterTiles(tile => tile.properties['buildingNode'] &&
-        tile.properties['buildingNode'].tileType === buildingType);
-
-      for (const tile of matchingTiles) {
-        if (!this.targets.includes(tile)) {
-          this.targets.push(tile);
-        }
-      }
-    }
-
     if (this.currentState === EntityState.Wandering) {
       this.currentState = EntityState.MovingToTarget;
 
@@ -128,7 +118,7 @@ export class Actor extends Entity {
   finishTask() {
     this.targets = this.targets.filter(target => target !== this.selectedTarget);
 
-    if (this.currentState === EntityState.MovingToTarget) {
+    if (this.currentState === EntityState.MovingToTarget || this.currentState === EntityState.Restocking) {
       this.pickTarget();
     }
   }
@@ -194,39 +184,93 @@ export class Actor extends Entity {
     }
   }
 
-  addToInventory(resourceEnum: ResourceEnum, amount: number) {
+  findSlotForResource(resourceEnum): InventorySlot {
     let itemSlot = this.inventory.find(slot => slot && slot.resourceEnum === resourceEnum);
     if (!itemSlot) {
       itemSlot = this.inventory.find(slot => slot.resourceEnum === null);
-
-      if (!itemSlot) {
-        // We have no slots free.
-        return;
-      }
-
-      itemSlot.resourceEnum = resourceEnum;
-      itemSlot.amount = 0;
     }
+
+    if (!itemSlot) {
+      // We have no slots free.
+      return null;
+    }
+
+    return itemSlot;
+  }
+
+  canAddToInventory(resourceEnum: ResourceEnum, amount: number) {
+    const resource = this.game.resources.getResource(resourceEnum);
+
+    return resource.amount >= amount && this.findSlotForResource(resourceEnum) !== null &&
+    this.totalHeld + amount <= this.resourceCapacity;
+  }
+
+  addToInventory(resourceEnum: ResourceEnum, amount: number) {
+    if (!this.canAddToInventory(resourceEnum, amount)) {
+      return false;
+    }
+
+    const resource = this.game.resources.getResource(resourceEnum);
+    resource.addAmount(-amount);
+
+    const itemSlot = this.findSlotForResource(resourceEnum);
+    itemSlot.resourceEnum = resourceEnum;
 
     itemSlot.amount += amount;
 
     if (itemSlot.amount <= 0) {
-      itemSlot.resourceEnum = null;
-      itemSlot.amount = 0;
+      this.clearSlot(itemSlot);
+    }
+  }
 
-      // This slot is empty, so we'll move the later ones down to fill the gap.
-      for (let i = 1; i < this.inventory.length; i++) {
-        for (let j = i - 1; j >= 0; j--) {
-          if (this.inventory[i].resourceEnum && !this.inventory[j].resourceEnum) {
-            this.inventory[j].resourceEnum = this.inventory[i].resourceEnum;
-            this.inventory[j].amount = this.inventory[i].amount;
+  removeFromInventory(resourceEnum: ResourceEnum, amount: number) {
+    this.addToInventory(resourceEnum, -amount);
+  }
 
-            this.inventory[i].resourceEnum = null;
-            this.inventory[i].amount = 0;
-          }
+  clearSlot(slot: InventorySlot, reorderInventory = true) {
+    slot.resourceEnum = null;
+    slot.amount = 0;
+
+    if (!reorderInventory) {
+      return;
+    }
+
+    // This slot is empty, so we'll move the later ones down to fill the gap.
+    for (let i = 1; i < this.inventory.length; i++) {
+      for (let j = i - 1; j >= 0; j--) {
+        if (this.inventory[i].resourceEnum && !this.inventory[j].resourceEnum) {
+          this.inventory[j].resourceEnum = this.inventory[i].resourceEnum;
+          this.inventory[j].amount = this.inventory[i].amount;
+
+          this.inventory[i].resourceEnum = null;
+          this.inventory[i].amount = 0;
         }
       }
     }
+  }
+
+  returnAllResources() {
+    for (const slot of this.inventory) {
+      if (slot.resourceEnum) {
+        this.game.resources.getResource(slot.resourceEnum).addAmount(slot.amount);
+      }
+
+      this.clearSlot(slot, false);
+    }
+  }
+
+  /** Take an amount of resources from the base and add it to our inventory.
+   *  We can only take the resource if we have space, and if the actor is at the home base.
+   * @param resourceEnum The resource to take.
+   * @param amount The amount of resources to take.
+   */
+  takeResource(resourceEnum: ResourceEnum, amount: number) {
+    if (!this.currentBuildingNode || this.currentBuildingNode.tileType !== BuildingTileType.Home ||
+        !this.canAddToInventory(resourceEnum, amount)) {
+      return;
+    }
+
+    this.addToInventory(resourceEnum, amount);
   }
 
   amountHeld(resourceEnum: ResourceEnum): number {
@@ -244,5 +288,13 @@ export class Actor extends Entity {
     } else {
       return this.lastIslandId;
     }
+  }
+
+  get currentBuildingNode(): BuildingNode {
+    if (!this.currentTile || !this.currentTile.properties['buildingNode']) {
+      return null;
+    }
+
+    return this.currentTile.properties['buildingNode'];
   }
 }
