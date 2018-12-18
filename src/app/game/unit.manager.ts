@@ -11,27 +11,39 @@ export class UnitManager {
   unitGroup: Phaser.GameObjects.Group;
   public selectedUnitType: UnitType;
 
+  priceScaleExponent = 5;
+
   private game: GameService;
 
   constructor(game: GameService) {
     this.game = game;
   }
 
+  getUnitCost(unitType: UnitType): number {
+    const unitsSpawned = this.getUnits(unitType).length;
+    const baseCost = this.unitsData[unitType].cost;
+
+    if (!unitsSpawned) {
+      return 0;
+    }
+
+    return baseCost + Math.pow(unitsSpawned, this.priceScaleExponent);
+  }
+
   canAffordUnit(unitType: UnitType) {
     const goldResource: Resource = this.game.resources.getResource(ResourceEnum.Gold);
     const unitData = this.unitsData[unitType];
 
-    return goldResource.amount >= unitData.cost;
+    return goldResource.amount >= this.getUnitCost(unitType);
   }
 
   purchaseUnit(unitType: UnitType) {
-    const unitData = this.unitsData[unitType];
-
     if (!this.canAffordUnit(unitType)) {
       return;
     }
 
-    this.game.resources.getResource(ResourceEnum.Gold).addAmount(-unitData.cost);
+    const cost = this.getUnitCost(unitType)
+    this.game.resources.getResource(ResourceEnum.Gold).addAmount(-cost);
   }
 
   getUnits(unitType?: UnitType): Unit[] {

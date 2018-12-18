@@ -2,7 +2,7 @@
 .units {
   position: absolute;
   top: 72px;
-  left: 392px;
+  left: 456px;
   width: 134px;
   display: grid;
 
@@ -11,14 +11,17 @@
   flex-direction: column;
 }
 
-button {
-  background-color: #eee;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  cursor: hand;
+.mat-button-toggle {
   font-family: Arial;
+}
+
+.mat-button-toggle .button-text-bold {
+  color: rgba(0, 0, 0, 0.75);
+  font-size: 14px;
+}
+
+.mat-button-toggle-checked .title {
+  color: chartreuse;
 }
 
 .resource-list {
@@ -33,3 +36,4 @@ button {
   width: 16px;
   height: 16px;
 }
+

@@ -1,14 +1,14 @@
 <mat-button-toggle-group #group="matButtonToggleGroup" [(ngModel)]="selectedUnitType" class="units">
   <mat-button-toggle *ngFor="let unitType of UnitTypes | enumToArray" [value]="UnitTypes[unitType]" class="unit wood"
     [disabled]="!canAffordUnit(UnitTypes[unitType])" (click)="game.map.unitListVisible = false">
-    <div class="title button-text-stroke" matTooltip="{{getUnitData(UnitTypes[unitType]).description}}" matTooltipPosition="above">
+    <div class="title button-text-bold" matTooltip="{{getUnitData(UnitTypes[unitType]).description}}" matTooltipPosition="above">
       {{getUnitData(UnitTypes[unitType]).name}}
     </div>
     <div class="resource-list">
-      <div matTooltip="{{getUnitData(UnitTypes[unitType]).cost | longNumber}} {{getResource('GOLD').name | titlecase}}"
-        matTooltipPosition="below" class="button-text-stroke">
+      <div matTooltip="{{getUnitCost(UnitTypes[unitType]) | longNumber}} {{getResource('GOLD').name | titlecase}}"
+        matTooltipPosition="below" class="button-text-bold">
         <img id="{{getResource('GOLD').name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource('GOLD').name}}">
-        {{getUnitData(UnitTypes[unitType]).cost | longNumber}}
+        {{getUnitCost(UnitTypes[unitType]) | longNumber}}
       </div>
     </div>
   </mat-button-toggle>

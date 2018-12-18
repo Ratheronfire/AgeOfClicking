@@ -23,8 +23,7 @@ export class UnitDropdownComponent implements OnInit {
   }
 
   canAffordUnit(unitType: UnitType) {
-    const unitData = this.game.unit.unitsData[unitType];
-    return this.game.resources.getResource(ResourceEnum.Gold).amount >= unitData.cost;
+    return this.game.unit.canAffordUnit(unitType);
   }
 
   selectUnitType(unitType: UnitType) {
@@ -36,8 +35,12 @@ export class UnitDropdownComponent implements OnInit {
     }
   }
 
-  getUnitData(unitType): UnitData {
+  getUnitData(unitType: UnitType): UnitData {
     return this.game.unit.unitsData[unitType];
+  }
+
+  getUnitCost(unitType: UnitType): number {
+    return this.game.unit.getUnitCost(unitType);
   }
 
   get unitsData() {

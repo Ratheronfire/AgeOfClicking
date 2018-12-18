@@ -10,14 +10,13 @@
   flex-direction: column;
 }
 
-button {
-  background-color: #eee;
-  border: none;
-  padding: 5px 10px;
-  border-radius: 4px;
-  cursor: pointer;
-  cursor: hand;
+.mat-button-toggle {
   font-family: Arial;
+}
+
+.mat-button-toggle .button-text-bold {
+  color: rgba(0, 0, 0, 0.75);
+  font-size: 14px;
 }
 
 .resource-list {
@@ -31,4 +30,12 @@ button {
 .resource-list img {
   width: 16px;
   height: 16px;
+}
+
+.mat-button-toggle .button-text-bold {
+  color: rgba(0, 0, 0, 0.75);
+}
+
+.mat-button-toggle-checked .title {
+  color: chartreuse;
 }
