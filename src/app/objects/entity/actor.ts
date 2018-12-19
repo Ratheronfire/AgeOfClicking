@@ -104,6 +104,23 @@ export class Actor extends Entity {
     super.moveAlongPath(deltaTime);
   }
 
+  updateSprite(xDist: number, yDist: number) {
+    this.setFlipX(xDist < 0 && yDist === 0);
+
+    if (xDist > 0 && yDist === 0) {
+      this.anims.play(this.texture.key + 'WalkRight', true);
+    } else if (xDist < 0 && yDist === 0) {
+      this.anims.play(this.texture.key + 'WalkRight', true);
+    } else if (xDist === 0 && yDist > 0) {
+      this.anims.play(this.texture.key + 'WalkDown', true);
+    } else if (xDist === 0 && yDist < 0) {
+      this.anims.play(this.texture.key + 'WalkUp', true);
+    } else {
+      this.anims.stop();
+      this.setFrame(0);
+    }
+  }
+
   findTargets() {
     if (this.currentState === EntityState.Wandering) {
       this.currentState = EntityState.MovingToTarget;

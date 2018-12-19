@@ -1,0 +1,110 @@
+{
+  "anims": [
+    {
+      "key": "actorWalkDown",
+      "type": "frame",
+      "frames": [
+        { "key": "actor", "frame": 0, "duration": 0, "visible": false },
+        { "key": "actor", "frame": 1, "duration": 0, "visible": false },
+        { "key": "actor", "frame": 2, "duration": 0, "visible": false }
+      ],
+      "frameRate": 24,
+      "duration": 1.5,
+      "skipMissedFrames": true,
+      "delay": 0,
+      "repeat": -1,
+      "repeatDelay": 0,
+      "yoyo": false,
+      "showOnStart": false,
+      "hideOnComplete": false
+    }, {
+      "key": "actorWalkUp",
+      "type": "frame",
+      "frames": [
+        { "key": "actor", "frame": 3, "duration": 0, "visible": false },
+        { "key": "actor", "frame": 4, "duration": 0, "visible": false },
+        { "key": "actor", "frame": 5, "duration": 0, "visible": false }
+      ],
+      "frameRate": 24,
+      "duration": 1.5,
+      "skipMissedFrames": true,
+      "delay": 0,
+      "repeat": -1,
+      "repeatDelay": 0,
+      "yoyo": false,
+      "showOnStart": false,
+      "hideOnComplete": false
+    },
+    {
+      "key": "actorWalkRight",
+      "type": "frame",
+      "frames": [
+        { "key": "actor", "frame": 6, "duration": 0, "visible": false },
+        { "key": "actor", "frame": 7, "duration": 0, "visible": false },
+        { "key": "actor", "frame": 8, "duration": 0, "visible": false }
+      ],
+      "frameRate": 24,
+      "duration": 1.5,
+      "skipMissedFrames": true,
+      "delay": 0,
+      "repeat": -1,
+      "repeatDelay": 0,
+      "yoyo": false,
+      "showOnStart": false,
+      "hideOnComplete": false
+    },
+    {
+      "key": "builderWalkDown",
+      "type": "frame",
+      "frames": [
+        { "key": "builder", "frame": 0, "duration": 0, "visible": false },
+        { "key": "builder", "frame": 1, "duration": 0, "visible": false },
+        { "key": "builder", "frame": 2, "duration": 0, "visible": false }
+      ],
+      "frameRate": 24,
+      "duration": 1.5,
+      "skipMissedFrames": true,
+      "delay": 0,
+      "repeat": -1,
+      "repeatDelay": 0,
+      "yoyo": false,
+      "showOnStart": false,
+      "hideOnComplete": false
+    }, {
+      "key": "builderWalkUp",
+      "type": "frame",
+      "frames": [
+        { "key": "builder", "frame": 3, "duration": 0, "visible": false },
+        { "key": "builder", "frame": 4, "duration": 0, "visible": false },
+        { "key": "builder", "frame": 5, "duration": 0, "visible": false }
+      ],
+      "frameRate": 24,
+      "duration": 1.5,
+      "skipMissedFrames": true,
+      "delay": 0,
+      "repeat": -1,
+      "repeatDelay": 0,
+      "yoyo": false,
+      "showOnStart": false,
+      "hideOnComplete": false
+    },
+    {
+      "key": "builderWalkRight",
+      "type": "frame",
+      "frames": [
+        { "key": "builder", "frame": 6, "duration": 0, "visible": false },
+        { "key": "builder", "frame": 7, "duration": 0, "visible": false },
+        { "key": "builder", "frame": 8, "duration": 0, "visible": false }
+      ],
+      "frameRate": 24,
+      "duration": 1.5,
+      "skipMissedFrames": true,
+      "delay": 0,
+      "repeat": -1,
+      "repeatDelay": 0,
+      "yoyo": false,
+      "showOnStart": false,
+      "hideOnComplete": false
+    }
+  ]
+}

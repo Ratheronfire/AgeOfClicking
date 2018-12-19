@@ -162,16 +162,7 @@ export class Builder extends Unit {
     super.finishTask();
   }
 
-  moveAlongPath(deltaTime: number) {
-    if (!this.tilePath.length) {
-      this.finishTask();
-
-      return;
-    }
-
-    const totalDistanceX = this.tilePath[0].pixelX - this.currentTile.pixelX;
-    const totalDistanceY = this.tilePath[0].pixelY - this.currentTile.pixelY;
-
+  getAdjustedSpeed(): number {
     let tileWeight = (this.terrainTypeControlsSpeed ? this.game.pathfinding.getTileWeight(this.currentTile) : 1);
     if (tileWeight === Infinity && this.currentTile.properties['buildingNode'] &&
         this.currentTile.properties['buildingNode'].health === 0) {
@@ -179,21 +170,7 @@ export class Builder extends Unit {
       tileWeight = 5;
     }
 
-    const adjustedSpeed = this.animationSpeed * this.animationSpeedFactor / tileWeight;
-
-    this.x += totalDistanceX * deltaTime * adjustedSpeed;
-    this.y += totalDistanceY * deltaTime * adjustedSpeed;
-
-    const center = this.getCenter();
-
-    // We've reached the next tile, so realign to the center and trim our path.
-    if (Math.abs(center.x - this.currentTile.getCenterX()) >= Math.abs(totalDistanceX) &&
-        Math.abs(center.y - this.currentTile.getCenterY()) >= Math.abs(totalDistanceY)) {
-      this.currentTile = this.tilePath.splice(0, 1)[0];
-
-      this.x = this.currentTile.getCenterX();
-      this.y = this.currentTile.getCenterY();
-    }
+    return this.animationSpeed * this.animationSpeedFactor / tileWeight;
   }
 
   isPathBroken(): boolean {

@@ -100,6 +100,8 @@ export class MapManager {
     'UNBELIEVIUMMINE': 19, 'LUSTRIALMINE': 20, 'SPECTRUSMINE': 21, 'WHEATFARM': 22, 'RAWPOTATOFARM': 23, 'RICEFARM': 24, 'FISHINGSPOT': 25
   };
 
+  actorSpritesheets = ['actor', 'builder'];
+
   enemySpawnInterval = 45000;
   lastEnemySpawnTime = 0;
   maxEnemyCount = 25;
@@ -183,30 +185,18 @@ export class MapManager {
 
     this.resize();
 
+    this.scene.load.animation('actorAnimations', 'assets/json/actorAnimations.json');
+
     this.scene.load.image('map', 'assets/sprites/map-extruded.png');
     this.scene.load.image('buildings', 'assets/sprites/buildings-extruded.png');
     this.scene.load.image('resourceSpawns', 'assets/sprites/resourceSpawns-extruded.png');
 
-    this.scene.load.spritesheet('buildingSprites', 'assets/sprites/buildings.png', {
-      frameWidth: 48,
-      frameHeight: 48
-    });
-    this.scene.load.spritesheet('resources', 'assets/sprites/resources.png', {
-      frameWidth: 48,
-      frameHeight: 48
-    });
-    this.scene.load.spritesheet('sentry', 'assets/sprites/sentry.png', {
-      frameWidth: 48,
-      frameHeight: 48
-    });
-    this.scene.load.spritesheet('enemy', 'assets/sprites/enemy.png', {
-      frameWidth: 48,
-      frameHeight: 48
-    });
-    this.scene.load.spritesheet('arrow', 'assets/sprites/arrow.png', {
-      frameWidth: 48,
-      frameHeight: 48
-    });
+    this.scene.load.spritesheet('buildingSprites', 'assets/sprites/buildings.png', { frameWidth: 48, frameHeight: 48 });
+    this.scene.load.spritesheet('resources', 'assets/sprites/resources.png', { frameWidth: 48, frameHeight: 48 });
+    this.scene.load.spritesheet('actor', 'assets/sprites/_actorBase.png', { frameWidth: 48, frameHeight: 48 });
+    this.scene.load.spritesheet('builder', 'assets/sprites/_builder.png', { frameWidth: 48, frameHeight: 48 });
+    this.scene.load.spritesheet('enemy', 'assets/sprites/enemy.png', { frameWidth: 48, frameHeight: 48 });
+    this.scene.load.spritesheet('arrow', 'assets/sprites/arrow.png', { frameWidth: 48, frameHeight: 48 });
   }
 
   async createMap() {
@@ -215,6 +205,30 @@ export class MapManager {
       width: this.totalChunkX * this.chunkWidth,
       height: this.totalChunkY * this.chunkHeight
     });
+
+    // for (const spritesheet of this.actorSpritesheets) {
+    //   const walkDownAnimation: AnimationConfig = {
+    //     key: spritesheet + 'WalkDown',
+    //     frames: this.scene.anims.generateFrameNumbers(spritesheet, {start: 0, end: 2, first: 0}),
+    //     frameRate: 20
+    //   };
+
+    //   const walkUpAnimation: AnimationConfig = {
+    //     key: spritesheet + 'WalkUp',
+    //     frames: this.scene.anims.generateFrameNumbers(spritesheet, {start: 3, end: 5, first: 3}),
+    //     frameRate: 20
+    //   };
+
+    //   const walkRightAnimation: AnimationConfig = {
+    //     key: spritesheet + 'WalkRight',
+    //     frames: this.scene.anims.generateFrameNumbers(spritesheet, {start: 6, end: 8, first: 6}),
+    //     frameRate: 20
+    //   };
+
+    //   this.scene.anims.create(walkDownAnimation);
+    //   this.scene.anims.create(walkUpAnimation);
+    //   this.scene.anims.create(walkRightAnimation);
+    // }
 
     this.mainCamera = this.scene.cameras.main;
 
@@ -825,27 +839,27 @@ export class MapManager {
     switch (unitType) {
       case UnitType.Sentry: {
         unit = new Sentry(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData,
-          this.scene, 'sentry', 0, this.game);
+          this.scene, 'actor', 0, this.game);
         break;
       } case UnitType.Builder: {
         unit = new Builder(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData,
-          this.scene, 'sentry', 0, this.game);
+          this.scene, 'builder', 0, this.game);
         break;
       } case UnitType.Lumberjack: {
         unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Wood,
-          this.scene, 'sentry', 0, this.game);
+          this.scene, 'actor', 0, this.game);
         break;
       } case UnitType.MineralMiner: {
         unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Mineral,
-          this.scene, 'sentry', 0, this.game);
+          this.scene, 'actor', 0, this.game);
         break;
       } case UnitType.MetalMiner: {
         unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Metal,
-          this.scene, 'sentry', 0, this.game);
+          this.scene, 'actor', 0, this.game);
         break;
       } case UnitType.Hunter: {
         unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Food,
-          this.scene, 'sentry', 0, this.game);
+          this.scene, 'actor', 0, this.game);
         break;
       } default: {
         return null;

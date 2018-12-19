@@ -105,8 +105,7 @@ export class Entity extends Phaser.GameObjects.Sprite {
     const totalDistanceX = this.tilePath[0].pixelX - this.currentTile.pixelX;
     const totalDistanceY = this.tilePath[0].pixelY - this.currentTile.pixelY;
 
-    const adjustedSpeed = this.animationSpeed * this.animationSpeedFactor /
-      (this.terrainTypeControlsSpeed ? this.game.pathfinding.getTileWeight(this.currentTile) : 1);
+    const adjustedSpeed = this.getAdjustedSpeed();
 
     this.x += totalDistanceX * deltaTime * adjustedSpeed;
     this.y += totalDistanceY * deltaTime * adjustedSpeed;
@@ -121,7 +120,16 @@ export class Entity extends Phaser.GameObjects.Sprite {
       this.x = this.currentTile.getCenterX();
       this.y = this.currentTile.getCenterY();
     }
+
+    this.updateSprite(totalDistanceX, totalDistanceY);
   }
+
+  getAdjustedSpeed(): number {
+    return this.animationSpeed * this.animationSpeedFactor /
+      (this.terrainTypeControlsSpeed ? this.game.pathfinding.getTileWeight(this.currentTile) : 1);
+  }
+
+  updateSprite(xDist: number, yDist: number) {}
 
   public get currentStateString(): string {
     switch (this.currentState) {
