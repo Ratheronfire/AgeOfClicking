@@ -219,20 +219,21 @@ export class Actor extends Entity {
     return itemSlot;
   }
 
-  canAddToInventory(resourceEnum: ResourceEnum, amount: number) {
+  canTakeResource(resourceEnum: ResourceEnum, amount: number) {
     const resource = this.game.resources.getResource(resourceEnum);
 
-    return resource.amount >= amount && this.findSlotForResource(resourceEnum) !== null &&
-    this.totalHeld + amount <= this.resourceCapacity;
+    return resource.amount >= amount;
+  }
+
+  canAddToInventory(resourceEnum: ResourceEnum, amount: number) {
+    return this.findSlotForResource(resourceEnum) !== null &&
+      this.totalHeld + amount <= this.resourceCapacity;
   }
 
   addToInventory(resourceEnum: ResourceEnum, amount: number) {
     if (!this.canAddToInventory(resourceEnum, amount)) {
       return false;
     }
-
-    const resource = this.game.resources.getResource(resourceEnum);
-    resource.addAmount(-amount);
 
     const itemSlot = this.findSlotForResource(resourceEnum);
     itemSlot.resourceEnum = resourceEnum;
@@ -285,11 +286,14 @@ export class Actor extends Entity {
    * @param resourceEnum The resource to take.
    * @param amount The amount of resources to take.
    */
-  takeResource(resourceEnum: ResourceEnum, amount: number) {
+  takeResourceFromBase(resourceEnum: ResourceEnum, amount: number) {
     if (!this.currentBuildingNode || this.currentBuildingNode.tileType !== BuildingTileType.Home ||
-        !this.canAddToInventory(resourceEnum, amount)) {
+        !this.canAddToInventory(resourceEnum, amount) || !this.canTakeResource(resourceEnum, amount)) {
       return;
     }
+
+    const resource = this.game.resources.getResource(resourceEnum);
+    resource.addAmount(-amount);
 
     this.addToInventory(resourceEnum, amount);
   }

@@ -153,7 +153,7 @@ export class Builder extends Unit {
             let amountToTake = Math.min(spacePerResource, amountToBuild * costPerBuilding);
             amountToTake = Math.min(amountToTake, resource.amount);
 
-            this.takeResource(resourceEnum, amountToTake);
+            this.takeResourceFromBase(resourceEnum, amountToTake);
           }
         }
 

@@ -123,7 +123,7 @@ export class Harvester extends Unit {
             amountNeeded = 0;
           }
 
-          this.takeResource(resourceConsume.resourceEnum, amountNeeded);
+          this.takeResourceFromBase(resourceConsume.resourceEnum, amountNeeded);
         }
       }
 
