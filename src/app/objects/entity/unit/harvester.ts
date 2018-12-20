@@ -53,6 +53,29 @@ export class Harvester extends Unit {
     }
   }
 
+  updateSprite(xDist: number, yDist: number) {
+    if (this.currentState === EntityState.Harvesting) {
+      xDist = this.currentResourceNode.owningTile.pixelX - this.currentTile.pixelX;
+      yDist = this.currentResourceNode.owningTile.pixelY - this.currentTile.pixelY;
+
+      this.setFlipX(xDist < 0 && yDist === 0);
+
+      if (xDist > 0 && yDist === 0) {
+        this.anims.play(this.texture.key + 'ActionRight', true);
+      } else if (xDist < 0 && yDist === 0) {
+        this.anims.play(this.texture.key + 'ActionRight', true);
+      } else if (xDist === 0 && yDist > 0) {
+        this.anims.play(this.texture.key + 'ActionDown', true);
+      } else if (xDist === 0 && yDist < 0) {
+        this.anims.play(this.texture.key + 'ActionUp', true);
+      } else {
+        this.anims.stop();
+      }
+    } else {
+      super.updateSprite(xDist, yDist);
+    }
+  }
+
   findTargets() {
     this.targets = [];
 

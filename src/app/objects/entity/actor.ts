@@ -91,6 +91,11 @@ export class Actor extends Entity {
 
     this.healthBar.tick(elapsed, deltaTime, this.x, this.y);
 
+    const totalDistanceX = this.tilePath.length ? this.tilePath[0].pixelX - this.currentTile.pixelX : 0;
+    const totalDistanceY = this.tilePath.length ? this.tilePath[0].pixelY - this.currentTile.pixelY : 0;
+
+    this.updateSprite(totalDistanceX, totalDistanceY);
+
     super.tick(elapsed, deltaTime);
   }
 
@@ -117,7 +122,6 @@ export class Actor extends Entity {
       this.anims.play(this.texture.key + 'WalkUp', true);
     } else {
       this.anims.stop();
-      this.setFrame(0);
     }
   }
 

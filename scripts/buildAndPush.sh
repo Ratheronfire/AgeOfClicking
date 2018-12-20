@@ -1,10 +1,6 @@
 #!/usr/bin/env bash
 
-if ng build --prod; then
-  rm -r ../ratheronfire.github.io/*
-
-  cp -r dist/clicker-game/* ../ratheronfire.github.io/
-
+if ng build --prod --output-path ~/ratheronfire.github.io; then
   echo -n "Enter commit message: "
   read message
 

@@ -120,16 +120,12 @@ export class Entity extends Phaser.GameObjects.Sprite {
       this.x = this.currentTile.getCenterX();
       this.y = this.currentTile.getCenterY();
     }
-
-    this.updateSprite(totalDistanceX, totalDistanceY);
   }
 
   getAdjustedSpeed(): number {
     return this.animationSpeed * this.animationSpeedFactor /
       (this.terrainTypeControlsSpeed ? this.game.pathfinding.getTileWeight(this.currentTile) : 1);
   }
-
-  updateSprite(xDist: number, yDist: number) {}
 
   public get currentStateString(): string {
     switch (this.currentState) {

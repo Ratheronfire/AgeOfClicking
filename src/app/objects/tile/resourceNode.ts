@@ -3,13 +3,17 @@ import { ResourceEnum } from '../resourceData';
 
 export class ResourceNode {
   tileType: ResourceTileType;
+  owningTile: Phaser.Tilemaps.Tile;
+
   path?: Phaser.Tilemaps.Tile[];
   resourceEnums: ResourceEnum[];
 
   health: number;
 
-  constructor(tileType: ResourceTileType, resourceEnums: ResourceEnum[], health: number) {
+  constructor(tileType: ResourceTileType, owningTile: Phaser.Tilemaps.Tile, resourceEnums: ResourceEnum[], health: number) {
     this.tileType = tileType;
+    this.owningTile = owningTile;
+
     this.path = [];
     this.resourceEnums = resourceEnums;
 

@@ -109,6 +109,14 @@ export class Builder extends Unit {
     }
   }
 
+  updateSprite(xDist: number, yDist: number) {
+    if (this.currentState === EntityState.Repairing) {
+      this.anims.play(this.texture.key + 'ActionDown', true);
+    } else {
+      super.updateSprite(xDist, yDist);
+    }
+  }
+
   findTargets() {
     this.targets = [];
 

@@ -185,18 +185,22 @@ export class MapManager {
 
     this.resize();
 
-    this.scene.load.animation('actorAnimations', 'assets/json/actorAnimations.json');
-
     this.scene.load.image('map', 'assets/sprites/map-extruded.png');
     this.scene.load.image('buildings', 'assets/sprites/buildings-extruded.png');
     this.scene.load.image('resourceSpawns', 'assets/sprites/resourceSpawns-extruded.png');
 
     this.scene.load.spritesheet('buildingSprites', 'assets/sprites/buildings.png', { frameWidth: 48, frameHeight: 48 });
     this.scene.load.spritesheet('resources', 'assets/sprites/resources.png', { frameWidth: 48, frameHeight: 48 });
-    this.scene.load.spritesheet('actor', 'assets/sprites/_actorBase.png', { frameWidth: 48, frameHeight: 48 });
-    this.scene.load.spritesheet('builder', 'assets/sprites/_builder.png', { frameWidth: 48, frameHeight: 48 });
+
+    this.scene.load.spritesheet('actor', 'assets/sprites/actorBase_48-extruded.png',
+      { frameWidth: 48, frameHeight: 48, margin: 1, spacing: 2 });
+    this.scene.load.spritesheet('builder', 'assets/sprites/builder_48-extruded.png',
+      { frameWidth: 48, frameHeight: 48, margin: 1, spacing: 2 });
     this.scene.load.spritesheet('enemy', 'assets/sprites/enemy.png', { frameWidth: 48, frameHeight: 48 });
+
     this.scene.load.spritesheet('arrow', 'assets/sprites/arrow.png', { frameWidth: 48, frameHeight: 48 });
+
+    this.scene.load.animation('actorAnimations', 'assets/json/actorAnimations.json');
   }
 
   async createMap() {
@@ -205,30 +209,6 @@ export class MapManager {
       width: this.totalChunkX * this.chunkWidth,
       height: this.totalChunkY * this.chunkHeight
     });
-
-    // for (const spritesheet of this.actorSpritesheets) {
-    //   const walkDownAnimation: AnimationConfig = {
-    //     key: spritesheet + 'WalkDown',
-    //     frames: this.scene.anims.generateFrameNumbers(spritesheet, {start: 0, end: 2, first: 0}),
-    //     frameRate: 20
-    //   };
-
-    //   const walkUpAnimation: AnimationConfig = {
-    //     key: spritesheet + 'WalkUp',
-    //     frames: this.scene.anims.generateFrameNumbers(spritesheet, {start: 3, end: 5, first: 3}),
-    //     frameRate: 20
-    //   };
-
-    //   const walkRightAnimation: AnimationConfig = {
-    //     key: spritesheet + 'WalkRight',
-    //     frames: this.scene.anims.generateFrameNumbers(spritesheet, {start: 6, end: 8, first: 6}),
-    //     frameRate: 20
-    //   };
-
-    //   this.scene.anims.create(walkDownAnimation);
-    //   this.scene.anims.create(walkUpAnimation);
-    //   this.scene.anims.create(walkRightAnimation);
-    // }
 
     this.mainCamera = this.scene.cameras.main;
 
@@ -973,7 +953,7 @@ export class MapManager {
       const resourceData = this.resourceTileData.get(buildingData.resourceTileType);
 
       mapTile.properties['resourceNode'] = new ResourceNode(buildingData.resourceTileType,
-        resourceData.resourceEnums, buildingData.baseHealth);
+        mapTile, resourceData.resourceEnums, buildingData.baseHealth);
     }
 
     // If we're building a bridge, we need to update the island structure
@@ -1190,7 +1170,7 @@ export class MapManager {
     this.resourceLayer.putTileAt(this.tileIndices[tileType], x, y);
 
     const mapTile = this.mapLayer.getTileAt(x, y);
-    mapTile.properties['resourceNode'] = new ResourceNode(tileType, resourceData.resourceEnums, health);
+    mapTile.properties['resourceNode'] = new ResourceNode(tileType, mapTile, resourceData.resourceEnums, health);
 
     return this.resourceLayer.getTileAt(x, y);
   }
