@@ -24,7 +24,7 @@ export class SettingsManager {
   bindSelected = new FormControl();
 
   autosaveInterval = 60000;
-  lastAutosave = Date.now();
+  lastAutosave = 0;
 
   resourceBinds = defaultResourceBinds;
 
@@ -108,7 +108,7 @@ export class SettingsManager {
   }
 
   setAutosave() {
-    this.lastAutosave = Date.now();
+    this.lastAutosave = 0;
   }
 
   readSave(): SaveData {
