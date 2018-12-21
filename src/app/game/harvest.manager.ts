@@ -48,19 +48,11 @@ export class HarvestManager {
         this.game.map.unitListVisible = false;
         break;
       } case 'KeyR': {
-        if (!this.game.enemy.enemiesActive) {
-          break;
-        }
-
         this.game.map.cursorTool = CursorTool.PlaceUnits;
         this.game.map.buildingListVisible = false;
         this.game.map.unitListVisible = true;
         break;
       } case 'KeyT': {
-        if (!this.game.enemy.enemiesActive) {
-          break;
-        }
-
         this.game.map.cursorTool = CursorTool.UnitDetail;
         this.game.map.buildingListVisible = false;
         this.game.map.unitListVisible = false;
