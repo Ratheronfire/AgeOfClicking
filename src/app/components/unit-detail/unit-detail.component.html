@@ -23,7 +23,7 @@
       <br />
       <br />
 
-      <mat-button-toggle (click)="toggleFollowUnit()" value="followingUnit">
+      <mat-button-toggle (click)="toggleFollowUnit()" [checked]="followingUnit">
         <mat-icon>videocam</mat-icon>
       </mat-button-toggle>
       <button mat-raised-button color="warn" (click)="removeUnit()">Remove Unit</button>

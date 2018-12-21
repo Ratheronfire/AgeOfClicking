@@ -395,10 +395,10 @@ export class MapManager {
   clickMap() {
     const pointer = this.scene.input.activePointer;
 
-    this.followingUnit = false;
-    this.mainCamera.stopFollow();
-
     if (pointer.justDown) {
+      this.followingUnit = false;
+      this.mainCamera.stopFollow();
+
       this.isDraggingScreen = false;
 
       this.dragStartPoint = new Phaser.Math.Vector2(pointer.position.x + this.mainCamera.scrollX,
