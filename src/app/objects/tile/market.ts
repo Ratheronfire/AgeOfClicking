@@ -145,9 +145,7 @@ export class Market extends BuildingNode {
   }
 
   public calculateConnection() {
-    this.game.pathfinding.findPath(this.homeTile, this.owningTile, true, true).subscribe(path => {
-      this.tilePath = path;
-    });
+    this.game.pathfinding.findPath(this.homeTile, this.owningTile, path => this.tilePath = path);
   }
 
   logSale(profit: number) {

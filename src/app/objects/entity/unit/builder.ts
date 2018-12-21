@@ -85,6 +85,7 @@ export class Builder extends Unit {
         const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
 
         if (!buildingNode || !this.canBuild(this.currentTile)) {
+          this.game.pathfinding.updatePaths(this.currentTile, true);
           this.finishTask();
           break;
         }
@@ -98,6 +99,7 @@ export class Builder extends Unit {
             buildingNode.addResource(slot.resourceEnum, amountToSpend);
             this.removeFromInventory(slot.resourceEnum, amountToSpend);
 
+            // We only want to spend resources once per tick.
             if (amountToSpend > 0) {
               break;
             }

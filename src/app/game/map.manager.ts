@@ -206,8 +206,8 @@ export class MapManager {
   async createMap() {
     this.tileMap = this.scene.make.tilemap({
       tileWidth: 48, tileHeight: 48,
-      width: this.totalChunkX * this.chunkWidth,
-      height: this.totalChunkY * this.chunkHeight
+      width: this.mapWidth,
+      height: this.mapHeight
     });
 
     this.mainCamera = this.scene.cameras.main;
@@ -254,8 +254,8 @@ export class MapManager {
 
     this.cameraControls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
-    const xMax = this.mapLayer.tileToWorldX(this.totalChunkX * this.chunkWidth);
-    const yMax = this.mapLayer.tileToWorldY(this.totalChunkY * this.chunkHeight);
+    const xMax = this.mapLayer.tileToWorldX(this.mapWidth);
+    const yMax = this.mapLayer.tileToWorldY(this.mapHeight);
     this.mainCamera.setBounds(0, 0, xMax, yMax, false).setName('main');
 
     this.minimapCamera = this.scene.cameras.add(this.mainCamera.width - this.minimapSize, this.mainCamera.height - this.minimapSize,
@@ -284,6 +284,11 @@ export class MapManager {
     this.minimapCamera.fadeIn(750);
 
     this.canvasContainer.onwheel = event => this.zoomMap(event);
+    document.onmouseup = _ => {
+      if (this.cursorTool === CursorTool.ClearBuildings) {
+        this.game.pathfinding.updatePaths(this.getMapTile(this.pointerTileX, this.pointerTileY), true);
+      }
+    }
   }
 
   updateMap(elapsed, deltaTime) {
@@ -377,6 +382,7 @@ export class MapManager {
 
     // Update other managers
 
+    this.game.pathfinding.tick(elapsed, deltaTime);
     this.game.harvest.tick(elapsed, deltaTime);
     this.game.workers.tick(elapsed, deltaTime);
     this.game.settings.tick(elapsed, deltaTime);
@@ -459,31 +465,7 @@ export class MapManager {
           const homeTile = this.mapLayer.findTile(_tile => _tile.properties['buildingNode'] &&
             _tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
-          this.game.pathfinding.findPath(tile, homeTile, false, true).subscribe(tilePath => {
-            for (const pathTile of tilePath) {
-              let tileColor = 0x0000ff;
-              if (tilePath.indexOf(pathTile) === 0) {
-                tileColor = 0x00ff00;
-              } else if (tilePath.indexOf(pathTile) === tilePath.length - 1) {
-                tileColor = 0xff0000;
-              }
-
-              const tileHighlight = this.scene.add.rectangle(pathTile.getCenterX(), pathTile.getCenterY(),
-                pathTile.width, pathTile.width, tileColor, 0.5);
-              tileHighlight.setDepth(3);
-              this.pathfindingTestGroup.add(tileHighlight);
-            }
-          });
-
-          break;
-        } case CursorTool.PathfindingTest2: {
-          this.pathfindingTestGroup.clear(false, true);
-
-          const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
-          const homeTile = this.mapLayer.findTile(_tile => _tile.properties['buildingNode'] &&
-            _tile.properties['buildingNode'].tileType === BuildingTileType.Home);
-
-            this.game.pathfinding.findPath(tile, homeTile, true, true).subscribe(tilePath => {
+          this.game.pathfinding.findPath(tile, homeTile, tilePath => {
             for (const pathTile of tilePath) {
               let tileColor = 0x0000ff;
               if (tilePath.indexOf(pathTile) === 0) {
@@ -579,10 +561,10 @@ export class MapManager {
 
     // Placing home (unless one already exists)
     // We want to place the home closer to the center of the map.
-    const homeTile = this.getRandomTile([MapTileType.Grass], true, this.totalChunkX * 0.4 * this.chunkWidth,
-                                                                   this.totalChunkX * 0.6 * this.chunkWidth,
-                                                                   this.totalChunkY * 0.4 * this.chunkHeight,
-                                                                   this.totalChunkY * 0.6 * this.chunkHeight);
+    const homeTile = this.getRandomTile([MapTileType.Grass], true, this.mapWidth * 0.4,
+                                                                   this.mapWidth * 0.6,
+                                                                   this.mapHeight * 0.4,
+                                                                   this.mapHeight * 0.6);
     const homeData = this.buildingTileData.get(BuildingTileType.Home);
     const homeNode = this.createBuilding(homeTile.x, homeTile.y, homeData, false);
 
@@ -620,6 +602,7 @@ export class MapManager {
       this.setResourceTile(resourceTile.x, resourceTile.y, missingResource.tileType, 50);
     }
 
+    this.game.pathfinding.init();
     this.game.pathfinding.calculateResourceConnections();
   }
 
@@ -644,7 +627,7 @@ export class MapManager {
       }
     }
 
-    const centerVector = new Phaser.Math.Vector2(this.totalChunkX * this.chunkWidth / 2, this.totalChunkY * this.chunkHeight / 2);
+    const centerVector = new Phaser.Math.Vector2(this.mapWidth / 2, this.mapHeight / 2);
     const maxTier = Math.max(...this.game.resources.allResources.map(resource => resource.resourceTier));
     const tierRingSize = centerVector.length() / maxTier;
 
@@ -1011,7 +994,7 @@ export class MapManager {
     }
 
     // If we're removing a bridge, we need to update the island structure
-    if (!this.mapTileData.get(mapTile.properties['tileType']).walkable) {
+    if (this.mapTileData.get(mapTile.properties['tileType']).tileType === MapTileType.Water) {
       const neighbors = this.getNeighborTiles(mapTile);
       for (let i = 0; i < neighbors.length - 1; i++) {
         for (let j = i + 1; j < neighbors.length; j++) {
@@ -1019,7 +1002,7 @@ export class MapManager {
             continue;
           }
 
-          this.game.pathfinding.findPath(neighbors[i], neighbors[j], false, true).subscribe(tilePath => {
+          this.game.pathfinding.findPath(neighbors[i], neighbors[j], tilePath => {
             if (!tilePath.length) {
               this.mapIslands[neighbors[i].properties['islandId']].tiles = [];
               this.mapIslands[neighbors[j].properties['islandId']].tiles = [];
@@ -1033,8 +1016,6 @@ export class MapManager {
 
       mapTile.properties['islandId'] = undefined;
     }
-
-    this.game.pathfinding.updatePaths(buildingTile, true);
   }
 
   processIslands(startTile?: Phaser.Tilemaps.Tile) {
@@ -1079,8 +1060,8 @@ export class MapManager {
 
     const tiles: Phaser.Tilemaps.Tile[] = [];
     for (const position of neighborPositions) {
-      if (position.x >= 0 && position.x < this.totalChunkX * this.chunkWidth &&
-          position.y >= 0 && position.y < this.totalChunkY * this.chunkHeight) {
+      if (position.x >= 0 && position.x < this.mapWidth &&
+          position.y >= 0 && position.y < this.mapHeight) {
         tiles.push(this.getMapTile(position.x, position.y));
       }
     }
@@ -1281,6 +1262,14 @@ export class MapManager {
 
   private set unitGroup(value: Phaser.GameObjects.Group) {
     this.game.unit.unitGroup = value;
+  }
+
+  get mapWidth(): number {
+    return this.totalChunkX * this.chunkWidth;
+  }
+
+  get mapHeight(): number {
+    return this.totalChunkY * this.chunkHeight;
   }
 
   get scene(): Phaser.Scene {

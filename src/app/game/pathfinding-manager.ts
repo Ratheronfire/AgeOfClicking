@@ -1,3 +1,4 @@
+import { js as EasyStar } from 'easystarjs';
 import { Observable, of } from 'rxjs';
 import TinyQueue from 'tinyqueue';
 import { BuildingNode } from '../objects/tile/buildingNode';
@@ -8,9 +9,33 @@ import { GameService } from './game.service';
 
 export class PathfindingManager {
   private game: GameService;
+  private easyStar: EasyStar;
 
   constructor(game: GameService) {
     this.game = game;
+  }
+
+  init() {
+    const mapArray: number[][] = [];
+    for (let i = 0; i < this.game.map.mapHeight; i++) {
+      mapArray[i] = [];
+      for (let j = 0; j < this.game.map.mapWidth; j++) {
+        mapArray[i][j] = this.getTileWeight(this.game.map.mapLayer.getTileAt(j, i));
+      }
+    }
+
+    this.easyStar = new EasyStar();
+    this.easyStar.setGrid(mapArray);
+
+    this.easyStar.setAcceptableTiles([1, 5]);
+    this.easyStar.setTileCost(1, 1);
+    this.easyStar.setTileCost(5, 5);
+  }
+
+  tick(elapsed: number, deltaTime: number) {
+    if (this.easyStar) {
+      this.easyStar.calculate();
+    }
   }
 
   updatePaths(updatedTile: Phaser.Tilemaps.Tile, onlyPathable: boolean) {
@@ -45,7 +70,7 @@ export class PathfindingManager {
       const buildingNode: BuildingNode = currentTile.properties['buildingNode'];
 
       if (resourceNode) {
-        this.findPath(currentTile, homeTile, false, true).subscribe(tilePath => {
+        this.findPath(currentTile, homeTile, tilePath => {
           resourceNode.path = tilePath;
           const pathAvailable = resourceNode.path.length > 0;
 
@@ -75,7 +100,7 @@ export class PathfindingManager {
       tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
     for (const resourceTile of resourceTiles) {
-      this.findPath(resourceTile, homeTile, false, true).subscribe(tilePath => {
+      this.findPath(resourceTile, homeTile, tilePath => {
         const resourceNode = resourceTile.properties['resourceNode'];
         resourceNode.path = tilePath;
 
@@ -98,75 +123,17 @@ export class PathfindingManager {
   }
 
   findPath(startTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile,
-      onlyPathable: boolean, onlyWalkable: boolean, maxAttempts: number = Infinity): Observable<Phaser.Tilemaps.Tile[]> {
-    const tileDistances = {};
-
-    const tileFrom = {};
-
-    const tileQueue = new TinyQueue([], function(a, b) { return a.priority - b.priority; });
-
-    tileDistances[startTile.properties['id']] = 0;
-    tileQueue.push({tile: startTile, priority: 0});
-
-    let currentNode;
-    let iteration = 0;
-
-    while (tileQueue.length && iteration < maxAttempts) {
-      iteration++;
-
-      currentNode = tileQueue.pop();
-
-      if (currentNode === targetTile) {
-        break;
+      callback: (tilePath: Phaser.Tilemaps.Tile[]) => void) {
+    this.easyStar.findPath(startTile.x, startTile.y, targetTile.x, targetTile.y, path => {
+      if (!path) {
+        callback([]);
+        return;
       }
 
-      for (const neighborTile of this.game.map.getNeighborTiles(currentNode.tile)) {
-        const pathable = this.game.map.isTilePathable(neighborTile);
-        const walkable = this.game.map.isTileWalkable(neighborTile);
+      const tilePath = path.map(node => this.game.map.getMapTile(node.x, node.y));
 
-        if ((onlyPathable && !pathable) || (onlyWalkable && !walkable)) {
-          continue;
-        }
-
-        const newCost = tileDistances[currentNode.tile.properties['id']] + this.getTileWeight(neighborTile);
-
-        if (!(neighborTile.properties['id'] in tileFrom) || newCost < tileDistances[neighborTile.properties['id']]) {
-          tileDistances[neighborTile.properties['id']] = newCost;
-          const priority = newCost + this.getHeuristicDistance(neighborTile, targetTile);
-
-          tileQueue.push({tile: neighborTile, priority: priority});
-          tileFrom[neighborTile.properties['id']] = currentNode.tile;
-        }
-      }
-    }
-
-    if (!(targetTile.properties['id'] in tileFrom)) {
-      return of([]);
-    }
-
-    currentNode = targetTile;
-    const tilePath = [];
-    do {
-      tilePath.push(currentNode);
-      currentNode = tileFrom[currentNode.properties['id']];
-    } while (currentNode !== startTile);
-
-    return of(tilePath.reverse());
-  }
-
-  debugDrawGraph(topLeftX: number, topLeftY: number, tileDistances: {}) {
-    const tileTable = [];
-
-    for (let i = 0; i < 20; i++) {
-      tileTable[i] = [];
-
-      for (let j = 0; j < 20; j++) {
-        const tile = this.game.map.getMapTile(topLeftX + i, topLeftY + j);
-        tileTable[i][j] = tile ? tileDistances[tile.properties['id']] : undefined;
-      }
-    }
-
-    console.table(tileTable);
+      callback(tilePath);
+    });
   }
 
   getHeuristicDistance(currentTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile): number {

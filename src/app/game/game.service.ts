@@ -46,8 +46,8 @@ export class GameService {
     this.store = new StoreManager(this);
     this.upgrades = new UpgradesManager(this);
 
-    this.pathfinding = new PathfindingManager(this);
     this.map = new MapManager(this);
+    this.pathfinding = new PathfindingManager(this);
     this.unit = new UnitManager(this);
     this.enemy = new EnemyManager(this);
     this.buildings = new BuildingsManager(this);

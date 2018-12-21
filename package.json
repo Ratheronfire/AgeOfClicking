@@ -27,6 +27,7 @@
     "clipboard": "^2.0.1",
     "core-js": "^2.5.4",
     "d3-zoom": "^1.7.3",
+    "easystarjs": "^0.4.3",
     "hammerjs": "^2.0.8",
     "jimp": "^0.3.5",
     "ngx-color-picker": "^6.6.0",
