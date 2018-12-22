@@ -286,7 +286,7 @@ export class MapManager {
     this.canvasContainer.onwheel = event => this.zoomMap(event);
     document.onmouseup = _ => {
       if (this.cursorTool === CursorTool.ClearBuildings) {
-        this.game.pathfinding.updatePaths(this.getMapTile(this.pointerTileX, this.pointerTileY), true);
+        this.game.pathfinding.updatePaths(this.getMapTile(this.pointerTileX, this.pointerTileY));
       }
     }
   }
@@ -1016,6 +1016,8 @@ export class MapManager {
 
       mapTile.properties['islandId'] = undefined;
     }
+
+    this.game.pathfinding.setGrid();
   }
 
   processIslands(startTile?: Phaser.Tilemaps.Tile) {

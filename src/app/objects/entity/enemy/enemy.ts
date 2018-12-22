@@ -52,7 +52,7 @@ export class Enemy extends Actor {
           buildingNode.takeDamage(this.attack);
 
           if (buildingNode.health <= 0) {
-            this.game.pathfinding.updatePaths(this.currentTile, true);
+            this.game.pathfinding.updatePaths(this.currentTile);
             this.finishTask();
           }
         }

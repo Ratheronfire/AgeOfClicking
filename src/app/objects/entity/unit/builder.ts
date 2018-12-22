@@ -85,7 +85,8 @@ export class Builder extends Unit {
         const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
 
         if (!buildingNode || !this.canBuild(this.currentTile)) {
-          this.game.pathfinding.updatePaths(this.currentTile, true);
+          this.game.pathfinding.setGrid();
+          this.game.pathfinding.updatePaths(this.currentTile);
           this.finishTask();
           break;
         }

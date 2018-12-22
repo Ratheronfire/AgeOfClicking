@@ -16,16 +16,9 @@ export class PathfindingManager {
   }
 
   init() {
-    const mapArray: number[][] = [];
-    for (let i = 0; i < this.game.map.mapHeight; i++) {
-      mapArray[i] = [];
-      for (let j = 0; j < this.game.map.mapWidth; j++) {
-        mapArray[i][j] = this.getTileWeight(this.game.map.mapLayer.getTileAt(j, i));
-      }
-    }
-
     this.easyStar = new EasyStar();
-    this.easyStar.setGrid(mapArray);
+
+    this.setGrid();
 
     this.easyStar.setAcceptableTiles([1, 5]);
     this.easyStar.setTileCost(1, 1);
@@ -38,7 +31,26 @@ export class PathfindingManager {
     }
   }
 
-  updatePaths(updatedTile: Phaser.Tilemaps.Tile, onlyPathable: boolean) {
+  setGrid() {
+    const mapArray: number[][] = [];
+    for (let i = 0; i < this.game.map.mapHeight; i++) {
+      mapArray[i] = [];
+      for (let j = 0; j < this.game.map.mapWidth; j++) {
+        const tile = this.game.map.mapLayer.getTileAt(j, i);
+
+        if (!this.game.map.isTileWalkable(tile)) {
+          mapArray[i][j] = 0;
+        } else {
+          mapArray[i][j] = this.getTileWeight(tile);
+        }
+      }
+    }
+
+    this.easyStar.setGrid(mapArray);
+  }
+
+  /** Update pathfinding data for all resource nodes connected to a tile. */
+  updatePaths(updatedTile: Phaser.Tilemaps.Tile) {
     const visitedTiles: Phaser.Tilemaps.Tile[] = [];
     const tileQueue: Phaser.Tilemaps.Tile[] = [];
     let currentTile: Phaser.Tilemaps.Tile;
@@ -61,7 +73,7 @@ export class PathfindingManager {
         }
 
         if (!visitedTiles.includes(neighbor) &&
-            (!onlyPathable || ((buildingTile && buildingTile.resourcePathable)) || neighbor.properties['resourceNode'])) {
+            ((buildingTile && buildingTile.resourcePathable) || neighbor.properties['resourceNode'])) {
           tileQueue.push(neighbor);
         }
       }
@@ -124,6 +136,11 @@ export class PathfindingManager {
 
   findPath(startTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile,
       callback: (tilePath: Phaser.Tilemaps.Tile[]) => void) {
+    if (startTile.properties['islandId'] !== targetTile.properties['islandId']) {
+      callback([]);
+      return;
+    }
+
     this.easyStar.findPath(startTile.x, startTile.y, targetTile.x, targetTile.y, path => {
       if (!path) {
         callback([]);
