@@ -136,7 +136,8 @@ export class PathfindingManager {
 
   findPath(startTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile,
       callback: (tilePath: Phaser.Tilemaps.Tile[]) => void) {
-    if (startTile.properties['islandId'] !== targetTile.properties['islandId']) {
+    if (startTile.properties['islandId'] !== undefined && targetTile.properties['islandId'] !== undefined &&
+        startTile.properties['islandId'] !== targetTile.properties['islandId']) {
       callback([]);
       return;
     }
