@@ -203,7 +203,7 @@ export class MapManager {
     this.scene.load.animation('actorAnimations', 'assets/json/actorAnimations.json');
   }
 
-  async createMap() {
+  createMap() {
     this.tileMap = this.scene.make.tilemap({
       tileWidth: 48, tileHeight: 48,
       width: this.mapWidth,
@@ -285,10 +285,12 @@ export class MapManager {
 
     this.canvasContainer.onwheel = event => this.zoomMap(event);
     document.onmouseup = _ => {
-      if (this.cursorTool === CursorTool.ClearBuildings) {
+      if (this.cursorTool === CursorTool.PlaceBuildings) {
+        this.game.pathfinding.updateGrid();
+      } else if (this.cursorTool === CursorTool.ClearBuildings) {
         this.game.pathfinding.updatePaths(this.getMapTile(this.pointerTileX, this.pointerTileY));
       }
-    }
+    };
   }
 
   updateMap(elapsed, deltaTime) {
@@ -1017,7 +1019,7 @@ export class MapManager {
       mapTile.properties['islandId'] = undefined;
     }
 
-    this.game.pathfinding.setGrid();
+    this.game.pathfinding.updateGrid();
   }
 
   processIslands(startTile?: Phaser.Tilemaps.Tile) {

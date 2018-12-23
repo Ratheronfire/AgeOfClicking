@@ -4,7 +4,7 @@ import TinyQueue from 'tinyqueue';
 import { BuildingNode } from '../objects/tile/buildingNode';
 import { Market } from '../objects/tile/market';
 import { ResourceNode } from '../objects/tile/resourceNode';
-import { BuildingTileData, BuildingTileType, MapTileType } from '../objects/tile/tile';
+import { BuildingTileData, BuildingTileType, MapTileType, BuildingSubType } from '../objects/tile/tile';
 import { GameService } from './game.service';
 
 export class PathfindingManager {
@@ -18,10 +18,11 @@ export class PathfindingManager {
   init() {
     this.easyStar = new EasyStar();
 
-    this.setGrid();
+    this.updateGrid();
 
     this.easyStar.setAcceptableTiles([1, 5]);
     this.easyStar.setTileCost(1, 1);
+    this.easyStar.setTileCost(2, 5);
     this.easyStar.setTileCost(5, 5);
   }
 
@@ -31,15 +32,20 @@ export class PathfindingManager {
     }
   }
 
-  setGrid() {
+  updateGrid() {
     const mapArray: number[][] = [];
     for (let i = 0; i < this.game.map.mapHeight; i++) {
       mapArray[i] = [];
       for (let j = 0; j < this.game.map.mapWidth; j++) {
         const tile = this.game.map.mapLayer.getTileAt(j, i);
+        const buildingNode: BuildingNode = tile.properties['buildingNode'];
 
-        if (!this.game.map.isTileWalkable(tile)) {
-          mapArray[i][j] = 0;
+        if (this.builderCanPathToNode(buildingNode)) {
+          // We make special cases for bridges/tunnels that haven't been built, as well as walls that have been built.
+          // This will allow builders to path across them while blocking all others from pathing.
+          mapArray[i][j] = 2;
+        } else if (!this.game.map.isTileWalkable(tile)) {
+          mapArray[i][j] = Infinity;
         } else {
           mapArray[i][j] = this.getTileWeight(tile);
         }
@@ -47,6 +53,18 @@ export class PathfindingManager {
     }
 
     this.easyStar.setGrid(mapArray);
+  }
+
+  builderCanPathToNode(buildingNode: BuildingNode): boolean {
+    if (!buildingNode) {
+      return false;
+    }
+
+    if (buildingNode.health < buildingNode.maxHealth) {
+      return buildingNode.tileType === BuildingTileType.Bridge || buildingNode.tileType === BuildingTileType.Tunnel;
+    } else {
+      return buildingNode.tileData.subType === BuildingSubType.Obstacle;
+    }
   }
 
   /** Update pathfinding data for all resource nodes connected to a tile. */
@@ -134,10 +152,34 @@ export class PathfindingManager {
     }
   }
 
+  setAcceptibleTiles(tiles: number[]) {
+    if (!this.easyStar) {
+      return;
+    }
+
+    this.easyStar.setAcceptableTiles(tiles);
+  }
+
+  setAdditionalPointCost(tile: Phaser.Tilemaps.Tile, cost: number) {
+    if (!this.easyStar) {
+      return;
+    }
+
+    this.easyStar.setAdditionalPointCost(tile.x, tile.y, cost);
+  }
+
+  removeAdditionalPointCost(tile: Phaser.Tilemaps.Tile) {
+    if (!this.easyStar) {
+      return;
+    }
+
+    this.easyStar.removeAdditionalPointCost(tile.x, tile.y);
+  }
+
   findPath(startTile: Phaser.Tilemaps.Tile, targetTile: Phaser.Tilemaps.Tile,
       callback: (tilePath: Phaser.Tilemaps.Tile[]) => void) {
-    if (startTile.properties['islandId'] !== undefined && targetTile.properties['islandId'] !== undefined &&
-        startTile.properties['islandId'] !== targetTile.properties['islandId']) {
+    if (!this.easyStar || (startTile.properties['islandId'] !== undefined && targetTile.properties['islandId'] !== undefined &&
+        startTile.properties['islandId'] !== targetTile.properties['islandId'])) {
       callback([]);
       return;
     }

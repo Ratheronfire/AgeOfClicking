@@ -1,4 +1,4 @@
-import { BuildingTileType } from '../../tile/tile';
+import { BuildingTileType, BuildingSubType } from '../../tile/tile';
 import { UnitData } from '../actor';
 import { EntityState } from '../entity';
 import { GameService } from './../../../game/game.service';
@@ -85,7 +85,7 @@ export class Builder extends Unit {
         const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
 
         if (!buildingNode || !this.canBuild(this.currentTile)) {
-          this.game.pathfinding.setGrid();
+          this.game.pathfinding.updateGrid();
           this.game.pathfinding.updatePaths(this.currentTile);
           this.finishTask();
           break;
@@ -118,6 +118,18 @@ export class Builder extends Unit {
     } else {
       super.updateSprite(xDist, yDist);
     }
+  }
+
+  findPath() {
+    this.game.pathfinding.setAcceptibleTiles([1, 2, 5]);
+
+    super.findPath();
+  }
+
+  beginPathing(tilePath: Phaser.Tilemaps.Tile[]) {
+    this.game.pathfinding.setAcceptibleTiles([1, 5]);
+
+    super.beginPathing(tilePath);
   }
 
   findTargets() {
@@ -175,17 +187,22 @@ export class Builder extends Unit {
 
   getAdjustedSpeed(): number {
     let tileWeight = (this.terrainTypeControlsSpeed ? this.game.pathfinding.getTileWeight(this.currentTile) : 1);
-    if (tileWeight === Infinity && this.currentTile.properties['buildingNode'] &&
-        this.currentTile.properties['buildingNode'].health === 0) {
+    const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
+    if (tileWeight === Infinity && buildingNode && buildingNode.health === 0) {
       // The builder is on an unbuilt tile over unwalkable ground, so we'll force it to be walkable for now.
       tileWeight = 5;
+    } else if (tileWeight === Infinity && buildingNode && buildingNode.health === buildingNode.maxHealth &&
+        buildingNode.tileData.subType === BuildingSubType.Obstacle) {
+      // The builder is on a built obstacle tile, such as a wall.
+      tileWeight = 1;
     }
 
     return this.animationSpeed * this.animationSpeedFactor / tileWeight;
   }
 
   isPathBroken(): boolean {
-    return !this.selectedTarget || !this.selectedTarget.properties['buildingNode'] || super.isPathBroken();
+    return !this.selectedTarget || !this.selectedTarget.properties['buildingNode'] ||
+      this.selectedTarget.properties['islandId'] !== this.islandId;
   }
 
   protected currentTileIsValid(): boolean {

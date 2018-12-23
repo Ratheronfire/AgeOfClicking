@@ -189,8 +189,12 @@ export class Unit extends Actor {
     }
 
     if (this.selectedTarget) {
-      this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, tilePath => this.beginPathing(tilePath));
+      this.findPath();
     }
+  }
+
+  findPath() {
+    this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, tilePath => this.beginPathing(tilePath));
   }
 
   public destroy() {
