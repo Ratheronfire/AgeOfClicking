@@ -84,7 +84,9 @@ export class Builder extends Unit {
       case EntityState.Repairing: {
         const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
 
-        if (!buildingNode || buildingNode.health >= buildingNode.maxHealth) {
+        if (this.needToRestock()) {
+          this.finishTask();
+        } else if (!buildingNode || buildingNode.health >= buildingNode.maxHealth) {
           this.game.pathfinding.updateGrid();
           this.game.pathfinding.updatePaths(this.currentTile);
           this.finishTask();
@@ -156,13 +158,17 @@ export class Builder extends Unit {
   }
 
   needToRestock(): boolean {
+    if (!this.selectedTarget) {
+      return true;
+    }
+
     const buildingNode: BuildingNode = this.selectedTarget.properties['buildingNode'];
 
     if (!this.selectedTarget || !buildingNode || buildingNode.tileType === BuildingTileType.Home) {
       return true;
     }
 
-    return buildingNode.resourcesNeeded.some(cost => this.amountHeld(cost) <= 0);
+    return buildingNode.health < buildingNode.maxHealth && buildingNode.resourcesNeeded.every(cost => this.amountHeld(cost) <= 0);
   }
 
   restock() {

@@ -149,7 +149,7 @@ export class BuildingNode {
       }
 
       const amountToRemove = Math.min(oldAmount, amount);
-      this.resourceStockpile.set(resourceToRemove.resourceEnum, oldAmount - amountToRemove);
+      this.resourceStockpile.set(resourceToRemove.resourceEnum, Math.ceil(oldAmount - amountToRemove));
       resourcesRemoved[resourceToRemove.resourceEnum] = amountToRemove;
     }
 
@@ -179,7 +179,7 @@ export class BuildingNode {
     const maxCost = this.tileData.resourceCosts.find(cost => cost.resourceEnum === resourceEnum).resourceCost;
     const newAmount = Math.min(maxCost, this.resourceStockpile.get(resourceEnum) + amount);
 
-    this.resourceStockpile.set(resourceEnum, newAmount);
+    this.resourceStockpile.set(resourceEnum, Math.ceil(newAmount));
 
     this.updateHealthbar();
   }
@@ -191,7 +191,7 @@ export class BuildingNode {
     const healthRatio = newHealth / this.maxHealth;
 
     for (const resource of this.tileData.resourceCosts) {
-      this.resourceStockpile.set(resource.resourceEnum, resource.resourceCost * healthRatio);
+      this.resourceStockpile.set(resource.resourceEnum, Math.ceil(resource.resourceCost * healthRatio));
     }
 
     this.updateHealthbar();
@@ -238,7 +238,7 @@ export class BuildingNode {
     }
 
     return this.tileData.resourceCosts
-      .filter(cost => this.resourceStockpile.get(cost.resourceEnum) < cost.resourceCost)
+      .filter(cost => Math.ceil(this.resourceStockpile.get(cost.resourceEnum)) < cost.resourceCost)
       .map(cost => cost.resourceEnum);
   }
 }
