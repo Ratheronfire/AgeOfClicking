@@ -100,8 +100,6 @@ export class MapManager {
     'UNBELIEVIUMMINE': 19, 'LUSTRIALMINE': 20, 'SPECTRUSMINE': 21, 'WHEATFARM': 22, 'RAWPOTATOFARM': 23, 'RICEFARM': 24, 'FISHINGSPOT': 25
   };
 
-  actorSpritesheets = ['actor', 'builder'];
-
   enemySpawnInterval = 45000;
   lastEnemySpawnTime = 0;
   maxEnemyCount = 25;
@@ -192,9 +190,11 @@ export class MapManager {
     this.scene.load.spritesheet('buildingSprites', 'assets/sprites/buildings.png', { frameWidth: 48, frameHeight: 48 });
     this.scene.load.spritesheet('resources', 'assets/sprites/resources.png', { frameWidth: 48, frameHeight: 48 });
 
-    this.scene.load.spritesheet('actor', 'assets/sprites/actorBase_48-extruded.png',
+    this.scene.load.spritesheet('actor', 'assets/sprites/actorBase-export-extruded.png',
       { frameWidth: 48, frameHeight: 48, margin: 1, spacing: 2 });
-    this.scene.load.spritesheet('builder', 'assets/sprites/builder_48-extruded.png',
+    this.scene.load.spritesheet('builder', 'assets/sprites/builder-export-extruded.png',
+      { frameWidth: 48, frameHeight: 48, margin: 1, spacing: 2 });
+    this.scene.load.spritesheet('lumberjack', 'assets/sprites/lumberjack-export-extruded.png',
       { frameWidth: 48, frameHeight: 48, margin: 1, spacing: 2 });
     this.scene.load.spritesheet('enemy', 'assets/sprites/enemy.png', { frameWidth: 48, frameHeight: 48 });
 
@@ -812,7 +812,7 @@ export class MapManager {
         break;
       } case UnitType.Lumberjack: {
         unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Wood,
-          this.scene, 'actor', 0, this.game);
+          this.scene, 'lumberjack', 0, this.game);
         break;
       } case UnitType.MineralMiner: {
         unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Mineral,
