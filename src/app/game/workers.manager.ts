@@ -66,10 +66,10 @@ export class WorkersManager {
 
   tick(elapsed: number, deltaTime: number) {
     if (elapsed - this.lastFoodCollectTime > this.foodCollectInterval) {
-      const foodAmount = Math.min(this.foodCollectAmount, this.foodCapacity - this.foodStockpile);
-      this.foodStockpile += this.game.resources.takeFood(foodAmount);
+      // const foodAmount = Math.min(this.foodCollectAmount, this.foodCapacity - this.foodStockpile);
+      // this.foodStockpile += this.game.resources.takeFood(foodAmount);
 
-      this.lastFoodCollectTime = elapsed;
+      // this.lastFoodCollectTime = elapsed;
     }
 
     if (this.workersPaused) {

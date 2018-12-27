@@ -168,7 +168,7 @@ export class BuildingNode {
 
   /** For a given resource, returns the total amount required. */
   getResourceCost(resourceEnum: ResourceEnum): number {
-    return this.tileData.resourceCosts.find(cost => cost.resourceEnum === resourceEnum).resourceCost;;
+    return this.tileData.resourceCosts.find(cost => cost.resourceEnum === resourceEnum).resourceCost;
   }
 
   /** Adds resources used to create/repair the building, up to its max capacity.

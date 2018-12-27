@@ -84,7 +84,7 @@ export class Builder extends Unit {
       case EntityState.Repairing: {
         const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
 
-        if (!buildingNode || !this.canBuild(this.currentTile)) {
+        if (buildingNode.health >= buildingNode.maxHealth) {
           this.game.pathfinding.updateGrid();
           this.game.pathfinding.updatePaths(this.currentTile);
           this.finishTask();
@@ -144,45 +144,50 @@ export class Builder extends Unit {
   }
 
   finishTask() {
-    const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
-    this.findTargets();
-
     if (!this.nextTarget || !this.nextTarget.properties['buildingNode']) {
       this.currentState = this.totalHeld > 0 ? EntityState.Restocking : EntityState.Sleeping;
-    }
-
-    if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
-      this.returnAllResources();
-
-      if (this.nextTarget) {
-        const nextNode: BuildingNode = this.nextTarget.properties['buildingNode'];
-
-        if (nextNode.resourcesNeeded.length) {
-          const spacePerResource = Math.floor(this.resourceCapacity / nextNode.resourcesNeeded.length);
-          const amountToBuild = this.amountOfBuildingTypeQueued(nextNode.tileType);
-
-          for (const resourceEnum of nextNode.resourcesNeeded) {
-            const resource = this.game.resources.getResource(resourceEnum);
-            const costPerBuilding = nextNode.getResourceCost(resourceEnum);
-
-            let amountToTake = Math.min(spacePerResource, amountToBuild * costPerBuilding);
-            amountToTake = Math.min(amountToTake, resource.amount);
-
-            this.takeResourceFromBase(resourceEnum, amountToTake);
-          }
-        }
-
-        this.currentState = EntityState.MovingToTarget;
-      }
-    } else if (!this.canBuild(this.nextTarget)) {
-      this.currentState = EntityState.Restocking;
-    } else if (this.currentBuildingNode.health < this.currentBuildingNode.maxHealth) {
+    } else if (this.currentBuildingNode && this.currentBuildingNode.health < this.currentBuildingNode.maxHealth) {
       this.currentState = EntityState.Repairing;
     } else {
       this.currentState = EntityState.MovingToTarget;
     }
 
     super.finishTask();
+  }
+
+  needToRestock(): boolean {
+    if (!this.selectedTarget || !this.selectedTarget.properties['buildingNode']) {
+      return true;
+    }
+
+    const buildingNode: BuildingNode = this.selectedTarget.properties['buildingNode'];
+
+    return buildingNode.resourcesNeeded.some(cost => this.amountHeld(cost) <= 0);
+  }
+
+  restock() {
+    super.restock();
+
+    if (this.nextTarget) {
+      const nextNode: BuildingNode = this.nextTarget.properties['buildingNode'];
+
+      if (nextNode.resourcesNeeded.length) {
+        const spacePerResource = Math.floor(this.resourceCapacity / nextNode.resourcesNeeded.length);
+        const amountToBuild = this.amountOfBuildingTypeQueued(nextNode.tileType);
+
+        for (const resourceEnum of nextNode.resourcesNeeded) {
+          const resource = this.game.resources.getResource(resourceEnum);
+          const costPerBuilding = nextNode.getResourceCost(resourceEnum);
+
+          let amountToTake = Math.min(spacePerResource, amountToBuild * costPerBuilding);
+          amountToTake = Math.min(amountToTake, resource.amount);
+
+          this.takeResourceFromBase(resourceEnum, amountToTake);
+        }
+      }
+
+      this.currentState = EntityState.MovingToTarget;
+    }
   }
 
   getAdjustedSpeed(): number {
@@ -218,16 +223,6 @@ export class Builder extends Unit {
     return this.currentBuildingNode.tileData;
   }
 
-  canBuild(tile: Phaser.Tilemaps.Tile): boolean {
-    if (!tile || !this.selectedTarget || !this.selectedTarget.properties['buildingNode']) {
-      return false;
-    }
-
-    const buildingNode: BuildingNode = tile.properties['buildingNode'];
-
-    return buildingNode.health < buildingNode.maxHealth && buildingNode.resourcesNeeded.some(cost => this.amountHeld(cost) > 0);
-  }
-
   amountOfBuildingTypeQueued(buildingType: BuildingTileType): number {
     const buildings: BuildingNode[] = this.targets.map(target => target.properties['buildingNode']);
 
@@ -236,7 +231,8 @@ export class Builder extends Unit {
 
   get nextTarget(): Phaser.Tilemaps.Tile {
     const sortedTargets = this.sortedTargets().filter(
-      tile => tile.properties['buildingNode'].health < tile.properties['buildingNode'].maxHealth);
+      tile => tile.properties['buildingNode'] &&
+      tile.properties['buildingNode'].health < tile.properties['buildingNode'].maxHealth);
 
     return sortedTargets.length ? sortedTargets[0] : null;
   }

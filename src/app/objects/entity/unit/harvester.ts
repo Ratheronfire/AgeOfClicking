@@ -13,6 +13,9 @@ export class Harvester extends Unit {
   resourceType: ResourceType;
   currentResource: Resource;
 
+  baseFoodCost = 1;
+  foodCostFactor = 0.6;
+
   currentResourceNode: ResourceNode;
 
   public constructor(x: number, y: number, unitData: UnitData, resourceType: ResourceType,
@@ -33,7 +36,7 @@ export class Harvester extends Unit {
 
     switch (this.currentState) {
       case EntityState.Harvesting: {
-        if (!this.currentResourceNode || !this.canHarvest()) {
+        if (!this.currentResourceNode || this.needToRestock()) {
           this.finishTask();
           break;
         }
@@ -46,6 +49,7 @@ export class Harvester extends Unit {
           }
 
           this.addToInventory(this.currentResource.resourceEnum, 1);
+          this.eatFood(this.baseFoodCost * (this.currentResource.resourceTier + 1) * this.foodCostFactor);
         }
 
         break;
@@ -96,47 +100,58 @@ export class Harvester extends Unit {
   }
 
   finishTask() {
-    const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
-
-    if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
-      this.currentResourceNode = null;
-
-      this.returnAllResources();
-
-      this.actionInterval = this.currentResource.harvestMilliseconds;
-
-      if (this.currentResource.resourceConsumes.length) {
-        // The number of storage units needed for each harvest, including its consumes and the resource itself.
-        const spaceNeededPerHarvest = this.currentResource.resourceConsumes.map(consume => consume.cost)
-          .reduce((total, cost) => total += cost);
-        // The total number of harvests possible, based on the storage needed for it and its consumes.
-        const resourceStorageLimit = Math.floor(this.resourceCapacity / spaceNeededPerHarvest);
-        // The max number of harvests of harvests possible, based on available resource counts.
-        const maximumAvailable = Math.max(...this.currentResource.resourceConsumes
-          .map(consume => Math.min(consume.cost * resourceStorageLimit, this.game.resources.getResource(consume.resourceEnum).amount)));
-        // The final number of harvests we're going to perform this run.
-        const amountToHarvest = Math.min(resourceStorageLimit, maximumAvailable);
-
-        for (const resourceConsume of this.currentResource.resourceConsumes) {
-          let amountNeeded = resourceConsume.cost * amountToHarvest - this.amountHeld(resourceConsume.resourceEnum);
-          if (amountNeeded < 0) {
-            amountNeeded = 0;
-          }
-
-          this.takeResourceFromBase(resourceConsume.resourceEnum, amountNeeded);
-        }
-      }
-
-      this.currentState = EntityState.MovingToTarget;
-    } else if (this.currentResourceNode && this.canHarvest()) {
+    if (this.currentResourceNode && !this.needToRestock()) {
       this.currentState = EntityState.Harvesting;
-    } else if (!this.canHarvest()) {
-      this.currentState = EntityState.Restocking;
-    } else {
-      this.pickTarget();
     }
 
     super.finishTask();
+  }
+
+  needToRestock() {
+    if (!this.currentResource ||
+      (this.currentResourceNode && !this.currentResourceNode.resourceEnums.includes(this.currentResource.resourceEnum))) {
+      return true;
+    }
+
+    if (this.currentResource.resourceConsumes.length) {
+      // We need to check if the inventory is full and if we have any resources that'll be freed up.
+      // We don't need to check the inventory size since we'll be removing at least one item to make this resource.
+      return this.currentResource.resourceConsumes.some(consume => this.amountHeld(consume.resourceEnum) < consume.cost);
+    }
+
+    return this.totalHeld >= this.resourceCapacity;
+  }
+
+  restock() {
+    super.restock();
+
+    this.currentResourceNode = null;
+
+    this.baseActionInterval = this.currentResource.harvestMilliseconds;
+
+    if (this.currentResource.resourceConsumes.length) {
+      // The number of storage units needed for each harvest, including its consumes and the resource itself.
+      const spaceNeededPerHarvest = this.currentResource.resourceConsumes.map(consume => consume.cost)
+        .reduce((total, cost) => total += cost);
+      // The total number of harvests possible, based on the storage needed for it and its consumes.
+      const resourceStorageLimit = Math.floor(this.resourceCapacity / spaceNeededPerHarvest);
+      // The max number of harvests of harvests possible, based on available resource counts.
+      const maximumAvailable = Math.max(...this.currentResource.resourceConsumes
+        .map(consume => Math.min(consume.cost * resourceStorageLimit, this.game.resources.getResource(consume.resourceEnum).amount)));
+      // The final number of harvests we're going to perform this run.
+      const amountToHarvest = Math.min(resourceStorageLimit, maximumAvailable);
+
+      for (const resourceConsume of this.currentResource.resourceConsumes) {
+        let amountNeeded = resourceConsume.cost * amountToHarvest - this.amountHeld(resourceConsume.resourceEnum);
+        if (amountNeeded < 0) {
+          amountNeeded = 0;
+        }
+
+        this.takeResourceFromBase(resourceConsume.resourceEnum, amountNeeded);
+      }
+    }
+
+    this.currentState = EntityState.MovingToTarget;
   }
 
   sortedTargets(): Phaser.Tilemaps.Tile[] {
@@ -168,20 +183,5 @@ export class Harvester extends Unit {
     this.currentResource = newResource;
 
     this.finishTask();
-  }
-
-  canHarvest(): boolean {
-    if (!this.currentResource ||
-      (this.currentResourceNode && !this.currentResourceNode.resourceEnums.includes(this.currentResource.resourceEnum))) {
-      return false;
-    }
-
-    if (this.currentResource.resourceConsumes.length) {
-      // We need to check if the inventory is full and if we have any resources that'll be freed up.
-      // We don't need to check the inventory size since we'll be removing at least one item to make this resource.
-      return this.currentResource.resourceConsumes.every(consume => this.amountHeld(consume.resourceEnum) >= consume.cost);
-    }
-
-    return this.totalHeld < this.resourceCapacity;
   }
 }

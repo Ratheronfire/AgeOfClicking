@@ -4,6 +4,8 @@ import { Enemy } from '../enemy/enemy';
 import { EntityState } from '../entity';
 import { Stats } from '../stats';
 import { GameService } from './../../../game/game.service';
+import { BuildingNode } from '../../tile/buildingNode';
+import { BuildingTileType } from '../../tile/tile';
 
 export enum UnitStat {
   Attack = 'ATTACK',
@@ -146,6 +148,12 @@ export class Unit extends Actor {
   cost: number;
   movable: boolean;
 
+  maxFedLevel = 500;
+  fedLevel = this.maxFedLevel;
+  maxActionsUntilEating = 50;
+  actionsUntilEating = this.maxActionsUntilEating;
+  foodToTake = 20;
+
   fireMilliseconds = 1000;
   lastFire = 0;
 
@@ -193,8 +201,57 @@ export class Unit extends Actor {
     }
   }
 
+  finishTask() {
+    const buildingNode: BuildingNode = this.currentTile ? this.currentTile.properties['buildingNode'] : null;
+
+    if (buildingNode && buildingNode.tileType === BuildingTileType.Home) {
+      this.restock();
+    } else if (this.needToRestock()) {
+      this.currentState = EntityState.Restocking;
+    }
+
+    super.finishTask();
+  }
+
+  needToRestock(): boolean {
+    return false;
+  }
+
+  restock() {
+    this.returnAllResources();
+
+    if (this.actionsUntilEating <= 0) {
+      this.actionsUntilEating = this.maxActionsUntilEating;
+
+      if (this.fedLevel < 0) {
+        this.fedLevel = 0;
+      }
+
+      let foodTaken = 0;
+      do {
+        foodTaken = this.game.resources.takeFood(Math.min(this.maxFedLevel - this.fedLevel, this.foodToTake));
+
+        this.fedLevel += foodTaken;
+        if (this.fedLevel > this.maxFedLevel) {
+          this.fedLevel = this.maxFedLevel;
+        }
+      } while (foodTaken > 0);
+    }
+  }
+
   findPath() {
     this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, tilePath => this.beginPathing(tilePath));
+  }
+
+  eatFood(amount: number) {
+    this.fedLevel -= amount;
+
+    if (this.fedLevel < 0) {
+      this.fedLevel = 0;
+      this.currentState = EntityState.Sleeping;
+    }
+
+    this.actionsUntilEating -= amount;
   }
 
   public destroy() {
@@ -220,5 +277,21 @@ export class Unit extends Actor {
 
   public get healCost() {
     return (this.cost / this.maxHealth) * 0.65 * (this.maxHealth - this.health);
+  }
+
+  public get actionInterval(): number {
+    if (this.fedPercentage >= 0.5) {
+      return this.baseActionInterval;
+    } else if (this.fedPercentage >= 0.2) {
+      return this.baseActionInterval * 2;
+    } else if (this.fedPercentage >= 0) {
+      return this.baseActionInterval * 4;
+    } else {
+      return this.baseActionInterval * 8;
+    }
+  }
+
+  public get fedPercentage() {
+    return this.fedLevel / this.maxFedLevel;
   }
 }

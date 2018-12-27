@@ -53,7 +53,7 @@ export class Actor extends Entity {
   inventorySize = 5;
   inventory: InventorySlot[] = new Array<InventorySlot>(this.inventorySize);
 
-  actionInterval = 250;
+  baseActionInterval = 250;
   lastActionTime = 0;
 
   targetableBuildingTypes: BuildingTileType[];
@@ -139,7 +139,7 @@ export class Actor extends Entity {
   finishTask() {
     this.targets = this.targets.filter(target => target !== this.selectedTarget);
 
-    if (this.currentState === EntityState.MovingToTarget || this.currentState === EntityState.Restocking) {
+    if ([EntityState.MovingToTarget, EntityState.Restocking, EntityState.Wandering, EntityState.Sleeping].includes(this.currentState)) {
       this.pickTarget();
     }
   }
@@ -301,6 +301,10 @@ export class Actor extends Entity {
   amountHeld(resourceEnum: ResourceEnum): number {
     const itemSlot = this.inventory.find(slot => slot.resourceEnum === resourceEnum);
     return itemSlot ? itemSlot.amount : 0;
+  }
+
+  get actionInterval(): number {
+    return this.baseActionInterval;
   }
 
   get totalHeld(): number {
