@@ -1,4 +1,4 @@
-<ul class="units">
+<div class="units">
   <mat-accordion multi="true">
     <mat-expansion-panel class="steel" expanded="true" *ngFor="let unitType of unitTypes | enumToArray">
       <mat-expansion-panel-header>
@@ -7,18 +7,34 @@
         </mat-panel-title>
       </mat-expansion-panel-header>
 
-      <div *ngFor="let unit of game.unit.getUnits(unitTypes[unitType])">
-        <mat-card class="wood">
-          <mat-card-title class="button-text-background">
-            {{unit.health}}/{{unit.maxHealth}} Health - {{unit.currentStateString}}
-          </mat-card-title>
+      <div *ngFor="let unit of getUnits(unitTypes[unitType])">
+        <button mat-raised-button class="wood" (click)="setFocusedUnit(unit)" [class.selected]="focusedUnit === unit">
+          <!-- <mat-card-title class="button-text-background">
+            {{unit.name}} - {{unit.currentStateString}}
+          </mat-card-title> -->
 
           <mat-card-content>
-            <button class="focus-button" mat-flat-button (click)="setFocusedUnit(unit)">
-              <mat-icon>mode_comment</mat-icon>
-            </button>
+            <div id="left-content">
+              <div class="button-text-stroke">
+                {{unit.currentStateString}}
+              </div>
 
-            <div class="inventory">
+              <div class="stat">
+                <div class="stat-text">
+                  Health
+                </div>
+                <mat-progress-bar class="stat-bar" [value]="(unit.health / unit.maxHealth) * 100"></mat-progress-bar>
+              </div>
+
+              <div class="stat">
+                <div class="stat-text">
+                  Fed
+                </div>
+                <mat-progress-bar class="stat-bar" [value]="unit.fedPercentage * 100"></mat-progress-bar>
+              </div>
+            </div>
+
+            <div id="inventory">
               <div class="slot" *ngFor="let slot of unit.inventory">
                 <div class="slot-size" *ngIf="slot.resourceEnum !== null">
                   {{slot.amount}}
@@ -29,8 +45,8 @@
               </div>
             </div>
           </mat-card-content>
-        </mat-card>
+        </button>
       </div>
     </mat-expansion-panel>
   </mat-accordion>
-</ul>
+</div>

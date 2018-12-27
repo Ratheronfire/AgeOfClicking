@@ -32,4 +32,12 @@ export class UnitsComponent implements OnInit {
   getResource(resourceEnum: ResourceEnum) {
     return this.game.resources.getResource(resourceEnum);
   }
+
+  getUnits(unitType?: UnitType): Unit[] {
+    return this.game.unit.getUnits(unitType);
+  }
+
+  get focusedUnit(): Unit {
+    return this.game.map.focusedUnit;
+  }
 }
