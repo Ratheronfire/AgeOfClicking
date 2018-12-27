@@ -44,12 +44,21 @@ export class Harvester extends Unit {
         if (elapsed - this.lastActionTime > this.actionInterval) {
           this.lastActionTime = elapsed;
 
+          const harvestYield = this.currentResource.harvestYield;
+
           for (const resourceConsume of this.currentResource.resourceConsumes) {
-            this.removeFromInventory(resourceConsume.resourceEnum, resourceConsume.cost);
+            this.removeFromInventory(resourceConsume.resourceEnum, resourceConsume.cost * harvestYield);
           }
 
-          this.addToInventory(this.currentResource.resourceEnum, 1);
-          this.eatFood(this.baseFoodCost * (this.currentResource.resourceTier + 1) * this.foodCostFactor);
+          this.addToInventory(this.currentResource.resourceEnum, harvestYield);
+
+          let foodCost = this.baseFoodCost * (this.currentResource.resourceTier + 1) * this.foodCostFactor;
+          if (this.currentResource.resourceType === ResourceType.Food) {
+            // Food workers eat half as much to ensure they produce more than they consume.
+            foodCost /= 2;
+          }
+
+          this.eatFood(foodCost);
         }
 
         break;
@@ -116,10 +125,11 @@ export class Harvester extends Unit {
     if (this.currentResource.resourceConsumes.length) {
       // We need to check if the inventory is full and if we have any resources that'll be freed up.
       // We don't need to check the inventory size since we'll be removing at least one item to make this resource.
-      return this.currentResource.resourceConsumes.some(consume => this.amountHeld(consume.resourceEnum) < consume.cost);
+      return this.currentResource.resourceConsumes.some(consume =>
+        this.amountHeld(consume.resourceEnum) < consume.cost * this.currentResource.harvestYield);
     }
 
-    return this.totalHeld >= this.resourceCapacity;
+    return this.totalHeld + this.currentResource.harvestYield > this.resourceCapacity;
   }
 
   restock() {
