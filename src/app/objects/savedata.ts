@@ -66,6 +66,7 @@ export interface UnitSaveData {
   y: number;
 
   health: number;
+  fedLevel: number;
 
   inventory: InventorySlot[];
   currentResource?: ResourceEnum;

@@ -305,6 +305,7 @@ export class SettingsManager {
         x: unit.x,
         y: unit.y,
         health: unit.health,
+        fedLevel: unit.fedLevel,
         inventory: unit.inventory,
         currentResource: unit instanceof Harvester ? (unit as Harvester).currentResource.resourceEnum : null,
         statLevels: unit.stats.stringifiedLevels
@@ -493,6 +494,7 @@ export class SettingsManager {
           const unit = this.game.map.spawnUnit(unitSaveData.unitType, tile.x, tile.y, true);
 
           unit.health = unitSaveData.health ? unitSaveData.health : 50;
+          unit.fedLevel = unitSaveData.fedLevel ? unitSaveData.fedLevel : unit.maxFedLevel;
 
           if (!unitSaveData.statLevels) {
             continue;
