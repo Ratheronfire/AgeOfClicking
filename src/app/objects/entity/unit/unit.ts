@@ -150,9 +150,14 @@ export class Unit extends Actor {
 
   maxFedLevel = 500;
   fedLevel = this.maxFedLevel;
+
   maxActionsUntilEating = 50;
   actionsUntilEating = this.maxActionsUntilEating;
+
   foodToTake = 20;
+
+  baseFoodCost = 1;
+  foodCostFactor = 0.6;
 
   fireMilliseconds = 1000;
   lastFire = 0;

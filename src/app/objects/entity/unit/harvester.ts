@@ -13,9 +13,6 @@ export class Harvester extends Unit {
   resourceType: ResourceType;
   currentResource: Resource;
 
-  baseFoodCost = 1;
-  foodCostFactor = 0.6;
-
   currentResourceNode: ResourceNode;
 
   public constructor(x: number, y: number, unitData: UnitData, resourceType: ResourceType,

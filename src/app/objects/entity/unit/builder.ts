@@ -84,21 +84,21 @@ export class Builder extends Unit {
       case EntityState.Repairing: {
         const buildingNode: BuildingNode = this.currentTile.properties['buildingNode'];
 
-        if (buildingNode.health >= buildingNode.maxHealth) {
+        if (!buildingNode || buildingNode.health >= buildingNode.maxHealth) {
           this.game.pathfinding.updateGrid();
           this.game.pathfinding.updatePaths(this.currentTile);
           this.finishTask();
-          break;
-        }
-
-        if (elapsed - this.lastActionTime > this.actionInterval) {
+        } else if (elapsed - this.lastActionTime > this.actionInterval) {
           this.lastActionTime = elapsed;
 
           for (const slot of this.inventory.filter(_slot => _slot.resourceEnum !== null)) {
             const amountToSpend = Math.min(buildingNode.getRemainingResourceCost(slot.resourceEnum), this.repairAmount);
+            const resource = this.game.resources.getResource(slot.resourceEnum);
 
             buildingNode.addResource(slot.resourceEnum, amountToSpend);
             this.removeFromInventory(slot.resourceEnum, amountToSpend);
+
+            this.eatFood(this.baseFoodCost * (resource.resourceTier + 1) * this.foodCostFactor);
 
             // We only want to spend resources once per tick.
             if (amountToSpend > 0) {
@@ -156,11 +156,11 @@ export class Builder extends Unit {
   }
 
   needToRestock(): boolean {
-    if (!this.selectedTarget || !this.selectedTarget.properties['buildingNode']) {
+    const buildingNode: BuildingNode = this.selectedTarget.properties['buildingNode'];
+
+    if (!this.selectedTarget || !buildingNode || buildingNode.tileType === BuildingTileType.Home) {
       return true;
     }
-
-    const buildingNode: BuildingNode = this.selectedTarget.properties['buildingNode'];
 
     return buildingNode.resourcesNeeded.some(cost => this.amountHeld(cost) <= 0);
   }
