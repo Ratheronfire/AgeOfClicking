@@ -9,7 +9,7 @@ import { ResourceAnimationType } from '../objects/entity/resourceAnimation';
 import { UnitType } from '../objects/entity/unit/unit';
 import { MessageSource } from '../objects/message';
 import { ResourceEnum } from '../objects/resourceData';
-import { SaveData, TileSaveData, WorkerSaveData } from '../objects/savedata';
+import { SaveData, TileSaveData } from '../objects/savedata';
 import { BuildingNode } from '../objects/tile/buildingNode';
 import { BuildingSubType, BuildingTileType } from '../objects/tile/tile';
 import { Harvester } from './../objects/entity/unit/harvester';
@@ -159,21 +159,16 @@ export class SettingsManager {
 
     this.game.resources.loadBaseResources();
     this.game.upgrades.loadBaseUpgrades();
-    this.game.workers.loadBaseWorkers();
     this.game.buildings.resetBuildings();
 
     if (manualDeletion) {
       this.game.map.seedRng(Math.random());
     }
 
-    this.game.workers.foodStockpile = 0;
-
     this.autosaveInterval = 60000;
     this.setAutosave();
 
     this.game.resources.highestTierReached = 0;
-
-    this.game.workers.workersPaused = false;
 
     this.resourceBinds = defaultResourceBinds;
     this.bindSelected.setValue(this.resourceBinds);
@@ -206,14 +201,12 @@ export class SettingsManager {
     const saveData: SaveData = {
       resources: [],
       purchasedUpgrades: [],
-      workers: [],
       tiles: [],
       enemies: [],
       units: [],
       settings: {
         autosaveInterval: this.autosaveInterval,
         highestTierReached: this.game.resources.highestTierReached,
-        workersPaused: this.game.workers.workersPaused,
         hidePurchasedUpgrades: this.game.upgrades.hidePurchasedUpgrades,
         resourceBinds: this.resourceBinds,
         visibleSources: this.game.messages.visibleSources,
@@ -224,7 +217,6 @@ export class SettingsManager {
         resourceAnimationColors: this.resourceAnimationColors,
         prngSeed: this.game.map.prngSeed
       },
-      foodStockpile: this.game.workers.foodStockpile,
       gameVersion: this.gameVersion
     };
 
@@ -237,25 +229,6 @@ export class SettingsManager {
     }
 
     saveData.purchasedUpgrades = this.game.upgrades.getUpgrades(true).map(upgrade => upgrade.id);
-
-    for (const worker of this.game.workers.getWorkers()) {
-      const workerData: WorkerSaveData = {
-        resourceType: worker.resourceType,
-        cost: worker.cost,
-        workerCount: worker.workerCount,
-        workersByResource: []
-      };
-
-      for (const resourceWorker of worker.getResourceWorkers()) {
-        workerData.workersByResource.push({
-          resourceEnum: resourceWorker.resourceEnum,
-          workable: resourceWorker.workable,
-          workerCount: resourceWorker.workerCount
-        });
-      }
-
-      saveData.workers.push(workerData);
-    }
 
     if (this.game.map.mapLayer) {
       for (const tile of this.game.map.mapLayer.getTilesWithin()) {
@@ -340,7 +313,6 @@ export class SettingsManager {
 
         this.game.resources.highestTierReached = saveData.settings.highestTierReached ? saveData.settings.highestTierReached : 0;
 
-        this.game.workers.workersPaused = saveData.settings.workersPaused ? saveData.settings.workersPaused : false;
         this.game.upgrades.hidePurchasedUpgrades =
           saveData.settings.hidePurchasedUpgrades ? saveData.settings.hidePurchasedUpgrades : false;
 
@@ -395,33 +367,6 @@ export class SettingsManager {
           }
         }
       }
-
-      if (saveData.workers !== undefined) {
-        for (const workerSaveData of saveData.workers) {
-          const worker = this.game.workers.workers.get(workerSaveData.resourceType);
-
-          worker.cost = workerSaveData.cost;
-          worker.workerCount = workerSaveData.workerCount;
-          worker.freeWorkers = workerSaveData.workerCount;
-
-          for (const resourceWorkerData of workerSaveData.workersByResource) {
-            const resourceWorker = worker.resourceWorkers.get(resourceWorkerData.resourceEnum);
-
-            resourceWorker.workable = resourceWorkerData.workable;
-            resourceWorker.workerCount = 0;
-
-            resourceWorker.sliderSetting = resourceWorkerData.workerCount;
-
-            worker.updateResourceWorker(resourceWorkerData.resourceEnum, resourceWorkerData.workerCount);
-          }
-
-          if (worker.freeWorkers < 0) {
-            throw new Error('Invalid worker settings.');
-          }
-        }
-      }
-
-      this.game.workers.foodStockpile = saveData.foodStockpile ? saveData.foodStockpile : 0;
 
       if (!this.game.map.mapLayer) {
         // The map hasn't been created yet (This will only happen when initially trying to load data on startup).

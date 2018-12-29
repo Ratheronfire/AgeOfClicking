@@ -69,25 +69,7 @@ export class TooltipManager {
   }
 
   getResourceTooltip(resource: Resource): string {
-    const worker = this.game.workers.getResourceWorker(resource.resourceEnum);
-
     let tooltip = `${resource.resourceDescription}`;
-
-    if (resource.resourceEnum === ResourceEnum.Gold) {
-      let totalCost = 0;
-
-      for (const _worker of this.game.workers.getWorkers()) {
-        for (const rw of _worker.getResourceWorkers()) {
-          if (resource.canHarvest(rw.workerYield) && _worker.canAffordToHarvest(rw.resourceEnum)) {
-            totalCost += rw.recurringCost * rw.workerCount;
-          }
-        }
-      }
-
-      tooltip += `\n${totalCost} spent on workers per second.`;
-
-      return tooltip;
-    }
 
     const requiredUpgrade = this.requiredUpgrades[resource.resourceEnum];
     if (requiredUpgrade) {
@@ -110,27 +92,9 @@ export class TooltipManager {
       tooltip += '.';
     }
 
-    let workerOutput = worker.workerYield * worker.workerCount;
-    if (resource.resourceEnum in this.consumersByResource) {
-      const consumingResource = this.game.resources.getResource(this.consumersByResource[resource.resourceEnum]);
-      const consumingWorker = this.game.workers.getResourceWorker[this.consumersByResource[resource.resourceEnum]];
-      workerOutput -=
-        consumingResource.resourceConsumes.find(rc => rc.resourceEnum === resource.resourceEnum).cost * consumingWorker.workerCount;
-    }
-
     tooltip += `\n${Math.floor(resource.harvestYield * 1000) / 1000} harvested per click ` +
-               `(${Math.floor(resource.harvestMilliseconds) / 1000} seconds per harvest).` +
-               `\n${Math.floor(1000 * workerOutput) / 1000} per second from workers.`;
+               `(${Math.floor(resource.harvestMilliseconds) / 1000} seconds per harvest).`;
 
      return tooltip;
-  }
-
-  getWorkerTooltip(resourceEnum: ResourceEnum): string {
-    const resource = this.game.resources.getResource(resourceEnum);
-    const resourceWorker = this.game.workers.getResourceWorker(resourceEnum);
-
-    return `${resource.workerVerb} ${Math.floor(resourceWorker.workerYield * 100) / 100} ` +
-      `${resource.workerNoun}${resourceWorker.workerYield === 1 ? '' : 's'} per second.\n` +
-      `Cost: ${resourceWorker.recurringCost} per worker per second (${resourceWorker.recurringCost * resourceWorker.workerCount} total).`;
   }
 }

@@ -394,7 +394,6 @@ export class MapManager {
 
     this.game.pathfinding.tick(elapsed, deltaTime);
     this.game.harvest.tick(elapsed, deltaTime);
-    this.game.workers.tick(elapsed, deltaTime);
     this.game.settings.tick(elapsed, deltaTime);
   }
 

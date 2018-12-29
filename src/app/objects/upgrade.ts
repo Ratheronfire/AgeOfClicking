@@ -90,17 +90,11 @@ export class Upgrade {
 
   public applyUpgrade(applySilently = false) {
     for (const upgradeEffect of this.upgradeEffects) {
-      if (upgradeEffect.upgradeVariable === UpgradeVariable.WorkerCost) {
-        this.game.workers.getWorkerFromType(upgradeEffect.resourceType).cost *= upgradeEffect.upgradeFactor;
-        continue;
-      }
-
       let resourcesToUpgrade = [];
       let workersToUpgrade = [];
 
       if (upgradeEffect.upgradeIsForWholeType) {
         resourcesToUpgrade = this.game.resources.getResources(upgradeEffect.resourceType);
-        workersToUpgrade = this.game.workers.getWorkerFromType(upgradeEffect.resourceType).getResourceWorkers();
 
         if (upgradeEffect.maxTier >= 0) {
           resourcesToUpgrade = resourcesToUpgrade.filter(resource => resource.resourceTier <= upgradeEffect.maxTier);
@@ -109,7 +103,6 @@ export class Upgrade {
         }
       } else {
         resourcesToUpgrade.push(this.game.resources.getResource(upgradeEffect.resourceEnum));
-        workersToUpgrade.push(this.game.workers.getResourceWorker(upgradeEffect.resourceEnum));
       }
 
       for (const resourceToUpgrade of resourcesToUpgrade) {

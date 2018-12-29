@@ -12,7 +12,6 @@ import { ColorPickerModule } from 'ngx-color-picker';
 import { AppComponent } from './app.component';
 import { HarvestComponent } from './components/harvest/harvest.component';
 import { MessagesComponent } from './components/messages/messages.component';
-import { WorkersComponent } from './components/workers/workers.component';
 import { StoreComponent } from './components/store/store.component';
 import { UpgradesComponent } from './components/upgrades/upgrades.component';
 import { MapComponent } from './components/map/map.component';
@@ -33,7 +32,6 @@ import { UnitsComponent } from './components/units/units.component';
     ZoomableCanvasComponent,
     HarvestComponent,
     MessagesComponent,
-    WorkersComponent,
     StoreComponent,
     UpgradesComponent,
     SettingsComponent,

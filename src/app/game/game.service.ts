@@ -13,7 +13,6 @@ import { StoreManager } from './store.manager';
 import { TooltipManager } from './tooltip.manager';
 import { UnitManager } from './unit.manager';
 import { UpgradesManager } from './upgrades.manager';
-import { WorkersManager } from './workers.manager';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +31,6 @@ export class GameService {
   tooltip: TooltipManager;
   unit: UnitManager;
   upgrades: UpgradesManager;
-  workers: WorkersManager;
 
   constructor(protected snackbar: MatSnackBar, public dialog: MatDialog) {
     this.admin = new AdminManager(this);
@@ -42,7 +40,6 @@ export class GameService {
 
     this.resources = new ResourcesManager(this);
     this.harvest = new HarvestManager(this);
-    this.workers = new WorkersManager(this);
     this.store = new StoreManager(this);
     this.upgrades = new UpgradesManager(this);
 

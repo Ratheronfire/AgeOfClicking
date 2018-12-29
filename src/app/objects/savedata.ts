@@ -11,13 +11,6 @@ export interface ResourceSaveData {
   autoSellCutoff: number;
 }
 
-export interface WorkerSaveData {
-  resourceType: ResourceType;
-  cost: number;
-  workerCount: number;
-  workersByResource: ResourceWorkerSaveData[];
-}
-
 export interface ResourceWorkerSaveData {
   resourceEnum: ResourceEnum;
   workable: boolean;
@@ -80,7 +73,6 @@ export interface SettingsSaveData {
 
   highestTierReached: number;
 
-  workersPaused: boolean;
   hidePurchasedUpgrades: boolean;
 
   resourceBinds: ResourceEnum[];
@@ -103,13 +95,11 @@ export interface SettingsSaveData {
 export class SaveData {
   resources: ResourceSaveData[];
   purchasedUpgrades: number[];
-  workers: WorkerSaveData[];
   tiles: TileSaveData[];
   enemies: EnemySaveData[];
   units: UnitSaveData[];
 
   settings: SettingsSaveData;
 
-  foodStockpile: number;
   gameVersion: string;
 }
