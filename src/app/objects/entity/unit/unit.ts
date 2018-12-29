@@ -23,7 +23,8 @@ export enum UnitType {
   Lumberjack = 'LUMBERJACK',
   MineralMiner = 'MINERALMINER',
   MetalMiner = 'METALMINER',
-  Hunter = 'HUNTER'
+  Hunter = 'HUNTER',
+  Merchant = 'MERCHANT'
 }
 
 export class UnitStats extends Stats<UnitStat> {

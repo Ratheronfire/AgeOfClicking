@@ -105,47 +105,18 @@ export class Market extends BuildingNode {
 
     this.soldResources = game.resources.getResources(resourceType);
 
-    this.homeTile = game.map.mapLayer.findTile(tile => tile.properties['buildingNode'] &&
-      tile.properties['buildingNode'].tileType === BuildingTileType.Home);
-    this.owningTile = owningTile;
-
     this.stats = new MarketStats(tileData.stats, this, game);
-
-    this.calculateConnection();
   }
 
   public tick(elapsed: number, deltaTime: number) {
     super.tick(elapsed, deltaTime);
 
-    if (this.tilePath.length && elapsed - this.lastSellTime > this.sellInterval) {
-      this.timeSinceLastSale += deltaTime;
-
-      const resource = this.soldResources[this.currentResource];
-      const sellAmount = Math.min(this.sellQuantity, resource.amount - resource.autoSellCutoff);
-
-      if (sellAmount > 0) {
-        this.lastSellTime = elapsed;
-        this.timeSinceLastSale = 0;
-
-        this.game.map.spawnSoldResourceAnimation(resource.resourceEnum, sellAmount, this);
-        resource.addAmount(-sellAmount);
-
-        this.logSale(sellAmount * resource.sellsFor);
-      }
-
-      if (this.timeSinceLastSale >= 1000) {
-        this.logSale(0);
-        this.timeSinceLastSale = 0;
-      }
-
-      do {
-        this.currentResource = (this.currentResource + 1) % this.soldResources.length;
-      } while (!this.soldResources[this.currentResource].sellable);
+    if (this.timeSinceLastSale >= 1000) {
+      this.logSale(0);
+      this.timeSinceLastSale = 0;
     }
-  }
 
-  public calculateConnection() {
-    this.game.pathfinding.findPath(this.homeTile, this.owningTile, path => this.tilePath = path);
+    this.timeSinceLastSale += deltaTime;
   }
 
   logSale(profit: number) {
@@ -154,6 +125,8 @@ export class Market extends BuildingNode {
     if (this.recentSales.length >= this.recentWindowSize) {
       this.recentSales = this.recentSales.slice(1, this.recentWindowSize);
     }
+
+    this.timeSinceLastSale = 0;
   }
 
   public get averageRecentProfit(): number {

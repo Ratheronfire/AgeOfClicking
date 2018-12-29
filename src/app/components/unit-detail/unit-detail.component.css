@@ -65,9 +65,10 @@ mat-card {
   -webkit-text-stroke: 1px black;
   color: white;
 
-  font-size: 32px;
+  font-size: 22px;
+  font-weight: bolder;
 
-  bottom: 16px;
+  bottom: 28px;
   right: 0;
   z-index: 3;
 }

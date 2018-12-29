@@ -79,7 +79,8 @@ mat-card-content {
   -webkit-text-stroke: 1px black;
   color: white;
 
-  font-size: 32px;
+  font-size: 22px;
+  font-weight: bolder;
 
   bottom: 32px;
   right: 0;

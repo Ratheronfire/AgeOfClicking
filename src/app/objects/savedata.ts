@@ -70,6 +70,7 @@ export interface UnitSaveData {
 
   inventory: InventorySlot[];
   currentResource?: ResourceEnum;
+  resourceType?: ResourceType;
 
   statLevels: any;
 }

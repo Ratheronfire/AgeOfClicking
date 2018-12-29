@@ -15,14 +15,14 @@ export class Harvester extends Unit {
 
   currentResourceNode: ResourceNode;
 
+  resourceCapacity = 20;
+
   public constructor(x: number, y: number, unitData: UnitData, resourceType: ResourceType,
       scene: Phaser.Scene, texture: string, frame: string | number, game: GameService) {
     super(x, y, unitData, scene, texture, frame, game);
 
     this.resourceType = resourceType;
     this.currentResource = this.game.resources.getResources(resourceType)[0];
-
-    this.resourceCapacity = 20;
 
     this.findTargets();
     this.pickTarget();
@@ -35,10 +35,8 @@ export class Harvester extends Unit {
       case EntityState.Harvesting: {
         if (!this.currentResourceNode || this.needToRestock()) {
           this.finishTask();
-          break;
-        }
-
-        if (elapsed - this.lastActionTime > this.actionInterval) {
+        } else if (elapsed - this.lastActionTime > this.actionInterval) {
+          // TODO: Make single overriden method for all unit actions.
           this.lastActionTime = elapsed;
 
           const harvestYield = this.currentResource.harvestYield;

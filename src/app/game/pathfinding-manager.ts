@@ -113,8 +113,6 @@ export class PathfindingManager {
             resource.pathAvailable = pathAvailable || alternatePaths.length > 0;
           }
         });
-      } else if (buildingNode && buildingNode instanceof Market) {
-        buildingNode.calculateConnection();
       }
     }
   }
@@ -142,13 +140,6 @@ export class PathfindingManager {
           }
         }
       });
-    }
-
-    for (const marketTile of this.game.map.mapLayer.getTilesWithin()) {
-      const buildingNode: BuildingNode = marketTile.properties['buildingNode'];
-      if (buildingNode && buildingNode instanceof Market) {
-        buildingNode.calculateConnection();
-      }
     }
   }
 

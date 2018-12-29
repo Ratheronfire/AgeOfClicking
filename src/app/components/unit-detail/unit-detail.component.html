@@ -38,6 +38,14 @@
         </mat-select>
       </mat-form-field>
 
+      <mat-form-field *ngIf="focusedMerchant">
+        <mat-select aria-placeholder="Resource Type" [value]="focusedMerchant.resourceType" (valueChange)="setMerchantTask($event)">
+          <mat-option *ngFor="let resourceType of getResourceTypes(true)" [value]="resourceType">
+            {{resourceType | titlecase}}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
       <div class="inventory">
         <div class="slot" *ngFor="let slot of focusedUnit.inventory">
           <div class="slot-size" *ngIf="slot.resourceEnum !== null">

@@ -226,8 +226,11 @@ export class Actor extends Entity {
   }
 
   canAddToInventory(resourceEnum: ResourceEnum, amount: number) {
-    return this.findSlotForResource(resourceEnum) !== null &&
-      this.totalHeld + amount <= this.resourceCapacity;
+    if (this.findSlotForResource(resourceEnum) === null) {
+      return false;
+    }
+
+    return resourceEnum === ResourceEnum.Gold || this.totalHeld + amount <= this.resourceCapacity;
   }
 
   addToInventory(resourceEnum: ResourceEnum, amount: number) {
@@ -308,7 +311,15 @@ export class Actor extends Entity {
   }
 
   get totalHeld(): number {
-    return this.inventory.map(slot => slot.amount).reduce((total, amount) => total += amount);
+    const slotAmounts = this.inventory
+      .filter(slot => slot.resourceEnum !== null && slot.resourceEnum !== ResourceEnum.Gold)
+      .map(slot => slot.amount);
+
+    if (!slotAmounts.length) {
+      return 0;
+    }
+
+    return slotAmounts.reduce((total, amount) => total += amount);
   }
 
   get islandId(): number {

@@ -76,5 +76,18 @@
     "movable": true,
     "attackRange": 1,
     "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "MAXHEALTH"]
+  },
+  "MERCHANT": {
+    "name": "Merchant",
+    "description": "Collects and sells off excess resources.",
+    "unitType": "MERCHANT",
+    "maxHealth": 10,
+    "cost": 350,
+    "attack": 1,
+    "defense": 2,
+    "movementSpeed": 3,
+    "movable": true,
+    "attackRange": 1,
+    "stats": [ "ATTACK", "DEFENSE", "MOVEMENTSPEED", "MAXHEALTH"]
   }
 }

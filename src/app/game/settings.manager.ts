@@ -1,3 +1,4 @@
+import { Merchant } from './../objects/entity/unit/merchant';
 import { FormControl } from '@angular/forms';
 import { MatDialog, MatSelectChange, MatSnackBar } from '@angular/material';
 import { AboutDialogComponent } from '../components/about-dialog/about-dialog.component';
@@ -308,6 +309,7 @@ export class SettingsManager {
         fedLevel: unit.fedLevel,
         inventory: unit.inventory,
         currentResource: unit instanceof Harvester ? (unit as Harvester).currentResource.resourceEnum : null,
+        resourceType: unit instanceof Merchant ? (unit as Merchant).resourceType : null,
         statLevels: unit.stats.stringifiedLevels
       });
     }
@@ -503,8 +505,13 @@ export class SettingsManager {
           if (unitSaveData.inventory) {
             unit.inventory = unitSaveData.inventory;
           }
+
           if (unitSaveData.currentResource && unit instanceof Harvester) {
             (unit as Harvester).currentResource = this.game.resources.getResource(unitSaveData.currentResource);
+          }
+
+          if (unitSaveData.resourceType && unit instanceof Merchant) {
+            (unit as Merchant).resourceType = unitSaveData.resourceType;
           }
 
           for (const stat of unit.stats.statList) {

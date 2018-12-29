@@ -18,6 +18,7 @@ import { BuildingSubType, BuildingTileData, MapTileData, MapTileType, ResourceTi
 import { Vector } from '../objects/vector';
 import { BuildingTileType } from './../objects/tile/tile';
 import { GameService } from './game.service';
+import { Merchant } from '../objects/entity/unit/merchant';
 
 declare var require: any;
 const baseTiles = require('../../assets/json/tileTypes.json');
@@ -832,6 +833,10 @@ export class MapManager {
       } case UnitType.Hunter: {
         unit = new Harvester(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Food,
           this.scene, 'hunter', 0, this.game);
+        break;
+      } case UnitType.Merchant: {
+        unit = new Merchant(spawnTile.getCenterX(), spawnTile.getCenterY(), unitData, ResourceType.Wood,
+          this.scene, 'actor', 0, this.game);
         break;
       } default: {
         return null;

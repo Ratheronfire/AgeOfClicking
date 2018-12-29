@@ -20,6 +20,8 @@ export enum EntityState {
   Repairing = 'REPAIRING',
   /** For player units: The entity is harvesting a resource. */
   Harvesting = 'HARVESTING',
+  /** For player units: The entity is selling resources. */
+  Selling = 'SELLING',
   /** The entity is inactive. */
   Sleeping = 'SLEEPING'
 }
@@ -149,6 +151,8 @@ export class Entity extends Phaser.GameObjects.Sprite {
         return 'Harvesting';
       } case EntityState.Wandering: {
         return 'Wandering';
+      } case EntityState.Selling: {
+        return 'Selling';
       } default: {
         return this.currentState;
       }

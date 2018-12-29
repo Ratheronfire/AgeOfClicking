@@ -1,3 +1,4 @@
+import { Merchant } from './../../objects/entity/unit/merchant';
 import { Component, OnInit } from '@angular/core';
 import { Resource } from 'src/app/objects/resource';
 import { Unit } from '../../objects/entity/unit/unit';
@@ -15,18 +16,31 @@ import { ResourceType } from './../../objects/resourceData';
 })
 export class UnitDetailComponent implements OnInit {
   snapSetting = 'lowerLeft';
+  resourceTypes = ResourceType;
 
   constructor(protected game: GameService) { }
 
   ngOnInit() {
   }
 
-  getResources(resourceType: ResourceType) {
-    return this.game.resources.getResources(resourceType, null, false, true, false, false);
+  getResources(resourceType: ResourceType, filterBySellable = false) {
+    return this.game.resources.getResources(resourceType, null, filterBySellable, true, false, false);
   }
 
   getResource(resourceEnum: ResourceEnum) {
     return this.game.resources.getResource(resourceEnum);
+  }
+
+  getResourceTypes(filterBySellable = false): ResourceType[] {
+    const resourceTypes = [];
+
+    for (const resource of this.getResources(null, filterBySellable)) {
+      if (!resourceTypes.includes(resource.resourceType)) {
+        resourceTypes.push(resource.resourceType);
+      }
+    }
+
+    return resourceTypes;
   }
 
   removeUnit() {
@@ -57,6 +71,12 @@ export class UnitDetailComponent implements OnInit {
   setHarvesterTask(newResource: Resource) {
     if (this.focusedHarvester) {
       this.focusedHarvester.setResource(newResource);
+    }
+  }
+
+  setMerchantTask(newResourceType: ResourceType) {
+    if (this.focusedMerchant) {
+      this.focusedMerchant.setResourceType(newResourceType);
     }
   }
 
@@ -98,5 +118,13 @@ export class UnitDetailComponent implements OnInit {
     }
 
     return this.focusedUnit as Harvester;
+  }
+
+  get focusedMerchant(): Merchant {
+    if (!(this.focusedUnit instanceof Merchant)) {
+      return null;
+    }
+
+    return this.focusedUnit as Merchant;
   }
 }

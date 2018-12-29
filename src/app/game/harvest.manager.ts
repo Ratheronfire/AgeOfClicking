@@ -33,26 +33,41 @@ export class HarvestManager {
 
     switch (event.code) {
       case 'KeyQ': {
+        this.game.map.focusedTile = undefined;
+        this.game.map.focusedUnit = undefined;
+
         this.game.map.cursorTool = CursorTool.PlaceBuildings;
         this.game.map.buildingListVisible = true;
         this.game.map.unitListVisible = false;
         break;
       } case 'KeyW': {
+        this.game.map.focusedTile = undefined;
+        this.game.map.focusedUnit = undefined;
+
         this.game.map.cursorTool = CursorTool.ClearBuildings;
         this.game.map.buildingListVisible = false;
         this.game.map.unitListVisible = false;
         break;
       } case 'KeyE': {
+        this.game.map.focusedTile = undefined;
+        this.game.map.focusedUnit = undefined;
+
         this.game.map.cursorTool = CursorTool.TileDetail;
         this.game.map.buildingListVisible = false;
         this.game.map.unitListVisible = false;
         break;
       } case 'KeyR': {
+        this.game.map.focusedTile = undefined;
+        this.game.map.focusedUnit = undefined;
+
         this.game.map.cursorTool = CursorTool.PlaceUnits;
         this.game.map.buildingListVisible = false;
         this.game.map.unitListVisible = true;
         break;
       } case 'KeyT': {
+        this.game.map.focusedTile = undefined;
+        this.game.map.focusedUnit = undefined;
+
         this.game.map.cursorTool = CursorTool.UnitDetail;
         this.game.map.buildingListVisible = false;
         this.game.map.unitListVisible = false;
