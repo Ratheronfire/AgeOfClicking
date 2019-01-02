@@ -1,0 +1,7 @@
+<mat-card *ngFor="let task of tasks">
+  <mat-icon class="tutorial" *ngIf="task.isTutorial" matTooltip="{{task.tutorialText}}" matTooltipPosition="left">school</mat-icon>
+  <mat-icon class="check" *ngIf="task.isUnlocked">check</mat-icon>
+  <mat-card-title>
+    {{task.title}}
+  </mat-card-title>
+</mat-card>

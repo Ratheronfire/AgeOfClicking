@@ -393,6 +393,7 @@ export class MapManager {
     // Update other managers
 
     this.game.pathfinding.tick(elapsed, deltaTime);
+    this.game.tasks.tick(elapsed, deltaTime);
     this.game.harvest.tick(elapsed, deltaTime);
     this.game.settings.tick(elapsed, deltaTime);
   }

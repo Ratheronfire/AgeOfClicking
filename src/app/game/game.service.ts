@@ -10,6 +10,7 @@ import { PathfindingManager } from './pathfinding-manager';
 import { ResourcesManager } from './resources.manager';
 import { SettingsManager } from './settings.manager';
 import { StoreManager } from './store.manager';
+import { TasksManager } from './tasks.manager';
 import { TooltipManager } from './tooltip.manager';
 import { UnitManager } from './unit.manager';
 import { UpgradesManager } from './upgrades.manager';
@@ -28,6 +29,7 @@ export class GameService {
   resources: ResourcesManager;
   settings: SettingsManager;
   store: StoreManager;
+  tasks: TasksManager;
   tooltip: TooltipManager;
   unit: UnitManager;
   upgrades: UpgradesManager;
@@ -42,6 +44,7 @@ export class GameService {
     this.harvest = new HarvestManager(this);
     this.store = new StoreManager(this);
     this.upgrades = new UpgradesManager(this);
+    this.tasks = new TasksManager(this);
 
     this.map = new MapManager(this);
     this.pathfinding = new PathfindingManager(this);

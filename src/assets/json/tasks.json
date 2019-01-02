@@ -1,0 +1,14 @@
+[
+    {
+        "title": "Hire a builder.",
+        "taskType": "UNIT",
+        "isTutorial": true,
+        "tutorialText": "Builders will automatically build roads, walls, and other projects for you, using the resources stored at your base.",
+        "rewards": {
+          "resourceEnum": "OAK",
+          "amount": 10
+        },
+        "numberRequired": 1,
+        "unitTypes": "BUILDER"
+    }
+]

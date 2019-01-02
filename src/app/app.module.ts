@@ -25,6 +25,7 @@ import { BuildingDropdownComponent } from './components/building-dropdown/buildi
 import { TileDetailComponent } from './components/tile-detail/tile-detail.component';
 import { UnitDetailComponent } from './components/unit-detail/unit-detail.component';
 import { UnitsComponent } from './components/units/units.component';
+import { TasksComponent } from './components/tasks/tasks.component';
 
 @NgModule({
   declarations: [
@@ -44,7 +45,8 @@ import { UnitsComponent } from './components/units/units.component';
     TileDetailComponent,
     UnitDetailComponent,
     AboutDialogComponent,
-    UnitsComponent
+    UnitsComponent,
+    TasksComponent
   ],
   imports: [
     BrowserModule,
