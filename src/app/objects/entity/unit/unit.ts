@@ -246,7 +246,9 @@ export class Unit extends Actor {
   }
 
   findPath() {
-    this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, tilePath => this.beginPathing(tilePath));
+    if (this.game.pathfinding.pathfindingReady) {
+      this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, tilePath => this.beginPathing(tilePath));
+    }
   }
 
   eatFood(amount: number) {

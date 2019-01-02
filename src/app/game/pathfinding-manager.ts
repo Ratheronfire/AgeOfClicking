@@ -8,6 +8,8 @@ import { BuildingTileData, BuildingTileType, MapTileType, BuildingSubType } from
 import { GameService } from './game.service';
 
 export class PathfindingManager {
+  public pathfindingReady = false;
+
   private game: GameService;
   private easyStar: EasyStar;
 
@@ -24,6 +26,8 @@ export class PathfindingManager {
     this.easyStar.setTileCost(1, 1);
     this.easyStar.setTileCost(2, 5);
     this.easyStar.setTileCost(5, 5);
+
+    this.pathfindingReady = true;
   }
 
   tick(elapsed: number, deltaTime: number) {

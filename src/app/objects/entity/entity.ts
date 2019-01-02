@@ -32,7 +32,6 @@ export class Entity extends Phaser.GameObjects.Sprite {
 
   tilePath: Phaser.Tilemaps.Tile[] = [];
   pathAttempt = 0;
-  maxPathRetryCount = 25;
 
   animationSpeed: number;
   animationSpeedFactor = 0.002;
@@ -76,13 +75,7 @@ export class Entity extends Phaser.GameObjects.Sprite {
 
   beginPathing(tilePath: Phaser.Tilemaps.Tile[]) {
     if (!tilePath.length) {
-      this.pathAttempt++;
-
-      if (this.pathAttempt < this.maxPathRetryCount) {
-        this.finishTask();
-      } else {
-        this.currentState = EntityState.Sleeping;
-      }
+      this.currentState = EntityState.Sleeping;
     } else {
       this.tilePath = tilePath;
 

@@ -108,7 +108,7 @@ export class Enemy extends Actor {
       this.selectedTarget = randomTarget;
     }
 
-    if (!this.selectedTarget) {
+    if (!this.selectedTarget || !this.game.pathfinding.pathfindingReady) {
       this.currentState = EntityState.Sleeping;
     } else {
       this.game.pathfinding.findPath(this.currentTile, this.selectedTarget, tilePath => this.beginPathing(tilePath));
