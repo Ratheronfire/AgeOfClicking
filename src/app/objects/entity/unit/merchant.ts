@@ -74,8 +74,14 @@ export class Merchant extends Unit {
     }
   }
 
+  pickTarget() {
+    if (!this.currentBuildingNode || !(this.currentBuildingNode.tileType === BuildingTileType.Home && this.totalHeld === 0)) {
+      super.pickTarget();
+    }
+  }
+
   finishTask() {
-    if (!this.hasResourcesToGrab()) {
+    if (!this.hasResourcesToGrab() && this.totalHeld === 0) {
       this.currentState = EntityState.Sleeping;
     } else if (this.currentBuildingNode && this.currentBuildingNode.tileData.subType === BuildingSubType.Market &&
         this.currentBuildingNode.health >= this.currentBuildingNode.maxHealth) {
@@ -96,7 +102,7 @@ export class Merchant extends Unit {
   hasResourcesToGrab(): boolean {
     const resourcesToSell = this.game.resources.getResources(this.resourceType, null, true);
 
-    return resourcesToSell.some(resource => resource.amount > 0);
+    return resourcesToSell.some(resource => resource.amount - resource.autoSellCutoff > 0);
   }
 
   restock() {
