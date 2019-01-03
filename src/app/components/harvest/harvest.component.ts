@@ -23,6 +23,10 @@ export class HarvestComponent implements OnInit {
   }
 
   public getTooltipMessage(resource: Resource): string {
+    if (!resource) {
+      return '';
+    }
+
     return this.game.tooltip.getResourceTooltip(resource);
   }
 

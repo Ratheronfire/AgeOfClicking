@@ -1,4 +1,5 @@
-<mat-card *ngFor="let task of tasks">
+<mat-card *ngFor="let task of tasks"
+  appTippy [tippyOptions]="{arrow: true, placement: 'bottom', delay: 0, html: '#tooltip-task-' + task.id}">
   <mat-icon class="tutorial" *ngIf="task.isTutorial" matTooltip="{{task.tutorialText}}" matTooltipPosition="left">school</mat-icon>
   <mat-icon class="check" *ngIf="task.isUnlocked">check</mat-icon>
   <mat-card-title>

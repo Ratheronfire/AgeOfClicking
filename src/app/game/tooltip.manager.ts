@@ -69,22 +69,22 @@ export class TooltipManager {
   }
 
   getResourceTooltip(resource: Resource): string {
-    let tooltip = `${resource.resourceDescription}`;
+    let tooltip = '';
 
     const requiredUpgrade = this.requiredUpgrades[resource.resourceEnum];
     if (requiredUpgrade) {
       const upgrade = this.game.upgrades.getUpgrade(requiredUpgrade);
-      tooltip += `\nNeeded Upgrade: ${upgrade.name}.`;
+      tooltip += `Needed Upgrade: ${upgrade.name}.`;
     }
 
     const requiredBuilding = this.requiredBuildings[resource.resourceEnum];
     if (requiredBuilding) {
       const building = this.game.map.buildingTileData.get(requiredBuilding);
-      tooltip += `\nNeeded Building: ${building.name}.`;
+      tooltip += `Needed Building: ${building.name}.`;
     }
 
     if (resource.resourceConsumes.length) {
-      tooltip += '\nResources required:';
+      tooltip += 'Resources required:';
       for (const resourceConsume of resource.resourceConsumes) {
         tooltip += ` ${this.game.resources.getResource(resourceConsume.resourceEnum).name}: ${resourceConsume.cost},`;
       }

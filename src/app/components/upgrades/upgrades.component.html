@@ -9,48 +9,22 @@
         {{upgradeVariableNames[upgradeVariable]}}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <div *ngIf="!game.settings.slimInterface">
-      <mat-card class="upgrade full wood" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)">
-        <button mat-raised-button color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)'
-          (click)='purchaseUpgrade(upgrade.id)'>
-          <p class="title button-text-bold">
-            <b>
-              <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
-            </b>
-            {{upgrade.name}}
-          </p>
-        </button>
-        <mat-card-subtitle>{{game.upgrades.getUpgradeTypeString(upgrade.id)}}</mat-card-subtitle>
-        <mat-card-content class="button-text-background">
-          {{upgrade.description}}
-          <div class="resource-list">
-            <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
-              matTooltipPosition="below">
-              <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
-              {{resourceCost.resourceCost | longNumber}}
-            </div>
-          </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-
-    <div *ngIf="game.settings.slimInterface">
-      <button class="slim wood" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)"
-        color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
-        <div class="title button-text-bold" matTooltip="{{upgrade.description}}" matTooltipPosition="above">
+    <button class="slim wood" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)"
+      color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
+      <div appTippy [tippyOptions]="{arrow: true, placement: 'top', delay: 0, html: '#tooltip-upgrade-' + upgrade.id}">
+        <div class="title button-text-bold">
           <b>
             <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
           </b>
           {{upgrade.name}}
         </div>
         <div class="resource-list">
-          <div *ngFor="let resourceCost of upgrade.resourceCosts" matTooltip="{{resourceCost.resourceCost | longNumber}} {{getResource(resourceCost.resourceEnum).name | titlecase}}"
-            matTooltipPosition="below" class="button-text-bold">
+          <div *ngFor="let resourceCost of upgrade.resourceCosts" class="button-text-bold">
             <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
             {{resourceCost.resourceCost | longNumber}}
           </div>
         </div>
-      </button>
-    </div>
+      </div>
+    </button>
   </mat-expansion-panel>
 </mat-accordion>

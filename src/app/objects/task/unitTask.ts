@@ -6,9 +6,9 @@ export class UnitTask extends Task {
   private unitTypes?: UnitType[];
   private numberRequired: number;
 
-  constructor(title: string, rewards: TaskReward[], isTutorial = false, tutorialText = '', game: GameService,
+  constructor(title: string, id: number, rewards: TaskReward[], isTutorial = false, tutorialText = '', game: GameService,
       numberRequired: number, unitTypes?: UnitType | UnitType[]) {
-    super(title, rewards, isTutorial, tutorialText, game);
+    super(title, id, rewards, isTutorial, tutorialText, game);
 
     this.numberRequired = numberRequired;
 

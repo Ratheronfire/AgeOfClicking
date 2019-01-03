@@ -11,6 +11,7 @@ export interface TaskReward {
 }
 
 export abstract class Task {
+  id: number;
   title: string;
 
   isTutorial: boolean;
@@ -22,7 +23,8 @@ export abstract class Task {
 
   protected game: GameService;
 
-  constructor(title: string, rewards: TaskReward[], isTutorial = false, tutorialText = '', game: GameService) {
+  constructor(title: string, id: number, rewards: TaskReward[], isTutorial = false, tutorialText = '', game: GameService) {
+    this.id = id;
     this.title = title;
     this.rewards = rewards;
 

@@ -8,6 +8,7 @@ import { MaterialImportModule } from './material-import/material-import.module';
 import { PhaserModule } from 'phaser-component-library';
 import { PipeModule } from './pipes/pipe.module';
 import { ColorPickerModule } from 'ngx-color-picker';
+import { TippyModule } from 'ng-tippy';
 
 import { AppComponent } from './app.component';
 import { HarvestComponent } from './components/harvest/harvest.component';
@@ -56,7 +57,8 @@ import { TasksComponent } from './components/tasks/tasks.component';
     MaterialImportModule,
     PhaserModule,
     PipeModule,
-    ColorPickerModule
+    ColorPickerModule,
+    TippyModule
   ],
   entryComponents: [
     AboutDialogComponent,

@@ -17,7 +17,7 @@ export class TasksManager {
     for (const baseTask of baseTasks) {
       switch (baseTask.taskType) {
         case TaskType.Unit: {
-          this.tasks.push(new UnitTask(baseTask.title, baseTask.rewards, baseTask.isTutorial,
+          this.tasks.push(new UnitTask(baseTask.title, baseTask.id, baseTask.rewards, baseTask.isTutorial,
             baseTask.tutorialText, this.game, baseTask.numberRequired, baseTask.unitTypes));
         }
       }

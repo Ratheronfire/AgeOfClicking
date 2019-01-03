@@ -30,6 +30,7 @@
     "easystarjs": "^0.4.3",
     "hammerjs": "^2.0.8",
     "jimp": "^0.3.5",
+    "ng-tippy": "^3.2.2",
     "ngx-color-picker": "^6.6.0",
     "os": "^0.1.1",
     "paralleljs": "^0.2.1",
@@ -39,6 +40,7 @@
     "rxjs": "^6.0.0",
     "simplex-noise": "^2.4.0",
     "tinyqueue": "^2.0.0",
+    "tippy.js": "^3.3.0",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {

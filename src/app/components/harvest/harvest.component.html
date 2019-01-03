@@ -1,5 +1,6 @@
 <ul class="resources noselect">
-  <button mat-raised-button disabled="true" class="resource-button currency-button wood" [ngClass]="{'warn': resourceIsBeingStolen(goldResource)}">
+  <button mat-raised-button disabled="true" class="resource-button currency-button wood" [ngClass]="{'warn': resourceIsBeingStolen(goldResource)}"
+    appTippy [tippyOptions]="{arrow: true, placement: 'top', html: '#tooltip-resource-' + goldResource.resourceEnum}">
     <mat-card-title class="button-text-stroke">{{goldResource.name | titlecase }}</mat-card-title>
     <mat-card-subtitle class="button-text-background">{{goldResource.amount | longNumber}}</mat-card-subtitle>
 
@@ -19,10 +20,12 @@
       </mat-expansion-panel-header>
 
       <div class='button-container' *ngFor="let resource of getResources(resourceType, game.admin.filterAccessible)"
-        matTooltip="{{getTooltipMessage(resource)}}" matTooltipPosition="right">
+        appTippy [tippyOptions]="{arrow: true, placement: 'top', delay: 0, html: '#tooltip-resource-' + resource.resourceEnum}">
         <button mat-raised-button class="resource-button wood" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
-          [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'
+          [disabled]="!canHarvest(resource, resource.harvestYield)"
+          (click)='startHarvesting(resource)'
           *ngIf="resource.resourceType != 'CURRENCY' && resource.resourceTier <= game.resources.highestTierReached + 1">
+
           <div class="key-container" *ngIf="resource.bindIndex >= 0">
             <img src="./assets/sprites/key.png">
             <p>{{resource.bindIndex}}</p>
@@ -53,7 +56,7 @@
         </mat-expansion-panel-header>
 
         <div class='button-container' *ngFor="let resource of getResources(undefined, [resourceTier], game.admin.filterAccessible)"
-          matTooltip="{{getTooltipMessage(resource)}}" matTooltipPosition="right">
+          appTippy title="{{getTooltipMessage(resource)}}" [tippyOptions]="{arrow: true, placement: right}">
           <button mat-raised-button class="resource-button wood" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
             [disabled]="!canHarvest(resource, resource.harvestYield)" (click)='startHarvesting(resource)'
             *ngIf="resource.resourceTier <= game.resources.highestTierReached + 1 && resource.resourceType != 'CURRENCY'">

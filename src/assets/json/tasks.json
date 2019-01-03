@@ -1,5 +1,6 @@
 [
     {
+        "id": 0,
         "title": "Hire a builder.",
         "taskType": "UNIT",
         "isTutorial": true,

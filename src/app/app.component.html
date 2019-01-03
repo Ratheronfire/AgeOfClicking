@@ -1,6 +1,53 @@
+<!-- Hidden tooltip elements -->
+<!-- We need to place these tooltips here so that they're always available to subcomponents regardless of which tabs are/aren't open. -->
+
+<div *ngFor="let resource of getResources()">
+  <div class="tooltip" [id]="'tooltip-resource-' + resource.resourceEnum">
+    <div class="resource-tooltip-icon">
+        <img class="resource-img" id="{{resource.name | resourceId}}" src="assets/sprites/transparent.png" alt="{{resource.name}}">
+        <img class="background" src="assets/sprites/inventoryBack.png" width="48px" height="48px">
+    </div>
+
+    <mat-card-title>
+      {{resource.name | titlecase}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      {{resource.resourceDescription}}
+    </mat-card-subtitle>
+    <mat-card-content>
+      {{getTooltipMessage(resource)}}
+    </mat-card-content>
+  </div>
+</div>
+
+<div *ngFor="let upgrade of getUpgrades(false, false, false)">
+  <div class="tooltip" [id]="'tooltip-upgrade-' + upgrade.id">
+    <mat-card-title>{{upgrade.name}}</mat-card-title>
+    <mat-card-subtitle>{{upgrade.description}}</mat-card-subtitle>
+
+    <mat-card-content>
+      <div *ngFor="let cost of upgrade.resourceCosts">
+        {{cost.resourceCost  | longNumber}} {{getResource(cost.resourceEnum).name | titlecase}}
+      </div>
+    </mat-card-content>
+  </div>
+</div>
+
+<div *ngFor="let task of getTasks()">
+  <div class="tooltip" [id]="'tooltip-task-' + task.id">
+    <mat-card-title>
+      {{task.title}}
+    </mat-card-title>
+
+    <mat-card-content *ngIf="task.isTutorial">
+      {{task.tutorialText}}
+    </mat-card-content>
+  </div>
+</div>
+
 <div class="game-container" [class.game-is-mobile]="mobileQuery.matches" [@.disabled]="disableAnimations">
   <mat-toolbar color="primary" class="game-toolbar">
-    <h1 class="game-app-name">Age of Clicking</h1>
+    <h1 title="I am a tooltip" appTippy [tippyOptions]="{arrow: true}" class="game-app-name">Age of Clicking</h1>
     <div class="sidenav-buttons">
       <button mat-flat-button (click)="hideResourceList = !hideResourceList">
         <mat-icon>map</mat-icon><p class="toolbar-button-text" *ngIf="!mobileQuery.matches">Expand Map</p>

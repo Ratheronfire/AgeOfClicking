@@ -213,6 +213,45 @@ mat-expansion-panel-header.mat-expansion-panel-header mat-panel-title {
   background: none;
 }
 
+/* Tippy Tooltip CSS */
+
+.tooltip {
+  display: none;
+}
+
+.tippy-content {
+  font-family: Arial;
+}
+
+.tippy-content mat-card-title {
+  -webkit-text-stroke: 1px black;
+  color: white;
+
+  margin-bottom: 16px;
+  font-size: 27px;
+  font-weight: 900;
+}
+
+.tippy-content mat-card-subtitle {
+  color: white;
+
+  font-weight: bold;
+}
+
+.tippy-content .resource-tooltip-icon {
+  position: absolute;
+  width: 48px;
+}
+
+.resource-tooltip-icon .background {
+  z-index: 1;
+}
+
+.resource-tooltip-icon .resource-img {
+  position: absolute;
+  z-index: 2;
+}
+
 /* Resource Image Sprites */
 
 #gold {
