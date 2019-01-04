@@ -80,10 +80,7 @@ export interface SettingsSaveData {
 
   enemiesActive: boolean;
 
-  slimInterface: boolean;
   organizeLeftPanelByType: boolean;
-
-  mapLowFramerate: boolean;
 
   harvestDetailColor?: string;
   workerDetailColor?: string;

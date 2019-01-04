@@ -30,11 +30,7 @@ export class SettingsManager {
   resourceBinds = defaultResourceBinds;
 
   disableAnimations = false;
-  slimInterface = false;
   organizeLeftPanelByType = true;
-
-  mapDetailMode = true;
-  mapLowFramerate = false;
 
   harvestDetailColor = '#a4ff89';
   workerDetailColor = '#ae89ff';
@@ -181,10 +177,8 @@ export class SettingsManager {
     this.game.enemy.enemiesActive = false;
 
     this.disableAnimations = false;
-    this.slimInterface = false;
     this.organizeLeftPanelByType = true;
 
-    this.mapLowFramerate = false;
     this.resourceAnimationColors = {
       'PLAYERSPAWNED': '#a4ff89',
       'WORKERSPAWNED': 'ae89ff',
@@ -211,9 +205,7 @@ export class SettingsManager {
         resourceBinds: this.resourceBinds,
         visibleSources: this.game.messages.visibleSources,
         enemiesActive: this.game.enemy.enemiesActive,
-        slimInterface: this.slimInterface,
         organizeLeftPanelByType: this.organizeLeftPanelByType,
-        mapLowFramerate: this.mapLowFramerate,
         resourceAnimationColors: this.resourceAnimationColors,
         prngSeed: this.game.map.prngSeed
       },
@@ -327,10 +319,7 @@ export class SettingsManager {
 
         this.game.enemy.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
 
-        this.slimInterface = saveData.settings.slimInterface ? saveData.settings.slimInterface : false;
         this.organizeLeftPanelByType = saveData.settings.organizeLeftPanelByType ? saveData.settings.organizeLeftPanelByType : true;
-
-        this.mapLowFramerate = saveData.settings.mapLowFramerate ? saveData.settings.mapLowFramerate : false;
 
         this.harvestDetailColor = saveData.settings.harvestDetailColor ? saveData.settings.harvestDetailColor : '#a4ff89';
         this.workerDetailColor = saveData.settings.workerDetailColor ? saveData.settings.workerDetailColor : '#ae89ff';
