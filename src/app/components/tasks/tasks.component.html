@@ -1,6 +1,18 @@
 <mat-card *ngFor="let task of tasks"
-  appTippy [tippyOptions]="{arrow: true, placement: 'bottom', delay: 0, html: '#tooltip-task-' + task.id}">
-  <mat-icon class="tutorial" *ngIf="task.isTutorial" matTooltip="{{task.tutorialText}}" matTooltipPosition="left">school</mat-icon>
+appTippy [tippyOptions]="{
+  arrow: true,
+  placement: 'left',
+  delay: 0,
+  html: '#tooltip-task-' + task.id,
+  popperOptions: {
+    modifiers: {
+      preventOverflow: {
+        boundariesElement: 'window'
+      }
+    }
+  }
+}">
+  <mat-icon class="tutorial" *ngIf="task.isTutorial">school</mat-icon>
   <mat-icon class="check" *ngIf="task.isUnlocked">check</mat-icon>
   <mat-card-title>
     {{task.title}}

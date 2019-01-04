@@ -1,11 +1,24 @@
 <ul class="resources noselect">
-  <button mat-raised-button disabled="true" class="resource-button currency-button wood" [ngClass]="{'warn': resourceIsBeingStolen(goldResource)}"
-    appTippy [tippyOptions]="{arrow: true, placement: 'top', html: '#tooltip-resource-' + goldResource.resourceEnum}">
-    <mat-card-title class="button-text-stroke">{{goldResource.name | titlecase }}</mat-card-title>
-    <mat-card-subtitle class="button-text-background">{{goldResource.amount | longNumber}}</mat-card-subtitle>
+  <button mat-raised-button disabled="true" class="resource-button currency-button wood" [ngClass]="{'warn': resourceIsBeingStolen(goldResource)}">
+    <div appTippy [tippyOptions]="{
+      arrow: true,
+      placement: 'right',
+      delay: 0,
+      html: '#tooltip-resource-' + goldResource.resourceEnum,
+      popperOptions: {
+        modifiers: {
+          preventOverflow: {
+            boundariesElement: 'window'
+          }
+        }
+      }
+    }">
+      <mat-card-title class="button-text-stroke">{{goldResource.name | titlecase }}</mat-card-title>
+      <mat-card-subtitle class="button-text-background">{{goldResource.amount | longNumber}}</mat-card-subtitle>
 
-    <div class="harvest-icon-container">
-      <img id="{{goldResource.name | resourceId}}" class="resource-img" src="assets/sprites/transparent.png" alt="{{goldResource.name}}">
+      <div class="harvest-icon-container">
+        <img id="{{goldResource.name | resourceId}}" class="resource-img" src="assets/sprites/transparent.png" alt="{{goldResource.name}}">
+      </div>
     </div>
   </button>
 
@@ -20,7 +33,19 @@
       </mat-expansion-panel-header>
 
       <div class='button-container' *ngFor="let resource of getResources(resourceType, game.admin.filterAccessible)"
-        appTippy [tippyOptions]="{arrow: true, placement: 'top', delay: 0, html: '#tooltip-resource-' + resource.resourceEnum}">
+        appTippy [tippyOptions]="{
+          arrow: true,
+          placement: 'right',
+          delay: 0,
+          html: '#tooltip-resource-' + resource.resourceEnum,
+          popperOptions: {
+            modifiers: {
+              preventOverflow: {
+                boundariesElement: 'window'
+              }
+            }
+          }
+        }">
         <button mat-raised-button class="resource-button wood" [ngClass]="{'warn': resourceIsBeingStolen(resource)}"
           [disabled]="!canHarvest(resource, resource.harvestYield)"
           (click)='startHarvesting(resource)'

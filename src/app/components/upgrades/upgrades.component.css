@@ -6,34 +6,16 @@
   /* width: 25em; */
 }
 
+.upgrade-container {
+  display: inline-block;
+}
+
 .upgrades mat-expansion-panel {
   margin: 0;
 }
 
 .upgrades mat-expansion-panel-header {
   height: 30px !important;
-}
-
-.upgrades .full .title {
-  white-space: pre-line;
-
-  font-size: 24px;
-  font-weight: 400;
-  margin: 2px;
-}
-
-.upgrades mat-card-subtitle {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-weight: bold;
-}
-
-.upgrades button {
-  position: relative;
-  cursor: pointer;
-  width: 100%;
-  border-radius: 4px;
 }
 
 .upgrades button:hover {
@@ -48,46 +30,16 @@
   color: rgba(0,0,0,.87);
 }
 
-.upgrades .badge {
-  display: inline-block;
-  font-size: small;
-  color: white;
-  padding: 0.8em 0.7em 0 0.7em;
-  background-color: #607D8B;
-  line-height: 1em;
-  position: absolute;
-  right: -9px;
-  top: 1px;
-  height: 1.8em;
-  min-width: 16px;
-  text-align: center;
-  margin-right: .8em;
-  border-radius: 0 4px 4px 0;
-}
-
 button {
   background-color: #eee;
   border: none;
   padding: 5px 10px;
   border-radius: 4px;
-  cursor: pointer;
-  cursor: hand;
   font-family: Arial;
 }
 
 .upgrades {
   text-align: center;
-}
-
-.upgrades.slim-interface button {
-  width: auto;
-  height: auto;
-}
-
-.upgrade {
-  display: inline-block;
-  max-width: 300px;
-  width: 15vw;
 }
 
 .resource-list {

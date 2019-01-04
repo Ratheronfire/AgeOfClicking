@@ -9,22 +9,36 @@
         {{upgradeVariableNames[upgradeVariable]}}
       </mat-panel-title>
     </mat-expansion-panel-header>
-    <button class="slim wood" mat-raised-button *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)"
-      color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
-      <div appTippy [tippyOptions]="{arrow: true, placement: 'top', delay: 0, html: '#tooltip-upgrade-' + upgrade.id}">
-        <div class="title button-text-bold">
-          <b>
-            <mat-icon *ngIf="upgrade.purchased" color="primary">check</mat-icon>
-          </b>
-          {{upgrade.name}}
-        </div>
-        <div class="resource-list">
-          <div *ngFor="let resourceCost of upgrade.resourceCosts" class="button-text-bold">
-            <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
-            {{resourceCost.resourceCost | longNumber}}
+    <div class="upgrade-container" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)"
+    appTippy [tippyOptions]="{
+      arrow: true,
+      placement: 'left',
+      delay: 0,
+      html: '#tooltip-upgrade-' + upgrade.id,
+      popperOptions: {
+        modifiers: {
+          preventOverflow: {
+            boundariesElement: 'window'
+          }
+        }
+      }
+    }">
+      <button class="slim wood" mat-raised-button
+        color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
+          <div class="title button-text-bold">
+            <b>
+              <mat-icon *ngIf="upgrade.purchased" color="accent">check</mat-icon>
+            </b>
+            {{upgrade.name}}
           </div>
-        </div>
-      </div>
-    </button>
+
+          <div class="resource-list">
+            <div *ngFor="let resourceCost of upgrade.resourceCosts" class="button-text-bold">
+              <img id="{{getResource(resourceCost.resourceEnum).name | resourceId}}" class="resource-img slim-icon" src="assets/sprites/transparent.png" alt="{{getResource(resourceCost.resourceEnum).name}}">
+              {{resourceCost.resourceCost | longNumber}}
+            </div>
+          </div>
+      </button>
+    </div>
   </mat-expansion-panel>
 </mat-accordion>
