@@ -75,25 +75,11 @@ export class SettingsComponent {
     this.game.settings.autosaveInterval = value;
   }
 
-  get mapLowFramerate(): boolean {
-    return this.game.settings.mapLowFramerate;
-  }
-  set mapLowFramerate(value: boolean) {
-    this.game.settings.mapLowFramerate = value;
-  }
-
   get resourceAnimationColors() {
     return this.game.settings.resourceAnimationColors;
   }
   set resourceAnimationColors(value) {
     this.game.settings.resourceAnimationColors = value;
-  }
-
-  get slimInterface(): boolean {
-    return this.game.settings.slimInterface;
-  }
-  set slimInterface(value: boolean) {
-    this.game.settings.slimInterface = value;
   }
 
   get organizeLeftPanelByType(): boolean {
