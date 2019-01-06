@@ -6,4 +6,4 @@ This project was generated with [Angular CLI](https://github.com/angular/angular
 
 ## Screenshots
 
-![Screenshot](https://i.imgur.com/5UEQwEj.png)
+![Screenshot](https://i.imgur.com/W0PplEg.gif)
