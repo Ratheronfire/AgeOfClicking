@@ -153,6 +153,6 @@ export class Upgrade {
   }
 
   private log(message: string) {
-    this.game.messages.add(MessageSource.Workers, message);
+    this.game.messages.add(MessageSource.Upgrades, message);
   }
 }

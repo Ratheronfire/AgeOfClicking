@@ -4,13 +4,16 @@ import { Task, TaskReward } from './task';
 
 export class UnitTask extends Task {
   private unitTypes?: UnitType[];
+
   private numberRequired: number;
+  private requiredIsTotal: boolean;
 
   constructor(title: string, id: number, rewards: TaskReward[], isTutorial = false, tutorialText = '', game: GameService,
-      numberRequired: number, unitTypes?: UnitType | UnitType[]) {
+      numberRequired: number, requiredIsTotal: boolean, unitTypes?: UnitType | UnitType[]) {
     super(title, id, rewards, isTutorial, tutorialText, game);
 
     this.numberRequired = numberRequired;
+    this.requiredIsTotal = requiredIsTotal;
 
     if (unitTypes && unitTypes.length) {
       this.unitTypes = [].concat(unitTypes);
@@ -20,19 +23,23 @@ export class UnitTask extends Task {
   }
 
   updateProgress() {
-    let totalRequired = 0;
+    let totalRequired = this.numberRequired;
     let totalSpawned = 0;
 
     if (!this.unitTypes.length) {
-      totalRequired = this.numberRequired;
       totalSpawned = this.game.unit.getUnits().length;
     } else {
-      totalRequired = this.unitTypes.length * this.numberRequired;
+      if (!this.requiredIsTotal) {
+        totalRequired *= this.unitTypes.length;
+      }
+
       totalSpawned = this.unitTypes
         .map(unitType => this.game.unit.getUnits(unitType).length)
         .reduce((total, amount) => total += amount);
     }
 
     this.progress = totalSpawned / totalRequired;
+
+    super.updateProgress();
   }
 }

@@ -1,15 +1,44 @@
-[
-    {
-        "id": 0,
-        "title": "Hire a builder.",
-        "taskType": "UNIT",
-        "isTutorial": true,
-        "tutorialText": "Builders will automatically build roads, walls, and other projects for you, using the resources stored at your base.",
-        "rewards": {
-          "resourceEnum": "OAK",
-          "amount": 10
-        },
-        "numberRequired": 1,
-        "unitTypes": "BUILDER"
-    }
+[{
+    "id": 0,
+    "title": "Hire a builder.",
+    "taskType": "UNIT",
+    "isTutorial": true,
+    "tutorialText": "Builders will automatically build roads, walls, and other projects for you, using the resources stored at your base.",
+    "rewards": [
+      { "resourceEnum": "OAK", "amount": 10 }
+    ],
+    "numberRequired": 1,
+    "requiredIsTotal": true,
+    "unitTypes": "BUILDER"
+  },
+  {
+    "id": 1,
+    "title": "Hire a harvester.",
+    "taskType": "UNIT",
+    "isTutorial": true,
+    "tutorialText": "Harvesters will automatically seek out resource nodes and bring their products back to the base.",
+    "rewards": [
+      { "resourceEnum": "STONE", "amount": 5 },
+      { "resourceEnum": "OAK", "amount": 5 },
+      { "resourceEnum": "COPPERORE", "amount": 5 },
+      { "resourceEnum": "TINORE", "amount": 5 },
+      { "resourceEnum": "WHEAT", "amount": 5 }
+    ],
+    "numberRequired": 1,
+    "requiredIsTotal": true,
+    "unitTypes": ["LUMBERJACK", "MINERALMINER", "METALMINER", "HUNTER"]
+  },
+  {
+    "id": 2,
+    "title": "Hire a merchant.",
+    "taskType": "UNIT",
+    "isTutorial": true,
+    "tutorialText": "Merchants will automatically gather resources and sell them at a market stall.",
+    "rewards": [
+      { "resourceEnum": "GOLD", "amount": 100 }
+    ],
+    "numberRequired": 1,
+    "requiredIsTotal": true,
+    "unitTypes": "MERCHANT"
+  }
 ]

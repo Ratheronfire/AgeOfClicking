@@ -172,7 +172,7 @@ export class SettingsManager {
 
     this.game.messages.visibleSources = [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
       MessageSource.Unit, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
-      MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
+      MessageSource.Store, MessageSource.Upgrades, MessageSource.Tasks];
 
     this.game.enemy.enemiesActive = false;
 
@@ -315,7 +315,7 @@ export class SettingsManager {
         this.game.messages.visibleSources = saveData.settings.visibleSources ? saveData.settings.visibleSources :
           [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
             MessageSource.Unit, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
-            MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
+            MessageSource.Store, MessageSource.Upgrades, MessageSource.Tasks];
 
         this.game.enemy.enemiesActive = saveData.settings.enemiesActive ? saveData.settings.enemiesActive : false;
 

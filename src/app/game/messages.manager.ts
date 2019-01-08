@@ -7,7 +7,7 @@ export class MessagesManager {
 
   visibleSources: MessageSource[] = [MessageSource.Admin, MessageSource.Buildings, MessageSource.Main, MessageSource.Enemy,
     MessageSource.Unit, MessageSource.Map, MessageSource.Resources, MessageSource.Settings,
-    MessageSource.Store, MessageSource.Upgrades, MessageSource.Workers];
+    MessageSource.Store, MessageSource.Upgrades, MessageSource.Tasks];
 
   messagesDataSource = new MatTableDataSource(this.messages);
   messageLimit = 50;

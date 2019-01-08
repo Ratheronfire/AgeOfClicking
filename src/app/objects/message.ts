@@ -9,7 +9,7 @@ export enum MessageSource {
   Settings = 'SETTINGS',
   Store = 'STORE',
   Upgrades = 'UPGRADES',
-  Workers = 'WORKERS'
+  Tasks = 'TASKS'
 }
 
 export class Message {

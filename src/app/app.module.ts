@@ -27,6 +27,7 @@ import { TileDetailComponent } from './components/tile-detail/tile-detail.compon
 import { UnitDetailComponent } from './components/unit-detail/unit-detail.component';
 import { UnitsComponent } from './components/units/units.component';
 import { TasksComponent } from './components/tasks/tasks.component';
+import { TaskPopupComponent } from './components/tasks/tasks.component';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { TasksComponent } from './components/tasks/tasks.component';
     UnitDetailComponent,
     AboutDialogComponent,
     UnitsComponent,
-    TasksComponent
+    TasksComponent,
+    TaskPopupComponent
   ],
   imports: [
     BrowserModule,
@@ -62,7 +64,8 @@ import { TasksComponent } from './components/tasks/tasks.component';
   ],
   entryComponents: [
     AboutDialogComponent,
-    SaveDialogComponent
+    SaveDialogComponent,
+    TaskPopupComponent
   ],
   providers: [],
   bootstrap: [AppComponent]
