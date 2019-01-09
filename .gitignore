@@ -35,9 +35,10 @@ testem.log
 /typings
 *-export.png
 *png~
+debugSaveFile.txt
+Achievement_Ideas.md
 
 # System Files
 .DS_Store
 Thumbs.db
 .vscode/launch.json
-debugSaveFile.txt

@@ -157,6 +157,10 @@ export class SettingsManager {
     this.game.upgrades.loadBaseUpgrades();
     this.game.buildings.resetBuildings();
 
+    for (const task of this.game.tasks.tasks) {
+      task.progress = 0;
+    }
+
     if (manualDeletion) {
       this.game.map.seedRng(Math.random());
     }
