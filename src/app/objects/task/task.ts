@@ -3,7 +3,8 @@ import { ResourceEnum } from 'src/app/objects/resourceData';
 import { MessageSource } from '../message';
 
 export enum TaskType {
-  Unit = 'UNIT'
+  Unit = 'UNIT',
+  Upgrade = 'UPGRADE'
 }
 
 export interface TaskReward {

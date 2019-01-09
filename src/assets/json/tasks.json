@@ -40,5 +40,33 @@
     "numberRequired": 1,
     "requiredIsTotal": true,
     "unitTypes": "MERCHANT"
+  },
+  {
+    "id": 3,
+    "title": "Purchase a worn pickaxe.",
+    "taskType": "UPGRADE",
+    "isTutorial": true,
+    "tutorialText": "The worn pickaxe allows your units to harvest from stone, copper and tin mines.",
+    "rewards": [
+      { "resourceEnum": "STONE", "amount": 10 },
+      { "resourceEnum": "COPPERORE", "amount": 10 },
+      { "resourceEnum": "TINORE", "amount": 10 }
+    ],
+    "numberRequired": 1,
+    "requiredIsTotal": true,
+    "requiredUpgradeId": 2
+  },
+  {
+    "id": 20,
+    "title": "TEST - Purchase 5 upgrades.",
+    "taskType": "UPGRADE",
+    "isTutorial": false,
+    "rewards": [
+      { "resourceEnum": "STONE", "amount": 100 },
+      { "resourceEnum": "COPPERORE", "amount": 100 },
+      { "resourceEnum": "TINORE", "amount": 100 }
+    ],
+    "numberRequired": 5,
+    "requiredIsTotal": true
   }
 ]

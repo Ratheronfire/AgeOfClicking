@@ -3,6 +3,7 @@ import { Task } from '../objects/task/task';
 import { TaskType } from './../objects/task/task';
 import { UnitTask } from './../objects/task/unitTask';
 import { GameService } from './game.service';
+import { UpgradeTask } from '../objects/task/upgradeTask';
 
 declare var require: any;
 const baseTasks = require('../../assets/json/tasks.json');
@@ -22,6 +23,10 @@ export class TasksManager {
         case TaskType.Unit: {
           this.tasks.push(new UnitTask(baseTask.title, baseTask.id, baseTask.rewards, baseTask.isTutorial,
             baseTask.tutorialText, this.game, baseTask.numberRequired, baseTask.requiredIsTotal, baseTask.unitTypes));
+          break;
+        } case TaskType.Upgrade: {
+          this.tasks.push(new UpgradeTask(baseTask.title, baseTask.id, baseTask.rewards, baseTask.isTutorial, baseTask.tutorialText,
+            this.game, baseTask.requiredUpgradeId, baseTask.upgradeTypes, baseTask.numberRequired, baseTask.requiredIsTotal));
         }
       }
     }

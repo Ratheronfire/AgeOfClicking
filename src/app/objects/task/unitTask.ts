@@ -9,7 +9,7 @@ export class UnitTask extends Task {
   private requiredIsTotal: boolean;
 
   constructor(title: string, id: number, rewards: TaskReward[], isTutorial = false, tutorialText = '', game: GameService,
-      numberRequired: number, requiredIsTotal: boolean, unitTypes?: UnitType | UnitType[]) {
+      numberRequired: number, requiredIsTotal = true, unitTypes?: UnitType | UnitType[]) {
     super(title, id, rewards, isTutorial, tutorialText, game);
 
     this.numberRequired = numberRequired;

@@ -31,11 +31,12 @@ export class UpgradesManager {
   }
 
   public getUpgrades(filterByPurchased = false, filterByUnpurchased = false, filterByAccessible = false,
-                     upgradeType?: UpgradeType, upgradeVariable?: UpgradeVariable): Upgrade[] {
+                     upgradeTypesOrType?: UpgradeType | UpgradeType[], upgradeVariable?: UpgradeVariable): Upgrade[] {
     let upgrades = this.upgrades;
 
-    if (upgradeType) {
-      upgrades = upgrades.filter(upgrade => upgrade.upgradeType === upgradeType);
+    if (upgradeTypesOrType) {
+      const upgradeTypes = [].concat(upgradeTypesOrType);
+      upgrades = upgrades.filter(upgrade => upgradeTypes.includes(upgrade.upgradeType));
     }
     if (upgradeVariable) {
       upgrades = upgrades.filter(upgrade => upgrade.upgradeEffects.some(ue => ue.upgradeVariable === upgradeVariable));
