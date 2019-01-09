@@ -92,6 +92,7 @@ export interface SettingsSaveData {
 export class SaveData {
   resources: ResourceSaveData[];
   purchasedUpgrades: number[];
+  completedTasks: number[];
   tiles: TileSaveData[];
   enemies: EnemySaveData[];
   units: UnitSaveData[];

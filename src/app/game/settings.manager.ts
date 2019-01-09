@@ -195,6 +195,7 @@ export class SettingsManager {
     const saveData: SaveData = {
       resources: [],
       purchasedUpgrades: [],
+      completedTasks: [],
       tiles: [],
       enemies: [],
       units: [],
@@ -221,6 +222,7 @@ export class SettingsManager {
     }
 
     saveData.purchasedUpgrades = this.game.upgrades.getUpgrades(true).map(upgrade => upgrade.id);
+    saveData.completedTasks = this.game.tasks.completeTasks.map(task => task.id);
 
     if (this.game.map.mapLayer) {
       for (const tile of this.game.map.mapLayer.getTilesWithin()) {
@@ -353,6 +355,16 @@ export class SettingsManager {
           if (upgrade) {
             upgrade.applyUpgrade(true);
             upgrade.purchased = true;
+          }
+        }
+      }
+
+      if (saveData.completedTasks !== undefined) {
+        for (const taskId of saveData.completedTasks) {
+          const task = this.game.tasks.getTask(taskId);
+
+          if (task) {
+            task.progress = 1;
           }
         }
       }

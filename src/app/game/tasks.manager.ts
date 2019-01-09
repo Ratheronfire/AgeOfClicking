@@ -38,6 +38,10 @@ export class TasksManager {
     }
   }
 
+  getTask(id: number) {
+    return this.tasks.find(task => task.id === id);
+  }
+
   get incompleteTasks(): Task[] {
     return this.tasks.filter(task => !task.isUnlocked);
   }
