@@ -24,7 +24,7 @@ export class UnitDetailComponent implements OnInit {
   }
 
   getResources(resourceType: ResourceType, filterBySellable = false) {
-    return this.game.resources.getResources(resourceType, null, filterBySellable, true, false, false);
+    return this.game.resources.getResources(resourceType, null, filterBySellable, true, true, false);
   }
 
   getResource(resourceEnum: ResourceEnum) {

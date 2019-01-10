@@ -85,9 +85,7 @@ export class Resource {
   }
 
   harvestResource(multiplier = 1) {
-    if (this.resourceTier > this.game.resources.highestTierReached) {
-      this.game.resources.highestTierReached = this.resourceTier;
-    }
+    this.game.resources.updateHighestTier(this.resourceTier);
 
     this.addAmount(multiplier);
   }

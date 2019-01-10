@@ -46,6 +46,7 @@ export class Harvester extends Unit {
           }
 
           this.addToInventory(this.currentResource.resourceEnum, harvestYield);
+          this.game.resources.updateHighestTier(this.currentResource.resourceTier);
 
           let foodCost = this.baseFoodCost * (this.currentResource.resourceTier + 1) * this.foodCostFactor;
           if (this.currentResource.resourceType === ResourceType.Food) {

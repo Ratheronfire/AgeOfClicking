@@ -107,6 +107,12 @@ export class ResourcesManager {
     return resources.map(resource => resource.amount * resource.resourceTier).reduce((total, amount) => total += amount);
   }
 
+  updateHighestTier(resourceTier: number) {
+    if (resourceTier > this.highestTierReached) {
+      this.highestTierReached = resourceTier;
+    }
+  }
+
   public get tiers(): number[] {
     const tiersByResource = this.getResources().map(resource => resource.resourceTier).sort();
     const tiers = [];
