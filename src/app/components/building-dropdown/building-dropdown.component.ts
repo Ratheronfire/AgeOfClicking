@@ -24,11 +24,6 @@ export class BuildingDropdownComponent implements OnInit {
     }
   }
 
-  canPlaceBuilding(buildingType: BuildingTileType): boolean {
-    const buildingData = this.buildingTiles.get(buildingType);
-    return this.game.buildings.canPlaceBuilding(buildingData);
-  }
-
   get buildingTiles() {
     return this.game.map.buildingTileData;
   }

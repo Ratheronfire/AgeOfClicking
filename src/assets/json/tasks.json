@@ -18,11 +18,11 @@
     "isTutorial": true,
     "tutorialText": "Harvesters will automatically seek out resource nodes and bring their products back to the base.",
     "rewards": [
-      { "resourceEnum": "STONE", "amount": 5 },
-      { "resourceEnum": "OAK", "amount": 5 },
+      { "resourceEnum": "STONE",     "amount": 5 },
+      { "resourceEnum": "OAK",       "amount": 5 },
       { "resourceEnum": "COPPERORE", "amount": 5 },
-      { "resourceEnum": "TINORE", "amount": 5 },
-      { "resourceEnum": "WHEAT", "amount": 5 }
+      { "resourceEnum": "TINORE",    "amount": 5 },
+      { "resourceEnum": "WHEAT",     "amount": 5 }
     ],
     "numberRequired": 1,
     "requiredIsTotal": true,
@@ -48,25 +48,53 @@
     "isTutorial": true,
     "tutorialText": "The worn pickaxe allows your units to harvest from stone, copper and tin mines.",
     "rewards": [
-      { "resourceEnum": "STONE", "amount": 10 },
+      { "resourceEnum": "STONE",     "amount": 10 },
       { "resourceEnum": "COPPERORE", "amount": 10 },
-      { "resourceEnum": "TINORE", "amount": 10 }
+      { "resourceEnum": "TINORE",    "amount": 10 }
     ],
     "numberRequired": 1,
     "requiredIsTotal": true,
-    "requiredUpgradeId": 2
+    "requiredUpgradeIds": 2
   },
   {
-    "id": 20,
-    "title": "TEST - Purchase 5 upgrades.",
-    "taskType": "UPGRADE",
-    "isTutorial": false,
+    "id": 4,
+    "title": "Build an oak oven.",
+    "taskType": "BUILDING",
+    "isTutorial": true,
+    "tutorialText": "With ovens, you can produce food for your workers. As worker hunger increases, their ability to work decreases, and they will eventually starve.",
     "rewards": [
-      { "resourceEnum": "STONE", "amount": 100 },
-      { "resourceEnum": "COPPERORE", "amount": 100 },
-      { "resourceEnum": "TINORE", "amount": 100 }
+      { "resourceEnum": "BRONZEINGOT", "amount": 25 }
     ],
-    "numberRequired": 5,
-    "requiredIsTotal": true
+    "numberRequired": 1,
+    "requiredIsTotal": true,
+    "requiredBuildingTypes": "OAKOVEN"
+  },
+  {
+    "id": 5,
+    "title": "Build a cracked forge.",
+    "taskType": "BUILDING",
+    "isTutorial": true,
+    "tutorialText": "With forges, you can convert ores into ingots, which can be used to purchase further upgrades.",
+    "rewards": [
+      { "resourceEnum": "WHEAT", "amount": 50 },
+      { "resourceEnum": "BREAD", "amount": 50 }
+    ],
+    "numberRequired": 1,
+    "requiredIsTotal": true,
+    "requiredBuildingTypes": "CRACKEDFORGE"
+  },
+  {
+    "id": 6,
+    "title": "Upgrade a building.",
+    "taskType": "BUILDING",
+    "isTutorial": true,
+    "tutorialText": "Upgraded buildings give you access to higher-tier resources, such as iron ingots.",
+    "rewards": [
+      { "resourceEnum": "IRONORE",   "amount": 15 },
+      { "resourceEnum": "RAWPOTATO", "amount": 15 }
+    ],
+    "numberRequired": 1,
+    "requiredIsTotal": true,
+    "onlyUpgradedBuildings": "true"
   }
 ]

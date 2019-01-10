@@ -35,7 +35,6 @@
       "name": "Home",
       "description": "Your harvested resources will be collected and stored here.",
       "placeable": false,
-      "maxPlaceable": 1,
       "baseHealth": 50,
       "resourceCosts": [],
       "buildableSurfaces": [
@@ -52,7 +51,6 @@
       "name": "Wall",
       "description": "Keeps invaders out.",
       "placeable": true,
-      "maxPlaceable": -1,
       "baseHealth": 50,
       "resourceCosts": [{
         "resourceEnum": "OAK",
@@ -70,7 +68,6 @@
       "name": "Road",
       "description": "Allows access between buildings.",
       "placeable": true,
-      "maxPlaceable": -1,
       "baseHealth": 50,
       "resourceCosts": [{
         "resourceEnum": "STONE",
@@ -88,7 +85,6 @@
       "name": "Tunnel",
       "description": "Allows access to resources buried within rock.",
       "placeable": true,
-      "maxPlaceable": -1,
       "baseHealth": 50,
       "resourceCosts": [{
         "resourceEnum": "OAK",
@@ -106,7 +102,6 @@
       "name": "Bridge",
       "description": "Allows access between islands.",
       "placeable": true,
-      "maxPlaceable": -1,
       "baseHealth": 50,
       "resourceCosts": [{
         "resourceEnum": "OAK",
@@ -124,7 +119,6 @@
       "name": "Cracked Forge",
       "description": "An old, weary forge. Bronze ingots are probably all this thing is capable of producing.",
       "placeable": true,
-      "maxPlaceable": -1,
       "baseHealth": 50,
       "upgradeBuilding": "STONEFORGE",
       "resourceCosts": [{
@@ -147,7 +141,6 @@
       "name": "Stone Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 75,
       "upgradeBuilding": "IRONFORGE",
       "resourceCosts": [{
@@ -176,7 +169,6 @@
       "name": "Iron Forge",
       "description": "This forge burns hotter, allowing you to create more precious ingots.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 125,
       "upgradeBuilding": "GOLDFORGE",
       "resourceCosts": [{
@@ -205,7 +197,6 @@
       "name": "Gold Forge",
       "description": "For reasons unknown to science, gold forges are particularly effective in forging latinum.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 150,
       "upgradeBuilding": "LATINUMFORGE",
       "resourceCosts": [{
@@ -234,7 +225,6 @@
       "name": "Latinum Forge",
       "description": "A forge that burns hot enough to fuse together the world's most precious and rare metals.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 200,
       "upgradeBuilding": "TEMPROUSDISTILLERY",
       "resourceCosts": [{
@@ -263,7 +253,6 @@
       "name": "Temprous Distillery",
       "description": "With this device, all impurities can be removed from temprous ingots, unlocking their limitless potential.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 350,
       "resourceCosts": [{
         "resourceEnum": "TEMPROUSINGOT",
@@ -291,7 +280,6 @@
       "name": "Oak Oven",
       "description": "Capable of heating up some basic kinds of food.",
       "placeable": true,
-      "maxPlaceable": -1,
       "baseHealth": 50,
       "upgradeBuilding": "STONEOVEN",
       "resourceCosts": [{
@@ -317,7 +305,6 @@
       "name": "Stone Oven",
       "description": "Its hardened stone structure allows you to cook more filling and nutritious meals.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 75,
       "upgradeBuilding": "MARBLEOVEN",
       "resourceCosts": [{
@@ -343,7 +330,6 @@
       "name": "Marble Oven",
       "description": "Some would say that marble ovens are needlessly lavish. I say they have no imagination.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 75,
       "upgradeBuilding": "TEMPROUSOVEN",
       "resourceCosts": [{
@@ -372,7 +358,6 @@
       "name": "Temprous Oven",
       "description": "Utilizes the power of time itself to cook your food before you even find it!",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 150,
       "resourceCosts": [{
         "resourceEnum": "TEMPROUSINGOT",
@@ -400,7 +385,6 @@
       "name": "Chicken Farm",
       "description": "A small farm to provide a source of food for your workers.",
       "placeable": true,
-      "maxPlaceable": -1,
       "baseHealth": 50,
       "upgradeBuilding": "COWFARM",
       "resourceCosts": [{
@@ -426,7 +410,6 @@
       "name": "Cow Farm",
       "description": "A larger farm that can feed more workers.",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 100,
       "upgradeBuilding": "DRAGONFARM",
       "resourceCosts": [{
@@ -455,7 +438,6 @@
       "name": "Dragon Farm",
       "description": "Fun for the whole family!",
       "placeable": false,
-      "maxPlaceable": -1,
       "baseHealth": 150,
       "resourceCosts": [{
         "resourceEnum": "RAWSTEAK",
@@ -481,9 +463,8 @@
       "tileType": "WOODMARKET",
       "subType": "MARKET",
       "name": "Wood Market",
-      "description": "A marketstand that automatically collects and sells wood resources. (Only one may be placed at a time.)",
+      "description": "A marketstand that automatically collects and sells wood resources.",
       "placeable": true,
-      "maxPlaceable": 1,
       "baseHealth": 50,
       "resourceCosts": [{
         "resourceEnum": "GOLD",
@@ -504,9 +485,8 @@
       "tileType": "MINERALMARKET",
       "subType": "MARKET",
       "name": "Mineral Market",
-      "description": "A marketstand that automatically collects and sells mineral resources. (Only one may be placed at a time.)",
+      "description": "A marketstand that automatically collects and sells mineral resources.",
       "placeable": true,
-      "maxPlaceable": 1,
       "baseHealth": 50,
       "resourceCosts": [{
         "resourceEnum": "GOLD",
@@ -527,9 +507,8 @@
       "tileType": "METALMARKET",
       "subType": "MARKET",
       "name": "Metal Market",
-      "description": "A marketstand that automatically collects and sells metal resources. (Only one may be placed at a time.)",
+      "description": "A marketstand that automatically collects and sells metal resources.",
       "placeable": true,
-      "maxPlaceable": 1,
       "baseHealth": 50,
       "resourceCosts": [{
         "resourceEnum": "GOLD",

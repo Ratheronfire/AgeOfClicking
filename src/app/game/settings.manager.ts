@@ -155,7 +155,6 @@ export class SettingsManager {
 
     this.game.resources.loadBaseResources();
     this.game.upgrades.loadBaseUpgrades();
-    this.game.buildings.resetBuildings();
 
     for (const task of this.game.tasks.tasks) {
       task.progress = 0;

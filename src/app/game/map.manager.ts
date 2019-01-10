@@ -938,11 +938,9 @@ export class MapManager {
     const mapTile = this.mapLayer.getTileAt(x, y);
     const canPlaceHere = buildingData.buildableSurfaces.includes(mapTile.properties['tileType']);
 
-    if (buildingExists || resourceExists || !canPlaceHere || !this.game.buildings.canPlaceBuilding(buildingData)) {
+    if (buildingExists || resourceExists || !canPlaceHere) {
       return;
     }
-
-    this.game.buildings.placeBuilding(buildingData);
 
     this.setBuildingTile(x, y, buildingData.tileType, removable);
 
@@ -1208,6 +1206,7 @@ export class MapManager {
     return tiles;
   }
 
+  // TODO: Move all building-related logic to building-manager.ts
   getBuildingTiles(buildingTypeOrTypes?: BuildingTileType | BuildingTileType[]): Phaser.Tilemaps.Tile[] {
     const buildingTypes = [].concat(buildingTypeOrTypes);
 

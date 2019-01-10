@@ -1,9 +1,10 @@
 import { EventEmitter } from '@angular/core';
 import { Task } from '../objects/task/task';
+import { UpgradeTask } from '../objects/task/upgradeTask';
+import { BuildingTask } from './../objects/task/buildingTask';
 import { TaskType } from './../objects/task/task';
 import { UnitTask } from './../objects/task/unitTask';
 import { GameService } from './game.service';
-import { UpgradeTask } from '../objects/task/upgradeTask';
 
 declare var require: any;
 const baseTasks = require('../../assets/json/tasks.json');
@@ -26,7 +27,12 @@ export class TasksManager {
           break;
         } case TaskType.Upgrade: {
           this.tasks.push(new UpgradeTask(baseTask.title, baseTask.id, baseTask.rewards, baseTask.isTutorial, baseTask.tutorialText,
-            this.game, baseTask.requiredUpgradeId, baseTask.upgradeTypes, baseTask.numberRequired, baseTask.requiredIsTotal));
+            this.game, baseTask.requiredUpgradeIds, baseTask.upgradeTypes, baseTask.numberRequired, baseTask.requiredIsTotal));
+          break;
+        } case TaskType.Building: {
+          this.tasks.push(new BuildingTask(baseTask.title, baseTask.id, baseTask.rewards, baseTask.isTutorial, baseTask.tutorialText,
+            this.game, baseTask.numberRequired, baseTask.requiredIsTotal, baseTask.requiredBuildingTypes, baseTask.onlyUpgradedBuildings));
+          break;
         }
       }
     }

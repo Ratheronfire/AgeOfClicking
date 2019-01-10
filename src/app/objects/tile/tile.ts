@@ -106,7 +106,6 @@ export interface BuildingTileData {
   name: string;
   description: string;
   placeable: boolean;
-  maxPlaceable: number;
 
   upgradeBuilding?: BuildingTileType;
 

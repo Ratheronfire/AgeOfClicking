@@ -4,7 +4,8 @@ import { MessageSource } from '../message';
 
 export enum TaskType {
   Unit = 'UNIT',
-  Upgrade = 'UPGRADE'
+  Upgrade = 'UPGRADE',
+  Building = 'BUILDING'
 }
 
 export interface TaskReward {
