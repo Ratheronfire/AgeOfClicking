@@ -99,8 +99,13 @@ export class Harvester extends Unit {
       this.game.pathfinding.getPathWeight(b.properties['resourceNode'].path));
 
     if (resourceTiles.length) {
-      this.targets.push(resourceTiles[0]);
-      this.currentResourceNode = resourceTiles[0].properties['resourceNode'];
+      const closestTile = resourceTiles[0];
+      const closestNode: ResourceNode = closestTile.properties['resourceNode'];
+
+      if (this.suppliesExistForResource(this.currentResource)) {
+        this.targets.push(closestTile);
+        this.currentResourceNode = closestNode;
+      }
     }
   }
 
@@ -110,6 +115,17 @@ export class Harvester extends Unit {
     }
 
     super.finishTask();
+  }
+
+  suppliesExistForResource(resource: Resource) {
+    for (const resourceConsume of resource.resourceConsumes) {
+      if (this.game.resources.getResource(resourceConsume.resourceEnum).amount < resourceConsume.cost &&
+          this.amountHeld(resourceConsume.resourceEnum) < resourceConsume.cost) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   needToRestock() {
