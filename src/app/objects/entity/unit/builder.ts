@@ -139,7 +139,7 @@ export class Builder extends Unit {
 
     for (const tile of this.game.map.getBuildingTiles()) {
       const buildingNode: BuildingNode = tile.properties['buildingNode'];
-      if (buildingNode.health < buildingNode.maxHealth) {
+      if (buildingNode.health < buildingNode.maxHealth && this.suppliesExistForBuilding(buildingNode)) {
         this.targets.push(tile);
       }
     }
@@ -155,6 +155,16 @@ export class Builder extends Unit {
     }
 
     super.finishTask();
+  }
+
+  suppliesExistForBuilding(building: BuildingNode): boolean {
+    for (const resourceEnum of building.resourcesNeeded) {
+      if (this.game.resources.getResource(resourceEnum).amount <= 0 && this.amountHeld(resourceEnum) <= 0) {
+        return false;
+      }
+
+      return true;
+    }
   }
 
   needToRestock(): boolean {
