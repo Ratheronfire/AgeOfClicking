@@ -25,7 +25,7 @@ export class Enemy extends Actor {
 
     this.currentState = EntityState.MovingToTarget;
 
-    this.currentTile = this.game.map.mapLayer.getTileAtWorldXY(this.x, this.y);
+    this.currentTile = this.game.map.groundLayer.getTileAtWorldXY(this.x, this.y);
     this.lastIslandId = this.currentTile.properties['islandId'];
 
     this.findTargets();
@@ -71,7 +71,7 @@ export class Enemy extends Actor {
 
   findPath() {
     for (const buildingType of this.targetableBuildingTypes) {
-      const matchingTiles = this.game.map.mapLayer.filterTiles(tile => tile.properties['buildingNode'] &&
+      const matchingTiles = this.game.map.groundLayer.filterTiles(tile => tile.properties['buildingNode'] &&
         tile.properties['buildingNode'].tileType === buildingType);
 
       for (const tile of matchingTiles) {

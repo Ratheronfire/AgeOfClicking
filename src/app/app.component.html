@@ -47,7 +47,7 @@
 
 <div class="game-container" [class.game-is-mobile]="mobileQuery.matches" [@.disabled]="disableAnimations">
   <mat-toolbar color="primary" class="game-toolbar">
-    <h1 title="I am a tooltip" appTippy [tippyOptions]="{arrow: true}" class="game-app-name">Age of Clicking</h1>
+    <h1 class="game-app-name">Age of Clicking</h1>
     <div class="sidenav-buttons">
       <button mat-flat-button (click)="hideResourceList = !hideResourceList">
         <mat-icon>map</mat-icon><p class="toolbar-button-text" *ngIf="!mobileQuery.matches">Expand Map</p>

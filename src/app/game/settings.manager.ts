@@ -227,8 +227,8 @@ export class SettingsManager {
     saveData.purchasedUpgrades = this.game.upgrades.getUpgrades(true).map(upgrade => upgrade.id);
     saveData.completedTasks = this.game.tasks.completeTasks.map(task => task.id);
 
-    if (this.game.map.mapLayer) {
-      for (const tile of this.game.map.mapLayer.getTilesWithin()) {
+    if (this.game.map.groundLayer) {
+      for (const tile of this.game.map.groundLayer.getTilesWithin()) {
         if (!tile || !tile.properties['buildingNode']) {
           continue;
         }
@@ -372,14 +372,14 @@ export class SettingsManager {
         }
       }
 
-      if (!this.game.map.mapLayer) {
+      if (!this.game.map.groundLayer) {
         // The map hasn't been created yet (This will only happen when initially trying to load data on startup).
         return true;
       }
 
       if (saveData.tiles !== undefined) {
         for (const tileSaveData of saveData.tiles) {
-          const tile = this.game.map.mapLayer.findTile(_tile => _tile && _tile.properties['id'] === tileSaveData.id);
+          const tile = this.game.map.groundLayer.findTile(_tile => _tile && _tile.properties['id'] === tileSaveData.id);
 
           if (!tile || tile.properties['resourceNode'] || tileSaveData.buildingTileType === BuildingTileType.Home) {
             continue;
@@ -409,7 +409,7 @@ export class SettingsManager {
 
       if (saveData.enemies !== undefined) {
         for (const enemySaveData of saveData.enemies) {
-          const tile = this.game.map.mapLayer.getTileAtWorldXY(enemySaveData.x, enemySaveData.y);
+          const tile = this.game.map.groundLayer.getTileAtWorldXY(enemySaveData.x, enemySaveData.y);
 
           if (!tile) {
             continue;
@@ -436,7 +436,7 @@ export class SettingsManager {
 
       if (saveData.units !== undefined) {
         for (const unitSaveData of saveData.units) {
-          const tile = this.game.map.mapLayer.getTileAtWorldXY(unitSaveData.x, unitSaveData.y);
+          const tile = this.game.map.groundLayer.getTileAtWorldXY(unitSaveData.x, unitSaveData.y);
 
           if (!tile) {
             continue;

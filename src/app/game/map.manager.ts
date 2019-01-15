@@ -106,7 +106,9 @@ export class MapManager {
   maxEnemyCount = 25;
 
   tileMap: Phaser.Tilemaps.Tilemap;
-  mapLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  oceanLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  groundLayer: Phaser.Tilemaps.DynamicTilemapLayer;
+  mountainLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   resourceLayer: Phaser.Tilemaps.DynamicTilemapLayer;
   buildingLayer: Phaser.Tilemaps.DynamicTilemapLayer;
 
@@ -184,13 +186,17 @@ export class MapManager {
 
     this.resize();
 
-    this.scene.load.image('map', 'assets/sprites/map-extruded.png');
+    // Tilesets
+    this.scene.load.image('ocean', 'assets/sprites/water-export.png');
+    this.scene.load.image('grass', 'assets/sprites/grass-export-extruded.png');
+    this.scene.load.image('mountain', 'assets/sprites/mountain-export-extruded.png');
     this.scene.load.image('buildings', 'assets/sprites/buildings-extruded.png');
     this.scene.load.image('resourceSpawns', 'assets/sprites/resourceSpawns-extruded.png');
 
     this.scene.load.spritesheet('buildingSprites', 'assets/sprites/buildings.png', { frameWidth: 48, frameHeight: 48 });
     this.scene.load.spritesheet('resources', 'assets/sprites/resources.png', { frameWidth: 48, frameHeight: 48 });
 
+    // Actor sprite sheets
     this.scene.load.spritesheet(
       'actor', 'assets/sprites/actorBase-export-extruded.png', { frameWidth: 48, frameHeight: 48, margin: 1, spacing: 2 });
     this.scene.load.spritesheet(
@@ -262,8 +268,8 @@ export class MapManager {
 
     this.cameraControls = new Phaser.Cameras.Controls.SmoothedKeyControl(controlConfig);
 
-    const xMax = this.mapLayer.tileToWorldX(this.mapWidth);
-    const yMax = this.mapLayer.tileToWorldY(this.mapHeight);
+    const xMax = this.groundLayer.tileToWorldX(this.mapWidth);
+    const yMax = this.groundLayer.tileToWorldY(this.mapHeight);
     this.mainCamera.setBounds(0, 0, xMax, yMax, false).setName('main');
 
     this.minimapCamera = this.scene.cameras.add(this.mainCamera.width - this.minimapSize, this.mainCamera.height - this.minimapSize,
@@ -296,7 +302,7 @@ export class MapManager {
       if (this.cursorTool === CursorTool.PlaceBuildings) {
         this.game.pathfinding.updateGrid();
       } else if (this.cursorTool === CursorTool.ClearBuildings) {
-        this.game.pathfinding.updatePaths(this.getMapTile(this.pointerTileX, this.pointerTileY));
+        this.game.pathfinding.updatePaths(this.getGroundTile(this.pointerTileX, this.pointerTileY));
       }
     };
   }
@@ -310,8 +316,8 @@ export class MapManager {
 
     const cursorWorldPoint = pointer.positionToCamera(this.mainCamera) as Phaser.Math.Vector2;
 
-    this.pointerTileX = this.mapLayer.worldToTileX(cursorWorldPoint.x);
-    this.pointerTileY = this.mapLayer.worldToTileY(cursorWorldPoint.y);
+    this.pointerTileX = this.groundLayer.worldToTileX(cursorWorldPoint.x);
+    this.pointerTileY = this.groundLayer.worldToTileY(cursorWorldPoint.y);
 
     this.minimapPanBox.x = this.mainCamera.worldView.x + this.mainCamera.width / 2;
     this.minimapPanBox.y = this.mainCamera.worldView.y + this.mainCamera.height / 2;
@@ -344,8 +350,8 @@ export class MapManager {
       this.unitPlaceCircle.radius = tileRadius * this.tilePixelSize;
 
       // Don't question the wierd math, it just works
-      this.unitPlaceCircle.x = this.mapLayer.tileToWorldX(this.pointerTileX - Math.floor(tileRadius / 2));
-      this.unitPlaceCircle.y = this.mapLayer.tileToWorldY(this.pointerTileY - Math.floor(tileRadius / 2));
+      this.unitPlaceCircle.x = this.groundLayer.tileToWorldX(this.pointerTileX - Math.floor(tileRadius / 2));
+      this.unitPlaceCircle.y = this.groundLayer.tileToWorldY(this.pointerTileY - Math.floor(tileRadius / 2));
 
     } else {
       this.unitPlaceCircle.visible = false;
@@ -359,14 +365,14 @@ export class MapManager {
 
     // Updating tilemap GameObjects
 
-    if (!this.mapLayer) {
+    if (!this.groundLayer) {
       return;
     }
 
     const resourceAnimations = this.resourceAnimationGroup.children.entries.map(anim => anim as ResourceAnimation);
     resourceAnimations.map(animation => animation.tick(elapsed, deltaTime));
 
-    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['buildingNode'])) {
+    for (const tile of this.groundLayer.filterTiles(_tile => _tile.properties['buildingNode'])) {
       tile.properties['buildingNode'].tick(elapsed, deltaTime);
     }
 
@@ -444,7 +450,7 @@ export class MapManager {
 
           break;
         } case CursorTool.TileDetail: {
-          const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
+          const tile = this.getGroundTile(this.pointerTileX, this.pointerTileY);
           if (tile.properties['resourceNode'] || tile.properties['buildingNode']) {
             this.focusedTile = tile;
           } else {
@@ -457,7 +463,7 @@ export class MapManager {
 
           break;
         } case CursorTool.UnitDetail: {
-          const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
+          const tile = this.getGroundTile(this.pointerTileX, this.pointerTileY);
           if (tile.properties['resourceNode'] || tile.properties['buildingNode']) {
             this.focusedTile = tile;
           }
@@ -471,8 +477,8 @@ export class MapManager {
         } case CursorTool.PathfindingTest1: {
           this.pathfindingTestGroup.clear(false, true);
 
-          const tile = this.getMapTile(this.pointerTileX, this.pointerTileY);
-          const homeTile = this.mapLayer.findTile(_tile => _tile.properties['buildingNode'] &&
+          const tile = this.getGroundTile(this.pointerTileX, this.pointerTileY);
+          const homeTile = this.groundLayer.findTile(_tile => _tile.properties['buildingNode'] &&
             _tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
           this.game.pathfinding.findPath(tile, homeTile, tilePath => {
@@ -532,9 +538,18 @@ export class MapManager {
       return;
     }
 
-    if (this.mapLayer) {
-      this.mapLayer.destroy();
+    if (this.oceanLayer) {
+      this.oceanLayer.destroy();
     }
+
+    if (this.groundLayer) {
+      this.groundLayer.destroy();
+    }
+
+    if (this.mountainLayer) {
+      this.mountainLayer.destroy();
+    }
+
     if (this.resourceLayer) {
       this.resourceLayer.destroy();
     }
@@ -553,11 +568,15 @@ export class MapManager {
 
     this.mapIslands = [];
 
-    const mapTileset = this.tileMap.addTilesetImage('map', 'map', 48, 48, 1, 2);
+    const oceanTileset = this.tileMap.addTilesetImage('ocean', 'ocean', 48, 48);
+    const grassTileset = this.tileMap.addTilesetImage('grass', 'grass', 48, 48, 1, 2);
+    const mountainTileset = this.tileMap.addTilesetImage('mountain', 'mountain', 48, 48, 1, 2);
     const resourceTileset = this.tileMap.addTilesetImage('resourceSpawns', 'resourceSpawns', 48, 48, 1, 2);
     const buildingTileset = this.tileMap.addTilesetImage('buildings', 'buildings', 48, 48, 1, 2);
 
-    this.mapLayer = this.tileMap.createBlankDynamicLayer('mapLayer', mapTileset);
+    this.oceanLayer = this.tileMap.createBlankDynamicLayer('oceanLayer', oceanTileset);
+    this.groundLayer = this.tileMap.createBlankDynamicLayer('groundLayer', grassTileset);
+    this.mountainLayer = this.tileMap.createBlankDynamicLayer('mountainLayer', mountainTileset);
     this.resourceLayer = this.tileMap.createBlankDynamicLayer('resourceLayer', resourceTileset);
     this.buildingLayer = this.tileMap.createBlankDynamicLayer('buildingLayer', buildingTileset);
 
@@ -566,6 +585,9 @@ export class MapManager {
         this.generateChunk(x, y);
       }
     }
+
+    this.processAutotiling(this.groundLayer, tile => tile.properties['tileType'] !== MapTileType.Water);
+    this.processAutotiling(this.mountainLayer, tile => tile.properties['tileType'] === MapTileType.Mountain);
 
     this.processIslands();
 
@@ -630,10 +652,16 @@ export class MapManager {
         const tileId = this.getChunkOffset(x, y) + y * this.chunkWidth + x;
         const tileType = this.getBiome(noiseValue);
 
-        const tile = this.mapLayer.putTileAt(this.tileIndices[tileType], x, y);
+        const tile = this.groundLayer.putTileAt(this.tileIndices[tileType], x, y);
         tile.properties['id'] = tileId;
         tile.properties['height'] = noiseValue;
         tile.properties['tileType'] = tileType;
+
+        this.oceanLayer.putTileAt(0, x, y);
+
+        if (tileType === MapTileType.Mountain) {
+          this.mountainLayer.putTileAt(13, x, y);
+        }
       }
     }
 
@@ -653,14 +681,14 @@ export class MapManager {
         // Check nearby tiles to see if this tile is higher than all of them
         for (let ny = y - scanRange; ny < y + scanRange; ny++) {
           for (let nx = x - scanRange; nx < x + scanRange; nx++) {
-            const neighborTile = this.getMapTile(nx, ny);
+            const neighborTile = this.getGroundTile(nx, ny);
             if (neighborTile && neighborTile.properties['height'] > maxNoise) {
               maxNoise = neighborTile.properties['height'];
             }
           }
         }
 
-        const tile = this.getMapTile(x, y);
+        const tile = this.getGroundTile(x, y);
         if (tile.properties['height'] === maxNoise) {
           const distanceToCenter = new Phaser.Math.Vector2(Math.abs(tile.x - centerVector.x),
                                                            Math.abs(tile.y - centerVector.y)).length();
@@ -727,6 +755,111 @@ export class MapManager {
     }
   }
 
+  processAutotiling(layer: Phaser.Tilemaps.DynamicTilemapLayer, tileValidityTester: (tile: Phaser.Tilemaps.Tile) => boolean) {
+    // Hard-coded tile adjacency values; see http://www.cr31.co.uk/stagecast/wang/blob.html for more details.
+    const tileValues = [
+      20, 68,  92, 112, 28,  124, 116, 80,
+      21, 84,  87, 221, 127, 255, 241, 17,
+      29, 117, 85, 95,  247, 215, 209, 1,
+      23, 213, 81, 31,  253, 125, 113, 16,
+      5,  69,  93, 119, 223, 255, 245, 65,
+      0,  4,   71, 193, 7,   199, 197, 64,
+    ];
+
+    const tileValues90Degrees = [
+      -1,  -1, -1, -1,  -1,  -1, -1, -1,
+      84,  -1, 93, -1,  253, -1, -1, 68,
+      116, -1, -1, 125, -1,  -1, -1, 4,
+      92,  -1, -1, 124, -1,  -1, -1, -1,
+      20,  -1, -1, 221, -1,  -1, -1, -1,
+      -1,  -1, -1, -1,  28,  -1, -1, -1
+    ];
+
+    const tileValues180Degrees = [
+      -1,  -1, -1,  -1,  -1,  -1, -1, -1,
+      81,  -1, 117, -1,  247, -1, -1, -1,
+      209, -1, -1,  245, -1,  -1, -1, 16,
+      113, -1, -1,  241, -1,  -1, -1, -1,
+      80,  -1, -1,  -1,  -1,  -1, -1, -1,
+      -1,  -1, -1,  -1,  112, -1, -1, -1
+    ];
+
+    const tileValues270Degrees = [
+      -1,  -1, -1,  -1,  -1,  -1, -1, -1,
+      69,  -1, 213, -1,  223, -1, -1, -1,
+      71,  -1, -1,  215, -1,  -1, -1, 64,
+      197, -1, -1,  199, -1,  -1, -1, -1,
+      65,  -1, -1,  -1,  -1,  -1, -1, -1,
+      -1,  -1, -1,  -1,  193, -1, -1, -1
+    ];
+
+    for (let i = 0; i < this.mapWidth; i++) {
+      for (let j = 0; j < this.mapHeight; j++) {
+        const tile = this.getTileFromLayer(i, j, layer);
+
+        if (!tile) {
+          continue;
+        } else if (tile.properties['tileType'] === MapTileType.Water) {
+          tile.visible = false;
+          continue;
+        }
+
+        const adjacentTileIndices = [
+          {x: tile.x, y: tile.y - 1},
+          {x: tile.x + 1, y: tile.y - 1},
+          {x: tile.x + 1, y: tile.y},
+          {x: tile.x + 1, y: tile.y + 1},
+          {x: tile.x, y: tile.y + 1},
+          {x: tile.x - 1, y: tile.y + 1},
+          {x: tile.x - 1, y: tile.y},
+          {x: tile.x - 1, y: tile.y - 1},
+        ];
+
+        // We're basing the desired index within the tilset on the biomes of the diagonal tiles.
+        let tileValue = 0;
+
+        for (let k = 0; k < adjacentTileIndices.length; k++) {
+          const tileIsDiagonal = k % 2 === 1;
+          if (tileIsDiagonal) {
+            // We only want to consider diagonals if both of the other adjacent tiles are considered valid as well.
+            // If they're not, then this tile does not affect the tile we're working on.
+            const adjacentOrthogonalTileIndex1 = adjacentTileIndices[k - 1];
+            const adjacentOrthogonalTileIndex2 = k + 1 === adjacentTileIndices.length ?
+              adjacentTileIndices[0] : adjacentTileIndices[k + 1];
+
+            const adjacentOrthogonalTile1 = this.getGroundTile(adjacentOrthogonalTileIndex1.x, adjacentOrthogonalTileIndex1.y);
+            const adjacentOrthogonalTile2 = this.getGroundTile(adjacentOrthogonalTileIndex2.x, adjacentOrthogonalTileIndex2.y);
+
+            if ((adjacentOrthogonalTile1 && !tileValidityTester(adjacentOrthogonalTile1)) ||
+                (adjacentOrthogonalTile2 && !tileValidityTester(adjacentOrthogonalTile2))) {
+              continue;
+            }
+          }
+
+          const adjacentTile = this.getGroundTile(adjacentTileIndices[k].x, adjacentTileIndices[k].y);
+          if (adjacentTile && tileValidityTester(adjacentTile)) {
+            tileValue += Math.pow(2, k);
+          }
+        }
+
+        if (tileValues270Degrees.includes(tileValue)) {
+          tile.index = tileValues270Degrees.indexOf(tileValue);
+          tile.rotation = Math.PI * 3 / 2;
+        } else if (tileValues180Degrees.includes(tileValue)) {
+          tile.index = tileValues180Degrees.indexOf(tileValue);
+          tile.rotation = Math.PI;
+        } else if (tileValues90Degrees.includes(tileValue)) {
+          tile.index = tileValues90Degrees.indexOf(tileValue);
+          tile.rotation = Math.PI / 2;
+        } else if (tileValues.includes(tileValue)) {
+          tile.index = tileValues.indexOf(tileValue);
+        } else {
+          tile.index = tileValues.indexOf(0);
+        }
+      }
+    }
+  }
+
   spawnHarvestedResourceAnimation(resource: Resource, multiplier: number = 1, spawnedByPlayer: boolean) {
     let matchingTiles = this.getResourceTiles(resource.resourceEnum).filter(_tile => _tile.properties['resourceNode'].path.length);
 
@@ -756,8 +889,8 @@ export class MapManager {
 
   spawnResourceAnimation(resourceEnum: ResourceEnum, multiplier: number, animationType: ResourceAnimationType,
                          startTile: Phaser.Tilemaps.Tile, tilePath: Phaser.Tilemaps.Tile[], spawnedByPlayer: boolean, market?: Market) {
-    const worldX = this.mapLayer.tileToWorldX(startTile.x) + startTile.width / 4;
-    const worldY = this.mapLayer.tileToWorldY(startTile.y) + startTile.height / 4;
+    const worldX = this.groundLayer.tileToWorldX(startTile.x) + startTile.width / 4;
+    const worldY = this.groundLayer.tileToWorldY(startTile.y) + startTile.height / 4;
 
     const resourceSpriteIndex = this.tileIndices[resourceEnum];
 
@@ -793,7 +926,7 @@ export class MapManager {
   }
 
   spawnUnit(unitType: UnitType, tileX: number, tileY: number, spawnForFree = false): Unit {
-    const spawnTile = this.mapLayer.getTileAt(tileX, tileY);
+    const spawnTile = this.groundLayer.getTileAt(tileX, tileY);
     const unitData = this.game.unit.unitsData[unitType];
 
     if (!spawnForFree && (!this.game.unit.canAffordUnit(unitType) ||
@@ -874,7 +1007,7 @@ export class MapManager {
 
   getRandomTile(mapTileTypes?: MapTileType[], avoidResources = false,
       minX = 0, maxX = Infinity, minY = 0, maxY = Infinity): Phaser.Tilemaps.Tile {
-    let tiles = this.mapLayer.getTilesWithin(minX, minY, maxX - minX, maxY - minY);
+    let tiles = this.groundLayer.getTilesWithin(minX, minY, maxX - minX, maxY - minY);
 
     if (mapTileTypes) {
       tiles = tiles.filter(tile => mapTileTypes.includes(tile.properties['tileType']));
@@ -891,7 +1024,7 @@ export class MapManager {
 
     if (mapTileTypes) {
       islands = islands.filter(island => {
-        const tileTypes = island.tiles.map(tile => this.mapLayer.getTileAt(tile.x, tile.y).properties['tileType']);
+        const tileTypes = island.tiles.map(tile => this.groundLayer.getTileAt(tile.x, tile.y).properties['tileType']);
         return tileTypes.filter(type => mapTileTypes.includes(type)).length >= minimumSize;
       });
     }
@@ -903,7 +1036,7 @@ export class MapManager {
 
   getRandomTileOnIsland(islandId: number, mapTileTypes?: MapTileType[],
       avoidResources = false, getActiveBuilding = false): Phaser.Tilemaps.Tile {
-    let islandTiles = this.mapIslands[islandId].tiles.map(tile => this.mapLayer.getTileAt(tile.x, tile.y));
+    let islandTiles = this.mapIslands[islandId].tiles.map(tile => this.groundLayer.getTileAt(tile.x, tile.y));
 
     if (mapTileTypes) {
       islandTiles = islandTiles.filter(tile => mapTileTypes.includes(tile.properties['tileType']));
@@ -922,7 +1055,7 @@ export class MapManager {
   }
 
   islandHasActiveTiles(islandId: number): boolean {
-    const islandTiles = this.mapIslands[islandId].tiles.map(tile => this.mapLayer.getTileAt(tile.x, tile.y));
+    const islandTiles = this.mapIslands[islandId].tiles.map(tile => this.groundLayer.getTileAt(tile.x, tile.y));
     return islandTiles.some(tile => tile.properties['buildingNode'] &&
       tile.properties['buildingNode'].health > 0 && tile.properties['buildingNode'].tileType !== BuildingTileType.Home);
   }
@@ -935,7 +1068,7 @@ export class MapManager {
     const buildingExists = this.buildingLayer.getTileAt(x, y) != null;
     const resourceExists = this.resourceLayer.getTileAt(x, y) != null;
 
-    const mapTile = this.mapLayer.getTileAt(x, y);
+    const mapTile = this.groundLayer.getTileAt(x, y);
     const canPlaceHere = buildingData.buildableSurfaces.includes(mapTile.properties['tileType']);
 
     if (buildingExists || resourceExists || !canPlaceHere) {
@@ -975,7 +1108,7 @@ export class MapManager {
         const oldIsland = this.mapIslands[oldIslandId];
 
         for (const tileCoordinate of oldIsland.tiles) {
-          this.mapLayer.getTileAt(tileCoordinate.x, tileCoordinate.y).properties['islandId'] = islandId;
+          this.groundLayer.getTileAt(tileCoordinate.x, tileCoordinate.y).properties['islandId'] = islandId;
         }
 
         this.mapIslands[islandId].tiles = this.mapIslands[islandId].tiles.concat(oldIsland.tiles);
@@ -988,8 +1121,8 @@ export class MapManager {
   }
 
   clearBuilding(x: number, y: number) {
-    const buildingTile = this.mapLayer.getTileAt(x, y);
-    const mapTile = this.mapLayer.getTileAt(x, y);
+    const buildingTile = this.groundLayer.getTileAt(x, y);
+    const mapTile = this.groundLayer.getTileAt(x, y);
     if (!buildingTile || !buildingTile.properties['buildingNode'] || !buildingTile.properties['buildingNode'].removable) {
       return;
     }
@@ -999,7 +1132,7 @@ export class MapManager {
 
     this.game.buildings.refundBuilding(buildingData, buildingNode.health / buildingNode.maxHealth);
 
-    this.mapLayer.getTileAt(x, y).properties['buildingNode'].destroy();
+    this.groundLayer.getTileAt(x, y).properties['buildingNode'].destroy();
     this.clearBuildingTile(x, y);
     if (buildingData.placesResourceTile) {
       this.clearResourceTile(x, y);
@@ -1033,7 +1166,8 @@ export class MapManager {
   }
 
   processIslands(startTile?: Phaser.Tilemaps.Tile) {
-    const tilesToProcess = startTile ? [startTile] : this.mapLayer.filterTiles(_tile => _tile.properties['tileType'] !== MapTileType.Water);
+    const tilesToProcess = startTile ? [startTile] :
+      this.groundLayer.filterTiles(_tile => _tile.properties['tileType'] !== MapTileType.Water);
 
     const visitedTileIds: number[] = [];
     for (const tile of tilesToProcess) {
@@ -1076,7 +1210,7 @@ export class MapManager {
     for (const position of neighborPositions) {
       if (position.x >= 0 && position.x < this.mapWidth &&
           position.y >= 0 && position.y < this.mapHeight) {
-        tiles.push(this.getMapTile(position.x, position.y));
+        tiles.push(this.getGroundTile(position.x, position.y));
       }
     }
 
@@ -1088,21 +1222,25 @@ export class MapManager {
     return chunkIndex * this.chunkWidth * this.chunkHeight;
   }
 
-  getMapTile(x: number, y: number): Phaser.Tilemaps.Tile {
-    return this.mapLayer.getTileAt(x, y);
+  getTileFromLayer(x: number, y: number, layer: Phaser.Tilemaps.DynamicTilemapLayer) {
+    return layer.getTileAt(x, y);
   }
 
-  setMapTile(x: number, y: number, tile: Phaser.Tilemaps.Tile) {
-    this.mapLayer.putTileAt(tile, x, y);
+  getGroundTile(x: number, y: number): Phaser.Tilemaps.Tile {
+    return this.groundLayer.getTileAt(x, y);
   }
 
-  clearMapTile(x: number, y: number) {
-    this.mapLayer.removeTileAt(x, y);
+  setGroundTile(x: number, y: number, tile: Phaser.Tilemaps.Tile) {
+    this.groundLayer.putTileAt(tile, x, y);
+  }
+
+  clearGroundTile(x: number, y: number) {
+    this.groundLayer.removeTileAt(x, y);
   }
 
   setBuildingTile(x: number, y: number, tileType: BuildingTileType, removable: boolean): Phaser.Tilemaps.Tile {
-    const buildingTile = this.buildingLayer.putTileAt(this.tileIndices[tileType], x, y);
-    const mapTile = this.mapLayer.getTileAt(x, y);
+    this.buildingLayer.putTileAt(this.tileIndices[tileType], x, y);
+    const mapTile = this.groundLayer.getTileAt(x, y);
 
     const buildingData = this.buildingTileData.get(tileType);
 
@@ -1136,14 +1274,14 @@ export class MapManager {
   clearBuildingTile(x: number, y: number) {
     this.buildingLayer.removeTileAt(x, y);
 
-    const mapTile = this.mapLayer.getTileAt(x, y);
+    const mapTile = this.groundLayer.getTileAt(x, y);
     mapTile.properties['buildingNode'] = null;
   }
 
   putResourceNearSpawn(resourceTileType: ResourceTileType, spawnAreaSize: number, desiredSpawnTypes: MapTileType[]) {
     const homeTile = this.getHomeTile();
 
-    const spawnArea = this.mapLayer.getTilesWithin(homeTile.x - Math.floor(spawnAreaSize / 2),
+    const spawnArea = this.groundLayer.getTilesWithin(homeTile.x - Math.floor(spawnAreaSize / 2),
       homeTile.y - Math.floor(spawnAreaSize / 2), spawnAreaSize, spawnAreaSize);
 
     if (spawnArea.some(tile => tile.properties['resourceNode'] && tile.properties['resourceNode'].tileType === resourceTileType)) {
@@ -1164,7 +1302,7 @@ export class MapManager {
 
     this.resourceLayer.putTileAt(this.tileIndices[tileType], x, y);
 
-    const mapTile = this.mapLayer.getTileAt(x, y);
+    const mapTile = this.groundLayer.getTileAt(x, y);
     mapTile.properties['resourceNode'] = new ResourceNode(tileType, mapTile, resourceData.resourceEnums, health);
 
     return this.resourceLayer.getTileAt(x, y);
@@ -1173,14 +1311,14 @@ export class MapManager {
   clearResourceTile(x: number, y: number) {
     this.resourceLayer.removeTileAt(x, y);
 
-    const mapTile = this.mapLayer.getTileAt(x, y);
+    const mapTile = this.groundLayer.getTileAt(x, y);
     mapTile.properties['resourceNode'] = null;
   }
 
   clearLayeredTile(x: number, y: number) {
-    this.mapLayer.getTileAt(x, y).properties['buildingNode'].destroy();
+    this.groundLayer.getTileAt(x, y).properties['buildingNode'].destroy();
 
-    this.clearMapTile(x, y);
+    this.clearGroundTile(x, y);
     this.clearBuildingTile(x, y);
     this.clearResourceTile(x, y);
   }
@@ -1191,7 +1329,7 @@ export class MapManager {
       resourceEnums = resourceEnums.concat(resourceEnumOrEnums);
     }
 
-    let tiles = this.mapLayer.filterTiles(tile => tile.properties['resourceNode']);
+    let tiles = this.groundLayer.filterTiles(tile => tile.properties['resourceNode']);
 
     if (resourceEnums.length) {
       const tileData = Array.from(this.resourceTileData.values());
@@ -1210,7 +1348,7 @@ export class MapManager {
   getBuildingTiles(buildingTypeOrTypes?: BuildingTileType | BuildingTileType[]): Phaser.Tilemaps.Tile[] {
     const buildingTypes = [].concat(buildingTypeOrTypes);
 
-    let tiles = this.mapLayer.filterTiles(tile => tile.properties['buildingNode']);
+    let tiles = this.groundLayer.filterTiles(tile => tile.properties['buildingNode']);
 
     if (buildingTypeOrTypes) {
       tiles = tiles.filter(tile => buildingTypes.includes(tile.properties['buildingNode'].tileType));
@@ -1252,13 +1390,13 @@ export class MapManager {
       const islandTint = Math.random() * 0xffffff44;
 
       for (const tileCoordinate of island.tiles) {
-        const tile = this.mapLayer.getTileAt(tileCoordinate.x, tileCoordinate.y);
+        const tile = this.groundLayer.getTileAt(tileCoordinate.x, tileCoordinate.y);
 
         tile.tint = islandTint;
       }
     }
 
-    for (const tile of this.mapLayer.filterTiles(_tile => _tile.properties['islandId'] === undefined)) {
+    for (const tile of this.groundLayer.filterTiles(_tile => _tile.properties['islandId'] === undefined)) {
       tile.tint = 0xffffffff;
     }
   }

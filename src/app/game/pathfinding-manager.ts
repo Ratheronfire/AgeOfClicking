@@ -41,7 +41,7 @@ export class PathfindingManager {
     for (let i = 0; i < this.game.map.mapHeight; i++) {
       mapArray[i] = [];
       for (let j = 0; j < this.game.map.mapWidth; j++) {
-        const tile = this.game.map.mapLayer.getTileAt(j, i);
+        const tile = this.game.map.groundLayer.getTileAt(j, i);
         const buildingNode: BuildingNode = tile.properties['buildingNode'];
 
         if (this.builderCanPathToNode(buildingNode)) {
@@ -79,7 +79,7 @@ export class PathfindingManager {
 
     tileQueue.push(updatedTile);
 
-    const homeTile = this.game.map.mapLayer.findTile(tile => tile.properties['buildingNode'] &&
+    const homeTile = this.game.map.groundLayer.findTile(tile => tile.properties['buildingNode'] &&
       tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
     while (tileQueue.length) {
@@ -128,7 +128,7 @@ export class PathfindingManager {
       resource.pathAvailable = false;
     }
 
-    const homeTile = this.game.map.mapLayer.findTile(tile => tile.properties['buildingNode'] &&
+    const homeTile = this.game.map.groundLayer.findTile(tile => tile.properties['buildingNode'] &&
       tile.properties['buildingNode'].tileType === BuildingTileType.Home);
 
     for (const resourceTile of resourceTiles) {
@@ -185,7 +185,7 @@ export class PathfindingManager {
         return;
       }
 
-      const tilePath = path.map(node => this.game.map.getMapTile(node.x, node.y));
+      const tilePath = path.map(node => this.game.map.getGroundTile(node.x, node.y));
 
       callback(tilePath);
     });

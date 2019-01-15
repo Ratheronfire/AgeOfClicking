@@ -55,7 +55,7 @@ export class Entity extends Phaser.GameObjects.Sprite {
     this.name = name;
 
     this.spawnPosition = new Phaser.Math.Vector2(x, y);
-    this.currentTile = this.game.map.mapLayer.getTileAtWorldXY(x, y);
+    this.currentTile = this.game.map.groundLayer.getTileAtWorldXY(x, y);
 
     this.health = health;
     this.maxHealth = health;

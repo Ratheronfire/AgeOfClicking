@@ -39,6 +39,7 @@
     "prng-parkmiller-js": "^0.1.1",
     "rxjs": "^6.0.0",
     "simplex-noise": "^2.4.0",
+    "tile-extruder": "^1.1.0",
     "tinyqueue": "^2.0.0",
     "tippy.js": "^3.3.0",
     "zone.js": "~0.8.26"
