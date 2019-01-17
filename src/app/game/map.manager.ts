@@ -234,7 +234,8 @@ export class MapManager {
     this.scene.load.image('buildings', 'assets/sprites/buildings-export-extruded.png');
     this.scene.load.image('resourceSpawns', 'assets/sprites/resourceSpawns-extruded.png');
 
-    this.scene.load.spritesheet('buildingSprites', 'assets/sprites/buildings.png', { frameWidth: 48, frameHeight: 48 });
+    this.scene.load.spritesheet('buildingSprites', 'assets/sprites/buildings-export-extruded.png',
+      { frameWidth: 48, frameHeight: 48, margin: 1, spacing: 2 });
     this.scene.load.spritesheet('resources', 'assets/sprites/resources.png', { frameWidth: 48, frameHeight: 48 });
 
     // Actor sprite sheets
