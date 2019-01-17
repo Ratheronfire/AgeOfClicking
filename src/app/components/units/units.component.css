@@ -39,6 +39,8 @@ mat-card-content {
 .stat .stat-text {
   position: relative;
   top: -8px;
+  font-weight: bolder;
+  z-index: 2;
 }
 
 .stat .stat-bar {

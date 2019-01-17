@@ -4,7 +4,7 @@
       <mat-card-title class="button-text-background">{{focusedUnit.name}}</mat-card-title>
       <mat-card-subtitle class="button-text-stroke">{{focusedUnit.description}}</mat-card-subtitle>
 
-      <div class="repair-container">
+      <!-- <div class="repair-container">
         {{focusedUnit.health}}/{{focusedUnit.maxHealth | longNumber}} Health
         <div *ngIf="focusedUnit.health < focusedUnit.maxHealth">
           <button mat-raised-button (click)="focusedUnit.heal()" color="accent" [disabled]="!focusedUnit.canHeal()">
@@ -21,9 +21,21 @@
         </div>
       </div>
       <br />
-      <br />
+      <br /> -->
 
-      Fed: {{this.focusedUnit.fedPercentage}}
+      <div class="stat">
+        <div class="stat-text">
+          Health
+        </div>
+        <mat-progress-bar class="stat-bar" [value]="(focusedUnit.health / focusedUnit.maxHealth) * 100"></mat-progress-bar>
+      </div>
+
+      <div class="stat">
+        <div class="stat-text">
+          Fed
+        </div>
+        <mat-progress-bar class="stat-bar" [value]="focusedUnit.fedPercentage * 100"></mat-progress-bar>
+      </div>
 
       <mat-button-toggle (click)="toggleFollowUnit()" [checked]="followingUnit">
         <mat-icon>videocam</mat-icon>
@@ -49,7 +61,7 @@
       <div class="inventory">
         <div class="slot" *ngFor="let slot of focusedUnit.inventory">
           <div class="slot-size" *ngIf="slot.resourceEnum !== null">
-              {{slot.amount}}
+              {{slot.amount | number:'1.0-0'}}
           </div>
           <img class="resource-img" *ngIf="slot.resourceEnum !== null" id="{{getResource(slot.resourceEnum).name | resourceId}}" src="assets/sprites/transparent.png"
             alt="{{getResource(slot.resourceEnum).name}}">

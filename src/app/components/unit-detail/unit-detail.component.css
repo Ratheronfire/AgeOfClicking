@@ -41,6 +41,30 @@ mat-card {
   top: 5px;
 }
 
+.stat {
+  width: 100%;
+  height: 20px;
+  position: relative;
+}
+
+.stat .stat-text {
+  position: relative;
+  font-weight: bolder;
+  z-index: 2;
+}
+
+.stat .stat-bar {
+  display: flex;
+  align-content: center;
+  align-items: center;
+
+  height: 100%;
+  top: 0px;
+
+  position: absolute;
+  opacity: 0.5;
+}
+
 .inventory {
   display: flex;
 }
