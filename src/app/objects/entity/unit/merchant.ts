@@ -112,7 +112,9 @@ export class Merchant extends Unit {
     for (let i = 0; i < resourcesToSell.length && this.totalHeld < this.resourceCapacity; i++) {
       const amountToTake = Math.min(resourcesToSell[i].amount - resourcesToSell[i].autoSellCutoff, this.resourceCapacity - this.totalHeld);
 
-      this.takeResourceFromBase(resourcesToSell[i].resourceEnum, amountToTake);
+      if (amountToTake > 0) {
+        this.takeResourceFromBase(resourcesToSell[i].resourceEnum, amountToTake);
+      }
     }
   }
 

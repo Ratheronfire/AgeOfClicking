@@ -290,7 +290,7 @@ export class Actor extends Entity {
    * @param amount The amount of resources to take.
    */
   takeResourceFromBase(resourceEnum: ResourceEnum, amount: number) {
-    if (!this.currentBuildingNode || this.currentBuildingNode.tileType !== BuildingTileType.Home ||
+    if (amount < 0 || !this.currentBuildingNode || this.currentBuildingNode.tileType !== BuildingTileType.Home ||
         !this.canAddToInventory(resourceEnum, amount) || !this.canTakeResource(resourceEnum, amount)) {
       return;
     }
