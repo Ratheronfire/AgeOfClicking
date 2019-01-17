@@ -77,6 +77,10 @@ export class LayerAutotiler {
     this.refreshTile(tile.x + 1, tile.y);
     this.refreshTile(tile.x, tile.y - 1);
     this.refreshTile(tile.x, tile.y + 1);
+    this.refreshTile(tile.x - 1, tile.y - 1);
+    this.refreshTile(tile.x - 1, tile.y + 1);
+    this.refreshTile(tile.x + 1, tile.y - 1);
+    this.refreshTile(tile.x + 1, tile.y + 1);
     this.refreshTile(tile.x, tile.y);
   }
 
