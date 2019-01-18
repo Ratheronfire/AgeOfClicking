@@ -20,8 +20,8 @@ export class UpgradesManager {
   public loadBaseUpgrades() {
     this.upgrades = [];
     for (const baseUpgrade of baseUpgrades) {
-      const upgrade = new Upgrade(baseUpgrade.id, baseUpgrade.name, baseUpgrade.description, baseUpgrade.upgradeType,
-                                  baseUpgrade.upgradeEffects, baseUpgrade.resourceCosts, false, this.game);
+      const upgrade = new Upgrade(baseUpgrade.id, baseUpgrade.name, baseUpgrade.description, baseUpgrade.flavorText,
+        baseUpgrade.upgradeType, baseUpgrade.upgradeEffects, baseUpgrade.resourceCosts, false, this.game);
       this.upgrades.push(upgrade);
     }
   }

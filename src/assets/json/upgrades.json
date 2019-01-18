@@ -3,7 +3,8 @@
     "id": 0,
     "upgradeType": "RESOURCE",
     "name": "Refined Iron Axe",
-    "description": "A stronger, more durable axe. Harvests 20% more wood per task.",
+    "description": "Harvests 20% more wood per task.",
+    "flavorText": "A stronger, more durable axe.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.2, "maxTier": "1"}
     ],
@@ -15,7 +16,8 @@
     "id": 1,
     "upgradeType": "RESOURCE",
     "name": "Twin Axes",
-    "description": "One axe in each hand means double productivity. It makes sense. Reduces wood harvesting time by 50%.",
+    "description": "Reduces wood harvesting time by 50%.",
+    "flavorText": "One axe in each hand means double productivity. It makes sense.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.9, "maxTier": "1"}
     ],
@@ -27,7 +29,8 @@
     "id": 2,
     "upgradeType": "RESOURCE",
     "name": "Worn Pickaxe",
-    "description": "A basic pickaxe. Not much, but it gets the job done. Allows harvesting of basic metals and minerals.",
+    "description": "Allows harvesting of basic metals and minerals.",
+    "flavorText": "A basic pickaxe. Not much, but it gets the job done.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "COPPERORE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "TINORE",    "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
@@ -40,7 +43,8 @@
     "id": 3,
     "upgradeType": "WORKER",
     "name": "Lumberjack's Guild",
-    "description": "Form a guild to help your workers hone their skills. Workers harvest 15% more wood.",
+    "description": "Lumberjacks harvest 15% more wood.",
+    "flavorText": "Form a guild to help your workers hone their skills.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.15, "maxTier": 2}
     ],
@@ -51,7 +55,8 @@
     "id": 5,
     "upgradeType": "RESOURCE",
     "name": "Bronze Pickaxe",
-    "description": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
+    "description": "Allows harvesting of graphite and iron ore.",
+    "flavorText": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "GRAPHITE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONORE", "upgradeVariable":  "HARVESTABILITY", "upgradeFactor": 1}
@@ -64,7 +69,8 @@
     "id": 6,
     "upgradeType": "RESOURCE",
     "name": "Sharpened Pickaxe",
-    "description": "A highly sharpened pickaxe. Mines at a much higher rate.",
+    "description": "Decreases metal and mineral harvest time by 10%.",
+    "flavorText": "A highly sharpened pickaxe. Mines at a much higher rate.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "COPPERORE", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.9},
       {"upgradeIsForWholeType": false, "resourceEnum": "TINORE",    "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.9},
@@ -80,9 +86,10 @@
     "id": 8,
     "upgradeType": "RESOURCE",
     "name": "Bronze Axe",
-    "description": "With this, you can bring down stronger and taller trees.",
+    "description": "Allows harvesting of pine and birch trees.",
+    "flavorText": "With this, you can bring down stronger and taller trees.",
     "upgradeEffects": [
-      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "GRAPHITE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1, "maxTier": 2}
+      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1, "maxTier": 2}
     ],
     "resourceCosts": [
       {"resourceEnum": "BRONZEINGOT", "resourceCost": 10},
@@ -92,9 +99,10 @@
     "id": 9,
     "upgradeType": "RESOURCE",
     "name": "Iron Axe",
-    "description": "With this, you can bring down stronger and taller trees.",
+    "description": "Allows harvesting of eucalyptus and willow trees.",
+    "flavorText": "With this, you can bring down stronger and taller trees.",
     "upgradeEffects": [
-      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "GRAPHITE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1, "maxTier": 4}
+      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1, "maxTier": 4}
     ],
     "resourceCosts": [
       {"resourceEnum": "IRONINGOT", "resourceCost": 30},
@@ -104,7 +112,8 @@
     "id": 10,
     "upgradeType": "RESOURCE",
     "name": "Steel Axe",
-    "description": "With this, you can bring down stronger and taller trees.",
+    "description": "Allows harvesting of teak trees.",
+    "flavorText": "With this, you can bring down stronger and taller trees.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "GRAPHITE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1, "maxTier": 5}
     ],
@@ -116,7 +125,8 @@
     "id": 11,
     "upgradeType": "RESOURCE",
     "name": "Latinum Axe",
-    "description": "An axe strong enough to free the spirits of ents from the bodies that entomb them.",
+    "description": "Allows harvesting of ent souls.",
+    "flavorText": "An axe strong enough to free the spirits of ents from the bodies that entomb them.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "GRAPHITE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1, "maxTier": 6}
     ],
@@ -129,9 +139,10 @@
     "id": 12,
     "upgradeType": "RESOURCE",
     "name": "Temprous Staff",
-    "description": "Imbued with the power of ages past, this staff can reunite ent spirits with their former bodies, granting them new life.",
+    "description": "Allows harvesting of reanimated ents.",
+    "flavorText": "Imbued with the power of ages past, this staff can reunite ent spirits with their former bodies, granting them new life.",
     "upgradeEffects": [
-      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "GRAPHITE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1}
+      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1}
     ],
     "resourceCosts": [
       {"resourceEnum": "TEMPROUSINGOT", "resourceCost": 1500},
@@ -142,7 +153,8 @@
     "id": 13,
     "upgradeType": "RESOURCE",
     "name": "Iron Pickaxe",
-    "description": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
+    "description": "Allows harvesting of limestone, marble, and gold ore.",
+    "flavorText": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "LIMESTONE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "MARBLE",    "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
@@ -156,7 +168,8 @@
     "id": 14,
     "upgradeType": "RESOURCE",
     "name": "Steel Pickaxe",
-    "description": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
+    "description": "Allows harvesting of quartz, obsidian, and latinum ore.",
+    "flavorText": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "QUARTZ",     "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "LATINUMORE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
@@ -170,7 +183,8 @@
     "id": 15,
     "upgradeType": "RESOURCE",
     "name": "Latinum Pickaxe",
-    "description": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
+    "description": "Allows harvesting of diamond, unbelievium ore, lustrial ore, and spectrus ore.",
+    "flavorText": "A stronger and more durable pickaxe, capable of mining more valuable metals.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "DIAMOND",        "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "UNBELIEVIUMORE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
@@ -186,7 +200,8 @@
     "id": 20,
     "upgradeType": "RESOURCE",
     "name": "Refined Steel Axe",
-    "description": "A stronger, more durable axe. Harvests 45% more wood per task.",
+    "description": "Harvests 45% more wood per task.",
+    "flavorText": "A stronger, more durable axe.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.45}
     ],
@@ -198,7 +213,8 @@
     "id": 21,
     "upgradeType": "RESOURCE",
     "name": "Refined Latinum Axe",
-    "description": "A stronger, more durable axe. Harvests 150% more wood per task.",
+    "description": "Harvests 150% more wood per task.",
+    "flavorText": "A stronger, more durable axe.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.5}
     ],
@@ -211,7 +227,8 @@
     "id": 22,
     "upgradeType": "RESOURCE",
     "name": "Emblem of the Ents",
-    "description": "Imbues revived ents with far greater power. Grants an extra 75% per revived ent.",
+    "description": "Grants an extra 75% ents reanimated per harvest.",
+    "flavorText": "Imbues revived ents with far greater power.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "REANIMATEDENT", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.75}
     ],
@@ -224,7 +241,8 @@
     "id": 23,
     "upgradeType": "RESOURCE",
     "name": "Refined Iron Pickaxe",
-    "description": "A stronger, more durable pickaxe. Harvests 20% more material per task.",
+    "description": "Harvests 20% more material per task.",
+    "flavorText": "A stronger, more durable pickaxe.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "STONE",     "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.2},
       {"upgradeIsForWholeType": false, "resourceEnum": "GRAPHITE",  "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.2},
@@ -240,7 +258,8 @@
     "id": 24,
     "upgradeType": "RESOURCE",
     "name": "Refined Steel Pickaxe",
-    "description": "A stronger, more durable pickaxe. Harvests 75% more material per task.",
+    "description": "Harvests 75% more material per task.",
+    "flavorText": "A stronger, more durable pickaxe.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "STONE",     "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.75},
       {"upgradeIsForWholeType": false, "resourceEnum": "GRAPHITE",  "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.75},
@@ -259,7 +278,8 @@
     "id": 25,
     "upgradeType": "RESOURCE",
     "name": "Refined Latinum Pickaxe",
-    "description": "A stronger, more durable pickaxe. Harvests 200% more material per task.",
+    "description": "Harvests 200% more material per task.",
+    "flavorText": "A stronger, more durable pickaxe.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "STONE",          "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "GRAPHITE",       "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
@@ -286,7 +306,8 @@
     "id": 26,
     "upgradeType": "RESOURCE",
     "name": "Expanded Burner",
-    "description": "A larger burner for your forge, capable of smelting ores faster.",
+    "description": "Produces 20% more ingots.",
+    "flavorText": "A larger burner for your forge, capable of smelting ores more efficiently.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.2}
     ],
@@ -298,7 +319,8 @@
     "id": 27,
     "upgradeType": "RESOURCE",
     "name": "Enhanced Burner",
-    "description": "A larger burner for your forge, capable of smelting ores faster.",
+    "description": "Produces 80% more ingots.",
+    "flavorText": "A larger burner for your forge, capable of smelting ores more efficiently.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.8},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",   "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.8},
@@ -312,7 +334,8 @@
     "id": 28,
     "upgradeType": "RESOURCE",
     "name": "Refined Burner",
-    "description": "A larger burner for your forge, capable of smelting ores faster.",
+    "description": "Produces 150% more ingots.",
+    "flavorText": "A larger burner for your forge, capable of smelting ores more efficiently.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",   "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.5},
@@ -327,7 +350,8 @@
     "id": 29,
     "upgradeType": "RESOURCE",
     "name": "Lavish Burner",
-    "description": "A larger burner for your forge, capable of smelting ores faster.",
+    "description": "Produces 180% more ingots.",
+    "flavorText": "A larger burner for your forge, capable of smelting ores more efficiently.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT",  "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.8},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",    "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.8},
@@ -343,7 +367,8 @@
     "id": 30,
     "upgradeType": "RESOURCE",
     "name": "Excessive Burner",
-    "description": "Alright, you can't possibly need this much space.",
+    "description": "Produces 220% more ingots.",
+    "flavorText": "Alright, you can't possibly need this much space.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT",   "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3.2},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",     "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3.2},
@@ -360,7 +385,8 @@
     "id": 31,
     "upgradeType": "RESOURCE",
     "name": "Temprous Purifier",
-    "description": "Increases the purity of temprous ingots processed by the temprous distillery.",
+    "description": "Produces 100% more refined temprous ingots.",
+    "flavorText": "Increases the purity of temprous ingots processed by the temprous distillery.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "REFINEDTEMPROUS", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2}
     ],
@@ -372,9 +398,10 @@
     "id": 32,
     "upgradeType": "RESOURCE",
     "name": "Triplet Axes",
-    "description": "I'm not even going try and figure out how this works, okay?",
+    "description": "Reduces wood harvesting time by 15%.",
+    "flavorText": "I'm not even going try and figure out how this works, okay?",
     "upgradeEffects": [
-      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.86, "maxTier": 3}
+      {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85, "maxTier": 3}
     ],
     "resourceCosts": [
       {"resourceEnum": "WILLOW",     "resourceCost": 55},
@@ -384,7 +411,8 @@
     "id": 33,
     "upgradeType": "RESOURCE",
     "name": "Lumber Mill",
-    "description": "Processes logs at a rate far beyond what's possible manually.",
+    "description": "Reduces wood harvesting time by 20%.",
+    "flavorText": "Processes logs at a rate far beyond what's possible manually.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.8, "maxTier": 5}
     ],
@@ -397,7 +425,8 @@
     "id": 34,
     "upgradeType": "RESOURCE",
     "name": "Enchanted Latinum Axe",
-    "description": "Enchanted by the spirits of fallen ents allows this axe's wielder to operate at an unnatural speed.",
+    "description": "Reduces wood harvesting time by 25%.",
+    "flavorText": "Enchanted by the spirits of fallen ents allows this axe's wielder to operate at an unnatural speed.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.75, "maxTier": 6}
     ],
@@ -410,7 +439,8 @@
     "id": 35,
     "upgradeType": "RESOURCE",
     "name": "Temprous Siphon",
-    "description": "Using this siphon, ents can regain their full strength much more quickly.",
+    "description": "Reduces reanimated ent harvesting time by 30%.",
+    "flavorText": "Using this siphon, ents can regain their full strength much more quickly.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "REANIMATEDENT", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.7}
     ],
@@ -423,7 +453,8 @@
     "id": 36,
     "upgradeType": "RESOURCE",
     "name": "Decorated Pickaxe",
-    "description": "Technically these pickaxes aren't any better, but they look pretty. And that's pretty nice.",
+    "description": "Reduces mining time for metals up to gold ore and minerals up to marble by 12%.",
+    "flavorText": "Technically these pickaxes aren't any better, but they look pretty. And that's pretty nice.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "COPPERORE", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.88},
       {"upgradeIsForWholeType": false, "resourceEnum": "TINORE",    "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.88},
@@ -443,7 +474,8 @@
     "id": 37,
     "upgradeType": "RESOURCE",
     "name": "Explosive Mining",
-    "description": "Pickaxes laced with a tiny, tiny amount of black powder. The science seems to add up.",
+    "description": "Reduces mining time for metals up to spectrus ore and minerals up to diamond by 15%.",
+    "flavorText": "Pickaxes laced with a tiny, tiny amount of black powder. The science seems to add up.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "COPPERORE",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
       {"upgradeIsForWholeType": false, "resourceEnum": "TINORE",         "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
@@ -470,7 +502,8 @@
     "id": 38,
     "upgradeType": "RESOURCE",
     "name": "Temprous Catalyst",
-    "description": "Speeds up the temprous purification process.",
+    "description": "Reduces mining time for refined temprous ingots by 50%.",
+    "flavorText": "Speeds up the temprous purification process.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "REFINEDTEMPROUS", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5}
     ],
@@ -483,7 +516,8 @@
     "id": 39,
     "upgradeType": "RESOURCE",
     "name": "Limestone Burner",
-    "description": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
+    "description": "Reduces mining time for bronze ingots by 10%.",
+    "flavorText": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.9}
     ],
@@ -495,7 +529,8 @@
     "id": 40,
     "upgradeType": "RESOURCE",
     "name": "Marble Burner",
-    "description": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
+    "description": "Reduces mining time for ingots up to steel by 12%.",
+    "flavorText": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.88},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",   "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.88},
@@ -509,7 +544,8 @@
     "id": 41,
     "upgradeType": "RESOURCE",
     "name": "Obsidian Burner",
-    "description": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
+    "description": "Reduces mining time for ingots up to gold by 15%.",
+    "flavorText": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",   "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
@@ -524,7 +560,8 @@
     "id": 42,
     "upgradeType": "RESOURCE",
     "name": "Diamond Burner",
-    "description": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
+    "description": "Reduces mining time for ingots up to latinum by 15%.",
+    "flavorText": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT",  "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",    "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
@@ -541,7 +578,8 @@
     "id": 43,
     "upgradeType": "RESOURCE",
     "name": "Temprous Burner",
-    "description": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
+    "description": "Reduces mining time for ingots up to temprous by 25%.",
+    "flavorText": "This reinforced burner can withstand much higher temperatures, allowing you to produce ingots much faster.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BRONZEINGOT",   "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.75},
       {"upgradeIsForWholeType": false, "resourceEnum": "IRONINGOT",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.75},
@@ -559,7 +597,8 @@
     "id": 44,
     "upgradeType": "WORKER",
     "name": "Kelley the Deforester",
-    "description": "Dammit, Jim! I'm a lumberjack, not a doctor! (Allows you to assign workers for more tree varieties.)",
+    "description": "",
+    "flavorText": "Dammit, Jim! I'm a lumberjack, not a doctor!",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceEnum": "GOLD", "upgradeVariable": "WORKABLE", "upgradeFactor": 1, "resourceType": "WOOD", "maxTier": 5}
       ],
@@ -570,7 +609,8 @@
     "id": 45,
     "upgradeType": "WORKER",
     "name": "Elder Ent",
-    "description": "This respected ent elder will offer his services to help guide more of his kin back into this world.",
+    "description": "",
+    "flavorText": "This respected ent elder will offer his services to help guide more of his kin back into this world.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "ENTSOUL",       "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "REANIMATEDENT", "upgradeVariable": "WORKABLE", "upgradeFactor": 1}
@@ -583,7 +623,8 @@
     "id": 46,
     "upgradeType": "WORKER",
     "name": "Mineral Enthusiast",
-    "description": "Once an officer of the law, this man has put his career aside to pursue his true passion: mining minerals.",
+    "description": "",
+    "flavorText": "Once an officer of the law, this man has put his career aside to pursue his true passion: mining minerals.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "STONE",     "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "GRAPHITE",  "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
@@ -598,7 +639,8 @@
     "id": 47,
     "upgradeType": "WORKER",
     "name": "Mineral Obsessive",
-    "description": "This guy REALLY likes minerals!",
+    "description": "",
+    "flavorText": "This guy REALLY likes minerals!",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "OBSIDIAN", "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "DIAMOND",  "upgradeVariable": "WORKABLE", "upgradeFactor": 1}
@@ -613,7 +655,8 @@
     "id": 48,
     "upgradeType": "WORKER",
     "name": "Dwarven Miner",
-    "description": "Dwarves aren't actually very active miners. This guy just loves his job.",
+    "description": "",
+    "flavorText": "Dwarves aren't actually very active miners. This guy just loves his job.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "METAL", "resourceEnum": "OBSIDIAN", "upgradeVariable": "WORKABLE", "upgradeFactor": 1, "maxTier": 5}
     ],
@@ -624,7 +667,8 @@
     "id": 49,
     "upgradeType": "WORKER",
     "name": "Dwarven Champion",
-    "description": "Dwarves are naturally inclined to be the best at whatever they do, even things that are totally un-dwarfish like mining.",
+    "description": "",
+    "flavorText": "Dwarves are naturally inclined to be the best at whatever they do, even things that are totally un-dwarfish like mining.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "METAL", "resourceEnum": "OBSIDIAN", "upgradeVariable": "WORKABLE", "upgradeFactor": 1, "maxTier": 7}
     ],
@@ -636,7 +680,8 @@
     "id": 50,
     "upgradeType": "WORKER",
     "name": "Musical Lumberjacks",
-    "description": "This funny little tune helps the lumberjacks stay focused, but you'll NEVER get it out of your head. Increases worker yield by 60%.",
+    "description": "Increases lumberjack yield by 60%.",
+    "flavorText": "This funny little tune helps the lumberjacks stay focused, but you'll NEVER get it out of your head.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": true, "resourceType": "WOOD", "resourceEnum": "OAK", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.6, "maxTier": 5}
     ],
@@ -647,7 +692,8 @@
     "id": 51,
     "upgradeType": "WORKER",
     "name": "Entking",
-    "description": "With their king at last restored to his former glory, the ents find themselves greatly invigorated.",
+    "description": "Increases ent yield by 200%.",
+    "flavorText": "With their king at last restored to his former glory, the ents find themselves greatly invigorated.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "ENTSOUL",       "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "REANIMATEDENT", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3}
@@ -660,10 +706,11 @@
     "id": 52,
     "upgradeType": "WORKER",
     "name": "Miner's Guild",
-    "description": "Form a guild to help your workers hone their skills. Miners harvest 15% more material.",
+    "description": "Increases miner yield by 15%.",
+    "flavorText": "Form a guild to help your workers hone their skills.",
     "upgradeEffects": [
-      {"upgradeIsForWholeType": true, "resourceType": "MINERAL", "resourceEnum": "OAK",  "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.15},
-      {"upgradeIsForWholeType": true, "resourceType": "METAL",   "resourceEnum": "GOLD", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.15}
+      {"upgradeIsForWholeType": true, "resourceType": "MINERAL", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.15},
+      {"upgradeIsForWholeType": true, "resourceType": "METAL",   "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.15}
     ],
     "resourceCosts": [
       {"resourceEnum": "GOLDINGOT", "resourceCost": 500}
@@ -672,10 +719,11 @@
     "id": 53,
     "upgradeType": "WORKER",
     "name": "Miner Musical",
-    "description": "Those who underperform are \"encouraged\" to sing along.",
+    "description": "Increases miner yield by 100%.",
+    "flavorText": "Those who underperform are \"encouraged\" to sing along.",
     "upgradeEffects": [
-      {"upgradeIsForWholeType": true, "resourceType": "MINERAL", "resourceEnum": "OAK",  "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 2, "maxTier": 6},
-      {"upgradeIsForWholeType": true, "resourceType": "METAL",   "resourceEnum": "GOLD", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 2, "maxTier": 5}
+      {"upgradeIsForWholeType": true, "resourceType": "MINERAL", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 2, "maxTier": 6},
+      {"upgradeIsForWholeType": true, "resourceType": "METAL",   "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 2, "maxTier": 5}
     ],
     "resourceCosts": [
       {"resourceEnum": "LATINUMINGOT", "resourceCost": 1500}
@@ -684,7 +732,8 @@
     "id": 54,
     "upgradeType": "WORKER",
     "name": "Temprous Master",
-    "description": "There is no other with the prowess this master posesses in handling temprous metal. Workers generate 50% more temprous.",
+    "description": "Increases temprous ingot yield by 50%.",
+    "flavorText": "There is no other with the prowess this master posesses in handling temprous metal.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "TEMPROUSINGOT",   "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "REFINEDTEMPROUS", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 1.5}
@@ -697,7 +746,8 @@
     "id": 55,
     "upgradeType": "RESOURCE",
     "name": "Bronze Hoe",
-    "description": "Allows you to harvest more crop varieties.",
+    "description": "Allows harvesting of raw potatoes.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1}
     ],
@@ -710,7 +760,8 @@
     "id": 57,
     "upgradeType": "RESOURCE",
     "name": "Iron Hoe",
-    "description": "Allows you to harvest more crop varieties.",
+    "description": "Allows harvesting of rice.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RICE", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1}
     ],
@@ -723,7 +774,8 @@
     "id": 58,
     "upgradeType": "RESOURCE",
     "name": "Fishing Rod",
-    "description": "With this, you can catch some small fish.",
+    "description": "Allows harvesting of herring and bass.",
+    "flavorText": "With this, you can catch some small fish.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1}
@@ -736,7 +788,8 @@
     "id": 59,
     "upgradeType": "RESOURCE",
     "name": "Gold-tipped Rod",
-    "description": "The bright metallic tip can attract some highly dangerous, and highly lucrative, fish.",
+    "description": "Allows harvesting of sharks.",
+    "flavorText": "The bright metallic tip can attract some highly dangerous, and highly lucrative, fish.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSHARK", "upgradeVariable": "HARVESTABILITY", "upgradeFactor": 1}
     ],
@@ -749,7 +802,8 @@
     "id": 60,
     "upgradeType": "RESOURCE",
     "name": "Expanded Plots",
-    "description": "Gains 200% more crops per harvest.",
+    "description": "Harvests 200% more crops per.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
@@ -762,7 +816,8 @@
     "id": 61,
     "upgradeType": "RESOURCE",
     "name": "Scarecrow",
-    "description": "Gains 300% more crops per harvest.",
+    "description": "Harvests 300% more crops per task.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
@@ -776,7 +831,8 @@
     "id": 62,
     "upgradeType": "RESOURCE",
     "name": "Fishing Net",
-    "description": "Gains 200% more fish per harvest.",
+    "description": "Harvests 200% more fish per task.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
@@ -789,7 +845,8 @@
     "id": 63,
     "upgradeType": "RESOURCE",
     "name": "Sign That Says \"Please Swim Into This Net\"",
-    "description": "Gains 300% more fish per harvest.",
+    "description": "Harvests 300% more fish per task.",
+    "flavorText": "That I just found.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
@@ -803,7 +860,8 @@
     "id": 64,
     "upgradeType": "RESOURCE",
     "name": "Expanded Farm",
-    "description": "Gains 200% more creatures per harvest.",
+    "description": "Harvests 200% more creatures per task.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWCHICKEN",    "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSTEAK",      "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
@@ -817,7 +875,8 @@
     "id": 65,
     "upgradeType": "RESOURCE",
     "name": "Massive Farm",
-    "description": "Gains 300% more creatures per harvest.",
+    "description": "Harvests 300% more creatures per task.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWCHICKEN",    "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSTEAK",      "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
@@ -832,6 +891,7 @@
     "upgradeType": "RESOURCE",
     "name": "Sharpened Tools",
     "description": "Reduces farming time by 50%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -846,6 +906,7 @@
     "upgradeType": "RESOURCE",
     "name": "Automated Harvesting",
     "description": "Reduces farming time by 50%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -860,6 +921,7 @@
     "upgradeType": "RESOURCE",
     "name": "Decent Rod",
     "description": "Reduces fishing time by 50%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -874,6 +936,7 @@
     "upgradeType": "RESOURCE",
     "name": "Not-too-shabby Rod",
     "description": "Reduces fishing time by 50%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -888,6 +951,7 @@
     "upgradeType": "RESOURCE",
     "name": "Marble Walls",
     "description": "Reduces creature hunting time by 50%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWCHICKEN",    "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSTEAK",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -902,6 +966,7 @@
     "upgradeType": "RESOURCE",
     "name": "Obsidian Walls",
     "description": "Reduces creature hunting time by 50%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWCHICKEN",    "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSTEAK",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -917,6 +982,7 @@
     "upgradeType": "RESOURCE",
     "name": "Stone Oven Frame",
     "description": "Reduces oven harvest time by 10%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.9},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.9},
@@ -937,6 +1003,7 @@
     "upgradeType": "RESOURCE",
     "name": "Iron Oven Frame",
     "description": "Reduces oven harvest time by 15%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
@@ -957,6 +1024,7 @@
     "upgradeType": "RESOURCE",
     "name": "Steel Oven Frame",
     "description": "Reduces oven harvest time by 15%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.85},
@@ -977,6 +1045,7 @@
     "upgradeType": "RESOURCE",
     "name": "Obsidian Oven Frame",
     "description": "Reduces oven harvest time by 20%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.8},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.8},
@@ -997,6 +1066,7 @@
     "upgradeType": "RESOURCE",
     "name": "Diamond Oven Frame",
     "description": "Reduces oven harvest time by 25%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.75},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.75},
@@ -1017,6 +1087,7 @@
     "upgradeType": "RESOURCE",
     "name": "Temprous Oven Frame",
     "description": "Reduces oven harvest time by 50%.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",      "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -1038,6 +1109,7 @@
     "upgradeType": "WORKER",
     "name": "Fisherman",
     "description": "Allows workers to be assigned to hunting fish.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
@@ -1051,6 +1123,7 @@
     "upgradeType": "WORKER",
     "name": "Monster Pocketer",
     "description": "Allows workers to be assigned to hunting creatures.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWCHICKEN",    "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSTEAK",      "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
@@ -1064,6 +1137,7 @@
     "upgradeType": "WORKER",
     "name": "Personal Chef",
     "description": "Allows workers to be assigned to some cooking tasks.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "JELLYDONUT", "upgradeVariable": "WORKABLE", "upgradeFactor": 1}
@@ -1076,6 +1150,7 @@
     "upgradeType": "WORKER",
     "name": "Noseless Chef",
     "description": "Allows workers to be assigned to cooking fish.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "HERRING", "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "BASS",    "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
@@ -1089,6 +1164,7 @@
     "upgradeType": "WORKER",
     "name": "Five-star Restaurant",
     "description": "Allows workers to be assigned to cooking creatures.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "CHICKEN",    "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "STEAK",      "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
@@ -1105,6 +1181,7 @@
     "upgradeType": "WORKER",
     "name": "Farmer Dating App",
     "description": "Workers gain 200% more crops per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
@@ -1118,6 +1195,7 @@
     "upgradeType": "WORKER",
     "name": "Hunting Season",
     "description": "Workers gain 200% more fish/animals per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWCHICKEN",    "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSTEAK",      "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
@@ -1132,6 +1210,7 @@
     "upgradeType": "WORKER",
     "name": "Food Critic",
     "description": "Workers cook 200% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",      "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
@@ -1151,6 +1230,7 @@
     "upgradeType": "WORKER",
     "name": "Temporal Cooking",
     "description": "Workers cook 500% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 6},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 6},
@@ -1171,6 +1251,7 @@
     "upgradeType": "RESOURCE",
     "name": "Reinforced Oven",
     "description": "Cooks 20% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.2},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.2},
@@ -1191,6 +1272,7 @@
     "upgradeType": "RESOURCE",
     "name": "Cleaned Oven",
     "description": "Cooks 45% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.45},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.45},
@@ -1211,6 +1293,7 @@
     "upgradeType": "RESOURCE",
     "name": "Fortified Oven",
     "description": "Cooks 60% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.6},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.6},
@@ -1231,6 +1314,7 @@
     "upgradeType": "RESOURCE",
     "name": "Artisan Oven",
     "description": "Cooks 80% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.8},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 1.8},
@@ -1251,6 +1335,7 @@
     "upgradeType": "RESOURCE",
     "name": "Semi-Perfect Oven",
     "description": "Cooks 100% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2},
@@ -1271,6 +1356,7 @@
     "upgradeType": "RESOURCE",
     "name": "Perfect Oven",
     "description": "Cooks 250% more food per harvest.",
+    "flavorText": "",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.5},
