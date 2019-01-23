@@ -36,6 +36,7 @@ button {
   padding: 5px 10px;
   border-radius: 4px;
   font-family: Arial;
+  min-width: unset;
 }
 
 .upgrades {
@@ -53,4 +54,8 @@ button {
 .resource-list img {
   width: 16px;
   height: 16px;
+}
+
+.check-mark {
+  position: absolute;
 }

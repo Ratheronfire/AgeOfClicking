@@ -3,12 +3,12 @@
 
 <div *ngFor="let resource of getResources()">
   <div class="tooltip" [id]="'tooltip-resource-' + resource.resourceEnum">
-    <div class="resource-tooltip-icon">
-        <img class="resource-img" id="{{resource.name | resourceId}}" src="assets/sprites/transparent.png" alt="{{resource.name}}">
+    <div class="tooltip-icon">
+        <img class="foreground-img" id="{{resource.name | resourceId}}" src="assets/sprites/transparent.png" alt="{{resource.name}}">
         <img class="background" src="assets/sprites/inventoryBack.png" width="48px" height="48px">
     </div>
 
-    <mat-card-title>
+    <mat-card-title class="icon-title">
       {{resource.name | titlecase}}
     </mat-card-title>
     <mat-card-subtitle>
@@ -22,12 +22,18 @@
 
 <div *ngFor="let upgrade of getUpgrades(false, false, false)">
   <div class="tooltip" [id]="'tooltip-upgrade-' + upgrade.id">
-    <mat-card-title>{{upgrade.name}}</mat-card-title>
+    <div class="tooltip-icon">
+      <img class="foreground-img upgrade-img" src="assets/sprites/transparent.png" alt="{{upgrade.name}}" spriteSheet="UPGRADES" [spriteIndex]="upgrade.spriteIndex" appSpritesheetElement>
+      <img class="background" src="assets/sprites/inventoryBack.png" width="48px" height="48px">
+    </div>
+
+    <mat-card-title class="icon-title">{{upgrade.name}}</mat-card-title>
+
     <mat-card-subtitle>{{upgrade.description}}</mat-card-subtitle>
 
     <mat-card-content>
       <div *ngFor="let cost of upgrade.resourceCosts">
-        {{cost.resourceCost  | longNumber}} {{getResource(cost.resourceEnum).name | titlecase}}
+        {{cost.resourceCost | longNumber}} {{getResource(cost.resourceEnum).name | titlecase}}
       </div>
     </mat-card-content>
 

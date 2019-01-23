@@ -45,6 +45,7 @@ export class Upgrade {
   };
 
   id: number;
+  spriteIndex: number;
 
   name: string;
   description: string;
@@ -59,10 +60,11 @@ export class Upgrade {
 
   private game: GameService;
 
-  public constructor(id: number, name: string, description: string, flavorText: string, upgradeType: UpgradeType,
-                     upgradeEffects: UpgradeEffect[], resourceCosts: ResourceCost[], purchased = false,
+  public constructor(id: number, spriteIndex: number, name: string, description: string, flavorText: string,
+                     upgradeType: UpgradeType, upgradeEffects: UpgradeEffect[], resourceCosts: ResourceCost[], purchased = false,
                      game: GameService) {
     this.id = id;
+    this.spriteIndex = spriteIndex;
 
     this.name = name;
     this.description = description;

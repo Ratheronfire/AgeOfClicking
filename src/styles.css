@@ -2,8 +2,8 @@
 @import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 
 :root {
-  --detail-tooltip-top: 0px;
-  --detail-tooltip-left: 0px;
+  --spriteOffsetX: 0px;
+  --spriteOffsetY: 0px;
 }
 
 .hidden {
@@ -238,18 +238,38 @@ mat-expansion-panel-header.mat-expansion-panel-header mat-panel-title {
   font-weight: bold;
 }
 
-.tippy-content .resource-tooltip-icon {
+.tippy-content {
+  max-width: 450px;
+}
+
+.tippy-content .tooltip-icon {
   position: absolute;
   width: 48px;
 }
 
-.resource-tooltip-icon .background {
+.tooltip-icon .background {
   z-index: 1;
 }
 
-.resource-tooltip-icon .resource-img {
+.tooltip-icon .foreground-img {
   position: absolute;
   z-index: 2;
+}
+
+.tippy-content .tooltip-icon {
+  position: relative;
+  display: inline-block;
+}
+
+.tippy-content .icon-title {
+  position: relative;
+  display: inline-block;
+  top: -15px;
+}
+
+.upgrade-img {
+  width: 48px; height: 48px;
+  background: url(./assets/sprites/upgrades-export.png) var(--spriteOffsetX) var(--spriteOffsetY);
 }
 
 /* Resource Image Sprites */

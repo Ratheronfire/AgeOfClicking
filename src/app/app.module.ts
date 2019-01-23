@@ -28,6 +28,7 @@ import { UnitDetailComponent } from './components/unit-detail/unit-detail.compon
 import { UnitsComponent } from './components/units/units.component';
 import { TasksComponent } from './components/tasks/tasks.component';
 import { TaskPopupComponent } from './components/tasks/tasks.component';
+import { SpritesheetElementDirective } from './directives/spritesheet-element.directive';
 
 @NgModule({
   declarations: [
@@ -49,7 +50,8 @@ import { TaskPopupComponent } from './components/tasks/tasks.component';
     AboutDialogComponent,
     UnitsComponent,
     TasksComponent,
-    TaskPopupComponent
+    TaskPopupComponent,
+    SpritesheetElementDirective
   ],
   imports: [
     BrowserModule,
