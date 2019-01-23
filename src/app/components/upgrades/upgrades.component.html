@@ -2,35 +2,27 @@
 <br />
 <br />
 
-<mat-accordion multi="true" class="upgrades">
-  <mat-expansion-panel class="steel" expanded="true" *ngFor="let upgradeVariable of upgradeVariables | enumToArray">
-    <mat-expansion-panel-header>
-      <mat-panel-title class="button-text-background">
-        {{upgradeVariableNames[upgradeVariable]}}
-      </mat-panel-title>
-    </mat-expansion-panel-header>
-    <div class="upgrade-container" *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined, upgradeVariable)"
-    appTippy [tippyOptions]="{
-      arrow: true,
-      placement: 'left',
-      delay: 0,
-      html: '#tooltip-upgrade-' + upgrade.id,
-      popperOptions: {
-        modifiers: {
-          preventOverflow: {
-            boundariesElement: 'window'
-          }
+<div class="upgrades">
+  <div *ngFor="let upgrade of getUpgrades(false, hidePurchasedUpgrades, game.admin.filterAccessible, undefined)" class="upgrade-container" appTippy [tippyOptions]="{
+    arrow: true,
+    placement: 'left',
+    delay: 0,
+    html: '#tooltip-upgrade-' + upgrade.id,
+    popperOptions: {
+      modifiers: {
+        preventOverflow: {
+          boundariesElement: 'window'
         }
       }
-    }">
-      <button class="slim wood" mat-raised-button
-        color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
-          <b class="check-mark">
-            <mat-icon *ngIf="upgrade.purchased" color="accent">check</mat-icon>
-          </b>
+    }
+  }">
+    <button class="slim wood" mat-raised-button
+      color="accent" [disabled]='upgrade.purchased || !canAffordUpgrade(upgrade.id)' (click)='purchaseUpgrade(upgrade.id)'>
+        <b class="check-mark">
+          <mat-icon *ngIf="upgrade.purchased" color="accent">check</mat-icon>
+        </b>
 
-          <img class="upgrade-img" src="assets/sprites/transparent.png" alt="{{upgrade.name}}" spriteSheet="UPGRADES" [spriteIndex]="upgrade.spriteIndex" appSpritesheetElement>
-      </button>
-    </div>
-  </mat-expansion-panel>
-</mat-accordion>
+        <img class="upgrade-img" src="assets/sprites/transparent.png" alt="{{upgrade.name}}" spriteSheet="UPGRADES" [spriteIndex]="upgrade.spriteIndex" appSpritesheetElement>
+    </button>
+  </div>
+</div>

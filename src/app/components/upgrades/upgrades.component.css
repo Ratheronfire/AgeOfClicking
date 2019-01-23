@@ -43,6 +43,10 @@ button {
   text-align: center;
 }
 
+.upgrade-container {
+  display: inline-block;
+}
+
 .resource-list {
   text-align: center;
 }
