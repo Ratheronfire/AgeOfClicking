@@ -44,6 +44,7 @@
       ],"purchased": false
   }, {
     "id": 3,
+    "spriteIndex": 66,
     "upgradeType": "WORKER",
     "name": "Lumberjack's Guild",
     "description": "Lumberjacks harvest 15% more wood.",
@@ -240,6 +241,7 @@
     ]
   }, {
     "id": 22,
+    "spriteIndex": 49,
     "upgradeType": "RESOURCE",
     "name": "Emblem of the Ents",
     "description": "Grants an extra 75% ents reanimated per harvest.",
@@ -434,6 +436,7 @@
     ]
   }, {
     "id": 33,
+    "spriteIndex": 50,
     "upgradeType": "RESOURCE",
     "name": "Lumber Mill",
     "description": "Reduces wood harvesting time by 20%.",
@@ -544,6 +547,7 @@
     ]
   }, {
     "id": 39,
+    "spriteIndex": 38,
     "upgradeType": "RESOURCE",
     "name": "Limestone Burner",
     "description": "Reduces mining time for bronze ingots by 10%.",
@@ -557,6 +561,7 @@
     ]
   }, {
     "id": 40,
+    "spriteIndex": 39,
     "upgradeType": "RESOURCE",
     "name": "Marble Burner",
     "description": "Reduces mining time for ingots up to steel by 12%.",
@@ -572,6 +577,7 @@
     ]
   }, {
     "id": 41,
+    "spriteIndex": 40,
     "upgradeType": "RESOURCE",
     "name": "Obsidian Burner",
     "description": "Reduces mining time for ingots up to gold by 15%.",
@@ -588,6 +594,7 @@
     ]
   }, {
     "id": 42,
+    "spriteIndex": 41,
     "upgradeType": "RESOURCE",
     "name": "Diamond Burner",
     "description": "Reduces mining time for ingots up to latinum by 15%.",
@@ -606,6 +613,7 @@
     ]
   }, {
     "id": 43,
+    "spriteIndex": 42,
     "upgradeType": "RESOURCE",
     "name": "Temprous Burner",
     "description": "Reduces mining time for ingots up to temprous by 25%.",
@@ -625,6 +633,7 @@
     ]
   }, {
     "id": 44,
+    "spriteIndex": 51,
     "upgradeType": "WORKER",
     "name": "Kelley the Deforester",
     "description": "",
@@ -637,6 +646,7 @@
       ],"purchased": false
   }, {
     "id": 45,
+    "spriteIndex": 64,
     "upgradeType": "WORKER",
     "name": "Elder Ent",
     "description": "",
@@ -651,6 +661,7 @@
     ]
   }, {
     "id": 46,
+    "spriteIndex": 52,
     "upgradeType": "WORKER",
     "name": "Mineral Enthusiast",
     "description": "",
@@ -667,6 +678,7 @@
     ]
   }, {
     "id": 47,
+    "spriteIndex": 53,
     "upgradeType": "WORKER",
     "name": "Mineral Obsessive",
     "description": "",
@@ -683,6 +695,7 @@
     ]
   }, {
     "id": 48,
+    "spriteIndex": 54,
     "upgradeType": "WORKER",
     "name": "Dwarven Miner",
     "description": "",
@@ -695,6 +708,7 @@
     ]
   }, {
     "id": 49,
+    "spriteIndex": 55,
     "upgradeType": "WORKER",
     "name": "Dwarven Champion",
     "description": "",
@@ -709,6 +723,7 @@
   }, {
     "id": 50,
     "upgradeType": "WORKER",
+    "spriteIndex": 58,
     "name": "Musical Lumberjacks",
     "description": "Increases lumberjack yield by 60%.",
     "flavorText": "This funny little tune helps the lumberjacks stay focused, but you'll NEVER get it out of your head.",
@@ -720,6 +735,7 @@
     ]
   }, {
     "id": 51,
+    "spriteIndex": 65,
     "upgradeType": "WORKER",
     "name": "Entking",
     "description": "Increases ent yield by 200%.",
@@ -734,6 +750,7 @@
     ]
   }, {
     "id": 52,
+    "spriteIndex": 67,
     "upgradeType": "WORKER",
     "name": "Miner's Guild",
     "description": "Increases miner yield by 15%.",
@@ -747,6 +764,7 @@
     ]
   }, {
     "id": 53,
+    "spriteIndex": 56,
     "upgradeType": "WORKER",
     "name": "Miner Musical",
     "description": "Increases miner yield by 100%.",
@@ -760,6 +778,7 @@
     ]
   }, {
     "id": 54,
+    "spriteIndex": 57,
     "upgradeType": "WORKER",
     "name": "Temprous Master",
     "description": "Increases temprous ingot yield by 50%.",
@@ -1017,6 +1036,7 @@
     ]
   }, {
     "id": 72,
+    "spriteIndex": 43,
     "upgradeType": "RESOURCE",
     "name": "Stone Oven Frame",
     "description": "Reduces oven harvest time by 10%.",
@@ -1038,6 +1058,7 @@
     ]
   }, {
     "id": 73,
+    "spriteIndex": 44,
     "upgradeType": "RESOURCE",
     "name": "Iron Oven Frame",
     "description": "Reduces oven harvest time by 15%.",
@@ -1059,6 +1080,7 @@
     ]
   }, {
     "id": 74,
+    "spriteIndex": 45,
     "upgradeType": "RESOURCE",
     "name": "Steel Oven Frame",
     "description": "Reduces oven harvest time by 15%.",
@@ -1080,6 +1102,7 @@
     ]
   }, {
     "id": 75,
+    "spriteIndex": 46,
     "upgradeType": "RESOURCE",
     "name": "Obsidian Oven Frame",
     "description": "Reduces oven harvest time by 20%.",
@@ -1101,6 +1124,7 @@
     ]
   }, {
     "id": 76,
+    "spriteIndex": 47,
     "upgradeType": "RESOURCE",
     "name": "Diamond Oven Frame",
     "description": "Reduces oven harvest time by 25%.",
@@ -1122,6 +1146,7 @@
     ]
   }, {
     "id": 77,
+    "spriteIndex": 48,
     "upgradeType": "RESOURCE",
     "name": "Temprous Oven Frame",
     "description": "Reduces oven harvest time by 50%.",
@@ -1144,6 +1169,7 @@
     ]
   }, {
     "id": 92,
+    "spriteIndex": 59,
     "upgradeType": "WORKER",
     "name": "Fisherman",
     "description": "Allows workers to be assigned to hunting fish.",
@@ -1158,6 +1184,7 @@
     ]
   }, {
     "id": 78,
+    "spriteIndex": 60,
     "upgradeType": "WORKER",
     "name": "Monster Pocketer",
     "description": "Allows workers to be assigned to hunting creatures.",
@@ -1172,6 +1199,7 @@
     ]
   }, {
     "id": 79,
+    "spriteIndex": 61,
     "upgradeType": "WORKER",
     "name": "Personal Chef",
     "description": "Allows workers to be assigned to some cooking tasks.",
@@ -1185,6 +1213,7 @@
     ]
   }, {
     "id": 80,
+    "spriteIndex": 62,
     "upgradeType": "WORKER",
     "name": "Noseless Chef",
     "description": "Allows workers to be assigned to cooking fish.",
@@ -1245,6 +1274,7 @@
     ]
   }, {
     "id": 84,
+    "spriteIndex": 63,
     "upgradeType": "WORKER",
     "name": "Food Critic",
     "description": "Workers cook 200% more food per harvest.",

@@ -23,7 +23,7 @@ export class SpritesheetElementDirective implements AfterViewInit {
 
     switch (this.spriteSheet) {
       case 'UPGRADES': {
-        rowLength = 8;
+        rowLength = 11;
       }
     }
 
