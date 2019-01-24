@@ -853,10 +853,11 @@
     ]
   }, {
     "id": 60,
+    "spriteIndex": 74,
     "upgradeType": "RESOURCE",
     "name": "Expanded Plots",
-    "description": "Harvests 200% more crops per.",
-    "flavorText": "",
+    "description": "Harvests 200% more crops per task.",
+    "flavorText": "Less Hobbit, more Lord of the Rings.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
@@ -867,10 +868,11 @@
     ]
   }, {
     "id": 61,
+    "spriteIndex": 75,
     "upgradeType": "RESOURCE",
     "name": "Scarecrow",
     "description": "Harvests 300% more crops per task.",
-    "flavorText": "",
+    "flavorText": "We tried scarycrows first, but they just made things worse.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 4},
@@ -886,7 +888,7 @@
     "upgradeType": "RESOURCE",
     "name": "Fishing Net",
     "description": "Harvests 200% more fish per task.",
-    "flavorText": "",
+    "flavorText": "The latest in fishing technology!",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWHERRING", "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWBASS",    "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 3},
@@ -913,6 +915,7 @@
     ]
   }, {
     "id": 64,
+    "spriteIndex": 76,
     "upgradeType": "RESOURCE",
     "name": "Expanded Farm",
     "description": "Harvests 200% more creatures per task.",
@@ -928,6 +931,7 @@
     ]
   }, {
     "id": 65,
+    "spriteIndex": 77,
     "upgradeType": "RESOURCE",
     "name": "Massive Farm",
     "description": "Harvests 300% more creatures per task.",
@@ -943,6 +947,7 @@
     ]
   }, {
     "id": 66,
+    "spriteIndex": 68,
     "upgradeType": "RESOURCE",
     "name": "Sharpened Tools",
     "description": "Reduces farming time by 50%.",
@@ -958,10 +963,11 @@
     ]
   }, {
     "id": 67,
+    "spriteIndex": 69,
     "upgradeType": "RESOURCE",
     "name": "Automated Harvesting",
     "description": "Reduces farming time by 50%.",
-    "flavorText": "",
+    "flavorText": "These tools practically move themselves!",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "HARVEST_MILLISECONDS", "upgradeFactor": 0.5},
@@ -1006,6 +1012,7 @@
   }, {
     "id": 70,
     "upgradeType": "RESOURCE",
+    "spriteIndex" : 78,
     "name": "Marble Walls",
     "description": "Reduces creature hunting time by 50%.",
     "flavorText": "",
@@ -1020,6 +1027,7 @@
     ]
   }, {
     "id": 71,
+    "spriteIndex": 79,
     "upgradeType": "RESOURCE",
     "name": "Obsidian Walls",
     "description": "Reduces creature hunting time by 50%.",
@@ -1203,7 +1211,7 @@
     "upgradeType": "WORKER",
     "name": "Personal Chef",
     "description": "Allows workers to be assigned to some cooking tasks.",
-    "flavorText": "",
+    "flavorText": "Finally, fresh-baked food whenever you like! (Jelly donuts are totally not rice balls shut up)",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",     "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "JELLYDONUT", "upgradeVariable": "WORKABLE", "upgradeFactor": 1}
@@ -1217,7 +1225,7 @@
     "upgradeType": "WORKER",
     "name": "Noseless Chef",
     "description": "Allows workers to be assigned to cooking fish.",
-    "flavorText": "",
+    "flavorText": "This chef is powerful enough to withstand the overwhelming smell of the sea.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "HERRING", "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "BASS",    "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
@@ -1228,10 +1236,11 @@
     ]
   }, {
     "id": 81,
+    "spriteIndex": 72,
     "upgradeType": "WORKER",
     "name": "Five-star Restaurant",
     "description": "Allows workers to be assigned to cooking creatures.",
-    "flavorText": "",
+    "flavorText": "Only the finest in anachronistic dining!",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "CHICKEN",    "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
       {"upgradeIsForWholeType": false, "resourceEnum": "STEAK",      "upgradeVariable": "WORKABLE", "upgradeFactor": 1},
@@ -1245,10 +1254,11 @@
     ]
   }, {
     "id": 82,
+    "spriteIndex": 70,
     "upgradeType": "WORKER",
     "name": "Farmer Dating App",
     "description": "Workers gain 200% more crops per harvest.",
-    "flavorText": "",
+    "flavorText": "Our top scientists have yet to determine what an \"app\" is.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "WHEAT",     "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWPOTATO", "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
@@ -1259,10 +1269,11 @@
     ]
   }, {
     "id": 83,
+    "spriteIndex": 71,
     "upgradeType": "WORKER",
     "name": "Hunting Season",
     "description": "Workers gain 200% more fish/animals per harvest.",
-    "flavorText": "",
+    "flavorText": "Wabbit season! Dragon season!",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWCHICKEN",    "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
       {"upgradeIsForWholeType": false, "resourceEnum": "RAWSTEAK",      "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 3},
@@ -1295,10 +1306,11 @@
     ]
   }, {
     "id": 85,
+    "spriteIndex": 73,
     "upgradeType": "WORKER",
     "name": "Temporal Cooking",
     "description": "Workers cook 500% more food per harvest.",
-    "flavorText": "",
+    "flavorText": "Transports your food to a time when the world was covered in flames. It helps cook your steaks a bit quicker, if a tiny bit irradiated.",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 6},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "WORKER_YIELD", "upgradeFactor": 6},
@@ -1316,6 +1328,7 @@
     ]
   }, {
     "id": 86,
+    "spriteIndex": 80,
     "upgradeType": "RESOURCE",
     "name": "Reinforced Oven",
     "description": "Cooks 20% more food per harvest.",
@@ -1337,6 +1350,7 @@
     ]
   }, {
     "id": 87,
+    "spriteIndex": 81,
     "upgradeType": "RESOURCE",
     "name": "Cleaned Oven",
     "description": "Cooks 45% more food per harvest.",
@@ -1358,6 +1372,7 @@
     ]
   }, {
     "id": 88,
+    "spriteIndex": 82,
     "upgradeType": "RESOURCE",
     "name": "Fortified Oven",
     "description": "Cooks 60% more food per harvest.",
@@ -1379,6 +1394,7 @@
     ]
   }, {
     "id": 89,
+    "spriteIndex": 83,
     "upgradeType": "RESOURCE",
     "name": "Artisan Oven",
     "description": "Cooks 80% more food per harvest.",
@@ -1400,6 +1416,7 @@
     ]
   }, {
     "id": 90,
+    "spriteIndex": 84,
     "upgradeType": "RESOURCE",
     "name": "Semi-Perfect Oven",
     "description": "Cooks 100% more food per harvest.",
@@ -1421,10 +1438,11 @@
     ]
   }, {
     "id": 91,
+    "spriteIndex": 85,
     "upgradeType": "RESOURCE",
     "name": "Perfect Oven",
     "description": "Cooks 250% more food per harvest.",
-    "flavorText": "",
+    "flavorText": "\"And now, the end is near...\"",
     "upgradeEffects": [
       {"upgradeIsForWholeType": false, "resourceEnum": "BREAD",         "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.5},
       {"upgradeIsForWholeType": false, "resourceEnum": "POTATO",        "upgradeVariable": "HARVEST_YIELD", "upgradeFactor": 2.5},
