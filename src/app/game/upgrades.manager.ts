@@ -52,6 +52,17 @@ export class UpgradesManager {
       rc => this.game.resources.getResource(rc.resourceEnum).resourceAccessible));
     }
 
+    upgrades = upgrades.sort((a, b) => {
+      const variableA = a.upgradeEffects[0].upgradeVariable;
+      const variableB = b.upgradeEffects[0].upgradeVariable;
+
+      if (variableA === variableB) {
+        return a.id - b.id;
+      }
+
+      return variableA > variableB ? 1 : -1;
+    });
+
     return upgrades;
   }
 
