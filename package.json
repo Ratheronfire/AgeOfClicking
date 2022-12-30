@@ -32,7 +32,7 @@
     "ngx-color-picker": "^6.6.0",
     "os": "^0.1.1",
     "paralleljs": "^0.2.1",
-    "phaser": "^3.21.0",
+    "phaser": "^3.55.2",
     "phaser-component-library": "^2.0.0",
     "prng-parkmiller-js": "^0.1.1",
     "rxjs": "^6.5.4",
@@ -40,7 +40,7 @@
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^0.803.22",
+    "@angular-devkit/build-angular": "^15.0.4",
     "@angular/cli": "^6.1.5",
     "@angular/compiler-cli": "^6.1.10",
     "@angular/language-service": "^6.1.10",
